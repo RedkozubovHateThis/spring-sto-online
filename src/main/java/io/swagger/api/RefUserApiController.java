@@ -81,6 +81,7 @@ public class RefUserApiController implements RefUserApi {
             return new ResponseEntity<List<RefUser>>(HttpStatus.NOT_FOUND);
 
         return ResponseEntity.ok(users);
+
     }
 
 }
