@@ -1,0 +1,29 @@
+<div *ngIf="customer">
+  <div>
+    <label>Имя: </label> {{customer.first_name}}
+  </div>
+  <div>
+    <label>Oт: </label> {{customer.middle_name}}
+  </div>
+  <div>
+    <label>Фамилия: </label> {{customer.last_name}}
+  </div>
+  <div>
+    <label>username: </label> {{customer.username}}
+  </div>
+  <div>
+    <label>password: </label> {{customer.password}}
+  </div>
+  <div>
+    <label>Email: </label> {{customer.email}}
+  </div>
+
+
+  <span class="button is-small btn-primary" *ngIf='customer.active' (click)='updateActive(false)'>Inactive</span>
+
+  <span class="button is-small btn-primary" *ngIf='!customer.active' (click)='updateActive(true)'>Active</span>
+
+  <span class="button is-small btn-danger" (click)='deleteCustomer()'>Delete</span>
+
+  <hr/>
+</div>

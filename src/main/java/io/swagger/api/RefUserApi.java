@@ -26,6 +26,14 @@ import java.util.Map;
 @Api(value = "ref_user", description = "the ref_user API")
 public interface RefUserApi {
 
+    @ApiOperation(value = "Создание пользователя", nickname = "createUser", notes = "", tags={ "ref_user", })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Операция успешно завершена") })
+    @RequestMapping(value = "/ref_user",
+            consumes = { "application/json" },
+            method = RequestMethod.POST)
+    ResponseEntity<Void> createUser(@ApiParam(value = "Создание пользователя" ,required=true )  @Valid @RequestBody RefUser body);
+
     @ApiOperation(value = "Получение данных о пользователя по идентификатору.", nickname = "refUserGet", notes = "", response = RefUser.class, responseContainer = "List", tags={ "ref_user", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Операция успешно завершена.", response = RefUser.class, responseContainer = "List"),
@@ -35,5 +43,14 @@ public interface RefUserApi {
         produces = { "application/json" }, 
         method = RequestMethod.GET)
     ResponseEntity<List<RefUser>> refUserGet(@ApiParam(value = "id пользователя.") @Valid @RequestParam(value = "id", required = false) Integer id);
+
+    @ApiOperation(value = "Получение данных о пользователях.", nickname = "refUsersGet", notes = "", response = RefUser.class, responseContainer = "List", tags={ "ref_user", })
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Операция успешно завершена.", response = RefUser.class, responseContainer = "List"),
+        @ApiResponse(code = 404, message = "Пользователи не найдены.") })
+    @RequestMapping(value = "/ref_user/all",
+        produces = { "application/json" },
+        method = RequestMethod.GET)
+    ResponseEntity<List<RefUser>> refUsersGet();
 
 }

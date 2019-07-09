@@ -1,5 +1,6 @@
 package io.swagger.model;
 
+import java.util.Date;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -7,41 +8,56 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.threeten.bp.OffsetDateTime;
 import org.springframework.validation.annotation.Validated;
+
+import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
 /**
  * RefUser
  */
+@Entity
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-07-04T12:34:26.681Z[GMT]")
+@Table(name = "ref_user")
 public class RefUser   {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
   @JsonProperty("id")
   private Integer id = null;
 
+  @Column(name ="first_name")
   @JsonProperty("first_name")
   private String firstName = null;
 
+  @Column(name ="middle_name")
   @JsonProperty("middle_name")
   private String middleName = null;
 
+  @Column(name ="last_name")
   @JsonProperty("last_name")
   private String lastName = null;
 
+  @Column(name ="username")
   @JsonProperty("username")
   private String username = null;
 
+  @Column(name ="password")
   @JsonProperty("password")
   private String password = null;
 
+  @Column(name ="email")
   @JsonProperty("email")
   private String email = null;
 
+  @Column(name ="created_at")
   @JsonProperty("created_at")
-  private OffsetDateTime createdAt = null;
+  private Date createdAt = null;
 
+  @Column(name ="updated_at")
   @JsonProperty("updated_at")
-  private OffsetDateTime updatedAt = null;
+  private Date updatedAt = null;
 
   public RefUser id(Integer id) {
     this.id = id;
@@ -176,7 +192,7 @@ public class RefUser   {
     this.email = email;
   }
 
-  public RefUser createdAt(OffsetDateTime createdAt) {
+  public RefUser createdAt(Date createdAt) {
     this.createdAt = createdAt;
     return this;
   }
@@ -188,15 +204,15 @@ public class RefUser   {
   @ApiModelProperty(value = "")
 
   @Valid
-  public OffsetDateTime getCreatedAt() {
+  public Date getCreatedAt() {
     return createdAt;
   }
 
-  public void setCreatedAt(OffsetDateTime createdAt) {
+  public void setCreatedAt(Date createdAt) {
     this.createdAt = createdAt;
   }
 
-  public RefUser updatedAt(OffsetDateTime updatedAt) {
+  public RefUser updatedAt(Date updatedAt) {
     this.updatedAt = updatedAt;
     return this;
   }
@@ -208,11 +224,11 @@ public class RefUser   {
   @ApiModelProperty(value = "")
 
   @Valid
-  public OffsetDateTime getUpdatedAt() {
+  public Date getUpdatedAt() {
     return updatedAt;
   }
 
-  public void setUpdatedAt(OffsetDateTime updatedAt) {
+  public void setUpdatedAt(Date updatedAt) {
     this.updatedAt = updatedAt;
   }
 
