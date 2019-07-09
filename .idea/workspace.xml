@@ -1,63 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="332bda30-de6b-4c87-9295-0f90e57f47cd" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_hibernate_entitymanager_4_2_8_Final.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_webjars_angular_ui_bootstrap_2_2_0.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_webjars_angularjs_1_6_4.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_webjars_bootstrap_3_3_7.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_webjars_jquery_1_11_1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_webjars_underscorejs_1_8_3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/io/swagger/repository/RefUserRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webSto-UI/src/app/creat-customer/create-customer.component.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webSto-UI/src/app/creat-customer/create-customer.component.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webSto-UI/src/app/creat-customer/create-customer.component.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webSto-UI/src/app/creat-customer/create-customer.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webSto-UI/src/app/customer-details/customer-details.component.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webSto-UI/src/app/customer-details/customer-details.component.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webSto-UI/src/app/customer-details/customer-details.component.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webSto-UI/src/app/customer-details/customer-details.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webSto-UI/src/app/customer.service.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webSto-UI/src/app/customer.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webSto-UI/src/app/customer.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webSto-UI/src/app/customers-list/customers-list.component.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webSto-UI/src/app/customers-list/customers-list.component.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webSto-UI/src/app/customers-list/customers-list.component.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webSto-UI/src/app/customers-list/customers-list.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webSto-UI/src/app/search-customers/search-customers.component.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webSto-UI/src/app/search-customers/search-customers.component.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webSto-UI/src/app/search-customers/search-customers.component.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webSto-UI/src/app/search-customers/search-customers.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webSto-UI/src/css/bootstrap.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webSto-UI/user.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webSto-UI/webpack.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_bytebuddy_byte_buddy_1_6_6.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__net_bytebuddy_byte_buddy_1_6_14.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_common_hibernate_commons_annotations_5_0_1_Final.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_common_hibernate_commons_annotations_4_0_2_Final.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_hibernate_core_5_2_10_Final.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_hibernate_core_4_2_8_Final.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_hibernate_entitymanager_5_2_10_Final.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_javax_persistence_hibernate_jpa_2_1_api_1_0_0_Final.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_javax_persistence_hibernate_jpa_2_0_api_1_0_1_Final.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_jboss_jandex_2_0_3_Final.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_jboss_spec_javax_transaction_jboss_transaction_api_1_2_spec_1_0_1_Final.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jboss_spec_javax_transaction_jboss_transaction_api_1_1_spec_1_0_1_Final.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/swagger/Swagger2SpringBoot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/swagger/Swagger2SpringBoot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/swagger/api/RefUserApi.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/swagger/api/RefUserApi.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/swagger/api/RefUserApiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/swagger/api/RefUserApiController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/swagger/model/DocOrder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/swagger/model/DocOrder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/swagger/model/RefUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/swagger/model/RefUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/swagger-spring.iml" beforeDir="false" afterPath="$PROJECT_DIR$/swagger-spring.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/io/swagger/Swagger2SpringBoot$ExitException.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/io/swagger/Swagger2SpringBoot$ExitException.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/io/swagger/Swagger2SpringBoot.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/io/swagger/Swagger2SpringBoot.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/io/swagger/api/RefUserApi.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/io/swagger/api/RefUserApi.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/io/swagger/api/RefUserApiController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/io/swagger/api/RefUserApiController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/io/swagger/model/DocOrder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/io/swagger/model/DocOrder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/io/swagger/model/RefUser.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/io/swagger/model/RefUser.class" afterDir="false" />
-    </list>
+    <list default="true" id="332bda30-de6b-4c87-9295-0f90e57f47cd" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/classes/" />
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -319,7 +263,7 @@
       <select />
     </treeState>
   </component>
-  <component name="ProjectFrameBounds" extendedState="1">
+  <component name="ProjectFrameBounds" fullScreen="true">
     <option name="y" value="23" />
     <option name="width" value="1920" />
     <option name="height" value="1104" />
@@ -524,12 +468,12 @@
       <workItem from="1562262327210" duration="6204000" />
       <workItem from="1562317568574" duration="4940000" />
       <workItem from="1562508947466" duration="15715000" />
-      <workItem from="1562622078576" duration="11062000" />
+      <workItem from="1562622078576" duration="11823000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="40566000" />
+    <option name="totallyTimeSpent" value="41327000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -541,9 +485,9 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1920" height="1104" extended-state="6" />
+    <frame x="0" y="23" width="1920" height="1104" extended-state="0" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49935484" visible="true" weight="0.17518637" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49935484" visible="true" weight="0.17518637" />
       <window_info id="Structure" order="1" sideWeight="0.50064516" side_tool="true" weight="0.1826411" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -555,7 +499,7 @@
       <window_info anchor="bottom" id="Database Console" weight="0.32905138" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.46837944" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.46837944" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3992095" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
