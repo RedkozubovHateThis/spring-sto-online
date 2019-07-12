@@ -80,4 +80,16 @@ public interface RegOrderApi {
 
     }
 
+    @ApiOperation(value = "Обновление информации о наряде", nickname = "regOrderPut", notes = "", tags={ "reg_order", })
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Неверное id наряда", response = RegOrder.class, responseContainer = "List") })
+    @RequestMapping(value = "/reg_order",
+            produces = { "application/json" },
+            consumes = { "application/json" },
+            method = RequestMethod.PUT)
+    default ResponseEntity<Void> regOrderPut(@ApiParam(value = "Обновление данных о наряде на посещение магазина" ,required=true )  @Valid @RequestBody RegOrder regOrder,@ApiParam(value = "ид наряда, информацию о котором необходимо обновить") @Valid @RequestParam(value = "id", required = false) Integer id) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
 }

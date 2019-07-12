@@ -56,4 +56,24 @@ public class RegOrderApiController implements RegOrderApi {
 
     }
 
+    @Override
+    public ResponseEntity regOrderDelete(@ApiParam(value = "id наряда.") @Valid @RequestParam(value = "id", required = false) Integer id) {
+        String accept = request.getHeader("Accept");
+
+        regOrderRepository.delete(id);
+
+        return ResponseEntity.ok("Запись удалена");
+
+    }
+
+    @Override
+    public ResponseEntity<Void> regOrderPut(@ApiParam(value = "Обновление данных о наряде на посещение магазина", required = true) @Valid @RequestBody RegOrder regOrder, @ApiParam(value = "ид наряда, информацию о котором необходимо обновить") @Valid @RequestParam(value = "id", required = false) Integer id) {
+        String accept = request.getHeader("Accept");
+
+        regOrderRepository.save(regOrder);
+
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
+
 }

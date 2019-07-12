@@ -3,7 +3,7 @@ servers:
   # Added by API Auto Mocking Plugin
   # Added by API Auto Mocking Plugin
   # Added by API Auto Mocking Plugin
-# Added by API Auto Mocking Plugin
+  # Added by API Auto Mocking Plugin
   - description: SwaggerHub API Auto Mocking
     url: https://virtserver.swaggerhub.com/SmokeVLG/Avto/1.0.0
   - description: SwaggerHub API Auto Mocking
@@ -36,7 +36,7 @@ info:
     <p><em><span style="font-size: 12pt;">&nbsp; &nbsp;Пример:</span><span style="font-size: 12pt;">&nbsp;</span></em></p>
     <p><em><span style="font-size: 12pt;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; job :</span></em></p>
     <p><em><span style="font-size: 12pt;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;type: object <br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;format: blob</span></em></p>
-   
+
 
   version: "1.0.2"
   title: Merch
@@ -72,13 +72,12 @@ paths:
 
         '500':
           description: Возникла ошибка.
- 
+
         '400':
           description: Неверное id наряда.
- 
+
         '404':
           description: Наряд не найден.
- 
     delete:
       tags:
         - reg_order
@@ -98,7 +97,7 @@ paths:
           description: Неверное id наряда.
         '404':
           description: Наряд не найден.
-          
+
     post:
       tags:
         -  reg_order
@@ -116,6 +115,34 @@ paths:
               $ref: '#/components/schemas/reg_order'
         description: Создание наряда
         required: true
+    put:
+      tags:
+        - reg_order
+      summary: Обновление информации о наряде
+      parameters:
+        - name: id
+          in: query
+          description: ид наряда, информацию о котором необходимо обновить
+          schema:
+            type: integer
+      responses:
+        '400':
+          description: Неверное id наряда
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/reg_order'
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/reg_order'
+        description: Обновление данных о наряде на посещение магазина
+        required: true
+
 
 
 components:
