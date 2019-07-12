@@ -1,0 +1,159 @@
+openapi: 3.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  # Added by API Auto Mocking Plugin
+  # Added by API Auto Mocking Plugin
+# Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/SmokeVLG/Avto/1.0.0
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/SmokeVLG/Auto/1.0.0
+  - description: SwaggerHub API Auto Mocking
+    url: https://localhost:{port}
+    variables:
+      port:
+        enum:
+          - '8080'
+          - '8181'
+        default: '8080'
+info:
+  description: |
+    <p><span style="font-size: 14pt;"><strong>Это API для приложения автодиллер. </strong></span></p>
+    <p><em><span style="font-size: 12pt;">Дополнительные атрибуты:</span></em></p>
+    <p><span style="font-size: 12pt;">1) x-primary-key - массив идентификаторов первичного ключа:</span></p>
+    <p><em><span style="font-size: 12pt;">&nbsp; Пример - [id] или [id1,id2], где</span></em></p>
+    <p><em><span style="font-size: 12pt;">&nbsp; [id] обычный ключ,</span></em></p>
+    <p><em><span style="font-size: 12pt;">&nbsp; [id1,id2]- составной ключ.</span></em></p>
+    <p><span style="font-size: 12pt;">2) x-unique-index - указание уникального индекса.</span></p>
+    <p><span style="font-size: 12pt;">&nbsp; <em>Пример - [id,title]</em>&nbsp;</span></p>
+    <p><span style="font-size: 12pt;">3) foreign-key - массив идентификаторов внешнего ключа:</span></p>
+    <p><span style="font-size: 12pt;">&nbsp; &nbsp;Пример - ref_instore_activity:[id]-&gt;[ref_instore_activity_id] on update cascade on delete cascade,где</span></p>
+    <p><em><span style="font-size: 12pt;">&nbsp; &nbsp;ref_instore_activity - внешняя таблица </span></em></p>
+    <p><em><span style="font-size: 12pt;">&nbsp; &nbsp;[id] - поле для связи для внешней таблицы </span></em></p>
+    <p><em><span style="font-size: 12pt;">&nbsp; &nbsp;[ref_instore_activity_id] - поле в текущей таблицы </span></em></p>
+    <p><em><span style="font-size: 12pt;">&nbsp; &nbsp;on update cascade on delete cascade - указывается действие при обновлении и удалении. </span></em></p>
+    <p><span style="font-size: 12pt;">4) Типа blob - type object format blob.</span></p>
+    <p><em><span style="font-size: 12pt;">&nbsp; &nbsp;Пример:</span><span style="font-size: 12pt;">&nbsp;</span></em></p>
+    <p><em><span style="font-size: 12pt;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; job :</span></em></p>
+    <p><em><span style="font-size: 12pt;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;type: object <br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;format: blob</span></em></p>
+   
+
+  version: "1.0.2"
+  title: Merch
+  contact:
+    email: maxden33@gmail.com
+
+tags:
+  - name: reg_order
+    description: Регистр нарядов
+
+paths:
+  /reg_order:
+    get:
+      tags:
+        - reg_order
+      summary: Получение данных о наряде по идентификатору.
+      parameters:
+        - name: id
+          in: query
+          description: id нарда.
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Операция успешно завершена.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/reg_order'
+
+        '500':
+          description: Возникла ошибка.
+ 
+        '400':
+          description: Неверное id наряда.
+ 
+        '404':
+          description: Наряд не найден.
+ 
+    delete:
+      tags:
+        - reg_order
+      summary: Удаление наряда
+      parameters:
+        - name: id
+          in: query
+          description: ID задачи наряда, который необходимо удалить
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Наряд успешно удален.
+        '500':
+          description: Возникла ошибка.
+        '400':
+          description: Неверное id наряда.
+        '404':
+          description: Наряд не найден.
+          
+    post:
+      tags:
+        -  reg_order
+      summary: Наряд
+
+      responses:
+        '500':
+          description: Возникла ошибка.
+        default:
+          description: Операция успешно завершена
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/reg_order'
+        description: Создание наряда
+        required: true
+
+
+components:
+  schemas:
+    reg_order:
+      type: object
+      x-primary-key: [id]
+      properties:
+        id:
+          description: идентификатор наряда
+          type: integer
+        number:
+          description: номер наряда
+          type: string
+          maxLength: 100
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        state:
+          type: integer
+          format: int32
+        client:
+          type: string
+          maxLength: 255
+        car:
+          type: string
+          maxLength: 255
+        sum:
+          type: number
+          format: float
+        balance:
+          type: number
+          format: float
+        
+        
+        
+        
+        
