@@ -7,8 +7,6 @@ package io.swagger.api;
 
 import io.swagger.annotations.*;
 import io.swagger.model.RegOrder;
-import io.swagger.repository.RefUserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

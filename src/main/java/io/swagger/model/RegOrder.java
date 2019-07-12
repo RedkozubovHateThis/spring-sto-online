@@ -21,7 +21,6 @@ import java.util.Objects;
 public class RegOrder {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
   @JsonProperty("id")
   private Integer id;
 
