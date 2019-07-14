@@ -37,7 +37,7 @@ public class RefCarStateApiController implements RefCarStateApi {
         this.request = request;
     }
 
-    public ResponseEntity<List<RefCarState>> refCarStateGet(@ApiParam(value = "id для поиска.") @Valid @RequestParam(value = "id", required = false) Integer id) {
+    public ResponseEntity<List<RefCarState>> refCarStateGet(@ApiParam(value = "токен пользователя" ,required=true) @RequestHeader(value="x-request-token", required=true) String xRequestToken,@ApiParam(value = "id для поиска.") @Valid @RequestParam(value = "id", required = false) Integer id) {
         String accept = request.getHeader("Accept");
         return new ResponseEntity<List<RefCarState>>(HttpStatus.NOT_IMPLEMENTED);
     }

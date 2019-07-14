@@ -43,7 +43,7 @@ public class RefUserApiController implements RefUserApi {
         this.request = request;
     }
 
-    public ResponseEntity<Void> createUser(@ApiParam(value = "Создание пользователя" ,required=true )  @Valid @RequestBody RefUser body) {
+    public ResponseEntity<Void> createUser(@ApiParam(value = "токен пользователя" ,required=true) @RequestHeader(value="x-request-token", required=true) String xRequestToken,@ApiParam(value = "Создание пользователя" ,required=true )  @Valid @RequestBody RefUser body) {
         String accept = request.getHeader("Accept");
 
         refUserRepository.save(body);
@@ -60,7 +60,7 @@ public class RefUserApiController implements RefUserApi {
 
 
 
-    public ResponseEntity refUserGet(@ApiParam(value = "id пользователя.") @Valid @RequestParam(value = "id", required = false) Integer id) {
+    public ResponseEntity refUserGet(@ApiParam(value = "токен пользователя" ,required=true) @RequestHeader(value="x-request-token", required=true) String xRequestToken,@ApiParam(value = "id пользователя.") @Valid @RequestParam(value = "id", required = false) Integer id) {
         String accept = request.getHeader("Accept");
 
         RefUser refUser = refUserRepository.findOne(id);
@@ -69,18 +69,6 @@ public class RefUserApiController implements RefUserApi {
             return ResponseEntity.ok(refUser);
         else
             return ResponseEntity.status(404).build();
-
-    }
-
-    @Override
-    public ResponseEntity<List<RefUser>> refUsersGet() {
-
-        List<RefUser> users = refUserRepository.findAll();
-
-        if ( users.size() == 0 )
-            return new ResponseEntity<List<RefUser>>(HttpStatus.NOT_FOUND);
-
-        return ResponseEntity.ok(users);
 
     }
 

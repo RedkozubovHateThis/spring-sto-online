@@ -37,7 +37,7 @@ public class RefRoleApiController implements RefRoleApi {
         this.request = request;
     }
 
-    public ResponseEntity<List<RefRole>> refRoleGet(@ApiParam(value = "id для поиска.") @Valid @RequestParam(value = "id", required = false) Integer id) {
+    public ResponseEntity<List<RefRole>> refRoleGet(@ApiParam(value = "токен пользователя" ,required=true) @RequestHeader(value="x-request-token", required=true) String xRequestToken,@ApiParam(value = "id для поиска.") @Valid @RequestParam(value = "id", required = false) Integer id) {
         String accept = request.getHeader("Accept");
         return new ResponseEntity<List<RefRole>>(HttpStatus.NOT_IMPLEMENTED);
     }

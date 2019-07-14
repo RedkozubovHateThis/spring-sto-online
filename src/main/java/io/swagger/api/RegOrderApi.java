@@ -11,10 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.NativeWebRequest;
 
 import javax.validation.Valid;
@@ -39,7 +36,7 @@ public interface RegOrderApi {
         @ApiResponse(code = 404, message = "Наряд не найден.") })
     @RequestMapping(value = "/reg_order",
         method = RequestMethod.DELETE)
-    default ResponseEntity<Void> regOrderDelete(@ApiParam(value = "ID задачи наряда, который необходимо удалить") @Valid @RequestParam(value = "id", required = false) Integer id) {
+    default ResponseEntity<Void> regOrderDelete(@ApiParam(value = "токен пользователя" ,required=true) @RequestHeader(value="x-request-token", required=true) String xRequestToken, @ApiParam(value = "ID задачи наряда, который необходимо удалить") @Valid @RequestParam(value = "id", required = false) Integer id) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }
@@ -54,7 +51,7 @@ public interface RegOrderApi {
     @RequestMapping(value = "/reg_order",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    default ResponseEntity<List<RegOrder>> regOrderGet(@ApiParam(value = "id нарда.") @Valid @RequestParam(value = "id", required = false) Integer id) {
+    default ResponseEntity<List<RegOrder>> regOrderGet(@ApiParam(value = "токен пользователя" ,required=true) @RequestHeader(value="x-request-token", required=true) String xRequestToken,@ApiParam(value = "id нарда.") @Valid @RequestParam(value = "id", required = false) Integer id) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
@@ -75,7 +72,7 @@ public interface RegOrderApi {
     @RequestMapping(value = "/reg_order",
         consumes = { "application/json" },
         method = RequestMethod.POST)
-    default ResponseEntity<Void> regOrderPost(@ApiParam(value = "Создание наряда", required = true) @Valid @RequestBody RegOrder regOrder) {
+    default ResponseEntity<Void> regOrderPost(@ApiParam(value = "токен пользователя" ,required=true) @RequestHeader(value="x-request-token", required=true) String xRequestToken,@ApiParam(value = "Создание наряда", required = true) @Valid @RequestBody RegOrder regOrder) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }
@@ -87,7 +84,7 @@ public interface RegOrderApi {
             produces = { "application/json" },
             consumes = { "application/json" },
             method = RequestMethod.PUT)
-    default ResponseEntity<Void> regOrderPut(@ApiParam(value = "Обновление данных о наряде на посещение магазина" ,required=true )  @Valid @RequestBody RegOrder regOrder,@ApiParam(value = "ид наряда, информацию о котором необходимо обновить") @Valid @RequestParam(value = "id", required = false) Integer id) {
+    default ResponseEntity<Void> regOrderPut(@ApiParam(value = "токен пользователя" ,required=true) @RequestHeader(value="x-request-token", required=true) String xRequestToken,@ApiParam(value = "Обновление данных о наряде на посещение магазина" ,required=true )  @Valid @RequestBody RegOrder regOrder,@ApiParam(value = "ид наряда, информацию о котором необходимо обновить") @Valid @RequestParam(value = "id", required = false) Integer id) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }

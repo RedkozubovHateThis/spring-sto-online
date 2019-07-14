@@ -47,6 +47,10 @@ public class RefUser   {
   @JsonProperty("password")
   private String password = null;
 
+  @Column(name ="token")
+  @JsonProperty("token")
+  private String token = null;
+
   @Column(name ="email")
   @JsonProperty("email")
   private String email = null;

@@ -33,6 +33,6 @@ public interface RefRoleApi {
     @RequestMapping(value = "/ref_role",
         produces = { "application/json", "application/xml" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<RefRole>> refRoleGet(@ApiParam(value = "id для поиска.") @Valid @RequestParam(value = "id", required = false) Integer id);
+    ResponseEntity<List<RefRole>> refRoleGet(@ApiParam(value = "токен пользователя" ,required=true) @RequestHeader(value="x-request-token", required=true) String xRequestToken,@ApiParam(value = "id для поиска.") @Valid @RequestParam(value = "id", required = false) Integer id);
 
 }
