@@ -38,22 +38,109 @@ info:
     <p><em><span style="font-size: 12pt;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;type: object <br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;format: blob</span></em></p>
 
 
-  version: "1.0.2"
+  version: "1.0.3"
   title: Merch
   contact:
     email: maxden33@gmail.com
 
 tags:
-  - name: reg_order
-    description: Регистр нарядов
+  - name: ref_role
+    description: Справочник ролей пользователей
+  - name: ref_user
+    description: Справочник пользователей
+  - name: ref_car
+    description: Справочник автомобилей
+  - name: doc_order
+    description: Документ, в котором хранятся наряды
 
 paths:
+  /sign-in/auth:
+    get:
+      tags:
+        - sign-in
+
+      summary: авторизация по паролю
+      description: Находит пользователя по связке логин-пароль, если пользователь найден, то находит для него токен, если токена нет то создает его. В конечном итоге возвращает пользователя с активным токеном или ошибку 400
+      operationId: authenticate
+      parameters:
+        - name: x-request-token
+          in: header
+          description: токен пользователя, может передаваться любое значение.
+          schema:
+            type: string
+          required: true
+        - name: x-login
+          in: header
+          description: login пользователя.
+          schema:
+            type: string
+            maxLength: 50
+          required: true
+        - name: x-password
+          in: header
+          description: пароль пользователя.
+          schema:
+            type: string
+            maxLength: 50
+          required: true
+      responses:
+        '200':
+          description: Доступ разрешен.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/reg_user_token'
+                example:
+                  - id: 1
+                    user_id: 1
+                    device_id: "1234"
+                    token_type_id: 1
+                    token: "test_token"
+                    expire_at: 1
+                    created_at: "2019-06-14T06:29:49.987Z"
+                    updated_at: "2019-06-14T06:29:49.987Z"
+                    logged_at: "2019-06-14T06:29:49.987Z"
+
+
+        '400':
+          description: Доступ запрещен.
+
+  /sign-in/check:
+    get:
+      tags:
+        - sign-in
+      summary: проверка токена
+      description: Находит токен и проверяет его, если токен найден и не просречен, то возвращает 200, иначе 400
+      operationId: checkToken
+      parameters:
+        - name: x-request-token
+          in: header
+          description: токен пользователя, который необходимо проверить
+          schema:
+            type: string
+          required: true
+
+      responses:
+
+        '200':
+          description: Доступ разрешен.
+        '400':
+          description: Доступ запрещен.
+
   /reg_order:
     get:
       tags:
         - reg_order
       summary: Получение данных о наряде по идентификатору.
       parameters:
+        - name: x-request-token
+          in: header
+          description: токен пользователя
+          required: true
+          schema:
+            type: string
         - name: id
           in: query
           description: id нарда.
@@ -78,11 +165,18 @@ paths:
 
         '404':
           description: Наряд не найден.
+
     delete:
       tags:
         - reg_order
       summary: Удаление наряда
       parameters:
+        - name: x-request-token
+          in: header
+          description: токен пользователя
+          required: true
+          schema:
+            type: string
         - name: id
           in: query
           description: ID задачи наряда, который необходимо удалить
@@ -102,6 +196,13 @@ paths:
       tags:
         -  reg_order
       summary: Наряд
+      parameters:
+        - name: x-request-token
+          in: header
+          description: токен пользователя
+          required: true
+          schema:
+            type: string
 
       responses:
         '500':
@@ -115,38 +216,245 @@ paths:
               $ref: '#/components/schemas/reg_order'
         description: Создание наряда
         required: true
-    put:
+  /ref_car_state:
+    get:
       tags:
-        - reg_order
-      summary: Обновление информации о наряде
+        - ref_car_state
+      summary: Получение данных о состоянии автомобиля
       parameters:
+        - name: x-request-token
+          in: header
+          description: токен пользователя
+          required: true
+          schema:
+            type: string
         - name: id
           in: query
-          description: ид наряда, информацию о котором необходимо обновить
+          description: id для поиска.
           schema:
             type: integer
       responses:
-        '400':
-          description: Неверное id наряда
+        '200':
+          description: Операция успешно завершена.
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/reg_order'
+                  $ref: '#/components/schemas/ref_car_state'
+                example:
+                  - id: 1
+                    title: "Слесарь"
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ref_car_state'
+        '400':
+          description: Неверное id состояни автомобиля.
+  /ref_role:
+    get:
+      tags:
+        - ref_role
+      summary: Получение данных о роли по идентификатору
+      parameters:
+        - name: x-request-token
+          in: header
+          description: токен пользователя
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: query
+          description: id для поиска.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Операция успешно завершена.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ref_role'
+                example:
+                  - id: 1
+                    title: "Слесарь"
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ref_role'
+        '400':
+          description: Неверное id роли.
+  /ref_user:
+    get:
+      tags:
+        - ref_user
+      summary: Получение данных о пользователя по идентификатору.
+      parameters:
+        - name: x-request-token
+          in: header
+          description: токен пользователя
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: query
+          description: id пользователя.
+          schema:
+            type: integer
+            example: 1
 
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/reg_order'
-        description: Обновление данных о наряде на посещение магазина
-        required: true
+      responses:
+
+        '200':
+          description: Операция успешно завершена.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ref_user'
+
+        '400':
+          description: Неверное имя пользователя.
+
+        '404':
+          description: Пользователь не найден.
 
 
 
 components:
   schemas:
+    ref_user:
+      type: object
+      x-primary-key: [id]
+      properties:
+        id:
+          description: идентификатор пользователя
+          type: integer
+        first_name:
+          type: string
+          maxLength: 64
+        middle_name:
+          type: string
+          maxLength: 64
+        last_name:
+          type: string
+          maxLength: 64
+        username:
+          type: string
+          maxLength: 32
+        password:
+          type: string
+          maxLength: 255
+        token:
+          type: string
+          maxLength: 30
+        email:
+          type: string
+          maxLength: 255
+        created_at:
+          x-default-value: current_timestamp
+          type: string
+          format: date-time
+        updated_at:
+          x-default-value: timestamp
+          type: string
+          format: date-time
+
+    ref_token_type:
+      type: object
+      x-primary-key: [id]
+      properties:
+        id:
+          type: integer
+        code:
+          type: string
+          maxLength: 50
+        title:
+          type: string
+          maxLength: 100
+        duration:
+          type: integer
+          format: int32
+        time_unit:
+          type: integer
+          format: int32
+        status:
+          type: integer
+        ordering:
+          type: integer
+        created_at:
+          x-default-value: current_timestamp
+          type: string
+          format: date-time
+        updated_at:
+          x-default-value: timestamp
+          type: string
+          format: date-time
+
+    reg_user_token:
+      type: object
+      x-primary-key: [id]
+      x-foreign-key: ref_user:[id]->[user_id]   on update cascade on delete cascade,ref_token_type :[id]->[token_type_id]   on update cascade on delete cascade
+      x-unique-index:  [user_id;token_type_id]
+      properties:
+        id:
+          type: integer
+        user_id:
+          description: идентификатор пользователя
+          type: integer
+        token_type_id:
+          type: integer
+        token:
+          type: string
+          maxLength: 64
+        expire_at:
+          type: integer
+        created_at:
+          x-default-value: current_timestamp
+          type: string
+          format: date-time
+        updated_at:
+          x-default-value: timestamp
+          type: string
+          format: date-time
+
+    ref_car:
+      type: object
+      x-primary-key: [id]
+      properties:
+        id:
+          description: идентификатор роли
+          type: integer
+        title:
+          description: описание авто
+          type: string
+          maxLength: 100
+
+    ref_role:
+      type: object
+      x-primary-key: [id]
+      properties:
+        id:
+          description: идентификатор роли
+          type: integer
+        title:
+          description: описание роли
+          type: string
+          maxLength: 100
+
+    ref_car_state:
+      type: object
+      x-primary-key: [id]
+      properties:
+        id:
+          description: идентификатор состояния
+          type: integer
+        title:
+          description: описание состояния
+          type: string
+          maxLength: 100
+
     reg_order:
       type: object
       x-primary-key: [id]
@@ -179,8 +487,3 @@ components:
         balance:
           type: number
           format: float
-        
-        
-        
-        
-        
