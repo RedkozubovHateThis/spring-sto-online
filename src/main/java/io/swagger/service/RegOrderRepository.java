@@ -1,6 +1,5 @@
-package io.swagger.repository;
+package io.swagger.service;
 
-import io.swagger.model.RefUser;
 import io.swagger.model.RegOrder;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;

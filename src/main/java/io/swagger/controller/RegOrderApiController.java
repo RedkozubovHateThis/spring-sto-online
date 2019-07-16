@@ -1,19 +1,16 @@
-package io.swagger.api;
+package io.swagger.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiParam;
 import io.swagger.model.RegOrder;
-import io.swagger.repository.RegOrderRepository;
+import io.swagger.service.RegOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.NativeWebRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.Optional;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-07-04T12:34:26.681Z[GMT]")
 @CrossOrigin(origins = "http://localhost:4200")
@@ -28,14 +25,14 @@ public class RegOrderApiController implements RegOrderApi {
 
     private final ObjectMapper objectMapper;
 
-    @org.springframework.beans.factory.annotation.Autowired
+    @Autowired
     public RegOrderApiController(ObjectMapper objectMapper, HttpServletRequest request) {
         this.objectMapper = objectMapper;
         this.request = request;
     }
 
     @Override
-    public ResponseEntity<Void> regOrderPost(@ApiParam(value = "токен пользователя" ,required=true) @RequestHeader(value="x-request-token", required=true) String xRequestToken,@ApiParam(value = "Создание наряда", required = true) @Valid @RequestBody RegOrder body) {
+    public ResponseEntity<Void> regOrderPost(@ApiParam(value = "Создание наряда", required = true) @Valid @RequestBody RegOrder body) {
         String accept = request.getHeader("Accept");
 
         regOrderRepository.save(body);
@@ -44,7 +41,7 @@ public class RegOrderApiController implements RegOrderApi {
     }
 
     @Override
-    public ResponseEntity regOrderGet(@ApiParam(value = "токен пользователя" ,required=true) @RequestHeader(value="x-request-token", required=true) String xRequestToken,@ApiParam(value = "id наряда.") @Valid @RequestParam(value = "id", required = false) Integer id) {
+    public ResponseEntity regOrderGet(@ApiParam(value = "id наряда.") @Valid @RequestParam(value = "id", required = false) Integer id) {
         String accept = request.getHeader("Accept");
 
         RegOrder regOrder = regOrderRepository.findOne(id);
@@ -57,7 +54,7 @@ public class RegOrderApiController implements RegOrderApi {
     }
 
     @Override
-    public ResponseEntity regOrderDelete(@ApiParam(value = "токен пользователя" ,required=true) @RequestHeader(value="x-request-token", required=true) String xRequestToken,@ApiParam(value = "id наряда.") @Valid @RequestParam(value = "id", required = false) Integer id) {
+    public ResponseEntity regOrderDelete(@ApiParam(value = "id наряда.") @Valid @RequestParam(value = "id", required = false) Integer id) {
         String accept = request.getHeader("Accept");
 
         regOrderRepository.delete(id);
@@ -67,7 +64,7 @@ public class RegOrderApiController implements RegOrderApi {
     }
 
     @Override
-    public ResponseEntity<Void> regOrderPut(@ApiParam(value = "токен пользователя" ,required=true) @RequestHeader(value="x-request-token", required=true) String xRequestToken,@ApiParam(value = "Обновление данных о наряде на посещение магазина", required = true) @Valid @RequestBody RegOrder regOrder, @ApiParam(value = "ид наряда, информацию о котором необходимо обновить") @Valid @RequestParam(value = "id", required = false) Integer id) {
+    public ResponseEntity<Void> regOrderPut(@ApiParam(value = "Обновление данных о наряде на посещение магазина", required = true) @Valid @RequestBody RegOrder regOrder, @ApiParam(value = "ид наряда, информацию о котором необходимо обновить") @Valid @RequestParam(value = "id", required = false) Integer id) {
         String accept = request.getHeader("Accept");
 
         regOrderRepository.save(regOrder);

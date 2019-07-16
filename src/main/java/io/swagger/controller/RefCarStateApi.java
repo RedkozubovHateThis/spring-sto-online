@@ -3,7 +3,7 @@
  * https://github.com/swagger-api/swagger-codegen
  * Do not edit the class manually.
  */
-package io.swagger.api;
+package io.swagger.controller;
 
 import io.swagger.model.RefCarState;
 import io.swagger.annotations.*;
@@ -33,6 +33,6 @@ public interface RefCarStateApi {
     @RequestMapping(value = "/ref_car_state",
         produces = { "application/json", "application/xml" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<RefCarState>> refCarStateGet(@ApiParam(value = "токен пользователя" ,required=true) @RequestHeader(value="x-request-token", required=true) String xRequestToken,@ApiParam(value = "id для поиска.") @Valid @RequestParam(value = "id", required = false) Integer id);
+    ResponseEntity<List<RefCarState>> refCarStateGet( @ApiParam(value = "id для поиска.") @Valid @RequestParam(value = "id", required = false) Integer id);
 
 }

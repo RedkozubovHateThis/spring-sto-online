@@ -1,4 +1,4 @@
-package io.swagger.api;
+package io.swagger.controller;
 
 import org.springframework.web.context.request.NativeWebRequest;
 
