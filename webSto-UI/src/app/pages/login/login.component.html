@@ -3,8 +3,8 @@
     <div class="header-body text-center mb-7">
       <div class="row justify-content-center">
         <div class="col-lg-5 col-md-6">
-          <h1 class="text-white">Welcome!</h1>
-          <p class="text-lead text-light">Use these awesome forms to login or create new account in your project for free.</p>
+          <h1 class="text-white">Добро пожаловать!</h1>
+          <p class="text-lead text-light">Текст про систему и т.д</p>
         </div>
       </div>
     </div>
@@ -20,30 +20,23 @@
   <div class="row justify-content-center">
     <div class="col-lg-5 col-md-7">
       <div class="card bg-secondary shadow border-0">
-        <div class="card-header bg-transparent pb-5">
-          <div class="text-muted text-center mt-2 mb-3"><small>Sign in with</small></div>
-          <div class="btn-wrapper text-center">
-            <a href="javascript:void(0)" class="btn btn-neutral btn-icon">
-              <span class="btn-inner--icon"><img src="../assets/img/icons/common/github.svg"></span>
-              <span class="btn-inner--text">Github</span>
-            </a>
-            <a href="javascript:void(0)" class="btn btn-neutral btn-icon">
-              <span class="btn-inner--icon"><img src="../assets/img/icons/common/google.svg"></span>
-              <span class="btn-inner--text">Google</span>
-            </a>
-          </div>
-        </div>
+
         <div class="card-body px-lg-5 py-lg-5">
           <div class="text-center text-muted mb-4">
-            <small>Or sign in with credentials</small>
+            <small>Текс про вход и т.д</small>
           </div>
-          <form role="form">
+          <div [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+<!--          <form role="form">-->
+
             <div class="form-group mb-3">
               <div class="input-group input-group-alternative">
                 <div class="input-group-prepend">
                   <span class="input-group-text"><i class="ni ni-email-83"></i></span>
                 </div>
-                <input class="form-control" placeholder="Email" type="email">
+<!--                <input class="form-control" placeholder="Username" type="username">-->
+                <input class="form-control" formControlName="username" placeholder="Username" id="username" autocomplete="off" type="text">
+
+                <div class="error" *ngIf="loginForm.controls['username'].hasError('required') && loginForm.controls['username'].touched">Username is required</div>
               </div>
             </div>
             <div class="form-group">
@@ -51,27 +44,36 @@
                 <div class="input-group-prepend">
                   <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
                 </div>
-                <input class="form-control" placeholder="Password" type="password">
+<!--                <input class="form-control" placeholder="Пароль" type="password">-->
+                <input type="password" class="form-control" formControlName="password" placeholder="Пароль" id="pwd" autocomplete="off">
+                <div class="error" *ngIf="loginForm.controls['password'].hasError('required') && loginForm.controls['password'].touched">Password is required</div>
               </div>
             </div>
             <div class="custom-control custom-control-alternative custom-checkbox">
               <input class="custom-control-input" id=" customCheckLogin" type="checkbox">
               <label class="custom-control-label" for=" customCheckLogin">
-                <span class="text-muted">Remember me</span>
+                <span class="text-muted">Запомнить меня</span>
               </label>
             </div>
             <div class="text-center">
-              <button type="button" class="btn btn-primary my-4">Sign in</button>
+              <button class="btn btn-success" [disabled]="loginForm.invalid" (click)="onSubmit()">Войти</button>
+              <div *ngIf="invalidLogin" class="error">
+                <div>Invalid credentials.</div>
+              </div>
+              <button type="button" class="btn btn-primary my-4"  routerLinkActive="active" [routerLink]="['/register']">
+                <span class="nav-link-inner--text">Register</span>
+              </button>
             </div>
-          </form>
+<!--          </form>-->
+          </div>
         </div>
       </div>
       <div class="row mt-3">
         <div class="col-6">
-          <a href="javascript:void(0)" class="text-light"><small>Forgot password?</small></a>
+          <a href="javascript:void(0)" class="text-light"><small>Забыли пароль?</small></a>
         </div>
         <div class="col-6 text-right">
-          <a href="javascript:void(0)" class="text-light"><small>Create new account</small></a>
+          <a href="javascript:void(0)" class="text-light"><small>Создать новый аккаунт</small></a>
         </div>
       </div>
     </div>

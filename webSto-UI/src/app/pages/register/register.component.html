@@ -39,12 +39,21 @@
             <small>Or sign up with credentials</small>
           </div>
           <form role="form">
+
             <div class="form-group">
               <div class="input-group input-group-alternative mb-3">
                 <div class="input-group-prepend">
                   <span class="input-group-text"><i class="ni ni-hat-3"></i></span>
                 </div>
-                <input class="form-control" placeholder="Name" type="text">
+                <input type="number" formControlName="age" placeholder="age" name="age" class="form-control" id="age">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="input-group input-group-alternative mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="ni ni-hat-3"></i></span>
+                </div>
+                <<input type="number" formControlName="salary" placeholder="salary" name="salary" class="form-control" id="salary">
               </div>
             </div>
             <div class="form-group">
@@ -52,7 +61,7 @@
                 <div class="input-group-prepend">
                   <span class="input-group-text"><i class="ni ni-email-83"></i></span>
                 </div>
-                <input class="form-control" placeholder="Email" type="email">
+                <input type="text" formControlName="username" placeholder="username" name="username" class="form-control" >
               </div>
             </div>
             <div class="form-group">
@@ -60,7 +69,7 @@
                 <div class="input-group-prepend">
                   <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
                 </div>
-                <input class="form-control" placeholder="Password" type="password">
+                <input type="password" formControlName="password" placeholder="password" name="password" class="form-control" id="password">
               </div>
             </div>
             <div class="text-muted font-italic"><small>password strength: <span class="text-success font-weight-700">strong</span></small></div>
@@ -75,7 +84,7 @@
               </div>
             </div>
             <div class="text-center">
-              <button type="button" class="btn btn-primary mt-4">Create account</button>
+              <button type="button" class="btn btn-primary mt-4" (click)="addForm">Зарегистрироваться</button>
             </div>
           </form>
         </div>

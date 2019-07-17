@@ -5,11 +5,16 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
+import {LoginComponent} from "./pages/login/login.component";
+import {RegisterComponent} from "./pages/register/register.component";
 
 const routes: Routes =[
+  //{ path: 'login', component: LoginComponent },
+  //{ path: 'register', component: RegisterComponent },
+  // { path : '', component : LoginComponent},
   {
     path: '',
-    redirectTo: 'dashboard',
+    redirectTo: 'login',
     pathMatch: 'full',
   }, {
     path: '',
@@ -47,3 +52,4 @@ const routes: Routes =[
   ],
 })
 export class AppRoutingModule { }
+export const router = RouterModule.forRoot(routes);
