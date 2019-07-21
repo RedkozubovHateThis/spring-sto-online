@@ -11,8 +11,12 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT DISTINCT user FROM User user " +
-            "INNER JOIN FETCH user.roles AS role " +
-            "INNER JOIN FETCH role.permissions AS permission " +
+            "LEFT JOIN FETCH user.roles AS role " +
+            "LEFT JOIN FETCH role.permissions AS permission " +
             "WHERE user.username = :username")
     User findByUsername(@Param("username") String username);
+
+    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT u.id FROM user_ AS u " +
+            "WHERE u.user_name = :username )")
+    Boolean isUserExists(@Param("username") String username);
 }

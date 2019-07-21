@@ -18,13 +18,13 @@ export class RegisterComponent implements OnInit {
   ngOnInit() {
     this.addForm = this.formBuilder.group({
       id: [],
-      Email: ['', Validators.required],
+      // Email: ['', Validators.required],
       username: ['', Validators.required],
       password: ['', Validators.required],
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      age: ['', Validators.required],
-      salary: ['', Validators.required]
+      // firstName: ['', Validators.required],
+      // lastName: ['', Validators.required],
+      // age: ['', Validators.required],
+      // salary: ['', Validators.required]
     });
 
   }
@@ -32,7 +32,7 @@ export class RegisterComponent implements OnInit {
   onSubmit() {
     this.apiService.createUser(this.addForm.value)
       .subscribe( data => {
-        this.router.navigate(['list-user']);
+        this.router.navigate(['login']);
       });
   }
 

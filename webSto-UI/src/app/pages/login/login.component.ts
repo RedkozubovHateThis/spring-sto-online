@@ -17,9 +17,10 @@ export class LoginComponent implements OnInit {
 
   onSubmit() {
     this.invalidLogin = false;
-    // if (this.loginForm.invalid) {
-    //   return;
-    // }
+
+    if (this.loginForm.invalid) {
+      return;
+    }
     const body = new HttpParams()
       .set('username', this.loginForm.controls.username.value)
       .set('password', this.loginForm.controls.password.value)
@@ -28,7 +29,8 @@ export class LoginComponent implements OnInit {
     this.apiService.login(body.toString()).subscribe(data => {
       window.sessionStorage.setItem('token', JSON.stringify(data));
       console.log(window.sessionStorage.getItem('token'));
-      this.router.navigate(['list-user']);
+
+      this.apiService.getCurrentUser();
     }, error => {
       this.invalidLogin = true;
       alert(error.error.error_description)
