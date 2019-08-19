@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {User} from "../model/user.model";
+import {User} from "../model/user";
 import {Router} from "@angular/router";
 
 @Injectable()
@@ -9,7 +9,7 @@ export class ApiService {
 
   constructor(private http: HttpClient, private router: Router) { }
   baseUrl: string = 'http://localhost:8181/';
-  private currentUser: User;
+  currentUser: User;
   isAuthenticated: boolean = false;
 
   login(loginPayload) {
@@ -24,6 +24,7 @@ export class ApiService {
     this.router.navigate(['login']);
     this.isAuthenticated = false;
     this.currentUser = null;
+    localStorage.setItem( 'currentUser', null );
   }
 
   getUsername() {
@@ -34,9 +35,6 @@ export class ApiService {
   }
 
   getHeaders() {
-
-    let token;
-
     return {
       'Authorization': 'Bearer ' + JSON.parse(window.sessionStorage.getItem("token")).access_token
     };
@@ -45,16 +43,32 @@ export class ApiService {
   getCurrentUser() {
 
     const headers = this.getHeaders();
-    console.log(headers);
 
     this.http.get( this.baseUrl + 'secured/users/currentUser', {headers} ).subscribe( data => {
 
       this.currentUser = data as User;
       this.isAuthenticated = true;
+      localStorage.setItem( 'currentUser', JSON.stringify(this.currentUser) );
 
       this.router.navigate(['dashboard']);
 
     } );
+
+  }
+
+  getUserFromStorage() {
+
+    if ( this.currentUser == null ) {
+
+      let storageUser:string = localStorage.getItem("currentUser");
+
+      if ( storageUser != null ) {
+        this.currentUser = JSON.parse( storageUser ) as User;
+        this.isAuthenticated = true;
+      }
+
+    }
+
   }
 
   getUsers() {

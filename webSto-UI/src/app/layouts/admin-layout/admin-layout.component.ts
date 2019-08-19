@@ -19,7 +19,10 @@ export class AdminLayoutComponent implements OnInit {
           !location.hash.includes( 'login' ) &&
           !location.hash.includes( 'register' ) ) {
 
-          router.navigate(['login']);
+          apiService.getUserFromStorage();
+
+          if ( !apiService.isAuthenticated )
+            router.navigate(['login']);
 
         }
       }

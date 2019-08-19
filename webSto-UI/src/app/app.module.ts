@@ -16,6 +16,7 @@ import {ApiService} from "./api/api.service";
 import {BrowserModule} from "@angular/platform-browser";
 import {LoginComponent} from "./pages/login/login.component";
 import {RegisterComponent} from "./pages/register/register.component";
+import {FirebirdResponseService} from "./api/firebirdResponse.service";
 
 
 @NgModule({
@@ -40,7 +41,7 @@ import {RegisterComponent} from "./pages/register/register.component";
     //LoginComponent,
    // RegisterComponent
   ],
-  providers: [ApiService],
+  providers: [ApiService, FirebirdResponseService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

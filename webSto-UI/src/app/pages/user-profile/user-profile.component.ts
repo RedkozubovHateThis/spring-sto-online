@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {ApiService} from "../../api/api.service";
 
 @Component({
   selector: 'app-user-profile',
@@ -7,7 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UserProfileComponent implements OnInit {
 
-  constructor() { }
+  private apiService:ApiService;
+
+  constructor(apiService:ApiService) {
+    this.apiService = apiService;
+  }
 
   ngOnInit() {
   }

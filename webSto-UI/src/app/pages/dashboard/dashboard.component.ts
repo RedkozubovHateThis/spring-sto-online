@@ -8,6 +8,8 @@ import {
   chartExample1,
   chartExample2
 } from "../../variables/charts";
+import {FirebirdResponse} from "../../model/firebirdResponse";
+import {FirebirdResponseService} from "../../api/firebirdResponse.service";
 
 @Component({
   selector: 'app-dashboard',
@@ -16,15 +18,22 @@ import {
 })
 export class DashboardComponent implements OnInit {
 
+  public last5:FirebirdResponse[];
+  firebirdResponseService:FirebirdResponseService;
+  isLoading:boolean = false;
+
   public datasets: any;
   public data: any;
   public salesChart;
   public clicked: boolean = true;
   public clicked1: boolean = false;
 
-  constructor() { }
+  constructor(firebirdResponseService:FirebirdResponseService) {
+    this.firebirdResponseService = firebirdResponseService;
+  }
 
   ngOnInit() {
+    this.requestData();
 
     // this.datasets = [
     //   [0, 20, 10, 30, 15, 40, 20, 60, 60],
@@ -53,9 +62,15 @@ export class DashboardComponent implements OnInit {
 		// });
   }
 
-
-
-
+  private requestData() {
+    this.isLoading = true;
+    this.firebirdResponseService.getLast5().subscribe( data => {
+      this.last5 = data as FirebirdResponse[];
+      this.isLoading = false;
+    }, error => {
+      this.isLoading = false;
+    } );
+  }
 
   public updateOptions() {
     // this.salesChart.data.datasets[0].data = this.data;
