@@ -18,6 +18,9 @@ import {LoginComponent} from "./pages/login/login.component";
 import {RegisterComponent} from "./pages/register/register.component";
 import {FirebirdResponseService} from "./api/firebirdResponse.service";
 
+import { registerLocaleData } from '@angular/common';
+import localeRu from '@angular/common/locales/ru';
+registerLocaleData(localeRu, 'ru');
 
 @NgModule({
   imports: [

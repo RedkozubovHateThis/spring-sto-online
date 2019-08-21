@@ -1,0 +1,241 @@
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+  <div class="container-fluid">
+    <div class="header-body">
+      <!-- Card stats -->
+      <div class="row">
+        <div class="col-xl-3 col-lg-6">
+          <div class="card card-stats mb-4 mb-xl-0">
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <h5 class="card-title text-uppercase text-muted mb-0">Traffic</h5>
+                  <span class="h2 font-weight-bold mb-0">350,897</span>
+                </div>
+                <div class="col-auto">
+                  <div class="icon icon-shape bg-danger text-white rounded-circle shadow">
+                    <i class="fas fa-chart-bar"></i>
+                  </div>
+                </div>
+              </div>
+              <p class="mt-3 mb-0 text-muted text-sm">
+                <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>
+                <span class="text-nowrap">Since last month</span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6">
+          <div class="card card-stats mb-4 mb-xl-0">
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <h5 class="card-title text-uppercase text-muted mb-0">New users</h5>
+                  <span class="h2 font-weight-bold mb-0">2,356</span>
+                </div>
+                <div class="col-auto">
+                  <div class="icon icon-shape bg-warning text-white rounded-circle shadow">
+                    <i class="fas fa-chart-pie"></i>
+                  </div>
+                </div>
+              </div>
+              <p class="mt-3 mb-0 text-muted text-sm">
+                <span class="text-danger mr-2"><i class="fas fa-arrow-down"></i> 3.48%</span>
+                <span class="text-nowrap">Since last week</span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6">
+          <div class="card card-stats mb-4 mb-xl-0">
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <h5 class="card-title text-uppercase text-muted mb-0">Sales</h5>
+                  <span class="h2 font-weight-bold mb-0">924</span>
+                </div>
+                <div class="col-auto">
+                  <div class="icon icon-shape bg-yellow text-white rounded-circle shadow">
+                    <i class="fas fa-users"></i>
+                  </div>
+                </div>
+              </div>
+              <p class="mt-3 mb-0 text-muted text-sm">
+                <span class="text-warning mr-2"><i class="fas fa-arrow-down"></i> 1.10%</span>
+                <span class="text-nowrap">Since yesterday</span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-6">
+          <div class="card card-stats mb-4 mb-xl-0">
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <h5 class="card-title text-uppercase text-muted mb-0">Баланс</h5>
+                  <span class="h2 font-weight-bold mb-0">125 434 Р</span>
+                </div>
+                <div class="col-auto">
+                  <div class="icon icon-shape bg-info text-white rounded-circle shadow">
+                    <i class="fas fa-percent"></i>
+                  </div>
+                </div>
+              </div>
+              <p class="mt-3 mb-0 text-muted text-sm">
+                <span class="text-success mr-2"></span>
+                <span class="text-nowrap"></span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid mt--7">
+  <div class="row">
+    <div class="col">
+      <div class="card shadow">
+        <div class="card-body">
+
+          <div class="row form-group">
+            <div class="col-sm-4">
+
+              <div class="row">
+                <div class="col-lg-12">
+                  <h2>{{response.documentNumber}} {{response.state}}</h2>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-12">
+
+                  <table>
+                    <tbody>
+                    <tr>
+                      <td class="font-weight-bold">Дата начала:&nbsp;</td>
+                      <td>{{response.startDate}}</td>
+                    </tr>
+                    <tr>
+                      <td class="font-weight-bold">Дата окончания:&nbsp;</td>
+                      <td>{{response.endDate}}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+
+                </div>
+              </div>
+
+            </div>
+            <div class="col-sm-6">
+
+              <div class="row">
+                <div class="col-lg-12">
+
+                  <h2>{{response.vehicle.name}}</h2>
+
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-lg-12">
+
+                  <span class="font-weight-bold">Гос. номер:</span> {{response.vehicle.regNumber}}
+
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-lg-12">
+
+                  <span class="font-weight-bold">VIN:</span> {{response.vehicle.vinNumber}}
+
+                </div>
+              </div>
+
+            </div>
+            <div class="col-sm-2">
+              <div class="row">
+
+                <div class="col-lg-12" style="text-align: right;">
+                  <h2>{{response.sum | number:'.2':'ru'}} р.</h2>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row form-group">
+            <div class="col-lg-12">
+
+              <table>
+                <tbody>
+                <tr>
+                  <td class="font-weight-bold">
+                    Предприятие:&nbsp;
+                  </td>
+                  <td>{{response.organization}}</td>
+                </tr>
+                <tr>
+                  <td class="font-weight-bold">
+                    Клиент:&nbsp;
+                  </td>
+                  <td>{{response.client}}</td>
+                </tr>
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+
+          <div class="row form-group">
+            <div class="col-lg-12">
+
+              <span class="font-weight-bold">Причина обращения:</span> {{response.reason}}
+
+            </div>
+          </div>
+
+          <div class="row form-group">
+            <div class="col-sm-6">
+
+              <h2>Работы</h2>
+
+            </div>
+            <div class="col-sm-6" style="text-align: right;">
+
+              <span>Сумма работ:&nbsp;</span><h2 style="display: inline-block;">{{response.serviceWork.workSum | number:'.2':'ru'}} р.</h2>
+
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-flush table-hover">
+              <thead class="thead-light">
+              <tr>
+                <th scope="col">Наименование работ</th>
+                <th scope="col" style="text-align: right;">
+                  Стоимость работ
+                  <div class="text-muted">
+                    Кратность
+                  </div>
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let work of response.serviceWork.workList">
+                <th>{{work.name}}</th>
+                <th style="text-align: right;">
+                  <div>{{work.price | number:'.2':'ru'}} р.</div>
+                  <div class="text-muted">{{work.quantity}}</div>
+                </th>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

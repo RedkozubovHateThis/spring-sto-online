@@ -7,9 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +28,18 @@ public class DocumentDetailServiceController {
                 .map(FirebirdResponse::new).collect( Collectors.toList() );
 
         return ResponseEntity.ok( responseList );
+
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity findOne(@PathVariable("id") Integer id) {
+
+        DocumentServiceDetail result = documentsRepository.findOne(id);
+
+        if ( result == null )
+            return ResponseEntity.status(404).build();
+
+        return ResponseEntity.ok( new FirebirdResponse( result ) );
 
     }
 

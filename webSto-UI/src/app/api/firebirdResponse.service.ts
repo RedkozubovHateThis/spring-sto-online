@@ -24,6 +24,12 @@ export class FirebirdResponseService {
     return this.getFirebirdResponse(1000);
   }
 
+  getOne(id) {
+    const headers = this.getHeaders();
+
+    return this.http.get( this.baseUrl + 'secured/documents/' + id, {headers} );
+  }
+
   getFirebirdResponse(size:number) {
 
     const headers = this.getHeaders();

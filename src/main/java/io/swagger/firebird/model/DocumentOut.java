@@ -30,8 +30,11 @@ public class DocumentOut {
     private Integer documentIn;
     @Column(name = "SOURCE_DOCUMENT_OUT_ID")
     private Integer sourceDocumentOut;
-    @Column(name = "ORGANIZATION_ID")
-    private Integer organization;
+
+    @JoinColumn(name = "ORGANIZATION_ID")
+    @ManyToOne
+    private Organization organization;
+
     @Column(name = "ORGANIZATION_CONTACT_ID")
     private Integer organizationContact;
     @Column(name = "ORGANIZATION_REQUISITE_ID")
@@ -89,5 +92,9 @@ public class DocumentOut {
     @OneToMany(mappedBy = "documentOut", fetch = FetchType.EAGER)
     @OrderBy("positionNumber")
     private Set<GoodsOutClient> goodsOutClients = new HashSet<>();
+
+    @OneToMany(mappedBy = "documentOut", fetch = FetchType.EAGER)
+    @OrderBy("positionNumber")
+    private Set<GoodsOut> goodsOuts = new HashSet<>();
 
 }
