@@ -10,6 +10,7 @@ import {
 } from "../../variables/charts";
 import {FirebirdResponse} from "../../model/firebirdResponse";
 import {FirebirdResponseService} from "../../api/firebirdResponse.service";
+import {Pageable} from "../../model/Pageable";
 
 @Component({
   selector: 'app-dashboard',
@@ -18,7 +19,7 @@ import {FirebirdResponseService} from "../../api/firebirdResponse.service";
 })
 export class DashboardComponent implements OnInit {
 
-  public last5:FirebirdResponse[];
+  public last5:Pageable<FirebirdResponse>;
   firebirdResponseService:FirebirdResponseService;
   isLoading:boolean = false;
 
@@ -65,7 +66,7 @@ export class DashboardComponent implements OnInit {
   private requestData() {
     this.isLoading = true;
     this.firebirdResponseService.getLast5().subscribe( data => {
-      this.last5 = data as FirebirdResponse[];
+      this.last5 = data as Pageable<FirebirdResponse>;
       this.isLoading = false;
     }, error => {
       this.isLoading = false;

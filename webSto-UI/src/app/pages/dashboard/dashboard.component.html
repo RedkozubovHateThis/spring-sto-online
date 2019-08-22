@@ -174,8 +174,13 @@
                 <th scope="col">Сумма, руб.</th>
               </tr>
             </thead>
-            <tbody>
-              <tr *ngFor="let fbResponse of last5, let i = index" [attr.data-index]="i" style="cursor: pointer;" [routerLink]="['/documents', fbResponse.id]">
+            <ng-template #loading>
+              <tr>
+                <th colspan="7" class="text-muted" style="text-align: center;"><i class="fas fa-spin fa-spinner"></i> Получение заказ-нарядов...</th>
+              </tr>
+            </ng-template>
+            <tbody *ngIf="!isLoading; else loading">
+              <tr *ngFor="let fbResponse of last5.content, let i = index" [attr.data-index]="i" style="cursor: pointer;" [routerLink]="['/documents', fbResponse.id]">
                 <th scope="row">{{i + 1}}</th>
                 <th>{{fbResponse.startDate}}</th>
                 <th>{{fbResponse.endDate}}</th>

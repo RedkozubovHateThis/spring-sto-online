@@ -17,11 +17,11 @@ export class FirebirdResponseService {
   }
 
   getLast5() {
-    return this.getFirebirdResponse(5);
+    return this.getFirebirdResponse(0, 5, -5);
   }
 
-  getAll() {
-    return this.getFirebirdResponse(1000);
+  getAll(page:number, size:number, offset:number) {
+    return this.getFirebirdResponse(page, size, offset);
   }
 
   getOne(id) {
@@ -30,11 +30,11 @@ export class FirebirdResponseService {
     return this.http.get( this.baseUrl + 'secured/documents/' + id, {headers} );
   }
 
-  getFirebirdResponse(size:number) {
+  getFirebirdResponse(page:number, size:number, offset:number) {
 
     const headers = this.getHeaders();
 
-    return this.http.get( this.baseUrl + 'secured/documents/findAll?sort=dateStart,desc&size=' + size, {headers} );
+    return this.http.get( `${this.baseUrl}secured/documents/findAll?sort=dateStart,desc&size=${size}&page=${page}&offset=${offset}`, {headers} );
 
   }
 }

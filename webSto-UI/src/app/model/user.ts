@@ -9,7 +9,7 @@ export class User {
   phone: string;
   email: string;
 
-  getFio() {
+  public getFio():string {
     if ( this.lastName === null )
       return this.username;
     else {

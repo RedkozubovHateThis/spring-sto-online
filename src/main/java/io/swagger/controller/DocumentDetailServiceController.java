@@ -5,6 +5,7 @@ import io.swagger.firebird.model.DocumentServiceDetail;
 import io.swagger.firebird.repository.DocumentServiceDetailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +28,9 @@ public class DocumentDetailServiceController {
         List<FirebirdResponse> responseList = resultList.stream()
                 .map(FirebirdResponse::new).collect( Collectors.toList() );
 
-        return ResponseEntity.ok( responseList );
+        Page<FirebirdResponse> responsePage = new PageImpl<>(responseList, pageable, result.getTotalElements());
+
+        return ResponseEntity.ok( responsePage );
 
     }
 
