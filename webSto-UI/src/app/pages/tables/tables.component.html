@@ -150,7 +150,7 @@
             </thead>
             <tbody>
             <tr *ngFor="let fbResponse of all.content, let i = index" [attr.data-index]="i" style="cursor: pointer;" [routerLink]="['/documents', fbResponse.id]">
-              <th scope="row">{{i + 1}}</th>
+              <th scope="row">{{( i + 1 ) + ( page * size )}}</th>
               <th>{{fbResponse.startDate}}</th>
               <th>{{fbResponse.endDate}}</th>
               <th>
