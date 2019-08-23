@@ -1,5 +1,6 @@
 package io.swagger.postgres.model.security;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
@@ -23,6 +24,7 @@ public class User implements UserDetails, Serializable {
 
     @Column(unique = true)
     private String username;
+    @JsonIgnore
     private String password;
     private String firstName;
     private String lastName;
@@ -30,9 +32,13 @@ public class User implements UserDetails, Serializable {
     private String phone;
     private String email;
 
+    @JsonIgnore
     private boolean accountExpired;
+    @JsonIgnore
     private boolean accountLocked;
+    @JsonIgnore
     private boolean credentialsExpired;
+    @JsonIgnore
     private boolean enabled;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -45,84 +51,16 @@ public class User implements UserDetails, Serializable {
 
     @Override
     public boolean isAccountNonExpired() {
-        return !isAccountExpired();
+        return !accountExpired;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return !isAccountLocked();
+        return !accountLocked;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return !isCredentialsExpired();
-    }
-
-    public boolean isAccountExpired() {
-        return accountExpired;
-    }
-
-    public boolean isAccountLocked() {
-        return accountLocked;
-    }
-
-    public boolean isCredentialsExpired() {
-        return credentialsExpired;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
-    }
-
-    public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
-        this.authorities = authorities;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setAccountExpired(boolean accountExpired) {
-        this.accountExpired = accountExpired;
-    }
-
-    public void setAccountLocked(boolean accountLocked) {
-        this.accountLocked = accountLocked;
-    }
-
-    public void setCredentialsExpired(boolean credentialsExpired) {
-        this.credentialsExpired = credentialsExpired;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public void setRoles(Set<UserRole> roles) {
-        this.roles = roles;
+        return !credentialsExpired;
     }
 }
