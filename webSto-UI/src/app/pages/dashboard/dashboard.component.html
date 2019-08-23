@@ -178,7 +178,7 @@
               </tr>
             </thead>
             <tbody *ngIf="last5 != null">
-              <tr *ngFor="let fbResponse of last5.content, let i = index" [attr.data-index]="i" style="cursor: pointer;" [routerLink]="['/documents', fbResponse.id]">
+              <tr *ngFor="let fbResponse of last5.content, let i = index" [attr.data-index]="i" style="cursor: pointer;" (click)="navigate(fbResponse)">
                 <th scope="row">{{i + 1}}</th>
                 <th>{{fbResponse.startDate}}</th>
                 <th>{{fbResponse.endDate}}</th>

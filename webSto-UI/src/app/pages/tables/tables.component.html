@@ -149,7 +149,7 @@
               </tr>
             </thead>
             <tbody *ngIf="all != null">
-            <tr *ngFor="let fbResponse of all.content, let i = index" [attr.data-index]="i" style="cursor: pointer;" [routerLink]="['/documents', fbResponse.id]">
+            <tr *ngFor="let fbResponse of all.content, let i = index" [attr.data-index]="i" style="cursor: pointer;" (click)="navigate(fbResponse)">
               <th scope="row">{{( i + 1 ) + ( page * size )}}</th>
               <th>{{fbResponse.startDate}}</th>
               <th>{{fbResponse.endDate}}</th>

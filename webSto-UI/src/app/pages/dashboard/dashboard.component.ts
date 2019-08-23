@@ -11,6 +11,7 @@ import {
 import {FirebirdResponse} from "../../model/firebirdResponse";
 import {FirebirdResponseService} from "../../api/firebirdResponse.service";
 import {Pageable} from "../../model/Pageable";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,7 +21,6 @@ import {Pageable} from "../../model/Pageable";
 export class DashboardComponent implements OnInit {
 
   public last5:Pageable<FirebirdResponse>;
-  firebirdResponseService:FirebirdResponseService;
   isLoading:boolean = false;
 
   public datasets: any;
@@ -29,9 +29,7 @@ export class DashboardComponent implements OnInit {
   public clicked: boolean = true;
   public clicked1: boolean = false;
 
-  constructor(firebirdResponseService:FirebirdResponseService) {
-    this.firebirdResponseService = firebirdResponseService;
-  }
+  constructor(private firebirdResponseService:FirebirdResponseService, private router:Router) { }
 
   ngOnInit() {
     this.requestData();
@@ -76,6 +74,11 @@ export class DashboardComponent implements OnInit {
   public updateOptions() {
     // this.salesChart.data.datasets[0].data = this.data;
     // this.salesChart.update();
+  }
+
+  private navigate(firebirdResponse:FirebirdResponse) {
+    this.firebirdResponseService.exchangingModel = firebirdResponse;
+    this.router.navigate(['/documents', firebirdResponse.id]);
   }
 
 }

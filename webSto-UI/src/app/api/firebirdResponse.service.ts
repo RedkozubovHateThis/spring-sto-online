@@ -4,12 +4,14 @@ import {Observable} from "rxjs";
 import {User} from "../model/auth/user";
 import {Router} from "@angular/router";
 import { ApiService } from './api.service';
+import {FirebirdResponse} from "../model/firebirdResponse";
 
 @Injectable()
 export class FirebirdResponseService {
 
   constructor(private http: HttpClient, private router: Router, private apiService:ApiService) { }
   baseUrl: string = 'http://localhost:8181/';
+  exchangingModel:FirebirdResponse;
 
   getLast5() {
     return this.getFirebirdResponse(0, 5, -5);

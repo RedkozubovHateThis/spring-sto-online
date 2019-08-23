@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {FirebirdResponse} from "../../model/firebirdResponse";
 import {FirebirdResponseService} from "../../api/firebirdResponse.service";
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {Pageable} from "../../model/Pageable";
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-tables',
@@ -11,31 +12,30 @@ import {Pageable} from "../../model/Pageable";
 })
 export class TablesComponent implements OnInit {
 
+  private routeSub:Subscription;
   private all:Pageable<FirebirdResponse>;
-  private firebirdResponseService:FirebirdResponseService;
   private isLoading:boolean = false;
   private page:number = 0;
   private totalPages:number = 0;
   private size:number = 10;
   private offset:number = -10;
-  private route:ActivatedRoute;
   private pagesInfo:number[] = [];
 
-  constructor(firebirdResponseService:FirebirdResponseService, route:ActivatedRoute) {
-    this.firebirdResponseService = firebirdResponseService;
-    this.route = route;
-  }
+  constructor(private firebirdResponseService:FirebirdResponseService, private route:ActivatedRoute, private router:Router) {  }
 
   ngOnInit() {
-    this.route.queryParams.subscribe( queryParams => {
+    this.routeSub = this.route.queryParams.subscribe( queryParams => {
       let qpPage:number = queryParams['page'];
 
       if ( qpPage != null ) this.page = qpPage - 1;
       this.calculatePagination();
       this.requestData();
     } );
+  }
 
-    // this.requestData();
+  ngOnDestroy() {
+    if ( this.routeSub != null )
+      this.routeSub.unsubscribe();
   }
 
   private requestData() {
@@ -61,6 +61,11 @@ export class TablesComponent implements OnInit {
 
   private calculatePagination() {
       this.offset = ( this.page * this.size ) - this.size;
+  }
+
+  private navigate(firebirdResponse:FirebirdResponse) {
+    this.firebirdResponseService.exchangingModel = firebirdResponse;
+    this.router.navigate(['/documents', firebirdResponse.id]);
   }
 
 }

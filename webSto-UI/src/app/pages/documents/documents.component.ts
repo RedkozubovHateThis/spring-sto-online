@@ -12,28 +12,31 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class DocumentsComponent implements OnInit {
 
   private routeSub:Subscription;
-  private route:ActivatedRoute;
   private response:FirebirdResponse;
   private id:number;
-  firebirdResponseService:FirebirdResponseService;
   isLoading:boolean = false;
 
-  constructor(firebirdResponseService:FirebirdResponseService, route:ActivatedRoute) {
-    this.firebirdResponseService = firebirdResponseService;
-    this.route = route;
-  }
+  constructor(private firebirdResponseService:FirebirdResponseService, private route:ActivatedRoute) { }
 
   ngOnInit() {
 
-    this.routeSub = this.route.params.subscribe(params => {
-      this.id = params['id'];
-    });
+    if ( this.firebirdResponseService.exchangingModel != null ) {
+      this.response = this.firebirdResponseService.exchangingModel;
+      this.firebirdResponseService.exchangingModel = null;
+    }
+    else {
+      this.routeSub = this.route.params.subscribe(params => {
+        this.id = params['id'];
+      });
 
-    this.requestData();
+      this.requestData();
+    }
+
   }
 
   ngOnDestroy() {
-    this.routeSub.unsubscribe();
+    if ( this.routeSub != null )
+      this.routeSub.unsubscribe();
   }
 
   private requestData() {
