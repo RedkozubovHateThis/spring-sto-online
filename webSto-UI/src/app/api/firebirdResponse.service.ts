@@ -3,18 +3,13 @@ import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {User} from "../model/user";
 import {Router} from "@angular/router";
+import { ApiService } from './api.service';
 
 @Injectable()
 export class FirebirdResponseService {
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router, private apiService:ApiService) { }
   baseUrl: string = 'http://localhost:8181/';
-
-  getHeaders() {
-    return {
-      'Authorization': 'Bearer ' + JSON.parse(window.sessionStorage.getItem("token")).access_token
-    };
-  }
 
   getLast5() {
     return this.getFirebirdResponse(0, 5, -5);
@@ -25,14 +20,14 @@ export class FirebirdResponseService {
   }
 
   getOne(id) {
-    const headers = this.getHeaders();
+    const headers = this.apiService.getHeaders();
 
     return this.http.get( this.baseUrl + 'secured/documents/' + id, {headers} );
   }
 
   getFirebirdResponse(page:number, size:number, offset:number) {
 
-    const headers = this.getHeaders();
+    const headers = this.apiService.getHeaders();
 
     return this.http.get( `${this.baseUrl}secured/documents/findAll?sort=dateStart,desc&size=${size}&page=${page}&offset=${offset}`, {headers} );
 

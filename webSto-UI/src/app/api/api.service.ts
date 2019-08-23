@@ -36,9 +36,17 @@ export class ApiService {
   }
 
   getHeaders() {
-    return {
-      'Authorization': 'Bearer ' + JSON.parse(sessionStorage.getItem("token")).access_token
-    };
+
+    if ( sessionStorage.getItem("token") != null ) {
+      return {
+        'Authorization': 'Bearer ' + JSON.parse(sessionStorage.getItem("token")).access_token
+      };
+    }
+    else {
+      this.logout();
+      return undefined;
+    }
+
   }
 
   getCurrentUser() {
