@@ -25,17 +25,14 @@
           <div class="text-center text-muted mb-4">
             <small>Текс про вход и т.д</small>
           </div>
-          <div [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-<!--          <form role="form">-->
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
             <div class="form-group mb-3">
               <div class="input-group input-group-alternative">
                 <div class="input-group-prepend">
                   <span class="input-group-text"><i class="ni ni-circle-08"></i></span>
                 </div>
-<!--                <input class="form-control" placeholder="Username" type="username">-->
                 <input class="form-control" formControlName="username" placeholder="Логин" id="username" autocomplete="off" type="text">
-
                 <div class="error" *ngIf="loginForm.controls['username'].hasError('required') && loginForm.controls['username'].touched">Логин необходим</div>
               </div>
             </div>
@@ -44,7 +41,6 @@
                 <div class="input-group-prepend">
                   <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
                 </div>
-<!--                <input class="form-control" placeholder="Пароль" type="password">-->
                 <input type="password" class="form-control" formControlName="password" placeholder="Пароль" id="pwd" autocomplete="off">
                 <div class="error" *ngIf="loginForm.controls['password'].hasError('required') && loginForm.controls['password'].touched">Пароль необходим</div>
               </div>
@@ -56,7 +52,7 @@
 <!--              </label>-->
 <!--            </div>-->
             <div class="text-center">
-              <button class="btn btn-success" [disabled]="loginForm.invalid" (click)="onSubmit()">Вход</button>
+              <button class="btn btn-success" [disabled]="loginForm.invalid" type="submit">Вход</button>
               <button type="button" class="btn btn-primary my-4"  routerLinkActive="active" [routerLink]="['/register']">
                 <span class="nav-link-inner--text">Регистрация</span>
               </button>
@@ -65,7 +61,7 @@
               </div>
             </div>
 <!--          </form>-->
-          </div>
+          </form>
         </div>
       </div>
 <!--      <div class="row mt-3">-->

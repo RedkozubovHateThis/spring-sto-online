@@ -32,7 +32,6 @@ export class LoginComponent implements OnInit {
       this.apiService.getCurrentUser();
     }, error => {
       this.invalidLogin = true;
-      alert(error.error.error_description)
     });
   }
 
