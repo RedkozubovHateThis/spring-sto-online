@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {User} from "../model/user";
+import {User} from "../model/auth/user";
 import {Router} from "@angular/router";
 
 @Injectable()
@@ -11,6 +11,7 @@ export class ApiService {
   private baseUrl: string = 'http://localhost:8181/';
   currentUser: User;
   isAuthenticated: boolean = false;
+  isSaving:boolean = false;
 
   login(loginPayload) {
     const headers = {
@@ -30,7 +31,7 @@ export class ApiService {
 
   getUsername() {
     if ( this.currentUser != null )
-      return this.currentUser.username;
+      return this.currentUser.fio != null ? this.currentUser.fio : this.currentUser.username;
     else
       return undefined;
   }
@@ -55,14 +56,18 @@ export class ApiService {
 
     return this.http.get( this.baseUrl + 'secured/users/currentUser', {headers} ).subscribe( data => {
 
-      this.currentUser = data as User;
+      this.setCurrentUserData( data as User );
       this.isAuthenticated = true;
-      localStorage.setItem( 'currentUser', JSON.stringify(this.currentUser) );
 
       this.router.navigate(['dashboard']);
 
     } );
 
+  }
+
+  private setCurrentUserData(user:User) {
+    this.currentUser = user;
+    localStorage.setItem( 'currentUser', JSON.stringify(this.currentUser) );
   }
 
   getUserFromStorage() {
@@ -82,23 +87,26 @@ export class ApiService {
 
   }
 
-  getUsers() {
-    return this.http.get(this.baseUrl + 'user_oath2?access_token=' + JSON.parse(window.sessionStorage.getItem('token')).access_token);
-  }
-
-  getUserById(id: number) {
-    return this.http.get(this.baseUrl + 'user_oath2/' + id + '?access_token=' + JSON.parse(window.sessionStorage.getItem('token')).access_token);
-  }
-
-  createUser(user: User){
+  createUser(user: User) {
     return this.http.post(this.baseUrl + 'oauth/register', user);
   }
 
-  updateUser(user: User) {
-    return this.http.put(this.baseUrl + 'user_oath2/' + user.id + '?access_token=' + JSON.parse(window.sessionStorage.getItem('token')).access_token, user);
+  saveUser(user: User, updateCurrentUserData:boolean) {
+
+    const headers = this.getHeaders();
+    this.isSaving = true;
+
+    return this.http.put( this.baseUrl + `secured/users/${user.id}`, user,{headers} ).subscribe( data => {
+
+      if ( updateCurrentUserData )
+        this.setCurrentUserData( data as User );
+
+      this.isSaving = false;
+
+    }, error => {
+      this.isSaving = false;
+    } );
+
   }
 
-  deleteUser(id: number){
-    return this.http.delete(this.baseUrl + 'user_oath2/' + id + '?access_token=' + JSON.parse(window.sessionStorage.getItem('token')).access_token);
-  }
 }

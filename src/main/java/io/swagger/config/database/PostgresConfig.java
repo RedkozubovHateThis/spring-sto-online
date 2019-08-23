@@ -74,7 +74,7 @@ public class PostgresConfig {
     }
 
     @Primary
-    @Bean(name = "postgresJpaTransactionManager")
+    @Bean(name = "postgresTransactionManager")
     public JpaTransactionManager postgresJpaTransactionManager(@Qualifier("postgresEntityManagerFactory") EntityManagerFactory postgresEntityManagerFactory) {
         return new JpaTransactionManager(postgresEntityManagerFactory);
     }

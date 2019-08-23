@@ -38,7 +38,7 @@ public class User implements UserDetails, Serializable {
     private boolean accountLocked;
     @JsonIgnore
     private boolean credentialsExpired;
-    @JsonIgnore
+
     private boolean enabled;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -46,6 +46,7 @@ public class User implements UserDetails, Serializable {
     @OrderBy("name")
     private Set<UserRole> roles = new HashSet<>();
 
+    @JsonIgnore
     @Transient
     private Collection<? extends GrantedAuthority> authorities;
 
@@ -62,5 +63,19 @@ public class User implements UserDetails, Serializable {
     @Override
     public boolean isCredentialsNonExpired() {
         return !credentialsExpired;
+    }
+
+    public String getFio() {
+        if ( this.middleName == null && this.firstName == null )
+            return this.lastName;
+        else if ( this.middleName == null && this.firstName != null )
+            return this.lastName + " " + this.firstName.substring(0, 1) + ".";
+        else if ( this.middleName != null && this.firstName == null )
+            return this.lastName + " " + this.middleName.substring(0, 1) + ".";
+        else if ( this.middleName != null && this.firstName != null )
+            return this.lastName + " " + this.firstName.substring(0, 1) + ". " +
+                    this.middleName.substring(0, 1) + ".";
+        else
+            return null;
     }
 }

@@ -29,4 +29,23 @@ public class UserController {
 
     }
 
+    @PutMapping("{id}")
+    public ResponseEntity saveExistingUser(@RequestBody User user,
+                                           @PathVariable("id") Long id) {
+
+        User existingUser = userRepository.findOne(id);
+
+        if ( existingUser == null )
+            return ResponseEntity.status(404).body("Пользователь не найден");
+
+        user.setPassword( existingUser.getPassword() );
+        user.setAccountExpired( existingUser.isAccountExpired() );
+        user.setAccountLocked( existingUser.isAccountLocked() );
+        user.setCredentialsExpired( existingUser.isCredentialsExpired() );
+        userRepository.save( user );
+
+        return ResponseEntity.ok(user);
+
+    }
+
 }
