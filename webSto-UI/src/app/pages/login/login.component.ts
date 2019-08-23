@@ -27,8 +27,7 @@ export class LoginComponent implements OnInit {
       .set('grant_type', 'password');
 
     this.apiService.login(body.toString()).subscribe(data => {
-      window.sessionStorage.setItem('token', JSON.stringify(data));
-      console.log(window.sessionStorage.getItem('token'));
+      sessionStorage.setItem('token', JSON.stringify(data));
 
       this.apiService.getCurrentUser();
     }, error => {

@@ -8,7 +8,7 @@ import {Router} from "@angular/router";
 export class ApiService {
 
   constructor(private http: HttpClient, private router: Router) { }
-  baseUrl: string = 'http://localhost:8181/';
+  private baseUrl: string = 'http://localhost:8181/';
   currentUser: User;
   isAuthenticated: boolean = false;
 
@@ -25,6 +25,7 @@ export class ApiService {
     this.isAuthenticated = false;
     this.currentUser = null;
     localStorage.setItem( 'currentUser', null );
+    sessionStorage.setItem( "token", null );
   }
 
   getUsername() {
@@ -36,7 +37,7 @@ export class ApiService {
 
   getHeaders() {
     return {
-      'Authorization': 'Bearer ' + JSON.parse(window.sessionStorage.getItem("token")).access_token
+      'Authorization': 'Bearer ' + JSON.parse(sessionStorage.getItem("token")).access_token
     };
   }
 
@@ -44,7 +45,7 @@ export class ApiService {
 
     const headers = this.getHeaders();
 
-    this.http.get( this.baseUrl + 'secured/users/currentUser', {headers} ).subscribe( data => {
+    return this.http.get( this.baseUrl + 'secured/users/currentUser', {headers} ).subscribe( data => {
 
       this.currentUser = data as User;
       this.isAuthenticated = true;
@@ -66,6 +67,8 @@ export class ApiService {
         this.currentUser = JSON.parse( storageUser ) as User;
         this.isAuthenticated = true;
       }
+      else
+        this.logout();
 
     }
 

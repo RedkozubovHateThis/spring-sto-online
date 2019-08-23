@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FirebirdResponse} from "../../model/firebirdResponse";
 import {FirebirdResponseService} from "../../api/firebirdResponse.service";
 import { Subscription } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-tables',
@@ -26,7 +26,6 @@ export class DocumentsComponent implements OnInit {
   ngOnInit() {
 
     this.routeSub = this.route.params.subscribe(params => {
-      console.log(params['id']); //log the value of id
       this.id = params['id'];
     });
 
