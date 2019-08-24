@@ -133,7 +133,7 @@
                 <th>{{work.name}}</th>
                 <th style="text-align: right;">
                   <div>{{work.price | number:'.2':'ru'}} р.</div>
-                  <div class="text-muted">{{work.quantity}}</div>
+                  <div class="text-muted" *ngIf="work.quantity != null && work.quantity > 1">{{work.quantity}}</div>
                 </th>
               </tr>
               </tbody>
