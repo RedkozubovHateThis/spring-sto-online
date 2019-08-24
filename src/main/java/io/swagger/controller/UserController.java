@@ -56,4 +56,16 @@ public class UserController {
 
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity findOne(@PathVariable("id") Long id) {
+
+        User user = userRepository.findOne(id);
+
+        if ( user == null )
+            return ResponseEntity.status(404).build();
+
+        return ResponseEntity.ok( user );
+
+    }
+
 }

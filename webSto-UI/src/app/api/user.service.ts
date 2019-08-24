@@ -124,4 +124,10 @@ export class UserService {
     return this.http.get( `${this.baseUrl}secured/users/findAll?sort=lastName&size=${size}&page=${page}&offset=${offset}`, {headers} );
   }
 
+  getOne(id:number) {
+    const headers = this.getHeaders();
+
+    return this.http.get( `${this.baseUrl}secured/users/${id}`, {headers} );
+  }
+
 }
