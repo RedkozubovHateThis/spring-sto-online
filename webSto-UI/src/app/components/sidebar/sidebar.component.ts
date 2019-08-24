@@ -11,6 +11,7 @@ export const ROUTES: RouteInfo[] = [
     { path: '/dashboard', title: 'Главная',  icon: 'fas fa-tv text-primary', class: '' },
     { path: '/documents', title: 'Заказ-наряды',  icon:'fas fa-list text-red', class: '' },
     { path: '/user-profile', title: 'Профиль',  icon:'fas fa-user text-yellow', class: '' },
+    { path: '/users', title: 'Пользователи',  icon:'fas fa-users text-orange', class: '' },
 ];
 
 @Component({

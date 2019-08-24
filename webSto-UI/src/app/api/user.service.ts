@@ -12,6 +12,7 @@ export class UserService {
   currentUser: User;
   isAuthenticated: boolean = false;
   isSaving:boolean = false;
+  exchangingModel:User;
 
   login(loginPayload) {
     const headers = {
@@ -115,6 +116,12 @@ export class UserService {
       this.isSaving = false;
     } );
 
+  }
+
+  getAll(page:number, size:number, offset:number) {
+    const headers = this.getHeaders();
+
+    return this.http.get( `${this.baseUrl}secured/users/findAll?sort=lastName&size=${size}&page=${page}&offset=${offset}`, {headers} );
   }
 
 }

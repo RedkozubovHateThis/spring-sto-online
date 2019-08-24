@@ -3,6 +3,7 @@ package io.swagger.controller;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -45,6 +46,13 @@ public class UserController {
         userRepository.save( user );
 
         return ResponseEntity.ok(user);
+
+    }
+
+    @GetMapping("/findAll")
+    public ResponseEntity findAll(Pageable pageable) {
+
+        return ResponseEntity.ok( userRepository.findAll(pageable) );
 
     }
 
