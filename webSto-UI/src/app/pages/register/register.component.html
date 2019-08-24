@@ -26,37 +26,51 @@
           <div class="text-center text-muted mb-4">
             <small>Регистрация</small>
           </div>
-          <div [formGroup]="addForm" (ngSubmit)="onSubmit()">
-<!--          <form role="form">-->
-
-<!--            <div class="form-group">-->
-<!--              <div class="input-group input-group-alternative mb-3">-->
-<!--                <div class="input-group-prepend">-->
-<!--                  <span class="input-group-text"><i class="ni ni-hat-3"></i></span>-->
-<!--                </div>-->
-<!--                <input type="number" formControlName="age" placeholder="age" name="age" class="form-control" id="age">-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="form-group">-->
-<!--              <div class="input-group input-group-alternative mb-3">-->
-<!--                <div class="input-group-prepend">-->
-<!--                  <span class="input-group-text"><i class="ni ni-hat-3"></i></span>-->
-<!--                </div>-->
-<!--                <input type="number" formControlName="salary" placeholder="salary" name="salary" class="form-control" id="salary">-->
-<!--              </div>-->
-<!--            </div>-->
+          <form [formGroup]="addForm" (ngSubmit)="onSubmit()">
             <div class="form-group">
-              <div class="input-group input-group-alternative mb-3">
+              <div class="input-group input-group-alternative">
                 <div class="input-group-prepend">
-                  <span class="input-group-text"><i class="ni ni-circle-08"></i></span>
+                  <span class="input-group-text"><i class="fas fa-user"></i></span>
                 </div>
-                <input type="text" formControlName="username" placeholder="Логин" name="username" class="form-control" >
+                <input type="text" formControlName="lastName" placeholder="Фамилия" name="lastName" class="form-control" id="lastName">
               </div>
             </div>
             <div class="form-group">
               <div class="input-group input-group-alternative">
                 <div class="input-group-prepend">
-                  <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
+                  <span class="input-group-text"><i class="fas fa-user"></i></span>
+                </div>
+                <input type="text" formControlName="firstName" placeholder="Имя" name="firstName" class="form-control" id="firstName">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="input-group input-group-alternative">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-user"></i></span>
+                </div>
+                <input type="text" formControlName="middleName" placeholder="Отчество" name="middleName" class="form-control" id="middleName">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="input-group input-group-alternative">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                </div>
+                <input type="text" formControlName="email" placeholder="Email" name="email" class="form-control" id="email">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="input-group input-group-alternative">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                </div>
+                <input type="text" formControlName="phone" placeholder="Телефон" name="phone" class="form-control" id="phone">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="input-group input-group-alternative">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-lock-open"></i></span>
                 </div>
                 <input type="password" formControlName="password" placeholder="Пароль" name="password" class="form-control" id="password">
               </div>
@@ -64,7 +78,7 @@
             <div class="form-group">
               <div class="input-group input-group-alternative">
                 <div class="input-group-prepend">
-                  <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
+                  <span class="input-group-text"><i class="fas fa-lock-open"></i></span>
                 </div>
                 <input type="password" formControlName="rePassword" placeholder="Подтверждение пароля" name="rePassword" class="form-control" id="rePassword">
               </div>
@@ -81,10 +95,9 @@
 <!--              </div>-->
 <!--            </div>-->
             <div class="text-center">
-              <button type="button" class="btn btn-primary mt-4" (click)="onSubmit()">Зарегистрироваться</button>
+              <button class="btn btn-primary mt-4" type="submit" [disabled]="addForm.invalid">Зарегистрироваться</button>
             </div>
-          </div>
-<!--          </form>-->
+          </form>
         </div>
       </div>
     </div>

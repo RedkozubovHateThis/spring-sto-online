@@ -12,7 +12,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppRoutingModule } from './app.routing';
 import { ComponentsModule } from './components/components.module';
-import {ApiService} from "./api/api.service";
+import {UserService} from "./api/user.service";
 import {BrowserModule} from "@angular/platform-browser";
 import {LoginComponent} from "./pages/login/login.component";
 import {RegisterComponent} from "./pages/register/register.component";
@@ -45,14 +45,14 @@ registerLocaleData(localeRu, 'ru');
     //LoginComponent,
    // RegisterComponent
   ],
-  providers: [ApiService, FirebirdResponseService,
+  providers: [UserService, FirebirdResponseService,
     {
       provide: HTTP_INTERCEPTORS,
-      useFactory: function(apiService:ApiService) {
-        return new ErrorInterceptor(apiService);
+      useFactory: function(userService:UserService) {
+        return new ErrorInterceptor(userService);
       },
       multi: true,
-      deps: [ApiService]
+      deps: [UserService]
     }
   ],
   bootstrap: [AppComponent]

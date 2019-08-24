@@ -5,7 +5,7 @@ import {User} from "../model/auth/user";
 import {Router} from "@angular/router";
 
 @Injectable()
-export class ApiService {
+export class UserService {
 
   constructor(private http: HttpClient, private router: Router) { }
   private baseUrl: string = 'http://localhost:8181/';
@@ -30,8 +30,16 @@ export class ApiService {
   }
 
   getUsername() {
-    if ( this.currentUser != null )
-      return this.currentUser.fio != null ? this.currentUser.fio : this.currentUser.username;
+    if ( this.currentUser != null ) {
+      if ( this.currentUser.fio != null )
+        return this.currentUser.fio;
+      else if ( this.currentUser.phone != null )
+        return this.currentUser.phone;
+      else if ( this.currentUser.email != null )
+        return this.currentUser.email;
+      else
+        return this.currentUser.username;
+    }
     else
       return undefined;
   }

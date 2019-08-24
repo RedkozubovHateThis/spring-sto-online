@@ -30,16 +30,16 @@
             <div class="form-group mb-3">
               <div class="input-group input-group-alternative">
                 <div class="input-group-prepend">
-                  <span class="input-group-text"><i class="ni ni-circle-08"></i></span>
+                  <span class="input-group-text"><i class="fas fa-user"></i></span>
                 </div>
-                <input class="form-control" formControlName="username" placeholder="Логин" id="username" autocomplete="off" type="text">
+                <input class="form-control" formControlName="username" placeholder="Телефон/почта" id="username" autocomplete="off" type="text">
                 <div class="error" *ngIf="loginForm.controls['username'].hasError('required') && loginForm.controls['username'].touched">Логин необходим</div>
               </div>
             </div>
             <div class="form-group">
               <div class="input-group input-group-alternative">
                 <div class="input-group-prepend">
-                  <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
+                  <span class="input-group-text"><i class="fas fa-lock-open"></i></span>
                 </div>
                 <input type="password" class="form-control" formControlName="password" placeholder="Пароль" id="pwd" autocomplete="off">
                 <div class="error" *ngIf="loginForm.controls['password'].hasError('required') && loginForm.controls['password'].touched">Пароль необходим</div>

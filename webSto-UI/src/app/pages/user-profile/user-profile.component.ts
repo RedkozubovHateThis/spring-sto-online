@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {ApiService} from "../../api/api.service";
+import {UserService} from "../../api/user.service";
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -9,11 +9,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class UserProfileComponent implements OnInit {
 
-  private apiService:ApiService;
-
-  constructor(apiService:ApiService) {
-    this.apiService = apiService;
-  }
+  constructor(private userService:UserService) { }
 
   ngOnInit() {
   }

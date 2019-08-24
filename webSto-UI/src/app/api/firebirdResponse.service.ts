@@ -3,13 +3,13 @@ import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {User} from "../model/auth/user";
 import {Router} from "@angular/router";
-import { ApiService } from './api.service';
+import { UserService } from './user.service';
 import {FirebirdResponse} from "../model/firebirdResponse";
 
 @Injectable()
 export class FirebirdResponseService {
 
-  constructor(private http: HttpClient, private router: Router, private apiService:ApiService) { }
+  constructor(private http: HttpClient, private router: Router, private userService:UserService) { }
   baseUrl: string = 'http://localhost:8181/';
   exchangingModel:FirebirdResponse;
 
@@ -22,14 +22,14 @@ export class FirebirdResponseService {
   }
 
   getOne(id) {
-    const headers = this.apiService.getHeaders();
+    const headers = this.userService.getHeaders();
 
     return this.http.get( this.baseUrl + 'secured/documents/' + id, {headers} );
   }
 
   getFirebirdResponse(page:number, size:number, offset:number) {
 
-    const headers = this.apiService.getHeaders();
+    const headers = this.userService.getHeaders();
 
     return this.http.get( `${this.baseUrl}secured/documents/findAll?sort=dateStart,desc&size=${size}&page=${page}&offset=${offset}`, {headers} );
 

@@ -3,19 +3,19 @@ import { HttpErrorResponse, HttpEvent, HttpHandler,HttpInterceptor, HttpRequest 
 
 import { Injectable } from '@angular/core';
 import { catchError } from 'rxjs/operators';
-import {ApiService} from "../api/api.service";
+import {UserService} from "../api/user.service";
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
 
-  constructor(private apiService:ApiService) { }
+  constructor(private userService:UserService) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request)
       .pipe(
         catchError((err, caught: Observable<HttpEvent<any>>) => {
           if (err instanceof HttpErrorResponse && err.status == 401) {
-            this.apiService.logout();
+            this.userService.logout();
           }
           throw err;
         })
