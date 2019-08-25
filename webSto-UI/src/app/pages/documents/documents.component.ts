@@ -8,10 +8,10 @@ import {Pagination} from "../pagination";
 
 @Component({
   selector: 'app-tables',
-  templateUrl: './tables.component.html',
-  styleUrls: ['./tables.component.scss']
+  templateUrl: './documents.component.html',
+  styleUrls: ['./documents.component.scss']
 })
-export class TablesComponent extends Pagination {
+export class DocumentsComponent extends Pagination {
 
   private all:Pageable<DocumentResponse>;
   private isLoading:boolean = false;
