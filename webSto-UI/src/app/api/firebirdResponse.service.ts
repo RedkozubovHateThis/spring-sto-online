@@ -5,9 +5,10 @@ import {User} from "../model/auth/user";
 import {Router} from "@angular/router";
 import { UserService } from './user.service';
 import {FirebirdResponse} from "../model/firebirdResponse";
+import {TransferService} from "./transfer.service";
 
 @Injectable()
-export class FirebirdResponseService {
+export class FirebirdResponseService implements TransferService<FirebirdResponse> {
 
   constructor(private http: HttpClient, private router: Router, private userService:UserService) { }
   baseUrl: string = 'http://localhost:8181/';
@@ -34,4 +35,13 @@ export class FirebirdResponseService {
     return this.http.get( `${this.baseUrl}secured/documents/findAll?sort=dateStart,desc&size=${size}&page=${page}&offset=${offset}`, {headers} );
 
   }
+
+  getTransferModel() {
+    return this.exchangingModel;
+  }
+
+  resetTransferModel() {
+    this.exchangingModel = null;
+  }
+
 }

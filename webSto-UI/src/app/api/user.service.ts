@@ -3,16 +3,17 @@ import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {User} from "../model/auth/user";
 import {Router} from "@angular/router";
+import {TransferService} from "./transfer.service";
 
 @Injectable()
-export class UserService {
+export class UserService implements TransferService<User> {
 
   constructor(private http: HttpClient, private router: Router) { }
   private baseUrl: string = 'http://localhost:8181/';
   currentUser: User;
   isAuthenticated: boolean = false;
   isSaving:boolean = false;
-  exchangingModel:User;
+  transferModel:User;
 
   login(loginPayload) {
     const headers = {
@@ -128,6 +129,14 @@ export class UserService {
     const headers = this.getHeaders();
 
     return this.http.get( `${this.baseUrl}secured/users/${id}`, {headers} );
+  }
+
+  getTransferModel() {
+    return this.transferModel;
+  }
+
+  resetTransferModel() {
+    this.transferModel = null;
   }
 
 }
