@@ -52,7 +52,10 @@
 <!--              </label>-->
 <!--            </div>-->
             <div class="text-center">
-              <button class="btn btn-buro-green" [disabled]="loginForm.invalid" type="submit">Вход</button>
+              <button class="btn btn-buro-green" [disabled]="loginForm.invalid || isLoggingIn" type="submit">
+                Вход
+                <span *ngIf="isLoggingIn">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+              </button>
               <button type="button" class="btn btn-buro-orange my-4"  routerLinkActive="active" [routerLink]="['/register']">
                 <span class="nav-link-inner--text">Регистрация</span>
               </button>

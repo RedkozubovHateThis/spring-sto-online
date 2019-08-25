@@ -14,6 +14,7 @@ export class RegisterComponent implements OnInit {
 
   private addForm: FormGroup;
   private invalidRegister: boolean = false;
+  private isRegistering: boolean = false;
   private errorMessages:string[] = [];
 
   ngOnInit() {
@@ -47,10 +48,15 @@ export class RegisterComponent implements OnInit {
       return;
     }
 
+    this.isRegistering = true;
+
     this.userService.createUser(this.addForm.value)
       .subscribe( data => {
+        this.isRegistering = false;
         this.router.navigate(['login']);
-      });
+      }, () => {
+        this.isRegistering = false;
+      } );
   }
 
 }

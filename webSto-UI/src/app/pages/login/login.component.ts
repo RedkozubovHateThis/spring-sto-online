@@ -13,10 +13,12 @@ export class LoginComponent implements OnInit {
 
   private loginForm: FormGroup;
   private invalidLogin: boolean = false;
+  private isLoggingIn: boolean = false;
   constructor(private formBuilder: FormBuilder, private router: Router, private userService: UserService) { }
 
   onSubmit() {
     this.invalidLogin = false;
+    this.isLoggingIn = true;
 
     if (this.loginForm.invalid) return;
 
@@ -25,12 +27,15 @@ export class LoginComponent implements OnInit {
       .set('password', this.loginForm.controls.password.value)
       .set('grant_type', 'password');
 
-    this.userService.login(body.toString()).subscribe(data => {
+    this.userService.login(body.toString())
+      .subscribe(data => {
       sessionStorage.setItem('token', JSON.stringify(data));
+      this.isLoggingIn = false;
 
       this.userService.getCurrentUser();
     }, error => {
       this.invalidLogin = true;
+      this.isLoggingIn = false;
     });
   }
 
