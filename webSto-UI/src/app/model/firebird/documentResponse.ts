@@ -1,7 +1,7 @@
 import {VehicleResponse} from "./vehicleResponse";
 import {ServiceWorkTotalResponse} from "./serviceWorkTotalResponse";
 
-export class FirebirdResponse {
+export class DocumentResponse {
 
   id: number;
   startDate: string;

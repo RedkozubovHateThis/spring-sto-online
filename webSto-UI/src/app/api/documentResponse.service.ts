@@ -1,25 +1,25 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {User} from "../model/auth/user";
+import {User} from "../model/postgres/auth/user";
 import {Router} from "@angular/router";
 import { UserService } from './user.service';
-import {FirebirdResponse} from "../model/firebirdResponse";
+import {DocumentResponse} from "../model/firebird/documentResponse";
 import {TransferService} from "./transfer.service";
 
 @Injectable()
-export class FirebirdResponseService implements TransferService<FirebirdResponse> {
+export class DocumentResponseService implements TransferService<DocumentResponse> {
 
   constructor(private http: HttpClient, private router: Router, private userService:UserService) { }
   baseUrl: string = 'http://localhost:8181/';
-  exchangingModel:FirebirdResponse;
+  exchangingModel:DocumentResponse;
 
   getLast5() {
-    return this.getFirebirdResponse(0, 5, -5);
+    return this.getdocumentResponse(0, 5, -5);
   }
 
   getAll(page:number, size:number, offset:number) {
-    return this.getFirebirdResponse(page, size, offset);
+    return this.getdocumentResponse(page, size, offset);
   }
 
   getOne(id) {
@@ -28,7 +28,7 @@ export class FirebirdResponseService implements TransferService<FirebirdResponse
     return this.http.get( this.baseUrl + 'secured/documents/' + id, {headers} );
   }
 
-  getFirebirdResponse(page:number, size:number, offset:number) {
+  getdocumentResponse(page:number, size:number, offset:number) {
 
     const headers = this.userService.getHeaders();
 

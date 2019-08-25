@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import {FirebirdResponse} from "../../model/firebirdResponse";
-import {FirebirdResponseService} from "../../api/firebirdResponse.service";
+import {DocumentResponse} from "../../model/firebird/documentResponse";
+import {DocumentResponseService} from "../../api/documentResponse.service";
 import { ActivatedRoute, Router } from '@angular/router';
 import {Pageable} from "../../model/Pageable";
 import { Subscription } from 'rxjs';
@@ -13,17 +13,17 @@ import {Pagination} from "../pagination";
 })
 export class TablesComponent extends Pagination {
 
-  private all:Pageable<FirebirdResponse>;
+  private all:Pageable<DocumentResponse>;
   private isLoading:boolean = false;
 
-  constructor(private firebirdResponseService:FirebirdResponseService, protected route:ActivatedRoute, private router:Router) {
+  constructor(private documentResponseService:DocumentResponseService, protected route:ActivatedRoute, private router:Router) {
     super(route);
   }
 
   requestData() {
     this.isLoading = true;
-    this.firebirdResponseService.getAll(this.page, this.size, this.offset).subscribe( data => {
-      this.all = data as Pageable<FirebirdResponse>;
+    this.documentResponseService.getAll(this.page, this.size, this.offset).subscribe( data => {
+      this.all = data as Pageable<DocumentResponse>;
       this.setPageData(this.all);
 
       this.isLoading = false;
@@ -32,9 +32,9 @@ export class TablesComponent extends Pagination {
     } );
   }
 
-  private navigate(firebirdResponse:FirebirdResponse) {
-    this.firebirdResponseService.exchangingModel = firebirdResponse;
-    this.router.navigate(['/documents', firebirdResponse.id]);
+  private navigate(documentResponse:DocumentResponse) {
+    this.documentResponseService.exchangingModel = documentResponse;
+    this.router.navigate(['/documents', documentResponse.id]);
   }
 
 }

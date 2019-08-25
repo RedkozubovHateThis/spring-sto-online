@@ -16,7 +16,7 @@ import {UserService} from "./api/user.service";
 import {BrowserModule} from "@angular/platform-browser";
 import {LoginComponent} from "./pages/login/login.component";
 import {RegisterComponent} from "./pages/register/register.component";
-import {FirebirdResponseService} from "./api/firebirdResponse.service";
+import {DocumentResponseService} from "./api/documentResponse.service";
 
 import { registerLocaleData } from '@angular/common';
 import localeRu from '@angular/common/locales/ru';
@@ -45,7 +45,7 @@ registerLocaleData(localeRu, 'ru');
     //LoginComponent,
    // RegisterComponent
   ],
-  providers: [UserService, FirebirdResponseService,
+  providers: [UserService, DocumentResponseService,
     {
       provide: HTTP_INTERCEPTORS,
       useFactory: function(userService:UserService) {

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import {UserService} from "../../api/user.service";
-import {User} from "../../model/auth/user";
+import {User} from "../../model/postgres/auth/user";
 import {ModelTransfer} from "../model.transfer";
 
 @Component({

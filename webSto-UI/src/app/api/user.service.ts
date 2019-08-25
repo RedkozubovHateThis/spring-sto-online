@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {User} from "../model/auth/user";
+import {User} from "../model/postgres/auth/user";
 import {Router} from "@angular/router";
 import {TransferService} from "./transfer.service";
 

@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {Pageable} from "../../model/Pageable";
 import { Subscription } from 'rxjs';
 import {Pagination} from "../pagination";
-import {User} from "../../model/auth/user";
+import {User} from "../../model/postgres/auth/user";
 import {UserService} from "../../api/user.service";
 
 @Component({

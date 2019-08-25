@@ -8,8 +8,8 @@ import {
   chartExample1,
   chartExample2
 } from "../../variables/charts";
-import {FirebirdResponse} from "../../model/firebirdResponse";
-import {FirebirdResponseService} from "../../api/firebirdResponse.service";
+import {DocumentResponse} from "../../model/firebird/documentResponse";
+import {DocumentResponseService} from "../../api/documentResponse.service";
 import {Pageable} from "../../model/Pageable";
 import { Router } from '@angular/router';
 
@@ -20,7 +20,7 @@ import { Router } from '@angular/router';
 })
 export class DashboardComponent implements OnInit {
 
-  public last5:Pageable<FirebirdResponse>;
+  public last5:Pageable<DocumentResponse>;
   isLoading:boolean = false;
 
   public datasets: any;
@@ -29,7 +29,7 @@ export class DashboardComponent implements OnInit {
   public clicked: boolean = true;
   public clicked1: boolean = false;
 
-  constructor(private firebirdResponseService:FirebirdResponseService, private router:Router) { }
+  constructor(private documentResponseService:DocumentResponseService, private router:Router) { }
 
   ngOnInit() {
     this.requestData();
@@ -63,8 +63,8 @@ export class DashboardComponent implements OnInit {
 
   private requestData() {
     this.isLoading = true;
-    this.firebirdResponseService.getLast5().subscribe( data => {
-      this.last5 = data as Pageable<FirebirdResponse>;
+    this.documentResponseService.getLast5().subscribe( data => {
+      this.last5 = data as Pageable<DocumentResponse>;
       this.isLoading = false;
     }, error => {
       this.isLoading = false;
@@ -76,9 +76,9 @@ export class DashboardComponent implements OnInit {
     // this.salesChart.update();
   }
 
-  private navigate(firebirdResponse:FirebirdResponse) {
-    this.firebirdResponseService.exchangingModel = firebirdResponse;
-    this.router.navigate(['/documents', firebirdResponse.id]);
+  private navigate(documentResponse:DocumentResponse) {
+    this.documentResponseService.exchangingModel = documentResponse;
+    this.router.navigate(['/documents', documentResponse.id]);
   }
 
 }
