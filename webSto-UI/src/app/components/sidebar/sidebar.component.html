@@ -7,7 +7,7 @@
     </button>
     <!-- Brand -->
     <a class="navbar-brand pt-0" routerLinkActive="active" [routerLink]="['/dashboard']">
-      <img src="./assets/img/brand/red.png" class="navbar-brand-img" alt="...">
+      <img src="./assets/img/brand/buromotors.png" class="navbar-brand-img" alt="...">
     </a>
     <!-- User -->
     <ul class="nav align-items-center d-md-none">
@@ -24,12 +24,12 @@
             <h6 class="text-overflow m-0">Добро пожаловать</h6>
           </div>
           <a routerLinkActive="active" [routerLink]="['/user-profile']" class="dropdown-item">
-            <i class="fas fa-user"></i>
+            <i class="fas fa-user text-buro-green"></i>
             <span>Профиль</span>
           </a>
           <div class="dropdown-divider"></div>
           <a href="#!" class="dropdown-item">
-            <i class="fa fa-sign-out-alt"></i>
+            <i class="fa fa-sign-out-alt text-buro-green"></i>
             <span>Выйти</span>
           </a>
         </div>
@@ -42,7 +42,7 @@
         <div class="row">
           <div class="col-6 collapse-brand">
             <a  routerLinkActive="active" [routerLink]="['/dashboard']">
-              <img src="./assets/img/brand/blue.png">
+              <img src="./assets/img/brand/buromotors.png">
             </a>
           </div>
           <div class="col-6 collapse-close">
@@ -57,7 +57,7 @@
       <ul class="navbar-nav">
           <li *ngFor="let menuItem of menuItems" class="{{menuItem.class}} nav-item">
               <a routerLinkActive="active" [routerLink]="[menuItem.path]" class="nav-link">
-                  <i class="ni {{menuItem.icon}}"></i>
+                  <i class="{{menuItem.icon}}"></i>
                   {{menuItem.title}}
               </a>
           </li>
