@@ -8,7 +8,7 @@
               <h3 class="mb-0">Профиль</h3>
             </div>
             <div class="col-4 text-right">
-              <button class="btn btn-sm btn-primary" [disabled]="userService.isSaving" (click)="userService.saveUser( userService.currentUser, true )">
+              <button class="btn btn-sm btn-buro-green" [disabled]="userService.isSaving" (click)="userService.saveUser( userService.currentUser, true )">
                 Сохранить <span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
               </button>
             </div>
