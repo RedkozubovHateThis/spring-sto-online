@@ -12,7 +12,7 @@ import { MapsComponent } from '../../pages/maps/maps.component';
 import { UserProfileComponent } from '../../pages/user-profile/user-profile.component';
 import { TablesComponent } from '../../pages/tables/tables.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import {DocumentsComponent} from "../../pages/documents/documents.component";
+import {DocumentComponent} from "../../pages/document/document.component";
 import {UsersComponent} from "../../pages/users/users.component";
 import {UserComponent} from "../../pages/user/user.component";
 // import { ToastrModule } from 'ngx-toastr';
@@ -30,7 +30,7 @@ import {UserComponent} from "../../pages/user/user.component";
     DashboardComponent,
     UserProfileComponent,
     TablesComponent,
-    DocumentsComponent,
+    DocumentComponent,
     IconsComponent,
     MapsComponent,
     UsersComponent,

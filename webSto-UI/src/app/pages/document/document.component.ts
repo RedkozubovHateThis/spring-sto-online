@@ -6,10 +6,10 @@ import {ModelTransfer} from "../model.transfer";
 
 @Component({
   selector: 'app-documents',
-  templateUrl: './documents.component.html',
-  styleUrls: ['./documents.component.scss']
+  templateUrl: './document.component.html',
+  styleUrls: ['./document.component.scss']
 })
-export class DocumentsComponent extends ModelTransfer<DocumentResponse, number> implements OnInit {
+export class DocumentComponent extends ModelTransfer<DocumentResponse, number> implements OnInit {
 
   isLoading:boolean = false;
 
