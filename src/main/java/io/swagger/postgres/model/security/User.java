@@ -32,6 +32,7 @@ public class User implements UserDetails, Serializable {
     private String middleName;
     private String phone;
     private String email;
+    private Integer clientId;
 
     @JsonIgnore
     private boolean accountExpired;

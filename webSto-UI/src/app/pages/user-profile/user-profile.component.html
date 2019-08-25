@@ -1,6 +1,61 @@
 <div class="container-fluid mt--7">
   <div class="row">
-    <div class="col-xl-12 order-xl-1">
+    <div class="col-xl-4 order-xl-2 mb-5 mb-xl-0">
+      <div class="card bg-secondary shadow">
+
+        <div class="card-header bg-white border-0">
+          <div class="row align-items-center">
+            <div class="col-8">
+              <h3 class="mb-0">АвтоДилер</h3>
+            </div>
+            <div class="col-4 text-right">
+              <button class="btn btn-sm btn-buro-green"
+                      [disabled]="userService.isSaving || clientResponse == null || ( clientResponse.id == userService.currentUser.clientId )"
+                      (click)="linkClient(userService.currentUser)">
+                Привязать <span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body">
+
+          <div class="row">
+            <div class="col-lg-12">
+
+              <div class="form-group">
+                <label class="form-control-label" for="vin-number">VIN - номер</label>
+                <div class="input-group mb-3">
+                  <input type="text" id="vin-number" class="form-control" placeholder="VIN - номер"
+                         [(ngModel)]="vinNumber" name="vinNumber">
+                  <div class="input-group-append">
+                    <button class="btn btn-buro-green" type="button" (click)="findClientByVin()"
+                            [disabled]="vinNumber == null || vinNumber.length == 0 || isClientLoading">
+                      Найти<span *ngIf="isClientLoading">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-12">
+
+              <div class="form-group" *ngIf="clientResponse != null">
+                <label class="form-control-label" for="input-username">Полное имя клиента</label>
+                <input type="text" id="client-full-name" class="form-control form-control-alternative" placeholder="Полное имя клиента"
+                       disabled [value]="clientResponse.fullName" name="clientFullName">
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="col-xl-8 order-xl-1">
       <div class="card bg-secondary shadow">
         <div class="card-header bg-white border-0">
           <div class="row align-items-center">
@@ -9,7 +64,7 @@
             </div>
             <div class="col-4 text-right">
               <button class="btn btn-sm btn-buro-green" [disabled]="userService.isSaving" (click)="userService.saveUser( userService.currentUser, true )">
-                Сохранить <span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
+                Сохранить<span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
               </button>
             </div>
           </div>

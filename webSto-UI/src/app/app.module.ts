@@ -21,6 +21,7 @@ import {DocumentResponseService} from "./api/documentResponse.service";
 import { registerLocaleData } from '@angular/common';
 import localeRu from '@angular/common/locales/ru';
 import { ErrorInterceptor } from './variables/error.interceptor';
+import {ClientResponseService} from "./api/clientResponse.service";
 registerLocaleData(localeRu, 'ru');
 
 @NgModule({
@@ -45,7 +46,7 @@ registerLocaleData(localeRu, 'ru');
     //LoginComponent,
    // RegisterComponent
   ],
-  providers: [UserService, DocumentResponseService,
+  providers: [UserService, DocumentResponseService, ClientResponseService,
     {
       provide: HTTP_INTERCEPTORS,
       useFactory: function(userService:UserService) {

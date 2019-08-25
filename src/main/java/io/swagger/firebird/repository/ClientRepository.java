@@ -2,8 +2,20 @@ package io.swagger.firebird.repository;
 
 import io.swagger.firebird.model.Client;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ClientRepository extends JpaRepository<Client, Integer> {
+
+    @Query(nativeQuery = true, value = "SELECT FIRST 1 DISTINCT c.* FROM CLIENT AS c\n" +
+            "INNER JOIN DOCUMENT_OUT AS do ON do.CLIENT_ID = c.CLIENT_ID\n" +
+            "INNER JOIN DOCUMENT_OUT_HEADER AS doh ON doh.DOCUMENT_OUT_ID = do.DOCUMENT_OUT_ID\n" +
+            "INNER JOIN DOCUMENT_SERVICE_DETAIL AS dsd ON doh.DOCUMENT_OUT_HEADER_ID = dsd.DOCUMENT_OUT_HEADER_ID\n" +
+            "INNER JOIN MODEL_LINK AS ml ON dsd.MODEL_LINK_ID = ml.MODEL_LINK_ID\n" +
+            "INNER JOIN MODEL_DETAIL AS md ON ml.MODEL_DETAIL_ID = md.MODEL_DETAIL_ID\n" +
+            "WHERE LOWER(md.VIN) = LOWER(:vinNumber)")
+    Client findClientByVinNumber(@Param("vinNumber") String vinNumber);
+
 }

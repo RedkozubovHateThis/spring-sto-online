@@ -1,5 +1,7 @@
 package io.swagger.controller;
 
+import io.swagger.helper.UserHelper;
+import io.swagger.postgres.model.security.User;
 import io.swagger.response.FirebirdResponse;
 import io.swagger.firebird.model.DocumentServiceDetail;
 import io.swagger.firebird.repository.DocumentServiceDetailRepository;
@@ -23,7 +25,22 @@ public class DocumentDetailServiceController {
     @GetMapping("/findAll")
     public ResponseEntity findAll(Pageable pageable) {
 
-        Page<DocumentServiceDetail> result = documentsRepository.findAll(pageable);
+        User currentUser = UserHelper.getUser();
+        if ( currentUser == null ) return ResponseEntity.status(401).build();
+
+        Page<DocumentServiceDetail> result = null;
+
+        if ( UserHelper.hasRole("ADMIN") )
+            result = documentsRepository.findAll(pageable);
+        else if ( UserHelper.hasRole("CLIENT") ) {
+
+            if ( currentUser.getClientId() == null ) return ResponseEntity.status(403).build();
+            result = documentsRepository.findByClientId( currentUser.getClientId(), pageable );
+
+        }
+
+        if ( result == null ) return ResponseEntity.status(403).build();
+
         List<DocumentServiceDetail> resultList = result.getContent();
         List<FirebirdResponse> responseList = resultList.stream()
                 .map(FirebirdResponse::new).collect( Collectors.toList() );

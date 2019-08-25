@@ -13,5 +13,6 @@ export class User {
   email: string;
   enabled:boolean;
   roles: UserRole[];
+  clientId: number;
 
 }
