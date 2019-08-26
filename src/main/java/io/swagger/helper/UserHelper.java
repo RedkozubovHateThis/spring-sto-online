@@ -10,9 +10,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 public class UserHelper {
 
-    @Autowired
-    private UserRepository userRepository;
-
     public static User getUser() {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -25,6 +22,14 @@ public class UserHelper {
     public static Boolean hasRole(String roleName) {
 
         User user = getUser();
+        if ( user == null ) return false;
+
+        return user.getRoles().stream().anyMatch( userRole -> { return userRole.getName().equals( roleName ); } );
+
+    }
+
+    public static Boolean hasRole(User user, String roleName) {
+
         if ( user == null ) return false;
 
         return user.getRoles().stream().anyMatch( userRole -> { return userRole.getName().equals( roleName ); } );

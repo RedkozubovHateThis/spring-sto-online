@@ -11,6 +11,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends PagingAndSortingRepository<User, Long> {
 
+    @Query("SELECT u FROM User AS u WHERE u.username = ?#{principal.username}")
+    User findCurrentUser();
+
     @Query("SELECT DISTINCT user FROM User user " +
             "LEFT JOIN FETCH user.roles AS role " +
             "WHERE ( user.username = :username " +

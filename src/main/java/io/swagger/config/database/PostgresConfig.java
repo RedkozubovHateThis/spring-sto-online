@@ -50,7 +50,7 @@ public class PostgresConfig {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         vendorAdapter.setDatabase(Database.POSTGRESQL);
         vendorAdapter.setDatabasePlatform("org.hibernate.dialect.PostgreSQLDialect");
-        vendorAdapter.setShowSql(true);
+        vendorAdapter.setShowSql(false);
 
         Properties properties = new Properties();
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL95Dialect");

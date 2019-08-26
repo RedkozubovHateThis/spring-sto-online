@@ -2,6 +2,7 @@ package io.swagger.controller;
 
 import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.security.User;
+import io.swagger.postgres.repository.UserRepository;
 import io.swagger.response.FirebirdResponse;
 import io.swagger.firebird.model.DocumentServiceDetail;
 import io.swagger.firebird.repository.DocumentServiceDetailRepository;
@@ -22,10 +23,13 @@ public class DocumentDetailServiceController {
     @Autowired
     private DocumentServiceDetailRepository documentsRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @GetMapping("/findAll")
     public ResponseEntity findAll(Pageable pageable) {
 
-        User currentUser = UserHelper.getUser();
+        User currentUser = userRepository.findCurrentUser();
         if ( currentUser == null ) return ResponseEntity.status(401).build();
 
         Page<DocumentServiceDetail> result = null;

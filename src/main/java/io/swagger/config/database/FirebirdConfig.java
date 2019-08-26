@@ -38,7 +38,7 @@ public class FirebirdConfig {
 
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         vendorAdapter.setDatabasePlatform("org.hibernate.dialect.FirebirdDialect");
-        vendorAdapter.setShowSql(true);
+        vendorAdapter.setShowSql(false);
 
         Properties properties = new Properties();
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.FirebirdDialect");
