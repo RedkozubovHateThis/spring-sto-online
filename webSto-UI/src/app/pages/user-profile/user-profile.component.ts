@@ -20,6 +20,17 @@ export class UserProfileComponent implements OnInit {
 
   ngOnInit() {
 
+    if ( this.userService.currentUser == null ) {
+
+      let subscription = this.userService.currentUserIsLoaded.subscribe( () => {
+        this.ngOnInit();
+        subscription.unsubscribe();
+      } );
+
+      return;
+
+    }
+
     if ( this.userService.currentUser.clientId == null ) return;
 
     this.isClientLoading = true;

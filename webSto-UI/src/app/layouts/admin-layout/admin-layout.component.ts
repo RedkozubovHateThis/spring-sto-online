@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {Router} from "@angular/router";
+import {Router, NavigationEnd} from "@angular/router";
 import {UserService} from "../../api/user.service";
 
 @Component({
@@ -10,21 +10,26 @@ import {UserService} from "../../api/user.service";
 export class AdminLayoutComponent implements OnInit {
 
   constructor(router:Router, userService:UserService) {
-    // within our constructor we can define our subscription
-    // and then decide what to do when this event is triggered.
-    // in this case I simply update my route string.
     router.events.subscribe(val => {
-      if (location.hash != "") {
-        if ( !userService.isAuthenticated &&
-          !location.hash.includes( 'login' ) &&
+
+      if ( val instanceof NavigationEnd && location.hash != "" ) {
+
+        if ( !location.hash.includes( 'login' ) &&
           !location.hash.includes( 'register' ) ) {
 
-          userService.getUserFromStorage();
+          if ( !userService.isAuthenticated() ) {
 
-          if ( !userService.isAuthenticated )
-            router.navigate(['login']);
+            if ( userService.isTokenExists() )
+              userService.getCurrentUser();
+            else
+              router.navigate(['login']);
+
+          }
+          else if ( userService.isAuthenticated() )
+            userService.getCurrentUser();
 
         }
+
       }
     });
   }

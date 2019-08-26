@@ -1,6 +1,6 @@
-import {Injectable} from "@angular/core";
+import {Injectable, Input, Output, EventEmitter} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs";
+import {Observable, Subject} from "rxjs";
 import {User} from "../model/postgres/auth/user";
 import {Router} from "@angular/router";
 import {TransferService} from "./transfer.service";
@@ -11,9 +11,11 @@ export class UserService implements TransferService<User> {
   constructor(private http: HttpClient, private router: Router) { }
   private baseUrl: string = 'http://localhost:8181/';
   currentUser: User;
-  isAuthenticated: boolean = false;
   isSaving:boolean = false;
   transferModel:User;
+
+  @Output()
+  public currentUserIsLoaded: Subject<User> = new Subject<User>();
 
   login(loginPayload) {
     const headers = {
@@ -24,14 +26,13 @@ export class UserService implements TransferService<User> {
   }
 
   logout() {
-    this.router.navigate(['login']);
-    this.isAuthenticated = false;
+    localStorage.setItem("isAuthenticated", "false");
     this.currentUser = null;
-    localStorage.setItem( 'currentUser', null );
-    sessionStorage.setItem( "token", null );
+    localStorage.setItem( "token", null );
+    this.router.navigate(['login']);
   }
 
-  getUsername() {
+  getUsername(): string {
     if ( this.currentUser != null ) {
       if ( this.currentUser.fio != null )
         return this.currentUser.fio;
@@ -43,14 +44,24 @@ export class UserService implements TransferService<User> {
         return this.currentUser.username;
     }
     else
-      return undefined;
+      return null;
+  }
+
+  isTokenExists(): boolean {
+    return localStorage.getItem("token") != null;
+  }
+
+  isAuthenticated(): boolean {
+    let isAuthenticated = localStorage.getItem('isAuthenticated') as unknown;
+
+    return isAuthenticated != null && isAuthenticated as boolean;
   }
 
   getHeaders() {
 
-    if ( sessionStorage.getItem("token") != null ) {
+    if ( this.isTokenExists() ) {
       return {
-        'Authorization': 'Bearer ' + JSON.parse(sessionStorage.getItem("token")).access_token
+        'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem("token")).access_token
       };
     }
     else {
@@ -60,14 +71,14 @@ export class UserService implements TransferService<User> {
 
   }
 
-  getCurrentUser() {
+  authenticate() {
 
     const headers = this.getHeaders();
 
-    return this.http.get( this.baseUrl + 'secured/users/currentUser', {headers} ).subscribe( data => {
+    this.http.get( this.baseUrl + 'secured/users/currentUser', {headers} ).subscribe( data => {
 
       this.setCurrentUserData( data as User );
-      this.isAuthenticated = true;
+      localStorage.setItem("isAuthenticated", "true");
 
       this.router.navigate(['dashboard']);
 
@@ -75,26 +86,19 @@ export class UserService implements TransferService<User> {
 
   }
 
-  private setCurrentUserData(user:User) {
-    this.currentUser = user;
-    localStorage.setItem( 'currentUser', JSON.stringify(this.currentUser) );
+  getCurrentUser() {
+
+    const headers = this.getHeaders();
+
+    this.http.get( this.baseUrl + 'secured/users/currentUser', {headers} ).subscribe( data => {
+      this.setCurrentUserData( data as User );
+      this.currentUserIsLoaded.next( this.currentUser );
+    } );
+
   }
 
-  getUserFromStorage() {
-
-    if ( this.currentUser == null ) {
-
-      let storageUser:string = localStorage.getItem("currentUser");
-
-      if ( storageUser != null ) {
-        this.currentUser = JSON.parse( storageUser ) as User;
-        this.isAuthenticated = true;
-      }
-      else
-        this.logout();
-
-    }
-
+  private setCurrentUserData(user:User) {
+    this.currentUser = user;
   }
 
   createUser(user: User) {

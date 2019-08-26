@@ -29,10 +29,10 @@ export class LoginComponent implements OnInit {
 
     this.userService.login(body.toString())
       .subscribe(data => {
-      sessionStorage.setItem('token', JSON.stringify(data));
+      localStorage.setItem('token', JSON.stringify(data));
       this.isLoggingIn = false;
 
-      this.userService.getCurrentUser();
+      this.userService.authenticate();
     }, error => {
       this.invalidLogin = true;
       this.isLoggingIn = false;

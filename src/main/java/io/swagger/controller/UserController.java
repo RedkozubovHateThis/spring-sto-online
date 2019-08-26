@@ -21,10 +21,7 @@ public class UserController {
     @GetMapping("/currentUser")
     public ResponseEntity getCurrentUser() {
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if ( auth == null ) return ResponseEntity.status(401).build();
-
-        User currentUser = (User) auth.getPrincipal();
+        User currentUser = userRepository.findCurrentUser();
 
         if ( currentUser == null ) return ResponseEntity.status(404).build();
 

@@ -11,8 +11,15 @@ export class User {
   fio: string;
   phone: string;
   email: string;
-  enabled:boolean;
+  enabled: boolean;
   roles: UserRole[];
   clientId: number;
+
+  //TODO: подключить js-data-angular и переделать на computed property
+  admin: boolean;
+  client: boolean;
+  guest: boolean;
+  serviceLeader: boolean;
+  moderator: boolean;
 
 }

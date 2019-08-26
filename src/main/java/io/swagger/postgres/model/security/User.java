@@ -2,6 +2,7 @@ package io.swagger.postgres.model.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.helper.UserHelper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
@@ -79,6 +80,26 @@ public class User implements UserDetails, Serializable {
                     this.middleName.substring(0, 1) + ".";
         else
             return null;
+    }
+
+    public Boolean isAdmin() {
+        return UserHelper.hasRole( this, "ADMIN" );
+    }
+
+    public Boolean isClient() {
+        return UserHelper.hasRole( this, "CLIENT" );
+    }
+
+    public Boolean isGuest() {
+        return UserHelper.hasRole( this, "GUEST" );
+    }
+
+    public Boolean isServiceLeader() {
+        return UserHelper.hasRole( this, "SERVICE_LEADER" );
+    }
+
+    public Boolean isModerator() {
+        return UserHelper.hasRole( this, "MODERATOR" );
     }
 
     @JsonIgnore
