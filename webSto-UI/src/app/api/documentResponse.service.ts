@@ -11,8 +11,8 @@ import {TransferService} from "./transfer.service";
 export class DocumentResponseService implements TransferService<DocumentResponse> {
 
   constructor(private http: HttpClient, private router: Router, private userService:UserService) { }
-  baseUrl: string = 'http://localhost:8181/';
-  exchangingModel:DocumentResponse;
+  private baseUrl: string = 'http://localhost:8181/';
+  private transferModel:DocumentResponse;
 
   getLast5() {
     return this.getdocumentResponse(0, 5, -5);
@@ -37,11 +37,15 @@ export class DocumentResponseService implements TransferService<DocumentResponse
   }
 
   getTransferModel() {
-    return this.exchangingModel;
+    return this.transferModel;
+  }
+
+  setTransferModel(documentResponse: DocumentResponse) {
+    this.transferModel = documentResponse;
   }
 
   resetTransferModel() {
-    this.exchangingModel = null;
+    this.transferModel = null;
   }
 
 }

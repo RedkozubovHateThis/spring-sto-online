@@ -16,6 +16,7 @@ export abstract class ModelTransfer<M, I> implements OnInit {
     if ( this.transferService.getTransferModel() != null ) {
       this.model = this.transferService.getTransferModel();
       this.transferService.resetTransferModel();
+      this.onTransferComplete();
     }
     else {
       this.routeSub = this.route.params.subscribe(params => {
@@ -33,5 +34,6 @@ export abstract class ModelTransfer<M, I> implements OnInit {
   }
 
   abstract requestData();
+  abstract onTransferComplete();
 
 }

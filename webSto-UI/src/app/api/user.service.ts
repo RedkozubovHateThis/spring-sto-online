@@ -11,8 +11,8 @@ export class UserService implements TransferService<User> {
   constructor(private http: HttpClient, private router: Router) { }
   private baseUrl: string = 'http://localhost:8181/';
   currentUser: User;
-  isSaving:boolean = false;
-  transferModel:User;
+  isSaving: boolean = false;
+  private transferModel: User;
 
   @Output()
   public currentUserIsLoaded: Subject<User> = new Subject<User>();
@@ -105,14 +105,16 @@ export class UserService implements TransferService<User> {
     return this.http.post(this.baseUrl + 'oauth/register', user);
   }
 
-  saveUser(user: User, updateCurrentUserData:boolean) {
+  saveUser(user: User) {
 
     const headers = this.getHeaders();
     this.isSaving = true;
 
     return this.http.put( this.baseUrl + `secured/users/${user.id}`, user,{headers} ).subscribe( data => {
 
-      if ( updateCurrentUserData )
+      let user: User = data as User;
+
+      if ( this.currentUser != null && this.currentUser.id === user.id )
         this.setCurrentUserData( data as User );
 
       this.isSaving = false;
@@ -137,6 +139,10 @@ export class UserService implements TransferService<User> {
 
   getTransferModel() {
     return this.transferModel;
+  }
+
+  setTransferModel(user: User) {
+    this.transferModel = user;
   }
 
   resetTransferModel() {

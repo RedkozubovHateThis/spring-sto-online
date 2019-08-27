@@ -33,7 +33,7 @@ export class UsersComponent extends Pagination {
   }
 
   private navigate(user:User) {
-    this.userService.transferModel = user;
+    this.userService.setTransferModel( user );
     this.router.navigate(['/users', user.id]);
   }
 

@@ -6,19 +6,19 @@ import {User} from "../../model/postgres/auth/user";
 import {ModelTransfer} from "../model.transfer";
 import {ClientResponse} from "../../model/firebird/clientResponse";
 import {ClientResponseService} from "../../api/clientResponse.service";
-import {DocumentResponse} from "../../model/firebird/documentResponse";
 
 @Component({
-  selector: 'app-user',
-  templateUrl: './user.component.html',
-  styleUrls: ['./user.component.scss']
+  selector: 'app-user-edit',
+  templateUrl: './userEdit.component.html',
+  styleUrls: ['./userEdit.component.scss']
 })
-export class UserComponent extends ModelTransfer<User, number> implements OnInit {
+export class UserEditComponent extends ModelTransfer<User, number> implements OnInit {
 
   private isLoading: boolean = false;
+
+  private vinNumber: string;
   private clientResponse: ClientResponse;
   private isClientLoading: boolean = false;
-  private title: string = "Данные пользователя";
 
   constructor(private userService: UserService, protected route: ActivatedRoute,
               private clientResponseService: ClientResponseService, private router: Router) {
@@ -36,6 +36,29 @@ export class UserComponent extends ModelTransfer<User, number> implements OnInit
     } );
   }
 
+  findClientByVin() {
+
+    if ( this.vinNumber == null || this.vinNumber.length == 0 ) return;
+
+    this.isClientLoading = true;
+
+    this.clientResponseService.getOneByVin(this.vinNumber).subscribe( data => {
+      this.clientResponse = data as ClientResponse;
+      this.isClientLoading = false;
+    }, () => {
+      this.isClientLoading = false;
+    } );
+
+  }
+
+  linkClient(user:User) {
+    if ( this.clientResponse == null ) return;
+
+    this.vinNumber = null;
+    user.clientId = this.clientResponse.id;
+    this.userService.saveUser( user );
+  }
+
   requestClient() {
     if ( this.model.clientId == null ) return;
 
@@ -51,11 +74,6 @@ export class UserComponent extends ModelTransfer<User, number> implements OnInit
 
   onTransferComplete() {
     this.requestClient();
-  }
-
-  private navigate(user: User) {
-    this.userService.setTransferModel( user );
-    this.router.navigate(['/users', user.id, 'edit']);
   }
 
 }

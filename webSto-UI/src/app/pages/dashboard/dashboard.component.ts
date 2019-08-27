@@ -20,8 +20,8 @@ import { Router } from '@angular/router';
 })
 export class DashboardComponent implements OnInit {
 
-  public last5:Pageable<DocumentResponse>;
-  isLoading:boolean = false;
+  private last5: Pageable<DocumentResponse>;
+  private isLoading: boolean = false;
 
   public datasets: any;
   public data: any;
@@ -77,7 +77,7 @@ export class DashboardComponent implements OnInit {
   }
 
   private navigate(documentResponse:DocumentResponse) {
-    this.documentResponseService.exchangingModel = documentResponse;
+    this.documentResponseService.setTransferModel( documentResponse );
     this.router.navigate(['/documents', documentResponse.id]);
   }
 

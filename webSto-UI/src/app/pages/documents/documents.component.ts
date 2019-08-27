@@ -33,7 +33,7 @@ export class DocumentsComponent extends Pagination {
   }
 
   private navigate(documentResponse:DocumentResponse) {
-    this.documentResponseService.exchangingModel = documentResponse;
+    this.documentResponseService.setTransferModel( documentResponse );
     this.router.navigate(['/documents', documentResponse.id]);
   }
 
