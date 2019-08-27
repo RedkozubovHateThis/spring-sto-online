@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import {UserService} from "../../api/user.service";
@@ -20,7 +21,7 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
   private clientResponse: ClientResponse;
   private isClientLoading: boolean = false;
 
-  constructor(private userService: UserService, protected route: ActivatedRoute,
+  constructor(private userService: UserService, protected route: ActivatedRoute, private location: Location,
               private clientResponseService: ClientResponseService, private router: Router) {
     super(userService, route);
   }
