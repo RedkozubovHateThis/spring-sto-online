@@ -23,7 +23,7 @@ public class UserController {
 
         User currentUser = userRepository.findCurrentUser();
 
-        if ( currentUser == null ) return ResponseEntity.status(404).build();
+        if ( currentUser == null ) return ResponseEntity.status(401).build();
 
         return ResponseEntity.ok( currentUser );
 
@@ -51,20 +51,38 @@ public class UserController {
     @GetMapping("/findAll")
     public ResponseEntity findAll(Pageable pageable) {
 
-        return ResponseEntity.ok( userRepository.findAll(pageable) );
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( currentUser == null ) return ResponseEntity.status(401).build();
+
+        if ( UserHelper.hasRole( currentUser, "ADMIN" ) )
+            return ResponseEntity.ok( userRepository.findAll(pageable) );
+        else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
+            return ResponseEntity.ok( userRepository.findAllByModeratorId(currentUser.getId(), pageable) );
+        }
+
+        return ResponseEntity.status(403).build();
 
     }
 
     @GetMapping("/{id}")
     public ResponseEntity findOne(@PathVariable("id") Long id) {
 
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( currentUser == null ) return ResponseEntity.status(401).build();
+
         User user = userRepository.findOne(id);
 
         if ( user == null )
             return ResponseEntity.status(404).build();
 
-        return ResponseEntity.ok( user );
-
+        if ( currentUser.getId().equals( user.getId() ) ||
+                UserHelper.hasRole(currentUser, "ADMIN") ||
+                ( UserHelper.hasRole( currentUser, "MODERATOR" ) && user.getModeratorId() != null && user.getModeratorId().equals( currentUser.getId() ) ) )
+            return ResponseEntity.ok( user );
+        else
+            return ResponseEntity.status(403).build();
     }
 
 }

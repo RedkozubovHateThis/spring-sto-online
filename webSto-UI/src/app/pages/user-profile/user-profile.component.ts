@@ -5,6 +5,8 @@ import {ClientResponse} from "../../model/firebird/clientResponse";
 import {ClientResponseService} from "../../api/clientResponse.service";
 import {User} from "../../model/postgres/auth/user";
 import { Router } from '@angular/router';
+import {OrganizationResponseService} from "../../api/organizationResponse.service";
+import {OrganizationResponse} from "../../model/firebird/organizationResponse";
 
 @Component({
   selector: 'app-user-profile',
@@ -15,11 +17,12 @@ export class UserProfileComponent implements OnInit {
 
   private model: User;
   private clientResponse:ClientResponse;
-  private isClientLoading:boolean = false;
+  private organizationResponse: OrganizationResponse;
+  private isADLoading:boolean = false;
   private title: string = "Профиль";
 
   constructor(private userService:UserService, private clientResponseService:ClientResponseService,
-              private router: Router) { }
+              private router: Router, private organizationResponseService: OrganizationResponseService) { }
 
   ngOnInit() {
 
@@ -35,22 +38,44 @@ export class UserProfileComponent implements OnInit {
     }
 
     this.model = this.userService.currentUser;
-    if ( this.userService.currentUser.clientId == null ) return;
 
-    this.isClientLoading = true;
-
-    this.clientResponseService.getOne(this.userService.currentUser.clientId).subscribe( data => {
-      this.clientResponse = data as ClientResponse;
-      this.isClientLoading = false;
-    }, () => {
-      this.isClientLoading = false;
-    } );
+    if ( this.model.client )
+      this.requestClient();
+    else if ( this.model.serviceLeader )
+      this.requestOrganization();
 
   }
 
   private navigate(user: User) {
     this.userService.setTransferModel( user );
     this.router.navigate(['/users', user.id, 'edit']);
+  }
+
+  requestClient() {
+    if ( this.model.clientId == null ) return;
+
+    this.isADLoading = true;
+
+    this.clientResponseService.getOne(this.model.clientId).subscribe( data => {
+      this.clientResponse = data as ClientResponse;
+      this.isADLoading = false;
+    }, () => {
+      this.isADLoading = false;
+    } );
+  }
+
+  requestOrganization() {
+
+    if ( this.model.organizationId == null ) return;
+
+    this.isADLoading = true;
+
+    this.organizationResponseService.getOne(this.model.organizationId).subscribe( data => {
+      this.organizationResponse = data as OrganizationResponse;
+      this.isADLoading = false;
+    }, () => {
+      this.isADLoading = false;
+    } );
   }
 
 }

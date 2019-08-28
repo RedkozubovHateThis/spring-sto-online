@@ -22,6 +22,7 @@ import { registerLocaleData } from '@angular/common';
 import localeRu from '@angular/common/locales/ru';
 import { ErrorInterceptor } from './variables/error.interceptor';
 import {ClientResponseService} from "./api/clientResponse.service";
+import {OrganizationResponseService} from "./api/organizationResponse.service";
 registerLocaleData(localeRu, 'ru');
 
 @NgModule({
@@ -46,14 +47,14 @@ registerLocaleData(localeRu, 'ru');
     //LoginComponent,
    // RegisterComponent
   ],
-  providers: [UserService, DocumentResponseService, ClientResponseService,
+  providers: [UserService, DocumentResponseService, ClientResponseService, OrganizationResponseService,
     {
       provide: HTTP_INTERCEPTORS,
-      useFactory: function(userService:UserService) {
-        return new ErrorInterceptor(userService);
+      useFactory: function(userService: UserService, router: Router) {
+        return new ErrorInterceptor(userService, router);
       },
       multi: true,
-      deps: [UserService]
+      deps: [UserService, Router]
     }
   ],
   bootstrap: [AppComponent]

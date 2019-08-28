@@ -55,12 +55,19 @@
       </div>
       <!-- Navigation -->
       <ul class="navbar-nav">
-          <li *ngFor="let menuItem of menuItems" class="{{menuItem.class}} nav-item">
-              <a routerLinkActive="active" [routerLink]="[menuItem.path]" class="nav-link">
-                  <i class="{{menuItem.icon}}"></i>
-                  {{menuItem.title}}
-              </a>
-          </li>
+        <a routerLinkActive="active" [routerLink]="['/dashboard']" class="nav-link">
+            <i class="fas fa-tv text-buro-green"></i> Главная
+        </a>
+        <a routerLinkActive="active" [routerLink]="['/documents']" class="nav-link">
+            <i class="fas fa-list text-buro-green"></i> Заказ-наряды
+        </a>
+        <a routerLinkActive="active" [routerLink]="['/user-profile']" class="nav-link">
+            <i class="fas fa-user text-buro-green"></i> Профиль
+        </a>
+        <a routerLinkActive="active" [routerLink]="['/users']" class="nav-link"
+           *ngIf="userService.currentUser != null && ( userService.currentUser.admin || userService.currentUser.moderator )">
+            <i class="fas fa-users text-buro-green"></i> Пользователи
+        </a>
       </ul>
     </div>
   </div>

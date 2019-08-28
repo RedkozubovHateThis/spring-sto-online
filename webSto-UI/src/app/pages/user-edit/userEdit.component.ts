@@ -7,6 +7,8 @@ import {User} from "../../model/postgres/auth/user";
 import {ModelTransfer} from "../model.transfer";
 import {ClientResponse} from "../../model/firebird/clientResponse";
 import {ClientResponseService} from "../../api/clientResponse.service";
+import {OrganizationResponseService} from "../../api/organizationResponse.service";
+import {OrganizationResponse} from "../../model/firebird/organizationResponse";
 
 @Component({
   selector: 'app-user-edit',
@@ -18,11 +20,14 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
   private isLoading: boolean = false;
 
   private vinNumber: string;
+  private inn: string;
   private clientResponse: ClientResponse;
-  private isClientLoading: boolean = false;
+  private organizationResponse: OrganizationResponse;
+  private isADLoading: boolean = false;
 
   constructor(private userService: UserService, protected route: ActivatedRoute, private location: Location,
-              private clientResponseService: ClientResponseService, private router: Router) {
+              private clientResponseService: ClientResponseService, private router: Router,
+              private organizationResponseService: OrganizationResponseService) {
     super(userService, route);
   }
 
@@ -31,7 +36,12 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
     this.userService.getOne(this.id).subscribe( data => {
       this.model = data as User;
       this.isLoading = false;
-      this.requestClient();
+
+      if ( this.model.client )
+        this.requestClient();
+      else if ( this.model.serviceLeader )
+        this.requestOrganization();
+
     }, error => {
       this.isLoading = false;
     } );
@@ -41,13 +51,28 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
 
     if ( this.vinNumber == null || this.vinNumber.length == 0 ) return;
 
-    this.isClientLoading = true;
+    this.isADLoading = true;
 
     this.clientResponseService.getOneByVin(this.vinNumber).subscribe( data => {
       this.clientResponse = data as ClientResponse;
-      this.isClientLoading = false;
+      this.isADLoading = false;
     }, () => {
-      this.isClientLoading = false;
+      this.isADLoading = false;
+    } );
+
+  }
+
+  findOrganizationByInn() {
+
+    if ( this.inn == null || this.inn.length == 0 ) return;
+
+    this.isADLoading = true;
+
+    this.organizationResponseService.getOneByInn(this.inn).subscribe(data => {
+      this.organizationResponse = data as OrganizationResponse;
+      this.isADLoading = false;
+    }, () => {
+      this.isADLoading = false;
     } );
 
   }
@@ -60,21 +85,45 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
     this.userService.saveUser( user );
   }
 
+  linkOrganization(user:User) {
+    if ( this.organizationResponse == null ) return;
+
+    this.inn = null;
+    user.organizationId = this.organizationResponse.id;
+    this.userService.saveUser( user );
+  }
+
   requestClient() {
     if ( this.model.clientId == null ) return;
 
-    this.isClientLoading = true;
+    this.isADLoading = true;
 
     this.clientResponseService.getOne(this.model.clientId).subscribe( data => {
       this.clientResponse = data as ClientResponse;
-      this.isClientLoading = false;
+      this.isADLoading = false;
     }, () => {
-      this.isClientLoading = false;
+      this.isADLoading = false;
+    } );
+  }
+
+  requestOrganization() {
+    if ( this.model.organizationId == null ) return;
+
+    this.isADLoading = true;
+
+    this.organizationResponseService.getOne(this.model.organizationId).subscribe( data => {
+      this.organizationResponse = data as OrganizationResponse;
+      this.isADLoading = false;
+    }, () => {
+      this.isADLoading = false;
     } );
   }
 
   onTransferComplete() {
-    this.requestClient();
+    if ( this.model.client )
+      this.requestClient();
+    else if ( this.model.serviceLeader )
+      this.requestOrganization();
   }
 
 }

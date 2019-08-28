@@ -14,11 +14,26 @@ import java.util.List;
 public interface DocumentServiceDetailRepository extends PagingAndSortingRepository<DocumentServiceDetail, Integer> {
 
     Page<DocumentServiceDetail> findAll(Pageable pageable);
+
     @Query("SELECT DISTINCT dsd FROM DocumentServiceDetail AS dsd " +
             "INNER JOIN dsd.documentOutHeader AS doh " +
             "INNER JOIN doh.documentOut AS do " +
             "INNER JOIN do.client AS c " +
             "WHERE c.id = :clientId")
     Page<DocumentServiceDetail> findByClientId(@Param("clientId") Integer clientId, Pageable pageable);
+
+    @Query("SELECT DISTINCT dsd FROM DocumentServiceDetail AS dsd " +
+            "INNER JOIN dsd.documentOutHeader AS doh " +
+            "INNER JOIN doh.documentOut AS do " +
+            "INNER JOIN do.client AS c " +
+            "WHERE c.id IN ( :clientIds )")
+    Page<DocumentServiceDetail> findByClientIds(@Param("clientIds") List<Integer> clientIds, Pageable pageable);
+
+    @Query("SELECT DISTINCT dsd FROM DocumentServiceDetail AS dsd " +
+            "INNER JOIN dsd.documentOutHeader AS doh " +
+            "INNER JOIN doh.documentOut AS do " +
+            "INNER JOIN do.organization AS o " +
+            "WHERE o.id = :organizationId")
+    Page<DocumentServiceDetail> findByOrganizationId(@Param("organizationId") Integer organizationId, Pageable pageable);
 
 }

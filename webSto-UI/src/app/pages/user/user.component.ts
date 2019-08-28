@@ -7,6 +7,8 @@ import {ModelTransfer} from "../model.transfer";
 import {ClientResponse} from "../../model/firebird/clientResponse";
 import {ClientResponseService} from "../../api/clientResponse.service";
 import {DocumentResponse} from "../../model/firebird/documentResponse";
+import {OrganizationResponse} from "../../model/firebird/organizationResponse";
+import {OrganizationResponseService} from "../../api/organizationResponse.service";
 
 @Component({
   selector: 'app-user',
@@ -17,11 +19,13 @@ export class UserComponent extends ModelTransfer<User, number> implements OnInit
 
   private isLoading: boolean = false;
   private clientResponse: ClientResponse;
-  private isClientLoading: boolean = false;
+  private organizationResponse: OrganizationResponse;
+  private isADLoading: boolean = false;
   private title: string = "Данные пользователя";
 
   constructor(private userService: UserService, protected route: ActivatedRoute,
-              private clientResponseService: ClientResponseService, private router: Router) {
+              private clientResponseService: ClientResponseService, private router: Router,
+              private organizationResponseService: OrganizationResponseService) {
     super(userService, route);
   }
 
@@ -30,7 +34,12 @@ export class UserComponent extends ModelTransfer<User, number> implements OnInit
     this.userService.getOne(this.id).subscribe( data => {
       this.model = data as User;
       this.isLoading = false;
-      this.requestClient();
+
+      if ( this.model.client )
+        this.requestClient();
+      else if ( this.model.serviceLeader )
+        this.requestOrganization();
+
     }, error => {
       this.isLoading = false;
     } );
@@ -39,18 +48,34 @@ export class UserComponent extends ModelTransfer<User, number> implements OnInit
   requestClient() {
     if ( this.model.clientId == null ) return;
 
-    this.isClientLoading = true;
+    this.isADLoading = true;
 
     this.clientResponseService.getOne(this.model.clientId).subscribe( data => {
       this.clientResponse = data as ClientResponse;
-      this.isClientLoading = false;
+      this.isADLoading = false;
     }, () => {
-      this.isClientLoading = false;
+      this.isADLoading = false;
+    } );
+  }
+
+  requestOrganization() {
+    if ( this.model.organizationId == null ) return;
+
+    this.isADLoading = true;
+
+    this.organizationResponseService.getOne(this.model.organizationId).subscribe( data => {
+      this.organizationResponse = data as OrganizationResponse;
+      this.isADLoading = false;
+    }, () => {
+      this.isADLoading = false;
     } );
   }
 
   onTransferComplete() {
-    this.requestClient();
+    if ( this.model.client )
+      this.requestClient();
+    else if ( this.model.serviceLeader )
+      this.requestOrganization();
   }
 
   private navigate(user: User) {

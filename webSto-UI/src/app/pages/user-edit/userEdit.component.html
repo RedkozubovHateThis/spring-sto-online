@@ -9,11 +9,23 @@
               <h3 class="mb-0">АвтоДилер</h3>
             </div>
             <div class="col-4 text-right" *ngIf="model != null">
-              <button class="btn btn-sm btn-buro-green"
-                      [disabled]="userService.isSaving || clientResponse == null || ( clientResponse.id == model.clientId )"
-                      (click)="linkClient(model)">
-                Привязать <span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
-              </button>
+
+              <span *ngIf="model.client">
+                <button class="btn btn-sm btn-buro-green"
+                        [disabled]="userService.isSaving || clientResponse == null || ( clientResponse.id == model.clientId )"
+                        (click)="linkClient(model)">
+                  Привязать <span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
+                </button>
+              </span>
+
+              <span *ngIf="model.serviceLeader">
+                <button class="btn btn-sm btn-buro-green"
+                        [disabled]="userService.isSaving || organizationResponse == null || ( organizationResponse.id == model.organizationId )"
+                        (click)="linkOrganization(model)">
+                  Привязать <span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
+                </button>
+              </span>
+
             </div>
           </div>
         </div>
@@ -23,30 +35,54 @@
           <div class="row">
             <div class="col-lg-12" *ngIf="model != null">
 
-              <div class="form-group">
+              <div class="form-group" *ngIf="model.client">
+
                 <label class="form-control-label" for="vin-number">VIN - номер</label>
                 <div class="input-group mb-3">
                   <input type="text" id="vin-number" class="form-control" placeholder="VIN - номер"
                          [(ngModel)]="vinNumber" name="vinNumber">
                   <div class="input-group-append">
                     <button class="btn btn-buro-green" type="button" (click)="findClientByVin()"
-                            [disabled]="vinNumber == null || vinNumber.length == 0 || isClientLoading">
-                      Найти<span *ngIf="isClientLoading">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
+                            [disabled]="vinNumber == null || vinNumber.length == 0 || isADLoading">
+                      Найти<span *ngIf="isADLoading">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
                     </button>
                   </div>
                 </div>
 
               </div>
+
+              <div class="form-group" *ngIf="model.serviceLeader">
+
+                <label class="form-control-label" for="vin-number">ИНН</label>
+                <div class="input-group mb-3">
+                  <input type="text" id="inn" class="form-control" placeholder="ИНН"
+                         [(ngModel)]="inn" name="inn">
+                  <div class="input-group-append">
+                    <button class="btn btn-buro-green" type="button" (click)="findOrganizationByInn()"
+                            [disabled]="inn == null || inn.length == 0 || isADLoading">
+                      Найти<span *ngIf="isADLoading">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
             </div>
           </div>
 
           <div class="row">
-            <div class="col-lg-12">
+            <div class="col-lg-12" *ngIf="model != null">
 
-              <div class="form-group" *ngIf="clientResponse != null">
-                <label class="form-control-label" for="input-username">Полное имя клиента</label>
-                <input type="text" id="client-full-name" class="form-control form-control-alternative" placeholder="Полное имя клиента"
+              <div class="form-group" *ngIf="model.client && clientResponse != null">
+                <label class="form-control-label" for="client-full-name">Имя клиента</label>
+                <input type="text" id="client-full-name" class="form-control form-control-alternative" placeholder="Имя клиента"
                        disabled [value]="clientResponse.fullName" name="clientFullName">
+              </div>
+
+              <div class="form-group" *ngIf="model.serviceLeader && organizationResponse != null">
+                <label class="form-control-label" for="organization-full-name">Наименование предприятия</label>
+                <input type="text" id="organization-full-name" class="form-control form-control-alternative" placeholder="Наименование предприятия"
+                       disabled [value]="organizationResponse.fullName" name="organizationFullName">
               </div>
 
             </div>

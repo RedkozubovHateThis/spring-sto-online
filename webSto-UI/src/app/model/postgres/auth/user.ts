@@ -14,6 +14,8 @@ export class User {
   enabled: boolean;
   roles: UserRole[];
   clientId: number;
+  organizationId: number;
+  moderatorId: number;
 
   //TODO: подключить js-data-angular и переделать на computed property
   admin: boolean;
@@ -21,5 +23,6 @@ export class User {
   guest: boolean;
   serviceLeader: boolean;
   moderator: boolean;
+  approved: boolean;
 
 }

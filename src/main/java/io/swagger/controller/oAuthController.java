@@ -51,6 +51,7 @@ public class oAuthController {
             user.setUsername( UUID.randomUUID().toString() );
 
         user.setEnabled(true);
+        user.setIsApproved(false);
         user.setPassword( userPasswordEncoder.encode( user.getPassword() ) );
 
         UserRole clientRole = userRoleRepository.findByName("CLIENT");

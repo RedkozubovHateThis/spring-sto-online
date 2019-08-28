@@ -34,16 +34,28 @@ public class DocumentDetailServiceController {
 
         Page<DocumentServiceDetail> result = null;
 
-        if ( UserHelper.hasRole("ADMIN") )
+        if ( UserHelper.hasRole(currentUser, "ADMIN") )
             result = documentsRepository.findAll(pageable);
-        else if ( UserHelper.hasRole("CLIENT") ) {
+        else if ( ( UserHelper.hasRole(currentUser, "MODERATOR") ) ) {
+
+            List<Integer> clientIds = userRepository.collectClientIds( currentUser.getId() );
+            result = documentsRepository.findByClientIds( clientIds, pageable );
+
+        }
+        else if ( UserHelper.hasRole(currentUser, "CLIENT") ) {
 
             if ( currentUser.getClientId() == null ) return ResponseEntity.status(403).build();
             result = documentsRepository.findByClientId( currentUser.getClientId(), pageable );
 
         }
+        else if ( UserHelper.hasRole(currentUser, "SERVICE_LEADER") ) {
 
-        if ( result == null ) return ResponseEntity.status(403).build();
+            if ( currentUser.getOrganizationId() == null ) return ResponseEntity.status(403).build();
+            result = documentsRepository.findByOrganizationId( currentUser.getOrganizationId(), pageable );
+
+        }
+
+        if ( result == null ) return ResponseEntity.status(404).build();
 
         List<DocumentServiceDetail> resultList = result.getContent();
         List<FirebirdResponse> responseList = resultList.stream()
