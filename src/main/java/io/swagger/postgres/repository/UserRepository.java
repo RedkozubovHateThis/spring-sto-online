@@ -26,6 +26,9 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
             "AND user.enabled = true")
     User findByUsername(@Param("username") String username);
 
+    @Query("SELECT u FROM User AS u " +
+            "WHERE u.id = :moderatorId " +
+            "OR u.moderatorId = :moderatorId")
     Page<User> findAllByModeratorId(@Param("moderatorId") Long moderatorId, Pageable pageable);
 
     @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT u.id FROM users AS u " +
