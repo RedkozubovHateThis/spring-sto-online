@@ -65,7 +65,7 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
 
     this.isClientLoading = true;
 
-    this.clientResponseService.getOne(this.userService.currentUser.clientId).subscribe( data => {
+    this.clientResponseService.getOne(this.model.clientId).subscribe( data => {
       this.clientResponse = data as ClientResponse;
       this.isClientLoading = false;
     }, () => {
