@@ -14,7 +14,7 @@ public class ServiceWorkTotalResponse {
     private Double workSum = 0.0;
     private List<ServiceWorkResponse> workList;
 
-    public ServiceWorkTotalResponse(DocumentOut documentOut) {
+    public ServiceWorkTotalResponse(DocumentOut documentOut, DocumentResponse documentResponse) {
 
         if ( documentOut == null ) return;
 
@@ -41,6 +41,8 @@ public class ServiceWorkTotalResponse {
             }
             return new ServiceWorkResponse(serviceWork);
         } ).collect( Collectors.toList() );
+
+        documentResponse.incrementSum(workSum);
 
     }
 

@@ -125,68 +125,133 @@
           </div>
 
           <div class="row form-group">
-            <div class="col-sm-6">
+            <div class="col-lg-12">
 
-              <h2>Работы</h2>
+              <div class="row form-group">
+                <div class="col-sm-6">
 
-            </div>
-            <div class="col-sm-6" style="text-align: right;">
+                  <h2>Работы</h2>
 
-              <span><span *ngIf="isUpdating"><i class="fas fa-spinner fa-spin"></i>&nbsp;</span>Сумма работ:&nbsp;</span><h2 style="display: inline-block;" *ngIf="model != null">{{model.serviceWork.workSum | number:'.2':'ru'}} р.</h2>
+                </div>
+                <div class="col-sm-6" style="text-align: right;">
+
+                  <span><span *ngIf="isUpdating"><i class="fas fa-spinner fa-spin"></i>&nbsp;</span>Сумма работ:&nbsp;</span><h2 style="display: inline-block;" *ngIf="model != null">{{model.serviceWork.workSum | number:'.2':'ru'}} р.</h2>
+
+                </div>
+              </div>
+
+              <div class="table-responsive">
+                <table class="table table-flush table-hover">
+                  <thead class="thead-light">
+                  <tr>
+                    <th scope="col">Наименование работ</th>
+                    <th scope="col" style="width: 175px;" *ngIf="userService.currentUser && userService.currentUser.serviceLeader">Стоимость по Н/Ч</th>
+                    <th scope="col" style="text-align: right; width: 175px;">
+                      Стоимость работ
+                      <div class="text-muted">
+                        Кратность
+                      </div>
+                    </th>
+                  </tr>
+                  </thead>
+                  <tbody *ngIf="model != null">
+                  <tr *ngFor="let work of model.serviceWork.workList">
+                    <th>
+                      {{work.name}}
+                    </th>
+                    <th *ngIf="userService.currentUser && userService.currentUser.serviceLeader">
+                      <div class="input-group input-group-sm" *ngIf="work.byPrice; else byPriceNorm">
+                        <input type="number" class="form-control"
+                               [(ngModel)]="work.price" [placeholder]="work.price"/>
+                        <div class="input-group-append">
+                          <button class="btn btn-buro-green" type="button" (click)="updatePrice(model, work, work.price)"
+                                  [disabled]="isUpdating">
+                            <i class="fas fa-check"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <ng-template #byPriceNorm>
+                        <div class="input-group input-group-sm">
+                          <input type="number" class="form-control"
+                                 [(ngModel)]="work.priceNorm" [placeholder]="work.priceNorm"/>
+                          <div class="input-group-append">
+                            <button class="btn btn-buro-green" type="button" (click)="updatePrice(model, work, work.priceNorm)"
+                                    [disabled]="isUpdating">
+                              <i class="fas fa-check"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </ng-template>
+                    </th>
+                    <th style="text-align: right;">
+                      <div>{{work.total | number:'.2':'ru'}} р.</div>
+                      <div class="text-muted" *ngIf="work.quantity != null && work.quantity > 1">{{work.quantity}}</div>
+                    </th>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
 
             </div>
           </div>
 
-          <div class="table-responsive">
-            <table class="table table-flush table-hover">
-              <thead class="thead-light">
-              <tr>
-                <th scope="col">Наименование работ</th>
-                <th scope="col" style="width: 175px;" *ngIf="userService.currentUser && userService.currentUser.serviceLeader">Стоимость по Н/Ч</th>
-                <th scope="col" style="text-align: right; width: 175px;">
-                  Стоимость работ
-                  <div class="text-muted">
-                    Кратность
-                  </div>
-                </th>
-              </tr>
-              </thead>
-              <tbody *ngIf="model != null">
-              <tr *ngFor="let work of model.serviceWork.workList">
-                <th>
-                  {{work.name}}
-                </th>
-                <th *ngIf="userService.currentUser && userService.currentUser.serviceLeader">
-                  <div class="input-group input-group-sm" *ngIf="work.byPrice; else byPriceNorm">
-                    <input type="number" class="form-control"
-                           [(ngModel)]="work.price" [placeholder]="work.price"/>
-                    <div class="input-group-append">
-                      <button class="btn btn-buro-green" type="button" (click)="updatePrice(model, work, work.price)"
-                              [disabled]="isUpdating">
-                        <i class="fas fa-check"></i>
-                      </button>
-                    </div>
-                  </div>
-                  <ng-template #byPriceNorm>
-                    <div class="input-group input-group-sm">
-                      <input type="number" class="form-control"
-                             [(ngModel)]="work.priceNorm" [placeholder]="work.priceNorm"/>
-                      <div class="input-group-append">
-                        <button class="btn btn-buro-green" type="button" (click)="updatePrice(model, work, work.priceNorm)"
-                                [disabled]="isUpdating">
-                          <i class="fas fa-check"></i>
-                        </button>
+          <div class="row form-group">
+            <div class="col-lg-12">
+
+              <div class="row form-group">
+                <div class="col-sm-6">
+
+                  <h2>Товары</h2>
+
+                </div>
+                <div class="col-sm-6" style="text-align: right;">
+
+                  <span><span *ngIf="isUpdating"><i class="fas fa-spinner fa-spin"></i>&nbsp;</span>Сумма товаров:&nbsp;</span><h2 style="display: inline-block;" *ngIf="model != null">{{model.serviceGoodsAddon.addonsSum | number:'.2':'ru'}} р.</h2>
+
+                </div>
+              </div>
+
+              <div class="table-responsive">
+                <table class="table table-flush table-hover">
+                  <thead class="thead-light">
+                  <tr>
+                    <th scope="col">Наименование товара</th>
+                    <th scope="col" style="width: 175px;" *ngIf="userService.currentUser && userService.currentUser.serviceLeader">Стоимость товара</th>
+                    <th scope="col" style="text-align: right; width: 175px;">
+                      Стоимость товара
+                      <div class="text-muted">
+                        Количество
                       </div>
-                    </div>
-                  </ng-template>
-                </th>
-                <th style="text-align: right;">
-                  <div>{{work.total | number:'.2':'ru'}} р.</div>
-                  <div class="text-muted" *ngIf="work.quantity != null && work.quantity > 1">{{work.quantity}}</div>
-                </th>
-              </tr>
-              </tbody>
-            </table>
+                    </th>
+                  </tr>
+                  </thead>
+                  <tbody *ngIf="model != null">
+                  <tr *ngFor="let addon of model.serviceGoodsAddon.serviceGoodsAddonList">
+                    <th>
+                      {{addon.fullName}}
+                    </th>
+                    <th *ngIf="userService.currentUser && userService.currentUser.serviceLeader">
+                      <div class="input-group input-group-sm">
+                        <input type="number" class="form-control"
+                               [(ngModel)]="addon.cost" [placeholder]="addon.cost"/>
+                        <div class="input-group-append">
+                          <button class="btn btn-buro-green" type="button" (click)="updateCost(model, addon, addon.cost)"
+                                  [disabled]="isUpdating">
+                            <i class="fas fa-check"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </th>
+                    <th style="text-align: right;">
+                      <div>{{addon.totalCost | number:'.2':'ru'}} р.</div>
+                      <div class="text-muted" *ngIf="addon.goodsCount != null && addon.goodsCount > 1">{{addon.goodsCount}}</div>
+                    </th>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
           </div>
 
         </div>

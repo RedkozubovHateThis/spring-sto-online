@@ -17,12 +17,13 @@ public class DocumentResponse {
     private String style;
     private String client;
     private VehicleResponse vehicle;
-    private Double sum;
+    private Double sum = 0.0;
 
     private String reason;
     private String organization;
 
     private ServiceWorkTotalResponse serviceWork;
+    private ServiceGoodsAddonTotalResponse serviceGoodsAddon;
 
     public DocumentResponse(DocumentServiceDetail document) {
 
@@ -30,7 +31,7 @@ public class DocumentResponse {
 
         id = document.getId();
         startDate = DateHelper.formatDate( document.getDateStart() );
-        sum = document.getSummaWork();
+//        sum = document.getSummaWork();
         reason = document.getReasonsAppeal();
 
         ModelLink modelLink = document.getModelLink();
@@ -48,7 +49,8 @@ public class DocumentResponse {
         DocumentOut documentOut = documentOutHeader.getDocumentOut();
         if ( documentOut == null ) return;
 
-        serviceWork = new ServiceWorkTotalResponse(documentOut);
+        serviceWork = new ServiceWorkTotalResponse(documentOut, this);
+        serviceGoodsAddon = new ServiceGoodsAddonTotalResponse(documentOut, this);
 
         Client client = documentOut.getClient();
         if ( client != null ) this.client = client.getShortName();
@@ -56,6 +58,10 @@ public class DocumentResponse {
         Organization organization = documentOut.getOrganization();
         if ( organization != null ) this.organization = organization.getFullName();
 
+    }
+
+    public void incrementSum(Double sum) {
+        this.sum += sum;
     }
 
 }

@@ -59,6 +59,21 @@ export class DocumentComponent extends ModelTransfer<DocumentResponse, number> i
       } );
   }
 
+  updateCost(documentResponse, serviceGoodsAddon, cost) {
+
+    if ( documentResponse == null || serviceGoodsAddon == null || cost == null ) return;
+
+    this.isUpdating = true;
+
+    this.serviceWorkResponseService.updateCost(documentResponse.id, serviceGoodsAddon.id, cost)
+      .subscribe( data => {
+          this.model = data as DocumentResponse;
+          this.isUpdating = false;
+      }, () => {
+        this.isUpdating = false;
+      } );
+  }
+
   updateState(documentResponse, state) {
 
     if ( documentResponse == null || state == null ) return;

@@ -1,6 +1,7 @@
 package io.swagger.controller;
 
 import io.swagger.firebird.repository.DocumentOutHeaderRepository;
+import io.swagger.firebird.repository.ServiceGoodsAddonRepository;
 import io.swagger.firebird.repository.ServiceWorkRepository;
 import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.security.User;
@@ -30,6 +31,9 @@ public class DocumentDetailServiceController {
 
     @Autowired
     private ServiceWorkRepository serviceWorkRepository;
+
+    @Autowired
+    private ServiceGoodsAddonRepository serviceGoodsAddonRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -118,6 +122,22 @@ public class DocumentDetailServiceController {
         if ( !UserHelper.hasRole( currentUser, "MODERATOR" ) ) return ResponseEntity.status(403).build();
 
         documentOutHeaderRepository.updateState( documentOutHeaderId, state );
+
+        return findOne(documentId);
+
+    }
+
+    @PutMapping("/{documentId}/serviceGoodsAddon/{serviceGoodsAddonId}/cost")
+    public ResponseEntity updateServiceGoodsAddon(@PathVariable("documentId") Integer documentId,
+                                                  @PathVariable("serviceGoodsAddonId") Integer serviceGoodsAddonId,
+                                                  @RequestParam("cost") Double cost) {
+
+        User currentUser = userRepository.findCurrentUser();
+        if ( currentUser == null ) return ResponseEntity.status(401).build();
+
+        if ( !UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) return ResponseEntity.status(403).build();
+
+        serviceGoodsAddonRepository.updateCost( serviceGoodsAddonId, cost );
 
         return findOne(documentId);
 

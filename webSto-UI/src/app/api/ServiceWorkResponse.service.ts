@@ -32,4 +32,15 @@ export class ServiceWorkResponseService {
     } );
   }
 
+  updateCost(documentId: number, serviceGoodsAddonId: number, cost: number) {
+    const headers = this.userService.getHeaders();
+
+    return this.http.put( `${this.baseUrl}secured/documents/${documentId}/serviceGoodsAddon/${serviceGoodsAddonId}/cost`, null, {
+      headers,
+      params: {
+        cost: cost.toString()
+      }
+    } );
+  }
+
 }

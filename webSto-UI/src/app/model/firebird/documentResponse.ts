@@ -1,5 +1,7 @@
 import {VehicleResponse} from "./vehicleResponse";
 import {ServiceWorkTotalResponse} from "./serviceWorkTotalResponse";
+import {ServiceGoodsAddonResponse} from "./serviceGoodsAddonResponse";
+import {ServiceGoodsAddonTotalResponse} from "./serviceGoodsAddonTotalResponse";
 
 export class DocumentResponse {
 
@@ -17,6 +19,7 @@ export class DocumentResponse {
   reason:string;
   organization:string;
   serviceWork: ServiceWorkTotalResponse;
+  serviceGoodsAddon: ServiceGoodsAddonTotalResponse;
 
 }
 

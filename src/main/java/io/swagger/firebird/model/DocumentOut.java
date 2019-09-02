@@ -97,4 +97,8 @@ public class DocumentOut {
     @OrderBy("positionNumber")
     private Set<GoodsOut> goodsOuts = new HashSet<>();
 
+    @OneToMany(mappedBy = "documentOut", fetch = FetchType.EAGER)
+    @OrderBy("positionNumber")
+    private Set<ServiceGoodsAddon> serviceGoodsAddons = new HashSet<>();
+
 }
