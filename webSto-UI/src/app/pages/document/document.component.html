@@ -161,7 +161,7 @@
                     </th>
                     <th *ngIf="userService.currentUser && userService.currentUser.serviceLeader">
                       <div class="input-group input-group-sm" *ngIf="work.byPrice; else byPriceNorm">
-                        <input type="number" class="form-control"
+                        <input type="number" class="form-control" (keyup.enter)="updatePrice(model, work, work.price)"
                                [(ngModel)]="work.price" [placeholder]="work.price"/>
                         <div class="input-group-append">
                           <button class="btn btn-buro-green" type="button" (click)="updatePrice(model, work, work.price)"
@@ -172,7 +172,7 @@
                       </div>
                       <ng-template #byPriceNorm>
                         <div class="input-group input-group-sm">
-                          <input type="number" class="form-control"
+                          <input type="number" class="form-control" (keyup.enter)="updatePrice(model, work, work.priceNorm)"
                                  [(ngModel)]="work.priceNorm" [placeholder]="work.priceNorm"/>
                           <div class="input-group-append">
                             <button class="btn btn-buro-green" type="button" (click)="updatePrice(model, work, work.priceNorm)"
@@ -232,7 +232,7 @@
                     </th>
                     <th *ngIf="userService.currentUser && userService.currentUser.serviceLeader">
                       <div class="input-group input-group-sm">
-                        <input type="number" class="form-control"
+                        <input type="number" class="form-control" (keyup.enter)="updateCost(model, addon, addon.cost)"
                                [(ngModel)]="addon.cost" [placeholder]="addon.cost"/>
                         <div class="input-group-append">
                           <button class="btn btn-buro-green" type="button" (click)="updateCost(model, addon, addon.cost)"
