@@ -5,13 +5,15 @@ import io.swagger.helper.DateHelper;
 import lombok.Data;
 
 @Data
-public class FirebirdResponse {
+public class DocumentResponse {
 
     private Integer id;
+    private Integer documentOutHeaderId;
     private String documentNumber;
     private String startDate;
     private String endDate;
-    private String state;
+    private Integer state;
+    private String stateRus;
     private String style;
     private String client;
     private VehicleResponse vehicle;
@@ -22,8 +24,7 @@ public class FirebirdResponse {
 
     private ServiceWorkTotalResponse serviceWork;
 
-    //TODO: переделать все это говно на hateoas, и запрашивать данные сразу с базы в режиме проксирования
-    public FirebirdResponse(DocumentServiceDetail document) {
+    public DocumentResponse(DocumentServiceDetail document) {
 
         if ( document == null ) return;
 
@@ -38,8 +39,10 @@ public class FirebirdResponse {
         DocumentOutHeader documentOutHeader = document.getDocumentOutHeader();
         if ( documentOutHeader == null ) return;
 
+        documentOutHeaderId = documentOutHeader.getId();
         documentNumber = documentOutHeader.getFullNumber();
-        state = documentOutHeader.getState() == 4 ? "Оформлен" : documentOutHeader.getState() == 2 ? "Черновик" : "Неизвестно";
+        state = documentOutHeader.getState();
+        stateRus = documentOutHeader.getState() == 4 ? "Оформлен" : documentOutHeader.getState() == 2 ? "Черновик" : "Неизвестно";
         style = documentOutHeader.getState() == 4 ? "success" : documentOutHeader.getState() == 2 ? "warning" : "info";
 
         DocumentOut documentOut = documentOutHeader.getDocumentOut();

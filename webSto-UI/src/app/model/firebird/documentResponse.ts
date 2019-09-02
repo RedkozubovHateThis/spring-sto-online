@@ -4,9 +4,11 @@ import {ServiceWorkTotalResponse} from "./serviceWorkTotalResponse";
 export class DocumentResponse {
 
   id: number;
+  documentOutHeaderId: number;
   startDate: string;
   endDate: string;
-  state: string;
+  state: number;
+  stateRus: string;
   documentNumber: string;
   style: string;
   client: string;

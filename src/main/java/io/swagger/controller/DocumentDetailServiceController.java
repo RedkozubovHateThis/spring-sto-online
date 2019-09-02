@@ -1,9 +1,11 @@
 package io.swagger.controller;
 
+import io.swagger.firebird.repository.DocumentOutHeaderRepository;
+import io.swagger.firebird.repository.ServiceWorkRepository;
 import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.UserRepository;
-import io.swagger.response.FirebirdResponse;
+import io.swagger.response.DocumentResponse;
 import io.swagger.firebird.model.DocumentServiceDetail;
 import io.swagger.firebird.repository.DocumentServiceDetailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,12 @@ public class DocumentDetailServiceController {
 
     @Autowired
     private DocumentServiceDetailRepository documentsRepository;
+
+    @Autowired
+    private DocumentOutHeaderRepository documentOutHeaderRepository;
+
+    @Autowired
+    private ServiceWorkRepository serviceWorkRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -58,10 +66,10 @@ public class DocumentDetailServiceController {
         if ( result == null ) return ResponseEntity.status(404).build();
 
         List<DocumentServiceDetail> resultList = result.getContent();
-        List<FirebirdResponse> responseList = resultList.stream()
-                .map(FirebirdResponse::new).collect( Collectors.toList() );
+        List<DocumentResponse> responseList = resultList.stream()
+                .map(DocumentResponse::new).collect( Collectors.toList() );
 
-        Page<FirebirdResponse> responsePage = new PageImpl<>(responseList, pageable, result.getTotalElements());
+        Page<DocumentResponse> responsePage = new PageImpl<>(responseList, pageable, result.getTotalElements());
 
         return ResponseEntity.ok( responsePage );
 
@@ -75,7 +83,43 @@ public class DocumentDetailServiceController {
         if ( result == null )
             return ResponseEntity.status(404).build();
 
-        return ResponseEntity.ok( new FirebirdResponse( result ) );
+        return ResponseEntity.ok( new DocumentResponse( result ) );
+
+    }
+
+    @PutMapping("/{documentId}/serviceWork/{serviceWorkId}/price")
+    public ResponseEntity updateServiceWork(@PathVariable("documentId") Integer documentId,
+                                            @PathVariable("serviceWorkId") Integer serviceWorkId,
+                                            @RequestParam("price") Double price,
+                                            @RequestParam("byPrice") Boolean byPrice) {
+
+        User currentUser = userRepository.findCurrentUser();
+        if ( currentUser == null ) return ResponseEntity.status(401).build();
+
+        if ( !UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) return ResponseEntity.status(403).build();
+
+        if ( byPrice )
+            serviceWorkRepository.updateServiceWorkByPrice( serviceWorkId, price );
+        else
+            serviceWorkRepository.updateServiceWorkByPriceNorm( serviceWorkId, price );
+
+        return findOne(documentId);
+
+    }
+
+    @PutMapping("/{documentId}/documentOutHeader/{documentOutHeaderId}/state")
+    public ResponseEntity updateDocumentOutHeader(@PathVariable("documentId") Integer documentId,
+                                                  @PathVariable("documentOutHeaderId") Integer documentOutHeaderId,
+                                                  @RequestParam("state") Integer state) {
+
+        User currentUser = userRepository.findCurrentUser();
+        if ( currentUser == null ) return ResponseEntity.status(401).build();
+
+        if ( !UserHelper.hasRole( currentUser, "MODERATOR" ) ) return ResponseEntity.status(403).build();
+
+        documentOutHeaderRepository.updateState( documentOutHeaderId, state );
+
+        return findOne(documentId);
 
     }
 
