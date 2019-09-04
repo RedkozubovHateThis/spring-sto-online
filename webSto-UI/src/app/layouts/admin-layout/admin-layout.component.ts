@@ -9,10 +9,10 @@ import {UserService} from "../../api/user.service";
 })
 export class AdminLayoutComponent implements OnInit {
 
-  constructor(router:Router, userService:UserService) {
+  constructor(private router: Router, private userService: UserService) {
     router.events.subscribe(val => {
 
-      if ( val instanceof NavigationEnd && location.hash != "" ) {
+      if ( val instanceof NavigationEnd && location.hash !== '' ) {
 
         if ( !location.hash.includes( 'login' ) &&
           !location.hash.includes( 'register' ) ) {

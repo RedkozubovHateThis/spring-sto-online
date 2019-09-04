@@ -83,4 +83,9 @@ export class UserComponent extends ModelTransfer<User, number> implements OnInit
     this.router.navigate(['/users', user.id, 'edit']);
   }
 
+  private approve(user: User, approved: boolean) {
+    user.isApproved = approved;
+    this.userService.saveUser(user);
+  }
+
 }

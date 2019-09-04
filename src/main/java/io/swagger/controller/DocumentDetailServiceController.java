@@ -143,4 +143,74 @@ public class DocumentDetailServiceController {
 
     }
 
+    @GetMapping("/count")
+    public ResponseEntity count() {
+
+        User currentUser = userRepository.findCurrentUser();
+        if ( currentUser == null ) return ResponseEntity.status(401).build();
+
+        Integer result = null;
+
+        if ( UserHelper.hasRole(currentUser, "ADMIN") )
+            result = documentsRepository.countAll();
+        else if ( ( UserHelper.hasRole(currentUser, "MODERATOR") ) ) {
+
+            List<Integer> clientIds = userRepository.collectClientIds( currentUser.getId() );
+            result = documentsRepository.countByClientIds( clientIds );
+
+        }
+        else if ( UserHelper.hasRole(currentUser, "CLIENT") ) {
+
+            if ( currentUser.getClientId() == null ) return ResponseEntity.status(404).build();
+            result = documentsRepository.countByClientId( currentUser.getClientId() );
+
+        }
+        else if ( UserHelper.hasRole(currentUser, "SERVICE_LEADER") ) {
+
+            if ( currentUser.getOrganizationId() == null ) return ResponseEntity.status(404).build();
+            result = documentsRepository.countByOrganizationId( currentUser.getOrganizationId() );
+
+        }
+
+        if ( result == null ) return ResponseEntity.ok(0);
+
+        return ResponseEntity.ok( result );
+
+    }
+
+    @GetMapping("/count/state")
+    public ResponseEntity countByState(@RequestParam("state") Integer state) {
+
+        User currentUser = userRepository.findCurrentUser();
+        if ( currentUser == null ) return ResponseEntity.status(401).build();
+
+        Integer result = null;
+
+        if ( UserHelper.hasRole(currentUser, "ADMIN") )
+            result = documentsRepository.countByState(state);
+        else if ( ( UserHelper.hasRole(currentUser, "MODERATOR") ) ) {
+
+            List<Integer> clientIds = userRepository.collectClientIds( currentUser.getId() );
+            result = documentsRepository.countByClientIdsAndState( clientIds, state );
+
+        }
+        else if ( UserHelper.hasRole(currentUser, "CLIENT") ) {
+
+            if ( currentUser.getClientId() == null ) return ResponseEntity.status(404).build();
+            result = documentsRepository.countByClientIdAndState( currentUser.getClientId(), state );
+
+        }
+        else if ( UserHelper.hasRole(currentUser, "SERVICE_LEADER") ) {
+
+            if ( currentUser.getOrganizationId() == null ) return ResponseEntity.status(404).build();
+            result = documentsRepository.countByOrganizationIdAndState( currentUser.getOrganizationId(), state );
+
+        }
+
+        if ( result == null ) return ResponseEntity.ok(0);
+
+        return ResponseEntity.ok( result );
+
+    }
+
 }

@@ -85,4 +85,32 @@ public class UserController {
             return ResponseEntity.status(403).build();
     }
 
+    @GetMapping("/count")
+    public ResponseEntity count(@RequestParam("notApprovedOnly") Boolean notApprovedOnly) {
+
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( currentUser == null ) return ResponseEntity.status(401).build();
+
+        Long result = null;
+
+        if ( UserHelper.hasRole( currentUser, "ADMIN" ) ) {
+            if ( notApprovedOnly )
+                result = userRepository.countAllNotApproved();
+            else
+                result = userRepository.countAll();
+        }
+        else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
+            if ( notApprovedOnly )
+                result = userRepository.countAllNotApprovedByModeratorId(currentUser.getId());
+            else
+                result = userRepository.countAllByModeratorId(currentUser.getId());
+        }
+
+        if ( result == null ) return ResponseEntity.ok(0);
+
+        return ResponseEntity.ok(result);
+
+    }
+
 }

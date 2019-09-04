@@ -26,6 +26,18 @@
                 <span id="organization-full-name" class="form-control form-control-alternative">{{organizationResponse.fullName}}</span>
               </div>
 
+              <div class="form-group"
+                   *ngIf="userService.currentUser != null && model != null && userService.currentUser.moderator && model.id != userService.currentUser.id">
+                <button class="btn btn-buro-green" (click)="approve( model, true )" *ngIf="!model.isApproved; else disapprove">
+                  Подвердить<span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
+                </button>
+                <ng-template #disapprove>
+                  <button class="btn btn-buro-green" (click)="approve( model, false )">
+                    Отменить<span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
+                  </button>
+                </ng-template>
+              </div>
+
             </div>
           </div>
         </div>

@@ -125,7 +125,7 @@ export class UserService implements TransferService<User> {
 
   }
 
-  getAll(page:number, size:number, offset:number) {
+  getAll(page: number, size: number, offset: number) {
     const headers = this.getHeaders();
 
     return this.http.get( `${this.baseUrl}secured/users/findAll?sort=lastName&size=${size}&page=${page}&offset=${offset}`, {headers} );
@@ -135,6 +135,12 @@ export class UserService implements TransferService<User> {
     const headers = this.getHeaders();
 
     return this.http.get( `${this.baseUrl}secured/users/${id}`, {headers} );
+  }
+
+  getUsersCount(notApprovedOnly: boolean) {
+    const headers = this.getHeaders();
+
+    return this.http.get( `${this.baseUrl}secured/users/count?notApprovedOnly=${notApprovedOnly}`, {headers} );
   }
 
   getTransferModel() {
