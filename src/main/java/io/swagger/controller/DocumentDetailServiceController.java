@@ -6,7 +6,7 @@ import io.swagger.firebird.repository.ServiceWorkRepository;
 import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.UserRepository;
-import io.swagger.response.DocumentResponse;
+import io.swagger.response.firebird.DocumentResponse;
 import io.swagger.firebird.model.DocumentServiceDetail;
 import io.swagger.firebird.repository.DocumentServiceDetailRepository;
 import org.springframework.beans.factory.annotation.Autowired;

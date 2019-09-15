@@ -1,6 +1,5 @@
 package io.swagger.config.server;
 
-
 import io.swagger.config.encryption.Encoders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;

@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Primary
 @Repository
@@ -65,4 +66,27 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
     @Query(nativeQuery = true, value = "SELECT DISTINCT u.client_id FROM users AS u " +
             "WHERE u.moderator_id = :moderatorId")
     List<Integer> collectClientIds(@Param("moderatorId") Long moderatorId);
+
+    @Query("SELECT u FROM User AS u WHERE u.username <> ?#{principal.username} ORDER BY u.lastName")
+    List<User> findAllExceptSelf();
+
+    @Query(nativeQuery = true, value = "SELECT DISTINCT u.* FROM users AS u " +
+            "WHERE u.moderator_id = :moderatorId " +
+            "UNION " +
+            "SELECT DISTINCT cu.* FROM chat_message AS cm " +
+            "INNER JOIN users AS cu ON cm.from_user_id = cu.id " +
+            "WHERE cm.to_user_id = :userId " +
+            "ORDER BY last_name")
+    List<User> findAllByModerator(@Param("moderatorId") Long moderatorId,
+                                 @Param("userId") Long userId);
+
+    @Query(nativeQuery = true, value = "SELECT DISTINCT u.* FROM users AS u " +
+            "WHERE u.id = :moderatorId " +
+            "UNION " +
+            "SELECT DISTINCT cu.* FROM chat_message AS cm " +
+            "INNER JOIN users AS cu ON cm.from_user_id = cu.id " +
+            "WHERE cm.to_user_id = :userId " +
+            "ORDER BY last_name")
+    List<User> findAllModerators(@Param("moderatorId") Long moderatorId,
+                                 @Param("userId") Long userId);
 }

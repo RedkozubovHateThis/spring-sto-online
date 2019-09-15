@@ -145,7 +145,12 @@
                   <thead class="thead-light">
                   <tr>
                     <th scope="col">Наименование работ</th>
-                    <th scope="col" style="width: 175px;" *ngIf="userService.currentUser && userService.currentUser.serviceLeader">Стоимость по Н/Ч</th>
+                    <th scope="col" style="width: 175px;" *ngIf="userService.currentUser && userService.currentUser.serviceLeader">
+                      Стоимость по Н/Ч /
+                      <div>
+                        Фиксированная стоимость
+                      </div>
+                    </th>
                     <th scope="col" style="text-align: right; width: 175px;">
                       Стоимость работ
                       <div class="text-muted">

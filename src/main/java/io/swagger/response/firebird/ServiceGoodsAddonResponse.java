@@ -1,7 +1,6 @@
-package io.swagger.response;
+package io.swagger.response.firebird;
 
 import io.swagger.firebird.model.ServiceGoodsAddon;
-import io.swagger.firebird.model.ServiceWork;
 import lombok.Data;
 
 @Data

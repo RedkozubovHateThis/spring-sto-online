@@ -1,0 +1,104 @@
+<div class="container-fluid mt--7">
+  <div class="row">
+    <div class="col-xl-12 mb-5 mb-xl-0">
+      <div class="card shadow">
+        <div class="card-header border-0">
+          <div class="row align-items-center">
+            <div class="col">
+              <h3 class="mb-0">Чат</h3>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+
+            <div class="col-lg-4">
+              <div class="opponents-list">
+                <div class="opponent" *ngFor="let opponent of opponents"
+                     [ngClass]="{
+                     'active': selectedOpponent != null && selectedOpponent.id === opponent.id,
+                     'delimeter': opponents.indexOf(opponent) < opponents.length - 1
+                     }"
+                     (click)="selectOpponent(opponent)">
+                  {{opponent.fio}}
+                  <div class="small" *ngIf="opponent.lastMessageFromId">
+                    <span *ngIf="opponent.lastMessageFromId === userService.currentUser.id; else opponentReply">Вы: </span>
+                    <ng-template #opponentReply>
+                      <span>Собеседник: </span>
+                    </ng-template>
+                    <span *ngIf="opponent.uploadFileName == null; else opponentFileName" class="text-muted">
+                      {{opponent.lastMessageText}}
+                    </span>
+                    <ng-template #opponentFileName>
+                      <span class="text-muted">
+                        {{opponent.uploadFileName}}
+                      </span>
+                    </ng-template>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-8">
+              <div class="chat-block">
+                <div class="chat-messages" id="scrollable">
+                  <div *ngFor="let message of messages">
+                    <div class="message right" [ngClass]="{'right': message.fromId === userService.currentUser.id}">
+                      <div class="message-header">
+                        <div *ngIf="message.fromId === userService.currentUser.id; else fioBlock">
+                          Вы
+                        </div>
+                        <ng-template #fioBlock>
+                          <div>
+                            {{message.fromFio}}
+                          </div>
+                        </ng-template>
+                        {{message.messageDate | date : 'dd.MM.yy HH:mm'}}
+                      </div>
+                      <div class="message-body">
+                        {{message.messageText}}
+                        <app-img-preview [message]="message" (onImageLoad)="scrollDown()"></app-img-preview>
+                      </div>
+                    </div>
+                  </div>
+                  <ng-container *ngIf="uploader != null">
+                    <div *ngFor="let item of uploader.queue">
+                      <div class="message right">
+                        <div class="message-header">
+                          {{item.file.name}}
+                        </div>
+                        <div class="message-body">
+                          <div class="progress" style="margin-bottom: 0;">
+                            <div class="progress-bar bg-buro-green" role="progressbar"
+                                 [ngStyle]="{ 'width': item.progress + '%' }"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+                <div class="chat-input">
+                  <div class="row">
+                    <div class="col">
+                      <input class="form-control form-control-sm form-control-alternative" [(ngModel)]="chatMessage"
+                             [disabled]="selectedOpponent == null"
+                             placeholder="Введите текст сообщения" (keyup.enter)="sendMessage(null)" />
+                    </div>
+                    <div class="col-auto">
+                      <button class="btn btn-default btn-sm btn-buro-green"
+                              [disabled]="selectedOpponent == null" (click)="showUpload()">
+                        <i class="fas fa-paperclip"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<input style="display: none;" id="upload" type="file" ng2FileSelect [uploader]="uploader" multiple />

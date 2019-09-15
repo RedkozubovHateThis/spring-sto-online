@@ -1,4 +1,4 @@
-package io.swagger.response;
+package io.swagger.response.firebird;
 
 import io.swagger.firebird.model.Organization;
 import lombok.Data;

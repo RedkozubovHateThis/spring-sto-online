@@ -1,7 +1,6 @@
-package io.swagger.response;
+package io.swagger.response.firebird;
 
 import io.swagger.firebird.model.Client;
-import io.swagger.helper.DateHelper;
 import lombok.Data;
 
 @Data

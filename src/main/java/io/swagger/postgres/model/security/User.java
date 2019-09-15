@@ -3,6 +3,8 @@ package io.swagger.postgres.model.security;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.helper.UserHelper;
+import io.swagger.postgres.model.ChatMessage;
+import io.swagger.postgres.model.UploadFile;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
@@ -51,6 +53,21 @@ public class User implements UserDetails, Serializable {
     @JoinTable(name = "users_user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_role_id", referencedColumnName = "id"))
     @OrderBy("name")
     private Set<UserRole> roles = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "fromUser")
+    @OrderBy("messageDate")
+    private Set<ChatMessage> messagesAsFrom = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "toUser")
+    @OrderBy("messageDate")
+    private Set<ChatMessage> messagesAsTo = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "uploadUser")
+    @OrderBy("uploadDate")
+    private Set<UploadFile> uploadFiles = new HashSet<>();
 
     @JsonIgnore
     @Transient

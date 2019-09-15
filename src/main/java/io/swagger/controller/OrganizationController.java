@@ -2,7 +2,7 @@ package io.swagger.controller;
 
 import io.swagger.firebird.model.Organization;
 import io.swagger.firebird.repository.OrganizationRepository;
-import io.swagger.response.OrganizationResponse;
+import io.swagger.response.firebird.OrganizationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

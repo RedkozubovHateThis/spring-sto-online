@@ -2,6 +2,7 @@ import {Component, OnInit, ElementRef, Input} from '@angular/core';
 import {DocumentResponseService} from "../../api/documentResponse.service";
 import {UserService} from '../../api/user.service';
 import {User} from '../../model/postgres/auth/user';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-infobar',
@@ -22,10 +23,20 @@ export class InfobarComponent implements OnInit {
   private usersCountLoading: boolean = false;
   private usersNotApprovedCount: number = 0;
   private usersNotApprovedCountLoading: boolean = false;
-  @Input()
   private currentUser: User;
 
   ngOnInit(): void {
+
+    if ( this.userService.currentUser == null ) {
+      const subscription: Subscription = this.userService.currentUserIsLoaded.subscribe( currentUser => {
+        this.currentUser = currentUser;
+        this.ngOnInit();
+        subscription.unsubscribe();
+      } );
+
+      return;
+    }
+
     this.getDocumentsCount();
     this.getUsersCount();
     this.getUsersNotApprovedCount();

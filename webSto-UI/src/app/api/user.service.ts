@@ -1,17 +1,17 @@
-import {Injectable, Input, Output, EventEmitter} from "@angular/core";
-import {HttpClient} from "@angular/common/http";
-import {Observable, Subject} from "rxjs";
-import {User} from "../model/postgres/auth/user";
-import {Router} from "@angular/router";
-import {TransferService} from "./transfer.service";
+import {Injectable, Input, Output, EventEmitter} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable, Subject} from 'rxjs';
+import {User} from '../model/postgres/auth/user';
+import {Router} from '@angular/router';
+import {TransferService} from './transfer.service';
 
 @Injectable()
 export class UserService implements TransferService<User> {
 
   constructor(private http: HttpClient, private router: Router) { }
-  private baseUrl: string = 'http://localhost:8181/';
+  private baseUrl = 'http://localhost:8181/';
   currentUser: User;
-  isSaving: boolean = false;
+  isSaving = false;
   private transferModel: User;
 
   @Output()
@@ -19,16 +19,16 @@ export class UserService implements TransferService<User> {
 
   login(loginPayload) {
     const headers = {
-      'Authorization': 'Basic ' + btoa('spring-security-oauth2-read-write-client:spring-security-oauth2-read-write-client-password1234'),
+      Authorization: 'Basic ' + btoa('spring-security-oauth2-read-write-client:spring-security-oauth2-read-write-client-password1234'),
       'Content-type': 'application/x-www-form-urlencoded'
     };
     return this.http.post('http://localhost:8181/' + 'oauth/token', loginPayload, {headers});
   }
 
   logout() {
-    localStorage.setItem("isAuthenticated", "false");
+    localStorage.setItem('isAuthenticated', 'false');
     this.currentUser = null;
-    localStorage.setItem( "token", null );
+    localStorage.setItem( 'token', null );
     this.router.navigate(['login']);
   }
 
@@ -48,11 +48,20 @@ export class UserService implements TransferService<User> {
   }
 
   isTokenExists(): boolean {
-    return localStorage.getItem("token") != null;
+    return localStorage.getItem('token') != null && localStorage.getItem('token') !== 'null';
+  }
+
+  getToken(): string {
+    if ( this.isTokenExists() ) {
+        return JSON.parse(localStorage.getItem('token')).access_token;
+    } else {
+      this.logout();
+      return null;
+    }
   }
 
   isAuthenticated(): boolean {
-    let isAuthenticated = localStorage.getItem('isAuthenticated') as unknown;
+    const isAuthenticated = localStorage.getItem('isAuthenticated') as unknown;
 
     return isAuthenticated != null && isAuthenticated as boolean;
   }
@@ -61,12 +70,11 @@ export class UserService implements TransferService<User> {
 
     if ( this.isTokenExists() ) {
       return {
-        'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem("token")).access_token
+        Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('token')).access_token
       };
-    }
-    else {
+    } else {
       this.logout();
-      return undefined;
+      return null;
     }
 
   }
@@ -78,7 +86,7 @@ export class UserService implements TransferService<User> {
     this.http.get( this.baseUrl + 'secured/users/currentUser', {headers} ).subscribe( data => {
 
       this.setCurrentUserData( data as User );
-      localStorage.setItem("isAuthenticated", "true");
+      localStorage.setItem('isAuthenticated', 'true');
 
       this.router.navigate(['dashboard']);
 
@@ -97,7 +105,7 @@ export class UserService implements TransferService<User> {
 
   }
 
-  private setCurrentUserData(user:User) {
+  private setCurrentUserData(user: User) {
     this.currentUser = user;
   }
 
@@ -131,7 +139,7 @@ export class UserService implements TransferService<User> {
     return this.http.get( `${this.baseUrl}secured/users/findAll?sort=lastName&size=${size}&page=${page}&offset=${offset}`, {headers} );
   }
 
-  getOne(id:number) {
+  getOne(id: number) {
     const headers = this.getHeaders();
 
     return this.http.get( `${this.baseUrl}secured/users/${id}`, {headers} );
@@ -141,6 +149,12 @@ export class UserService implements TransferService<User> {
     const headers = this.getHeaders();
 
     return this.http.get( `${this.baseUrl}secured/users/count?notApprovedOnly=${notApprovedOnly}`, {headers} );
+  }
+
+  getOpponents() {
+    const headers = this.getHeaders();
+
+    return this.http.get( `${this.baseUrl}secured/chat/opponents`, {headers} );
   }
 
   getTransferModel() {

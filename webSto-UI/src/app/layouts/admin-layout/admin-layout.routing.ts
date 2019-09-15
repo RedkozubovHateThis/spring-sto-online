@@ -7,9 +7,11 @@ import { DocumentComponent } from "../../pages/document/document.component";
 import { UsersComponent } from "../../pages/users/users.component";
 import { UserComponent } from 'src/app/pages/user/user.component';
 import { UserEditComponent } from 'src/app/pages/user-edit/userEdit.component';
+import { ChatComponent } from '../../pages/chat/chat.component';
 
 export const AdminLayoutRoutes: Routes = [
   { path: 'dashboard',      component: DashboardComponent },
+  { path: 'chat',           component: ChatComponent },
   { path: 'user-profile',   component: UserProfileComponent },
   { path: 'documents',      component: DocumentsComponent },
   { path: 'users',          component: UsersComponent },

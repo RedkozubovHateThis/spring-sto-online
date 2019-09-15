@@ -24,6 +24,10 @@ import { ErrorInterceptor } from './variables/error.interceptor';
 import {ClientResponseService} from "./api/clientResponse.service";
 import {OrganizationResponseService} from "./api/organizationResponse.service";
 import {ServiceWorkResponseService} from "./api/ServiceWorkResponse.service";
+import {ChatMessageResponseService} from './api/chatMessageResponse.service';
+import {WebSocketService} from './api/webSocket.service';
+import {ClipboardModule} from 'ngx-clipboard';
+import {ToastrModule} from 'ngx-toastr';
 registerLocaleData(localeRu, 'ru');
 
 @NgModule({
@@ -38,13 +42,16 @@ registerLocaleData(localeRu, 'ru');
     BrowserModule,
     RouterModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    ToastrModule.forRoot({
+      timeOut: 1500
+    })
   ],
   declarations: [
     AppComponent,
     AdminLayoutComponent,
     AuthLayoutComponent,
-    AppComponent,
+    AppComponent
     //LoginComponent,
    // RegisterComponent
   ],
@@ -54,6 +61,8 @@ registerLocaleData(localeRu, 'ru');
     ClientResponseService,
     OrganizationResponseService,
     ServiceWorkResponseService,
+    ChatMessageResponseService,
+    WebSocketService,
     {
       provide: HTTP_INTERCEPTORS,
       useFactory: function(userService: UserService, router: Router) {

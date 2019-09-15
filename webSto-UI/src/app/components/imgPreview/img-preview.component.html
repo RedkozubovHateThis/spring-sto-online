@@ -1,0 +1,33 @@
+<div *ngIf="!isImageLoading; else loadingBlock">
+  <ng-container *ngIf="message.uploadFileUuid != null">
+    <div class="img-container" *ngIf="message.uploadFileIsImage && src; else downloadButton"
+         data-toggle="tooltip" title="{{message.uploadFileName}}" (click)="downloadFile()">
+      <img class="img-preview" [src]="src" [alt]="message.uploadFileName" />
+      <div *ngIf="!isDownloading; else downloadBlock;" class="overlay">
+        <i class="fas fa-file-download fa-2x"></i>
+      </div>
+      <ng-template #downloadBlock>
+        <div class="download-overlay">
+          <i class="fas fa-spin fa-spinner fa-2x"></i>
+        </div>
+      </ng-template>
+    </div>
+    <ng-template #downloadButton>
+      <button class="btn btn-default btn-sm btn-buro-green upload-file-button" [disabled]="isDownloading"
+              data-toggle="tooltip" title="{{message.uploadFileName}}" (click)="downloadFile()">
+        <ng-container *ngIf="isDownloading; else downloadBlock;">
+          <i class="fas fa-spin fa-spinner"></i>&nbsp;
+        </ng-container>
+        <ng-template #downloadBlock>
+          <i class="fas fa-file-download"></i>&nbsp;
+        </ng-template>
+        {{message.uploadFileName}}
+      </button>
+    </ng-template>
+  </ng-container>
+</div>
+<ng-template #loadingBlock>
+  <div class="text-muted">
+    <i class="fas fa-spin fa-spinner"></i> загрузка изображения...
+  </div>
+</ng-template>

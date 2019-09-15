@@ -1,0 +1,59 @@
+.opponents-list {
+  height: 50vh;
+  overflow: auto;
+}
+.opponents-list > .opponent {
+  border-left: 2px solid transparent;
+  cursor: pointer;
+  padding: 3px 0 3px 6px;
+}
+.opponents-list > .opponent.active {
+  border-left: 2px solid #60B61C;
+}
+.opponents-list > .opponent.delimeter {
+  //border-bottom: 1px solid #cccccc;
+}
+.chat-block {
+  height: 50vh;
+}
+.chat-block > .chat-messages {
+  height: calc(100% - 51px);
+  border: 1px solid #dddddd;
+  border-radius: 3px;
+  padding: 10px;
+  overflow: auto;
+}
+.chat-block > .chat-messages .message {
+  margin-bottom: 6px;
+}
+.chat-block > .chat-messages .message.right > .message-header,
+.chat-block > .chat-messages .message.right > .message-body {
+  text-align: right;
+}
+.chat-block > .chat-messages .message > .message-header {
+  margin-bottom: 3px;
+  color: #8898AA;
+  font-size: 12px;
+}
+.chat-block > .chat-messages .message > .message-body {
+  font-size: 13px;
+}
+.chat-block > .chat-messages .message > .message-body > .upload-file {
+  border: 1px solid #dddddd;
+  background-color: #eeeeee;
+  border-radius: 6px;
+  margin: 3px 0 3px 0;
+  padding: 3px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.chat-block > .chat-messages .message > .message-body .upload-file-button {
+  max-width: 200px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.chat-block > .chat-input {
+  height: 51px;
+  padding-top: 20px;
+}
