@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import {ActivatedRoute, Params, Router} from '@angular/router';
 import {Pageable} from "../../model/Pageable";
 import { Subscription } from 'rxjs';
 import {Pagination} from "../pagination";
@@ -36,5 +36,7 @@ export class UsersComponent extends Pagination {
     this.userService.setTransferModel( user );
     this.router.navigate(['/users', user.id]);
   }
+
+  prepareFilter(queryParams: Params) {}
 
 }

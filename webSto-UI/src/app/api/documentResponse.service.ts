@@ -1,11 +1,10 @@
 import {Injectable, Input} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs";
-import {User} from "../model/postgres/auth/user";
-import {Router} from "@angular/router";
+import {HttpClient, HttpParams} from '@angular/common/http';
+import {Router} from '@angular/router';
 import { UserService } from './user.service';
-import {DocumentResponse} from "../model/firebird/documentResponse";
-import {TransferService} from "./transfer.service";
+import {DocumentResponse} from '../model/firebird/documentResponse';
+import {TransferService} from './transfer.service';
+import {DocumentsFilter} from '../model/documentsFilter';
 
 @Injectable()
 export class DocumentResponseService implements TransferService<DocumentResponse> {
@@ -15,11 +14,11 @@ export class DocumentResponseService implements TransferService<DocumentResponse
   private transferModel: DocumentResponse;
 
   getLast5() {
-    return this.getDocumentResponse(0, 5, -5);
+    return this.getDocumentResponse('dateStart,desc', 0, 5, -5, null, null, null);
   }
 
-  getAll(page:number, size:number, offset:number) {
-    return this.getDocumentResponse(page, size, offset);
+  getAll(page: number, size: number, offset: number, filter: DocumentsFilter) {
+    return this.getDocumentResponse(`${filter.sort},${filter.direction}`, page, size, offset, filter.state, filter.organization, filter.vehicle);
   }
 
   getOne(id) {
@@ -28,11 +27,20 @@ export class DocumentResponseService implements TransferService<DocumentResponse
     return this.http.get( this.baseUrl + 'secured/documents/' + id, {headers} );
   }
 
-  getDocumentResponse(page:number, size:number, offset:number) {
+  getDocumentResponse(sort: string, page: number, size: number, offset: number, state: number, organization: number, vehicle: number) {
 
     const headers = this.userService.getHeaders();
+    const params = {
+      sort,
+      page: page.toString(),
+      size: size.toString(),
+      offset: offset.toString(),
+      states: state != null ? state.toString() : '',
+      organizations: organization != null ? organization.toString() : '',
+      vehicles: vehicle != null ? vehicle.toString() : ''
+    };
 
-    return this.http.get( `${this.baseUrl}secured/documents/findAll?sort=dateStart,desc&size=${size}&page=${page}&offset=${offset}`, {headers} );
+    return this.http.get( `${this.baseUrl}secured/documents/findAll`, {headers, params} );
 
   }
 

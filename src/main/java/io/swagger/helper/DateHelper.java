@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class DateHelper {
 
-    private static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
+    private static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 
     public static String formatDate(Date date) {
         if ( date != null ) return DATE_FORMAT.format( date );

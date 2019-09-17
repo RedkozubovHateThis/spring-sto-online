@@ -1,8 +1,9 @@
 export class VehicleResponse {
 
-  name:string;
-  regNumber:string;
-  vinNumber:string;
+  id: number;
+  name: string;
+  regNumber: string;
+  vinNumber: string;
 
 }
 

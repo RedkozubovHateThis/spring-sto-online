@@ -22,7 +22,7 @@
         </div>
         <div class="col-xl-3 col-lg-6">
           <div class="card card-stats mb-4 mb-xl-0">
-            <div class="card-body" *ngIf="currentUser">
+            <div class="card-body" *ngIf="currentUser != null">
               <div class="row" *ngIf="currentUser.moderator || currentUser.admin; else draftBlock">
                 <div class="col">
                   <h5 class="card-title text-uppercase text-muted mb-0">Общее количество пользователей</h5>
@@ -39,7 +39,7 @@
         </div>
         <div class="col-xl-3 col-lg-6">
           <div class="card card-stats mb-4 mb-xl-0">
-            <div class="card-body" *ngIf="currentUser">
+            <div class="card-body" *ngIf="currentUser != null">
               <div class="row" *ngIf="currentUser.moderator || currentUser.admin; else cleanBlock">
                 <div class="col">
                   <h5 class="card-title text-uppercase text-muted mb-0">Количество неподтвержденных пользователей</h5>

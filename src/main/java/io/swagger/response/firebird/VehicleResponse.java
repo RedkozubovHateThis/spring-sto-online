@@ -9,6 +9,7 @@ import lombok.Data;
 @Data
 public class VehicleResponse {
 
+    private Integer id;
     private String name;
     private String regNumber;
     private String vinNumber;
@@ -16,6 +17,8 @@ public class VehicleResponse {
     public VehicleResponse(ModelLink modelLink) {
 
         if ( modelLink == null ) return;
+
+        id = modelLink.getId();
 
         ModelDetail modelDetail = modelLink.getModelDetail();
 
@@ -38,6 +41,21 @@ public class VehicleResponse {
             }
 
         }
+
+    }
+
+    public VehicleResponse(Model model) {
+
+        if ( model == null ) return;
+
+        id = model.getId();
+
+        Mark mark = model.getMark();
+
+        if ( mark != null )
+            name = mark.getName() + " " + model.getName();
+        else
+            name = model.getName();
 
     }
 

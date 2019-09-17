@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import {DocumentResponse} from "../../model/firebird/documentResponse";
-import {DocumentResponseService} from "../../api/documentResponse.service";
-import { ActivatedRoute, Router } from '@angular/router';
-import {Pageable} from "../../model/Pageable";
-import { Subscription } from 'rxjs';
-import {Pagination} from "../pagination";
+import {DocumentResponse} from '../../model/firebird/documentResponse';
+import {DocumentResponseService} from '../../api/documentResponse.service';
+import {ActivatedRoute, Params, Router} from '@angular/router';
+import {Pageable} from '../../model/Pageable';
+import {Pagination} from '../pagination';
+import { DocumentsFilter } from 'src/app/model/documentsFilter';
 
 @Component({
   selector: 'app-tables',
@@ -13,16 +13,17 @@ import {Pagination} from "../pagination";
 })
 export class DocumentsComponent extends Pagination {
 
-  private all:Pageable<DocumentResponse>;
-  private isLoading:boolean = false;
+  private all: Pageable<DocumentResponse>;
+  private isLoading: boolean = false;
+  private filter: DocumentsFilter = new DocumentsFilter();
 
-  constructor(private documentResponseService:DocumentResponseService, protected route:ActivatedRoute, private router:Router) {
+  constructor(private documentResponseService: DocumentResponseService, protected route: ActivatedRoute, private router: Router) {
     super(route);
   }
 
   requestData() {
     this.isLoading = true;
-    this.documentResponseService.getAll(this.page, this.size, this.offset).subscribe( data => {
+    this.documentResponseService.getAll(this.page, this.size, this.offset, this.filter).subscribe(data => {
       this.all = data as Pageable<DocumentResponse>;
       this.setPageData(this.all);
 
@@ -32,9 +33,27 @@ export class DocumentsComponent extends Pagination {
     } );
   }
 
-  private navigate(documentResponse:DocumentResponse) {
+  private navigate(documentResponse: DocumentResponse) {
     this.documentResponseService.setTransferModel( documentResponse );
     this.router.navigate(['/documents', documentResponse.id]);
+  }
+
+  prepareFilter(queryParams: Params) {
+    if ( queryParams.sort ) this.filter.sort = queryParams.sort;
+    if ( queryParams.direction ) this.filter.direction = queryParams.direction;
+
+    if ( queryParams.state ) this.filter.state = parseInt(queryParams.state, 10);
+    else this.filter.state = null;
+
+    if ( queryParams.organization ) this.filter.organization = parseInt(queryParams.organization, 10);
+    else this.filter.organization = null;
+
+    if ( queryParams.vehicle ) this.filter.vehicle = parseInt(queryParams.vehicle, 10);
+    else this.filter.vehicle = null;
+  }
+
+  refresh() {
+    this.router.navigate(['documents'], { queryParams: this.filter });
   }
 
 }

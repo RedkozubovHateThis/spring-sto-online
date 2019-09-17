@@ -2,7 +2,7 @@
 <div class="container-fluid mt--7">
   <!-- Table -->
   <div class="row">
-    <div class="col">
+    <div class="col-sm-9">
       <div class="card shadow">
         <div class="card-header border-0">
 
@@ -20,17 +20,17 @@
                 <ul class="pagination justify-content-end mb-0">
 
                   <li class="page-item" *ngIf="!all.first">
-                    <a class="page-link" tabindex="-1" [routerLink]="['/documents']" [queryParams]="{page: page}">
+                    <a class="page-link" tabindex="-1" [routerLink]="['/documents']" [queryParams]="{page: page, sort: filter.sort, direction: filter.direction, state: filter.state, vehicle: filter.vehicle, organization: filter.organization}">
                       <i class="fas fa-angle-left"></i>
                     </a>
                   </li>
 
                   <li class="page-item" *ngFor="let pageInfo of pagesInfo" [ngClass]="{active: pageInfo == page + 1}">
-                    <a class="page-link" [routerLink]="['/documents']" [queryParams]="{page: pageInfo}">{{pageInfo}}</a>
+                    <a class="page-link" [routerLink]="['/documents']" [queryParams]="{page: pageInfo, sort: filter.sort, direction: filter.direction, state: filter.state, vehicle: filter.vehicle, organization: filter.organization}">{{pageInfo}}</a>
                   </li>
 
                   <li class="page-item" *ngIf="!all.last">
-                    <a class="page-link" [routerLink]="['/documents']" [queryParams]="{page: page + 2}">
+                    <a class="page-link" [routerLink]="['/documents']" [queryParams]="{page: page + 2, sort: filter.sort, direction: filter.direction, state: filter.state, vehicle: filter.vehicle, organization: filter.organization}">
                       <i class="fas fa-angle-right"></i>
                     </a>
                   </li>
@@ -77,17 +77,18 @@
             <ul class="pagination justify-content-end mb-0">
 
               <li class="page-item" *ngIf="!all.first">
-                <a class="page-link" tabindex="-1" [routerLink]="['/documents']" [queryParams]="{page: page}">
+                <a class="page-link" tabindex="-1" [routerLink]="['/documents']"
+                   [queryParams]="{page: page, sort: filter.sort, direction: filter.direction, state: filter.state, vehicle: filter.vehicle, organization: filter.organization}">
                   <i class="fas fa-angle-left"></i>
                 </a>
               </li>
 
               <li class="page-item" *ngFor="let pageInfo of pagesInfo" [ngClass]="{active: pageInfo == page + 1}">
-                <a class="page-link" [routerLink]="['/documents']" [queryParams]="{page: pageInfo}">{{pageInfo}}</a>
+                <a class="page-link" [routerLink]="['/documents']" [queryParams]="{page: pageInfo, sort: filter.sort, direction: filter.direction, state: filter.state, vehicle: filter.vehicle, organization: filter.organization}">{{pageInfo}}</a>
               </li>
 
               <li class="page-item" *ngIf="!all.last">
-                <a class="page-link" [routerLink]="['/documents']" [queryParams]="{page: page + 2}">
+                <a class="page-link" [routerLink]="['/documents']" [queryParams]="{page: page + 2, sort: filter.sort, direction: filter.direction, state: filter.state, vehicle: filter.vehicle, organization: filter.organization}">
                   <i class="fas fa-angle-right"></i>
                 </a>
               </li>
@@ -96,6 +97,9 @@
           </nav>
         </div>
       </div>
+    </div>
+    <div class="col-sm-3">
+      <app-document-filter (onChange)="refresh()" [filter]="filter"></app-document-filter>
     </div>
   </div>
 </div>

@@ -3,16 +3,19 @@ package io.swagger.controller;
 import io.swagger.firebird.repository.DocumentOutHeaderRepository;
 import io.swagger.firebird.repository.ServiceGoodsAddonRepository;
 import io.swagger.firebird.repository.ServiceWorkRepository;
+import io.swagger.helper.DocumentSpecificationBuilder;
 import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.response.firebird.DocumentResponse;
 import io.swagger.firebird.model.DocumentServiceDetail;
 import io.swagger.firebird.repository.DocumentServiceDetailRepository;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,35 +42,23 @@ public class DocumentDetailServiceController {
     private UserRepository userRepository;
 
     @GetMapping("/findAll")
-    public ResponseEntity findAll(Pageable pageable) {
+    public ResponseEntity findAll(Pageable pageable, FilterPayload filterPayload) {
 
         User currentUser = userRepository.findCurrentUser();
         if ( currentUser == null ) return ResponseEntity.status(401).build();
 
-        Page<DocumentServiceDetail> result = null;
+        if ( UserHelper.hasRole(currentUser, "CLIENT") &&
+                currentUser.getClientId() == null )
+            return ResponseEntity.status(404).build();
 
-        if ( UserHelper.hasRole(currentUser, "ADMIN") )
-            result = documentsRepository.findAll(pageable);
-        else if ( ( UserHelper.hasRole(currentUser, "MODERATOR") ) ) {
+        else if ( UserHelper.hasRole(currentUser, "SERVICE_LEADER") &&
+                currentUser.getOrganizationId() == null )
+            return ResponseEntity.status(404).build();
 
-            List<Integer> clientIds = userRepository.collectClientIds( currentUser.getId() );
-            result = documentsRepository.findByClientIds( clientIds, pageable );
+        Specification<DocumentServiceDetail> specification =
+                DocumentSpecificationBuilder.buildSpecification(userRepository, currentUser, filterPayload);
 
-        }
-        else if ( UserHelper.hasRole(currentUser, "CLIENT") ) {
-
-            if ( currentUser.getClientId() == null ) return ResponseEntity.status(403).build();
-            result = documentsRepository.findByClientId( currentUser.getClientId(), pageable );
-
-        }
-        else if ( UserHelper.hasRole(currentUser, "SERVICE_LEADER") ) {
-
-            if ( currentUser.getOrganizationId() == null ) return ResponseEntity.status(403).build();
-            result = documentsRepository.findByOrganizationId( currentUser.getOrganizationId(), pageable );
-
-        }
-
-        if ( result == null ) return ResponseEntity.status(404).build();
+        Page<DocumentServiceDetail> result = documentsRepository.findAll(specification, pageable);
 
         List<DocumentServiceDetail> resultList = result.getContent();
         List<DocumentResponse> responseList = resultList.stream()
@@ -210,6 +201,15 @@ public class DocumentDetailServiceController {
         if ( result == null ) return ResponseEntity.ok(0);
 
         return ResponseEntity.ok( result );
+
+    }
+
+    @Data
+    public static class FilterPayload {
+
+        private List<Integer> organizations;
+        private List<Integer> states;
+        private List<Integer> vehicles;
 
     }
 

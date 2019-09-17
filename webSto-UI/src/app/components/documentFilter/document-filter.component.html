@@ -1,0 +1,91 @@
+<div class="card shadow">
+  <div class="card-body">
+
+    <div class="row">
+      <div class="col">
+        <h3 class="text-muted">
+          Фильтры
+        </h3>
+      </div>
+      <div *ngIf="filter.state || filter.organization || filter.vehicle" class="col-auto text-muted">
+        <button class="btn btn-sm btn-buro-green" (click)="resetFilters()">
+          Сбросить
+        </button>
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <label for="state-select">Состояние</label>
+      <select id="state-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.state" (change)="emitChange()">
+        <option [selected]="null === filter.state" [ngValue]="null">
+          Без фильтра
+        </option>
+        <option [selected]="state.id === filter.state" *ngFor="let state of states" [ngValue]="state.id">
+          {{ state.name }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="organization-select">Предприятие</label>
+      <select id="organization-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.organization" (change)="emitChange()">
+        <option [selected]="null === filter.organization" [ngValue]="null">
+          Без фильтра
+        </option>
+        <option [selected]="organization.id === filter.organization" *ngFor="let organization of organizations" [ngValue]="organization.id">
+          {{ organization.fullName }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="vehicle-select">Автомобиль</label>
+      <select id="vehicle-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.vehicle" (change)="emitChange()">
+        <option [selected]="null === filter.vehicle" [ngValue]="null">
+          Без фильтра
+        </option>
+        <option [selected]="vehicle.id === filter.vehicle" *ngFor="let vehicle of vehicles" [ngValue]="vehicle.id">
+          {{ vehicle.name }}
+        </option>
+      </select>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <h3 class="text-muted">
+          Сортировка
+        </h3>
+      </div>
+      <div *ngIf="filter.sort !== 'dateStart' || filter.direction !== 'asc'" class="col-auto text-muted">
+        <button class="btn btn-sm btn-buro-green" (click)="resetSort()">
+          Сбросить
+        </button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="sort-select">Сортировать по:</label>
+      <select id="sort-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.sort" (change)="emitChange()">
+        <option [selected]="'dateStart' === filter.sort" [ngValue]="'dateStart'">
+          Дата начала
+        </option>
+        <option [selected]="'documentOutHeader.dateCreate' === filter.sort" [ngValue]="'documentOutHeader.dateCreate'">
+          Дата окончания
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="direction-select">Порядок сортировки:</label>
+      <select id="direction-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.direction" (change)="emitChange()">
+        <option [selected]="'asc' === filter.direction" [ngValue]="'asc'">
+          По возрастанию
+        </option>
+        <option [selected]="'desc' === filter.direction" [ngValue]="'desc'">
+          По убыванию
+        </option>
+      </select>
+    </div>
+  </div>
+</div>

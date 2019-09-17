@@ -7,26 +7,31 @@ import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {InfobarComponent} from "./infobar/infobar.component";
 import {ImgPreviewComponent} from './imgPreview/img-preview.component';
+import {DocumentFilterComponent} from './documentFilter/document-filter.component';
+import {FormsModule} from '@angular/forms';
 
 @NgModule({
   imports: [
     CommonModule,
     RouterModule,
-    NgbModule
+    NgbModule,
+    FormsModule
   ],
   declarations: [
     FooterComponent,
     NavbarComponent,
     SidebarComponent,
     InfobarComponent,
-    ImgPreviewComponent
+    ImgPreviewComponent,
+    DocumentFilterComponent
   ],
   exports: [
     FooterComponent,
     NavbarComponent,
     SidebarComponent,
     InfobarComponent,
-    ImgPreviewComponent
+    ImgPreviewComponent,
+    DocumentFilterComponent
   ]
 })
 export class ComponentsModule { }

@@ -29,13 +29,14 @@ export class InfobarComponent implements OnInit {
 
     if ( this.userService.currentUser == null ) {
       const subscription: Subscription = this.userService.currentUserIsLoaded.subscribe( currentUser => {
-        this.currentUser = currentUser;
         this.ngOnInit();
         subscription.unsubscribe();
       } );
 
       return;
     }
+
+    this.currentUser = this.userService.currentUser;
 
     this.getDocumentsCount();
     this.getUsersCount();

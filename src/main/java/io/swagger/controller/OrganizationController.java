@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RequestMapping("/secured/organizations")
 @RestController
 public class OrganizationController {
@@ -38,6 +41,17 @@ public class OrganizationController {
             return ResponseEntity.status(404).build();
 
         return ResponseEntity.ok( new OrganizationResponse( result ) );
+
+    }
+
+    @GetMapping("findAll")
+    public ResponseEntity findAll() {
+
+        List<Organization> result = organizationRepository.findAll();
+        List<OrganizationResponse> responses = result.stream().map( OrganizationResponse::new )
+                .collect( Collectors.toList() );
+
+        return ResponseEntity.ok( responses );
 
     }
 
