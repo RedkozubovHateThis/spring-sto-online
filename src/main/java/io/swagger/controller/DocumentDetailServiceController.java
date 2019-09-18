@@ -50,6 +50,8 @@ public class DocumentDetailServiceController {
         User currentUser = userRepository.findCurrentUser();
         if ( currentUser == null ) return ResponseEntity.status(401).build();
 
+        webSocketController.sendCounterRefreshMessage( currentUser.getId() );
+
         if ( UserHelper.hasRole(currentUser, "CLIENT") &&
                 ( currentUser.getClientId() == null || !currentUser.getIsApproved() ) )
             return ResponseEntity.status(404).build();
@@ -68,8 +70,6 @@ public class DocumentDetailServiceController {
                 .map(DocumentResponse::new).collect( Collectors.toList() );
 
         Page<DocumentResponse> responsePage = new PageImpl<>(responseList, pageable, result.getTotalElements());
-
-        webSocketController.sendCounterRefreshMessage( currentUser.getId() );
 
         return ResponseEntity.ok( responsePage );
 
