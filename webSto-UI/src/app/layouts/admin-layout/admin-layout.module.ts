@@ -20,6 +20,8 @@ import { ChatComponent } from '../../pages/chat/chat.component';
 import {AppComponent} from '../../app.component';
 import {FileSelectDirective} from 'ng2-file-upload';
 import {ComponentsModule} from '../../components/components.module';
+import {ReportsComponent} from '../../pages/reports/reports.component';
+import {DpDatePickerModule} from 'ng2-date-picker';
 
 @NgModule({
   imports: [
@@ -29,7 +31,8 @@ import {ComponentsModule} from '../../components/components.module';
     HttpClientModule,
     NgbModule,
     ClipboardModule,
-    ComponentsModule
+    ComponentsModule,
+    DpDatePickerModule
   ],
   declarations: [
     DashboardComponent,
@@ -42,7 +45,8 @@ import {ComponentsModule} from '../../components/components.module';
     UserComponent,
     UserEditComponent,
     ChatComponent,
-    FileSelectDirective
+    FileSelectDirective,
+    ReportsComponent
   ]
 })
 

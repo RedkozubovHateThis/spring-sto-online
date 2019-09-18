@@ -1,13 +1,73 @@
 package io.swagger.firebird.model;
 
+import io.swagger.response.report.ClientsNativeResponse;
+import io.swagger.response.report.ExecutorsNativeResponse;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
+
+@SqlResultSetMappings({
+        @SqlResultSetMapping(
+                name = "byExecutors",
+                classes = {
+                        @ConstructorResult(
+                                targetClass = ExecutorsNativeResponse.class,
+                                columns = {
+                                        @ColumnResult( name="FULL_NAME", type = String.class ),
+                                        @ColumnResult( name="DSD_ID", type = Integer.class ),
+                                        @ColumnResult( name="DATE_START", type = Date.class ),
+                                        @ColumnResult( name="PERCENT", type = Double.class ),
+                                        @ColumnResult( name="TOTAL_BY_PRICE", type = Double.class ),
+                                        @ColumnResult( name="TOTAL_BY_NORM", type = Double.class ),
+                                }
+                        )
+                }
+        ),
+        @SqlResultSetMapping(
+                name = "byClients",
+                classes = {
+                        @ConstructorResult(
+                                targetClass = ClientsNativeResponse.class,
+                                columns = {
+                                        @ColumnResult( name="CLIENT_ID", type = Integer.class ),
+                                        @ColumnResult( name="FULL_NAME", type = String.class ),
+                                        @ColumnResult( name="DSD_ID", type = Integer.class ),
+                                        @ColumnResult( name="DATE_START", type = Date.class ),
+                                        @ColumnResult( name="TOTAL", type = Double.class )
+                                }
+                        )
+                }
+        )
+})
+@NamedNativeQueries({
+        @NamedNativeQuery(name = "DocumentServiceDetail.findExecutors", query="SELECT e.SHORTNAME AS FULL_NAME, dsd.DOCUMENT_SERVICE_DETAIL_ID AS DSD_ID, dsd.DATE_START AS DATE_START, e.PERCENT_EXEC_WORK AS PERCENT,\n" +
+                "SUM( IIF( sw.PRICE_NORM IS NOT NULL AND sw.TIME_VALUE IS NOT NULL, 0, SW.PRICE * sw.QUANTITY ) ) AS TOTAL_BY_PRICE,\n" +
+                "SUM( IIF( sw.PRICE_NORM IS NOT NULL AND sw.TIME_VALUE IS NOT NULL, sw.PRICE_NORM * sw.TIME_VALUE * sw.QUANTITY, 0 ) ) AS TOTAL_BY_NORM\n" +
+                "FROM DOCUMENT_SERVICE_DETAIL AS dsd\n" +
+                "INNER JOIN DOCUMENT_OUT_HEADER AS doh ON doh.DOCUMENT_OUT_HEADER_ID = dsd.DOCUMENT_OUT_HEADER_ID\n" +
+                "INNER JOIN DOCUMENT_OUT AS do ON do.DOCUMENT_OUT_ID = doh.DOCUMENT_OUT_ID\n" +
+                "INNER JOIN ORGANIZATION AS o ON o.ORGANIZATION_ID = do.ORGANIZATION_ID\n" +
+                "INNER JOIN SERVICE_WORK AS sw ON sw.DOCUMENT_OUT_ID = do.DOCUMENT_OUT_ID\n" +
+                "INNER JOIN EXECUTOR AS e ON e.SERVICE_WORK_ID = sw.SERVICE_WORK_ID\n" +
+                "WHERE o.ORGANIZATION_ID = :organizationId AND dsd.DATE_START BETWEEN :startDate AND :endDate\n" +
+                "GROUP BY e.SHORTNAME, dsd.DOCUMENT_SERVICE_DETAIL_ID, dsd.DATE_START, e.PERCENT_EXEC_WORK\n" +
+                "ORDER BY e.SHORTNAME, dsd.DOCUMENT_SERVICE_DETAIL_ID, dsd.DATE_START", resultSetMapping = "byExecutors"),
+        @NamedNativeQuery(name = "DocumentServiceDetail.findClients", query="SELECT c.CLIENT_ID AS CLIENT_ID, c.SHORTNAME AS FULL_NAME, dsd.DOCUMENT_SERVICE_DETAIL_ID AS DSD_ID, dsd.DATE_START AS DATE_START, \n" +
+                "SUM( IIF( sw.PRICE_NORM IS NOT NULL AND sw.TIME_VALUE IS NOT NULL, sw.PRICE_NORM * sw.TIME_VALUE, SW.PRICE ) * sw.QUANTITY ) AS TOTAL \n" +
+                "FROM DOCUMENT_SERVICE_DETAIL AS dsd\n" +
+                "INNER JOIN DOCUMENT_OUT_HEADER AS doh ON doh.DOCUMENT_OUT_HEADER_ID = dsd.DOCUMENT_OUT_HEADER_ID\n" +
+                "INNER JOIN DOCUMENT_OUT AS do ON do.DOCUMENT_OUT_ID = doh.DOCUMENT_OUT_ID\n" +
+                "INNER JOIN ORGANIZATION AS o ON o.ORGANIZATION_ID = do.ORGANIZATION_ID\n" +
+                "INNER JOIN SERVICE_WORK AS sw ON sw.DOCUMENT_OUT_ID = do.DOCUMENT_OUT_ID\n" +
+                "INNER JOIN CLIENT AS c ON c.CLIENT_ID = do.CLIENT_ID\n" +
+                "INNER JOIN EXECUTOR AS e ON e.SERVICE_WORK_ID = sw.SERVICE_WORK_ID\n" +
+                "WHERE o.ORGANIZATION_ID = :organizationId AND dsd.DATE_START BETWEEN :startDate AND :endDate\n" +
+                "GROUP BY c.CLIENT_ID, c.SHORTNAME, dsd.DOCUMENT_SERVICE_DETAIL_ID, dsd.DATE_START\n" +
+                "ORDER BY c.SHORTNAME, dsd.DOCUMENT_SERVICE_DETAIL_ID, dsd.DATE_START", resultSetMapping = "byClients")
+})
 
 @Entity
 @Table(name = "DOCUMENT_SERVICE_DETAIL")

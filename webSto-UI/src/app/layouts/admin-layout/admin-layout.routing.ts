@@ -8,6 +8,7 @@ import { UsersComponent } from "../../pages/users/users.component";
 import { UserComponent } from 'src/app/pages/user/user.component';
 import { UserEditComponent } from 'src/app/pages/user-edit/userEdit.component';
 import { ChatComponent } from '../../pages/chat/chat.component';
+import {ReportsComponent} from '../../pages/reports/reports.component';
 
 export const AdminLayoutRoutes: Routes = [
   { path: 'dashboard',      component: DashboardComponent },
@@ -17,5 +18,6 @@ export const AdminLayoutRoutes: Routes = [
   { path: 'users',          component: UsersComponent },
   { path: 'users/:id',      component: UserComponent },
   { path: 'users/:id/edit', component: UserEditComponent },
-  { path: 'documents/:id',  component: DocumentComponent }
+  { path: 'documents/:id',  component: DocumentComponent },
+  { path: 'reports',        component: ReportsComponent }
 ];

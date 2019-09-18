@@ -1,0 +1,60 @@
+<div class="container-fluid mt--7">
+  <div class="row">
+    <div class="col-xl-12 mb-5 mb-xl-0">
+      <div class="card shadow">
+        <div class="card-header border-0">
+          <div class="row">
+            <div class="col">
+              <h3 class="mb-0">
+                Отчеты
+              </h3>
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-sm btn-buro-green" (click)="requestReport()" [disabled]="isDownloading">
+                Сформировать<span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-sm-auto" style="font-size: 12px !important;">
+              <div class="row">
+                <div class="col-sm-6">
+                  <h3 class="text-muted">
+                    Дата начала
+                  </h3>
+                  <dp-day-calendar [(ngModel)]="startDate" [config]="datePickerConfig" theme="dp-material"></dp-day-calendar>
+                </div>
+                <div class="col-sm-6">
+                  <h3 class="text-muted">
+                    Дата окончания
+                  </h3>
+                  <dp-day-calendar [(ngModel)]="endDate" [config]="datePickerConfig" theme="dp-material"></dp-day-calendar>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm">
+              <div class="row form-group">
+                <div class="col-lg-12">
+                  <h3 class="text-muted">
+                    Тип отчета
+                  </h3>
+                  <select id="state-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="reportType" style="width: 250px;">
+                    <option [selected]="reportType === 'executors'" [ngValue]="'executors'">
+                      Выручка по слесарям
+                    </option>
+                    <option [selected]="reportType === 'clients'" [ngValue]="'clients'">
+                      Отчет о реализации
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

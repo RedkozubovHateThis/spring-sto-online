@@ -30,7 +30,7 @@ public class DocumentResponse {
         if ( document == null ) return;
 
         id = document.getId();
-        startDate = DateHelper.formatDate( document.getDateStart() );
+        startDate = DateHelper.formatDateTime( document.getDateStart() );
 //        sum = document.getSummaWork();
         reason = document.getReasonsAppeal();
 
@@ -45,7 +45,7 @@ public class DocumentResponse {
         state = documentOutHeader.getState();
         stateRus = documentOutHeader.getState() == 4 ? "Оформлен" : documentOutHeader.getState() == 2 ? "Черновик" : "Неизвестно";
         style = documentOutHeader.getState() == 4 ? "success" : documentOutHeader.getState() == 2 ? "warning" : "info";
-        endDate = DateHelper.formatDate( documentOutHeader.getDateCreate() );
+        endDate = DateHelper.formatDateTime( documentOutHeader.getDateCreate() );
 
         DocumentOut documentOut = documentOutHeader.getDocumentOut();
         if ( documentOut == null ) return;
