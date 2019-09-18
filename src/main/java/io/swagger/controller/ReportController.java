@@ -64,7 +64,7 @@ public class ReportController {
         if ( !UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) )
             return ResponseEntity.status(403).build();
 
-        if ( currentUser.getOrganizationId() == null )
+        if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() )
             return ResponseEntity.status(404).build();
 
         try {
