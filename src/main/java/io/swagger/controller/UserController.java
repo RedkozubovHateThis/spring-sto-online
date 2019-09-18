@@ -17,6 +17,9 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private WebSocketController webSocketController;
+
     @GetMapping("/currentUser")
     public ResponseEntity getCurrentUser() {
 
@@ -42,6 +45,9 @@ public class UserController {
         user.setAccountLocked( existingUser.isAccountLocked() );
         user.setCredentialsExpired( existingUser.isCredentialsExpired() );
         userRepository.save( user );
+
+        if ( user.getModeratorId() != null )
+            webSocketController.sendCounterRefreshMessage( user.getModeratorId() );
 
         return ResponseEntity.ok(user);
 

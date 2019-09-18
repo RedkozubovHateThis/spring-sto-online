@@ -3,6 +3,9 @@ import {DocumentResponseService} from "../../api/documentResponse.service";
 import {UserService} from '../../api/user.service';
 import {User} from '../../model/postgres/auth/user';
 import {Subscription} from 'rxjs';
+import {StompSubscription} from '@stomp/stompjs';
+import {ChatMessageResponse} from '../../model/postgres/chatMessageResponse';
+import {WebSocketService} from '../../api/webSocket.service';
 
 @Component({
   selector: 'app-infobar',
@@ -11,19 +14,22 @@ import {Subscription} from 'rxjs';
 })
 export class InfobarComponent implements OnInit {
 
-  constructor(private documentResponseService: DocumentResponseService, private userService: UserService) {}
+  constructor(private documentResponseService: DocumentResponseService, private userService: UserService,
+              private webSocketService: WebSocketService) {}
 
-  private documentsCount: number = 0;
+  private documentsCount: number = null;
   private documentsCountLoading: boolean = false;
-  private documents2Count: number = 0;
+  private documents2Count: number = null;
   private documents2CountLoading: boolean = false;
-  private documents4Count: number = 0;
+  private documents4Count: number = null;
   private documents4CountLoading: boolean = false;
-  private usersCount: number = 0;
+  private usersCount: number = null;
   private usersCountLoading: boolean = false;
-  private usersNotApprovedCount: number = 0;
+  private usersNotApprovedCount: number = null;
   private usersNotApprovedCountLoading: boolean = false;
   private currentUser: User;
+  private subscription: StompSubscription;
+  private onConnect: Subscription;
 
   ngOnInit(): void {
 
@@ -42,6 +48,27 @@ export class InfobarComponent implements OnInit {
     this.getUsersCount();
     this.getUsersNotApprovedCount();
     this.getDocumentsCountByState();
+
+    this.onConnect = this.webSocketService.clientIsConnected.subscribe( client => {
+      this.subscribe();
+    } );
+
+    this.subscribe();
+  }
+
+  subscribe() {
+
+    if ( !this.webSocketService.client ) { return; }
+
+    const me = this;
+
+    this.subscription = this.webSocketService.client.subscribe('/topic/counters/' + this.userService.currentUser.id, message => {
+      me.getDocumentsCount();
+      me.getUsersCount();
+      me.getUsersNotApprovedCount();
+      me.getDocumentsCountByState();
+    });
+
   }
 
   getDocumentsCount() {

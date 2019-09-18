@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,6 +40,7 @@ public class User implements UserDetails, Serializable {
     private Integer organizationId;
     private Long moderatorId;
     private Boolean isApproved;
+    private Date lastUserAcceptDate;
 
     @JsonIgnore
     private boolean accountExpired;

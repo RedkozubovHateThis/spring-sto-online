@@ -9,7 +9,7 @@
               <div class="row">
                 <div class="col">
                   <h5 class="card-title text-uppercase text-muted mb-0">Общее количество заказ-нарядов</h5>
-                  <span class="h2 font-weight-bold mb-0" *ngIf="!documentsCountLoading; else loadingSpinner">{{documentsCount}}</span>
+                  <span class="h2 font-weight-bold mb-0" *ngIf="!documentsCountLoading || documentsCount != null; else loadingSpinner">{{documentsCount}}</span>
                 </div>
                 <div class="col-auto">
                   <div class="icon icon-shape bg-buro-green text-white rounded-circle shadow">
@@ -26,7 +26,7 @@
               <div class="row" *ngIf="currentUser.moderator || currentUser.admin; else draftBlock">
                 <div class="col">
                   <h5 class="card-title text-uppercase text-muted mb-0">Общее количество пользователей</h5>
-                  <span class="h2 font-weight-bold mb-0" *ngIf="!usersCountLoading; else loadingSpinner">{{usersCount}}</span>
+                  <span class="h2 font-weight-bold mb-0" *ngIf="!usersCountLoading || usersCount != null; else loadingSpinner">{{usersCount}}</span>
                 </div>
                 <div class="col-auto">
                   <div class="icon icon-shape bg-buro-green text-white rounded-circle shadow">
@@ -43,7 +43,7 @@
               <div class="row" *ngIf="currentUser.moderator || currentUser.admin; else cleanBlock">
                 <div class="col">
                   <h5 class="card-title text-uppercase text-muted mb-0">Количество неподтвержденных пользователей</h5>
-                  <span class="h2 font-weight-bold mb-0" *ngIf="!usersNotApprovedCountLoading; else loadingSpinner">{{usersNotApprovedCount}}</span>
+                  <span class="h2 font-weight-bold mb-0" *ngIf="!usersNotApprovedCountLoading || usersNotApprovedCount != null; else loadingSpinner">{{usersNotApprovedCount}}</span>
                 </div>
                 <div class="col-auto">
                   <div class="icon icon-shape bg-buro-green text-white rounded-circle shadow">
@@ -83,7 +83,7 @@
   <div class="row">
     <div class="col">
       <h5 class="card-title text-uppercase text-muted mb-0">Заказ-наряды в статусе "Черновик"</h5>
-      <span class="h2 font-weight-bold mb-0" *ngIf="!documents2CountLoading; else loadingSpinner">{{documents2Count}}</span>
+      <span class="h2 font-weight-bold mb-0" *ngIf="!documents2CountLoading || documents2Count != null; else loadingSpinner">{{documents2Count}}</span>
     </div>
     <div class="col-auto">
       <div class="icon icon-shape bg-buro-green text-white rounded-circle shadow">
@@ -96,7 +96,7 @@
   <div class="row">
     <div class="col">
       <h5 class="card-title text-uppercase text-muted mb-0">Заказ-наряды в статусе "Оформлен"</h5>
-      <span class="h2 font-weight-bold mb-0" *ngIf="!documents4CountLoading; else loadingSpinner">{{documents4Count}}</span>
+      <span class="h2 font-weight-bold mb-0" *ngIf="!documents4CountLoading || documents4Count != null; else loadingSpinner">{{documents4Count}}</span>
     </div>
     <div class="col-auto">
       <div class="icon icon-shape bg-buro-green text-white rounded-circle shadow">

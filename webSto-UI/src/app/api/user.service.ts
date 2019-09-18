@@ -109,8 +109,8 @@ export class UserService implements TransferService<User> {
     this.currentUser = user;
   }
 
-  createUser(user: User) {
-    return this.http.post(this.baseUrl + 'oauth/register', user);
+  createUser(user: User, selectedRole: string) {
+    return this.http.post(`${this.baseUrl}oauth/register/${selectedRole}`, user);
   }
 
   saveUser(user: User) {

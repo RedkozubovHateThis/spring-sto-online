@@ -16,6 +16,11 @@ export class RegisterComponent implements OnInit {
   private invalidRegister: boolean = false;
   private isRegistering: boolean = false;
   private errorMessages:string[] = [];
+  private roles = [
+    { name: 'Клиент', id: 'CLIENT' },
+    { name: 'Руководитель сервиса', id: 'SERVICE_LEADER' },
+    { name: 'Модератор', id: 'MODERATOR' },
+  ];
 
   ngOnInit() {
     this.addForm = this.formBuilder.group({
@@ -26,6 +31,7 @@ export class RegisterComponent implements OnInit {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       middleName: ['', Validators.required],
+      selectedRole: [null, Validators.required]
     });
 
   }
@@ -36,6 +42,9 @@ export class RegisterComponent implements OnInit {
 
     this.invalidRegister = false;
     this.errorMessages = [];
+
+    if ( this.addForm.controls.selectedRole.value == null )
+      this.errorMessages.push( "Необходимо выбрать роль!" );
 
     if ( this.addForm.controls.password.value.length < 6 || this.addForm.controls.rePassword.value.length < 6 )
       this.errorMessages.push( "Пароль не может содержать менее 6 символов!" );
@@ -50,7 +59,7 @@ export class RegisterComponent implements OnInit {
 
     this.isRegistering = true;
 
-    this.userService.createUser(this.addForm.value)
+    this.userService.createUser(this.addForm.value, this.addForm.controls.selectedRole.value)
       .subscribe( data => {
         this.isRegistering = false;
         this.router.navigate(['login']);

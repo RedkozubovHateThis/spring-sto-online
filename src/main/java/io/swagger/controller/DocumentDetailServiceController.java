@@ -41,6 +41,9 @@ public class DocumentDetailServiceController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private WebSocketController webSocketController;
+
     @GetMapping("/findAll")
     public ResponseEntity findAll(Pageable pageable, FilterPayload filterPayload) {
 
@@ -48,11 +51,11 @@ public class DocumentDetailServiceController {
         if ( currentUser == null ) return ResponseEntity.status(401).build();
 
         if ( UserHelper.hasRole(currentUser, "CLIENT") &&
-                currentUser.getClientId() == null )
+                ( currentUser.getClientId() == null || !currentUser.getIsApproved() ) )
             return ResponseEntity.status(404).build();
 
         else if ( UserHelper.hasRole(currentUser, "SERVICE_LEADER") &&
-                currentUser.getOrganizationId() == null )
+                ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ) )
             return ResponseEntity.status(404).build();
 
         Specification<DocumentServiceDetail> specification =
@@ -65,6 +68,8 @@ public class DocumentDetailServiceController {
                 .map(DocumentResponse::new).collect( Collectors.toList() );
 
         Page<DocumentResponse> responsePage = new PageImpl<>(responseList, pageable, result.getTotalElements());
+
+        webSocketController.sendCounterRefreshMessage( currentUser.getId() );
 
         return ResponseEntity.ok( responsePage );
 
@@ -147,19 +152,22 @@ public class DocumentDetailServiceController {
         else if ( ( UserHelper.hasRole(currentUser, "MODERATOR") ) ) {
 
             List<Integer> clientIds = userRepository.collectClientIds( currentUser.getId() );
-            result = documentsRepository.countByClientIds( clientIds );
+            if ( clientIds.size() == 0 )
+                result = 0;
+            else
+                result = documentsRepository.countByClientIds( clientIds );
 
         }
         else if ( UserHelper.hasRole(currentUser, "CLIENT") ) {
 
-            if ( currentUser.getClientId() == null ) return ResponseEntity.status(404).build();
-            result = documentsRepository.countByClientId( currentUser.getClientId() );
+            if ( currentUser.getClientId() == null || !currentUser.getIsApproved() ) result = null;
+            else result = documentsRepository.countByClientId( currentUser.getClientId() );
 
         }
         else if ( UserHelper.hasRole(currentUser, "SERVICE_LEADER") ) {
 
-            if ( currentUser.getOrganizationId() == null ) return ResponseEntity.status(404).build();
-            result = documentsRepository.countByOrganizationId( currentUser.getOrganizationId() );
+            if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ) result = null;
+            else result = documentsRepository.countByOrganizationId( currentUser.getOrganizationId() );
 
         }
 
@@ -182,19 +190,22 @@ public class DocumentDetailServiceController {
         else if ( ( UserHelper.hasRole(currentUser, "MODERATOR") ) ) {
 
             List<Integer> clientIds = userRepository.collectClientIds( currentUser.getId() );
-            result = documentsRepository.countByClientIdsAndState( clientIds, state );
+            if ( clientIds.size() == 0 )
+                result = 0;
+            else
+                result = documentsRepository.countByClientIdsAndState( clientIds, state );
 
         }
         else if ( UserHelper.hasRole(currentUser, "CLIENT") ) {
 
-            if ( currentUser.getClientId() == null ) return ResponseEntity.status(404).build();
-            result = documentsRepository.countByClientIdAndState( currentUser.getClientId(), state );
+            if ( currentUser.getClientId() == null || !currentUser.getIsApproved() ) result = null;
+            else result = documentsRepository.countByClientIdAndState( currentUser.getClientId(), state );
 
         }
         else if ( UserHelper.hasRole(currentUser, "SERVICE_LEADER") ) {
 
-            if ( currentUser.getOrganizationId() == null ) return ResponseEntity.status(404).build();
-            result = documentsRepository.countByOrganizationIdAndState( currentUser.getOrganizationId(), state );
+            if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ) result = null;
+            else result = documentsRepository.countByOrganizationIdAndState( currentUser.getOrganizationId(), state );
 
         }
 

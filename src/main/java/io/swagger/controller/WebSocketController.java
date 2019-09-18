@@ -28,4 +28,15 @@ public class WebSocketController {
 
     }
 
+    public void sendCounterRefreshMessage(Long userId) {
+
+        try {
+            template.convertAndSend( String.format( "/topic/counters/%s", userId ), userId );
+        }
+        catch ( IllegalArgumentException iae ) {
+            logger.error( "Counter refresh message sending error: {}", iae.getMessage() );
+        }
+
+    }
+
 }

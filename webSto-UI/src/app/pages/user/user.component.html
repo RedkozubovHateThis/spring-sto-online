@@ -28,7 +28,7 @@
 
               <div class="form-group"
                    *ngIf="userService.currentUser != null && model != null && userService.currentUser.moderator && model.id != userService.currentUser.id">
-                <button class="btn btn-buro-green" (click)="approve( model, true )" *ngIf="!model.isApproved; else disapprove">
+                <button class="btn btn-buro-green" [disabled]="model.clientId == null && model.organizationId == null" (click)="approve( model, true )" *ngIf="!model.isApproved; else disapprove">
                   Подвердить<span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
                 </button>
                 <ng-template #disapprove>

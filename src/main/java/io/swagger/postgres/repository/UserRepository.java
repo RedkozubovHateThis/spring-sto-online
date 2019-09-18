@@ -19,6 +19,11 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
     @Query("SELECT u FROM User AS u WHERE u.username = ?#{principal.username}")
     User findCurrentUser();
 
+    @Query("SELECT DISTINCT u FROM User AS u " +
+            "INNER JOIN u.roles AS ur " +
+            "WHERE ur.name = :roleName")
+    List<User> findUsersByRoleName(@Param("roleName") String roleName);
+
     @Query("SELECT DISTINCT user FROM User user " +
             "LEFT JOIN FETCH user.roles AS role " +
             "WHERE ( user.username = :username " +
@@ -64,7 +69,7 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
     Boolean isUserExistsEmail(@Param("email") String email);
 
     @Query(nativeQuery = true, value = "SELECT DISTINCT u.client_id FROM users AS u " +
-            "WHERE u.moderator_id = :moderatorId")
+            "WHERE u.moderator_id = :moderatorId AND u.client_id IS NOT NULL")
     List<Integer> collectClientIds(@Param("moderatorId") Long moderatorId);
 
     @Query("SELECT u FROM User AS u WHERE u.username <> ?#{principal.username} ORDER BY u.lastName")
