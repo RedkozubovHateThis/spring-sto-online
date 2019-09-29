@@ -6,7 +6,9 @@ import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @Entity
@@ -39,5 +41,15 @@ public class GoodsOutClient {
 
     @Column(name = "POSITION_NUMBER")
     private Integer positionNumber;
+
+    public Map<String, Object> buildReportData() {
+        Map<String, Object> reportData = new HashMap<>();
+
+        reportData.put("number", number);
+        reportData.put("name", name);
+        reportData.put("count", goodsCount);
+
+        return reportData;
+    }
 
 }

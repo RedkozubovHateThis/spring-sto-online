@@ -5,6 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {ModelTransfer} from "../model.transfer";
 import {ServiceWorkResponseService} from "../../api/ServiceWorkResponse.service";
 import {UserService} from "../../api/user.service";
+import {HttpClient} from '@angular/common/http';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-documents',
@@ -13,6 +15,7 @@ import {UserService} from "../../api/user.service";
 })
 export class DocumentComponent extends ModelTransfer<DocumentResponse, number> implements OnInit {
 
+  private isDownloading: boolean = false;
   private isLoading: boolean = false;
   private price: number;
   private isUpdating: boolean = false;
@@ -27,8 +30,8 @@ export class DocumentComponent extends ModelTransfer<DocumentResponse, number> i
     }
   ];
 
-  constructor(private documentResponseService:DocumentResponseService, protected route:ActivatedRoute,
-              private serviceWorkResponseService: ServiceWorkResponseService, private userService: UserService) {
+  constructor(private documentResponseService: DocumentResponseService, protected route: ActivatedRoute, private toastrService: ToastrService,
+              private serviceWorkResponseService: ServiceWorkResponseService, private userService: UserService, private httpClient: HttpClient) {
     super(documentResponseService, route);
   }
 
@@ -87,6 +90,36 @@ export class DocumentComponent extends ModelTransfer<DocumentResponse, number> i
       }, () => {
         this.isUpdating = false;
       } );
+  }
+
+  downloadReport() {
+    const headers = this.userService.getHeaders();
+
+    this.isDownloading = true;
+    this.httpClient.get(`http://localhost:8181/secured/reports/${this.model.id}/order`,
+      {headers, responseType: 'blob'} ).subscribe( blob => {
+
+      this.isDownloading = false;
+
+      const data = window.URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = data;
+      link.download = `Договор заказ-наряд на работы № ${this.model.documentNumber}.pdf`;
+      link.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+
+      setTimeout( () => {
+        window.URL.revokeObjectURL(data);
+        link.remove();
+      }, 100 );
+
+    }, error => {
+      this.isDownloading = false;
+      if ( error.status === 404 )
+        this.toastrService.error('Необходимые данные не найдены!', 'Внимание!');
+      else
+        this.toastrService.error('Ошибка формирования заказ-наряда!', 'Внимание!');
+    } );
   }
 
 }

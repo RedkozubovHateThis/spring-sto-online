@@ -91,8 +91,9 @@ public class DocumentServiceDetail {
     @ManyToOne
     private ModelLink modelLink;
 
-    @Column(name = "REPAIR_TYPE_ID")
-    private Integer repairType;
+    @ManyToOne
+    @JoinColumn(name = "REPAIR_TYPE_ID")
+    private RepairType repairType;
 
     @Lob
     @Column(name = "SPECIAL_NOTES")
@@ -168,4 +169,9 @@ public class DocumentServiceDetail {
 
     @Column(name = "INSPECTION_COMPLETENESS")
     private String inspectionCompleteness;
+
+    public String getRepairTypeName() {
+        if ( repairType == null ) return null;
+        return repairType.getName();
+    }
 }

@@ -69,8 +69,9 @@ public class DocumentOutHeader {
     @Column(name = "BARCODE")
     private String barcode;
 
-    @Column(name = "MANAGER_ID")
-    private Integer manager;
+    @ManyToOne
+    @JoinColumn(name = "MANAGER_ID")
+    private Manager manager;
     @Column(name = "CONTRACT_ID")
     private Integer contract;
 

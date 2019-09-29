@@ -2,6 +2,19 @@
   <div class="row">
     <div class="col">
       <div class="card shadow">
+        <div class="card-header">
+          <div class="row">
+            <div class="col">
+              Данные заказ-наряда
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-sm btn-buro-green" (click)="downloadReport()" [disabled]="isDownloading">
+                Выгрузить заказ-наряд
+                <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+              </button>
+            </div>
+          </div>
+        </div>
         <div class="card-body">
 
           <div class="row form-group">

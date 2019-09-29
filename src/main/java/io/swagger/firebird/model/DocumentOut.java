@@ -35,15 +35,17 @@ public class DocumentOut {
     @ManyToOne
     private Organization organization;
 
-    @Column(name = "ORGANIZATION_CONTACT_ID")
-    private Integer organizationContact;
+    @ManyToOne
+    @JoinColumn(name = "ORGANIZATION_CONTACT_ID")
+    private Contact organizationContact;
     @Column(name = "ORGANIZATION_REQUISITE_ID")
     private Integer organizationRequisite;
     @JoinColumn(name = "CLIENT_ID")
     @ManyToOne
     private Client client;
-    @Column(name = "CLIENT_CONTACT_ID")
-    private Integer clientContact;
+    @ManyToOne
+    @JoinColumn(name = "CLIENT_CONTACT_ID")
+    private Contact clientContact;
     @Column(name = "CLIENT_REQUISITE_ID")
     private Integer clientRequisite;
     @Column(name = "SOURCE_INFO_ID")

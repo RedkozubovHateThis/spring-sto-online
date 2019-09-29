@@ -68,4 +68,9 @@ public class Model {
     @OneToMany(mappedBy = "model")
     private Set<ModelDetail> modelDetails = new HashSet<>();
 
+    public String getFullName() {
+        if ( mark == null ) return name;
+        return String.format( "%s %s", mark.getName(), name );
+    }
+
 }

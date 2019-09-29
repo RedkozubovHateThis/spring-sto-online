@@ -6,6 +6,8 @@ import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity
 @Table(name = "SERVICE_GOODS_ADDON")
@@ -21,8 +23,9 @@ public class ServiceGoodsAddon {
     @Column(name = "SERVICE_GOODS_ADDON_ID")
     private Integer id;
 
-    @Column(name = "UNIT_ID")
-    private Integer unit;
+    @ManyToOne
+    @JoinColumn(name = "UNIT_ID")
+    private Unit unit;
     @Column(name = "AC_DOC_ID")
     private Integer acDoc;
 
@@ -57,5 +60,36 @@ public class ServiceGoodsAddon {
     private String number;
     @Column(name = "AUDATEX_UID")
     private String audatexUid;
+
+    public Map<String, Object> buildReportData() {
+        Map<String, Object> reportData = new HashMap<>();
+
+        reportData.put("number", number);
+        reportData.put("name", fullName);
+        if ( unit != null )
+            reportData.put("unit", unit.getShortName() );
+        reportData.put("count", goodsCount);
+        reportData.put("cost", cost);
+        reportData.put("discount", discount);
+        reportData.put("sum", getServiceGoodsCost(false) );
+
+        return reportData;
+    }
+
+    public Double getServiceGoodsCost(Boolean withDiscount) {
+
+        double totalCost = cost;
+        int goodsCount = this.goodsCount != null && this.goodsCount > 0 ?
+                this.goodsCount : 1;
+
+        if ( withDiscount && discount != null ) {
+            totalCost -= discount;
+        }
+        if ( withDiscount && discountFix != null ) {
+            totalCost -= discountFix;
+        }
+
+        return totalCost * goodsCount;
+    }
 
 }

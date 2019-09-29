@@ -31,12 +31,7 @@ public class VehicleResponse {
 
             if ( model != null ) {
 
-                Mark mark = model.getMark();
-
-                if ( mark != null )
-                    name = mark.getName() + " " + model.getName();
-                else
-                    name = model.getName();
+                name = model.getFullName();
 
             }
 

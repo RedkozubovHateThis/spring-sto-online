@@ -23,21 +23,7 @@ public class ServiceGoodsAddonTotalResponse {
         if ( serviceGoodsAddonSet == null || serviceGoodsAddonSet.size() == 0 ) return;
 
         serviceGoodsAddonList = serviceGoodsAddonSet.stream().map( serviceGoodsAddon -> {
-
-            int goodsCount = serviceGoodsAddon.getGoodsCount() != null && serviceGoodsAddon.getGoodsCount() > 0 ?
-                    serviceGoodsAddon.getGoodsCount() : 1;
-
-            double totalCost = serviceGoodsAddon.getCost();
-
-            if ( serviceGoodsAddon.getDiscount() != null ) {
-                totalCost -= serviceGoodsAddon.getDiscount();
-            }
-            if ( serviceGoodsAddon.getDiscountFix() != null ) {
-                totalCost -= serviceGoodsAddon.getDiscountFix();
-            }
-
-            addonsSum += totalCost * goodsCount;
-
+            addonsSum += serviceGoodsAddon.getServiceGoodsCost(true);
             return new ServiceGoodsAddonResponse(serviceGoodsAddon);
         } ).collect( Collectors.toList() );
 

@@ -6,9 +6,7 @@ import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "SERVICE_WORK")
@@ -81,5 +79,53 @@ public class ServiceWork {
     @Temporal(TemporalType.DATE)
     @Column(name = "NEXT_DATE_WORK_DONE")
     private Date nextDateWorkDone;
+
+    @OneToOne(mappedBy = "serviceWork")
+    private Executor executor;
+
+    public Map<String, Object> buildReportData() {
+        Map<String, Object> reportData = new HashMap<>();
+
+        reportData.put("workCode", code);
+        reportData.put("workName", name);
+        reportData.put("quantity", quantity);
+        reportData.put("coefficient", factor);
+        reportData.put("priceNorm", priceNorm);
+        reportData.put("timeValue", timeValue);
+        reportData.put("price", price);
+        reportData.put("discount", discountWork);
+        reportData.put("sum", getServiceWorkTotalCost( false ) );
+        if ( executor != null )
+            reportData.put("executor", executor.getShortName() );
+
+        return reportData;
+    }
+
+    public Double getServiceWorkTotalCost(Boolean withDiscount) {
+
+        double workSum = 0.0;
+        int quantity = this.quantity != null && this.quantity > 0 ?
+                this.quantity : 1;
+
+        if ( priceNorm != null && timeValue != null ) {
+            workSum += priceNorm * timeValue;
+        }
+        else if ( price != null ) {
+            workSum += price;
+        }
+
+        if ( withDiscount && discountWork != null ) {
+            workSum -= discountWork;
+        }
+        if ( withDiscount && discountWorkFix != null ) {
+            workSum -= discountWorkFix;
+        }
+
+        return workSum * quantity;
+    }
+
+    public Boolean isByPrice() {
+        return ( priceNorm == null || timeValue == null ) && price != null;
+    }
 
 }

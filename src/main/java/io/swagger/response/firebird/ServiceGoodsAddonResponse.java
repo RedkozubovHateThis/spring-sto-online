@@ -19,15 +19,8 @@ public class ServiceGoodsAddonResponse {
         id = serviceGoodsAddon.getId();
         fullName = serviceGoodsAddon.getFullName();
         cost = serviceGoodsAddon.getCost();
-        totalCost = serviceGoodsAddon.getCost();
+        totalCost = serviceGoodsAddon.getServiceGoodsCost(true);
         goodsCount = serviceGoodsAddon.getGoodsCount();
-
-        if ( serviceGoodsAddon.getDiscount() != null ) {
-            totalCost -= serviceGoodsAddon.getDiscount();
-        }
-        if ( serviceGoodsAddon.getDiscountFix() != null ) {
-            totalCost -= serviceGoodsAddon.getDiscountFix();
-        }
 
     }
 

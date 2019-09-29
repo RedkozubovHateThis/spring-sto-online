@@ -1,10 +1,13 @@
 package io.swagger.service.impl;
 
+import io.swagger.firebird.model.*;
 import io.swagger.firebird.repository.DocumentServiceDetailRepository;
 import io.swagger.helper.DateHelper;
 import io.swagger.response.exception.DataNotFoundException;
 import io.swagger.response.report.*;
 import io.swagger.service.ReportService;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.poi.ss.usermodel.CellCopyPolicy;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -16,10 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ReportServiceImpl implements ReportService {
@@ -49,6 +53,149 @@ public class ReportServiceImpl implements ReportService {
 
     @Value("${reports.catalog}")
     private String reportsCatalog;
+
+    @Override
+    public byte[] getOrderReport(Integer documentId) throws IOException, JRException, DataNotFoundException {
+
+        DocumentServiceDetail document = documentServiceDetailRepository.findOne( documentId );
+        if ( document == null ) throw new DataNotFoundException();
+
+        File template = new File( reportsCatalog + "order.jasper" );
+        InputStream templateStream = new FileInputStream(template);
+
+        Map<String, Object> parameters = new HashMap<>();
+        fillReportParameters( parameters, document );
+        JRBeanCollectionDataSource serviceWorkData = new JRBeanCollectionDataSource( getServiceWorkData( parameters, document ) );
+        JRBeanCollectionDataSource serviceGoodsData = new JRBeanCollectionDataSource( getServiceGoodsData( parameters, document ) );
+        JRBeanCollectionDataSource clientGoodsData = new JRBeanCollectionDataSource( getClientGoodsData( document ) );
+        parameters.put("serviceWorkData", serviceWorkData);
+        parameters.put("serviceGoodsData", serviceGoodsData);
+        parameters.put("clientGoodsData", clientGoodsData);
+
+        JasperPrint jasperPrint = JasperFillManager.fillReport(templateStream, parameters, new JREmptyDataSource());
+
+        return JasperExportManager.exportReportToPdf( jasperPrint );
+    }
+
+    private void fillReportParameters(Map<String, Object> parameters, DocumentServiceDetail document) throws DataNotFoundException {
+
+        DocumentOutHeader documentOutHeader = document.getDocumentOutHeader();
+        if ( documentOutHeader == null ) throw new DataNotFoundException();
+
+        User user = documentOutHeader.getUser();
+        if ( user == null ) throw new DataNotFoundException();
+
+        Employee employee = user.getEmployee();
+        if ( employee == null ) throw new DataNotFoundException();
+
+        DocumentOut documentOut = documentOutHeader.getDocumentOut();
+        if ( documentOut == null ) throw new DataNotFoundException();
+
+        Organization organization = documentOut.getOrganization();
+        Contact organizationContact = documentOut.getOrganizationContact();
+        if ( organization == null || organizationContact == null ) throw new DataNotFoundException();
+
+        Client client = documentOut.getClient();
+        Contact clientContact = documentOut.getClientContact();
+        if ( client == null || clientContact == null ) throw new DataNotFoundException();
+
+        ModelLink modelLink = document.getModelLink();
+        if ( modelLink == null ) throw new DataNotFoundException();
+
+        ModelDetail modelDetail = modelLink.getModelDetail();
+        if ( modelDetail == null ) throw new DataNotFoundException();
+
+        Model model = modelDetail.getModel();
+        if ( model == null ) throw new DataNotFoundException();
+
+        parameters.put( "organizationName", organization.getFullName() );
+        parameters.put( "organizationAddress", organizationContact.getContactFull() );
+
+        parameters.put( "orderNum", documentOutHeader.getFullNumber() != null ? documentOutHeader.getFullNumber() : "не указан" );
+        parameters.put( "orderStartDate", DateHelper.formatDateTime( document.getDateStart() ) );
+        parameters.put( "orderEndDate", DateHelper.formatDateTime( documentOutHeader.getDateCreate() ) );
+
+        parameters.put( "customerName", client.getFullName() );
+        parameters.put( "customerAddress", clientContact.getContactFull() );
+        parameters.put( "customerPhone", clientContact.getMobile() );
+
+        parameters.put( "vehicleName", model.getFullName() );
+        parameters.put( "vehicleYear", DateHelper.formatYear( modelDetail.getYearOfProduction() ) );
+        parameters.put( "vehicleAmts", null ); // TODO: разобраться, что сюда сувать
+        parameters.put( "vehicleRegNum", modelDetail.getNormalizedRegNumber() );
+        parameters.put( "vehicleVinNum", modelDetail.getVinNumber() );
+        parameters.put( "vehicleEngNum", modelDetail.getEngineNumber() );
+        parameters.put( "vehicleChassisNum", modelDetail.getChassisNumber() );
+        parameters.put( "vehicleColor", modelDetail.getColorName() );
+        parameters.put( "vehicleType", modelDetail.getCarBodyTypeName() );
+
+        parameters.put( "repairType", document.getRepairTypeName() );
+        parameters.put( "repairReason", document.getReasonsAppeal() );
+        parameters.put( "repairSpecial", document.getSpecialNotes() );
+
+        parameters.put( "employeeFio", employee.getShortName() );
+
+        try {
+
+            ByteArrayInputStream bais = new ByteArrayInputStream( organization.getStampSource() );
+            BufferedImage bufferedImage = ImageIO.read( bais );
+
+            parameters.put("stamp", bufferedImage);
+
+        }
+        catch ( Exception e ) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private List<Map<String, Object>> getServiceWorkData(Map<String, Object> parameters, DocumentServiceDetail document) throws DataNotFoundException {
+
+        DocumentOutHeader documentOutHeader = document.getDocumentOutHeader();
+        if ( documentOutHeader == null ) throw new DataNotFoundException();
+
+        DocumentOut documentOut = documentOutHeader.getDocumentOut();
+        if ( documentOut == null ) throw new DataNotFoundException();
+
+        Double workSum = 0.0;
+        for (ServiceWork serviceWork : documentOut.getServiceWorks()) {
+            workSum += serviceWork.getServiceWorkTotalCost(true);
+        }
+        parameters.put("workSum", workSum);
+
+        return documentOut.getServiceWorks().stream().map(ServiceWork::buildReportData).collect( Collectors.toList() );
+
+    }
+
+    private List<Map<String, Object>> getServiceGoodsData(Map<String, Object> parameters, DocumentServiceDetail document) throws DataNotFoundException {
+
+        DocumentOutHeader documentOutHeader = document.getDocumentOutHeader();
+        if ( documentOutHeader == null ) throw new DataNotFoundException();
+
+        DocumentOut documentOut = documentOutHeader.getDocumentOut();
+        if ( documentOut == null ) throw new DataNotFoundException();
+
+        Double goodsSum = 0.0;
+        for (ServiceGoodsAddon serviceGoodsAddon : documentOut.getServiceGoodsAddons()) {
+            goodsSum += serviceGoodsAddon.getServiceGoodsCost(true);
+        }
+        parameters.put("goodsSum", goodsSum);
+
+        return documentOut.getServiceGoodsAddons().stream().map(ServiceGoodsAddon::buildReportData).collect( Collectors.toList() );
+
+    }
+
+    private List<Map<String, Object>> getClientGoodsData(DocumentServiceDetail document) throws DataNotFoundException {
+
+        DocumentOutHeader documentOutHeader = document.getDocumentOutHeader();
+        if ( documentOutHeader == null ) throw new DataNotFoundException();
+
+        DocumentOut documentOut = documentOutHeader.getDocumentOut();
+        if ( documentOut == null ) throw new DataNotFoundException();
+
+        return documentOut.getGoodsOutClients().stream().map(GoodsOutClient::buildReportData).collect( Collectors.toList() );
+
+    }
 
     @Override
     public byte[] getExecutorsReport(Integer organizationId, Date startDate, Date endDate) throws IOException, DataNotFoundException {

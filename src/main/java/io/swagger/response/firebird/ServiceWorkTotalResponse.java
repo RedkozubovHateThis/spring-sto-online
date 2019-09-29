@@ -23,22 +23,7 @@ public class ServiceWorkTotalResponse {
         if ( serviceWorkSet == null || serviceWorkSet.size() == 0 ) return;
 
         workList = serviceWorkSet.stream().map( serviceWork -> {
-            if ( serviceWork.getPriceNorm() != null && serviceWork.getTimeValue() != null ) {
-
-                int quantity = serviceWork.getQuantity() != null && serviceWork.getQuantity() > 0 ?
-                        serviceWork.getQuantity() : 1;
-
-                workSum += serviceWork.getPriceNorm() * quantity * serviceWork.getTimeValue();
-
-            }
-            else if ( serviceWork.getPrice() != null ) {
-
-                int quantity = serviceWork.getQuantity() != null && serviceWork.getQuantity() > 0 ?
-                        serviceWork.getQuantity() : 1;
-
-                workSum += serviceWork.getPrice() * quantity;
-
-            }
+            workSum += serviceWork.getServiceWorkTotalCost(true);
             return new ServiceWorkResponse(serviceWork);
         } ).collect( Collectors.toList() );
 

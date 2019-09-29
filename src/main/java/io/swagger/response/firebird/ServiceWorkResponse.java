@@ -20,15 +20,8 @@ public class ServiceWorkResponse {
 
         id = serviceWork.getId();
         name = serviceWork.getName();
-
-        if ( serviceWork.getPriceNorm() != null && serviceWork.getTimeValue() != null ) {
-            total = serviceWork.getPriceNorm() * serviceWork.getTimeValue();
-        }
-        else if ( serviceWork.getPrice() != null ) {
-            total = serviceWork.getPrice();
-            byPrice = true;
-        }
-
+        total = serviceWork.getServiceWorkTotalCost(true);
+        byPrice = serviceWork.isByPrice();
         quantity = serviceWork.getQuantity();
         price = serviceWork.getPrice();
         priceNorm = serviceWork.getPriceNorm();

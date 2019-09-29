@@ -29,15 +29,17 @@ public class ModelDetail {
     private Model model;
     @Column(name = "DIRECTORY_REGISTRY_ID")
     private Integer directoryRegistry;
-    @Column(name = "COLOR_ID")
-    private Integer color;
+    @ManyToOne
+    @JoinColumn(name = "COLOR_ID")
+    private Color color;
 
     @Column(name = "CAR_GEARBOX_TYPE_ID")
     private Integer carGearboxType;
     @Column(name = "CAR_ENGINE_TYPE_ID")
     private Integer carEngineType;
-    @Column(name = "CAR_BODY_TYPE_ID")
-    private Integer carBodyType;
+    @ManyToOne
+    @JoinColumn(name = "CAR_BODY_TYPE_ID")
+    private CarBodyType carBodyType;
     @Column(name = "CAR_FUEL_TYPE_ID")
     private Integer carFuelType;
     @Column(name = "CAR_BRAKE_TYPE_ID")
@@ -85,5 +87,15 @@ public class ModelDetail {
     @JsonIgnore
     @OneToMany(mappedBy = "modelDetail")
     private Set<ModelLink> modelLinks = new HashSet<>();
+
+    public String getColorName() {
+        if ( color == null ) return null;
+        return color.getName();
+    }
+
+    public String getCarBodyTypeName() {
+        if ( carBodyType == null ) return null;
+        return carBodyType.getName();
+    }
 
 }
