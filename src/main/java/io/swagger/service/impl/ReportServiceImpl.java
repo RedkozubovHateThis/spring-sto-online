@@ -198,6 +198,109 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
+    public byte[] getExecutorsReportPDF(Integer organizationId, Date startDate, Date endDate) throws IOException, JRException, DataNotFoundException {
+
+        File template = new File( reportsCatalog + "executors.jasper" );
+        InputStream templateStream = new FileInputStream(template);
+
+        String title = String.format("Выручка по слесарям за период с %s по %s", DateHelper.formatDate(startDate), DateHelper.formatDate(endDate));
+
+        Map<String, Object> parameters = new HashMap<>();
+        JRBeanCollectionDataSource reportData = new JRBeanCollectionDataSource( getExecutorsReportData( organizationId, startDate, endDate) );
+        parameters.put("reportData", reportData);
+        parameters.put("reportTitle", title);
+
+        JasperPrint jasperPrint = JasperFillManager.fillReport(templateStream, parameters, new JREmptyDataSource());
+
+        return JasperExportManager.exportReportToPdf( jasperPrint );
+    }
+
+    private List<Map<String, Object>> getExecutorsReportData(Integer organizationId, Date startDate, Date endDate) throws DataNotFoundException {
+        List<ExecutorResponse> responses = getExecutorResponses(organizationId, startDate, endDate);
+        if ( responses.size() == 0 ) throw new DataNotFoundException();
+
+        List<Map<String, Object>> result = new ArrayList<>();
+        double totalByNorm = 0.0;
+        double totalByPrice = 0.0;
+        double totalSum = 0.0;
+        double totalSalary = 0.0;
+
+        for ( ExecutorResponse response : responses ) {
+
+            result.add( response.buildReportData() );
+            totalByNorm += response.getTotalByNorm();
+            totalByPrice += response.getTotalByPrice();
+            totalSum += response.getTotalSum();
+            totalSalary += response.getSalary();
+
+            int index = 0;
+            for ( ExecutorDocumentResponse executorDocumentResponse : response.getExecutorDocumentResponses() ) {
+                result.add( executorDocumentResponse.buildReportData( ++index ) );
+            }
+
+        }
+
+        Map<String, Object> totalRow = new HashMap<>();
+        totalRow.put("isBold", true);
+        totalRow.put("fullName", "ИТОГ");
+        totalRow.put("totalByNorm", totalByNorm);
+        totalRow.put("totalByPrice", totalByPrice);
+        totalRow.put("totalSum", totalSum);
+        totalRow.put("salary", totalSalary);
+
+        result.add( totalRow );
+
+        return result;
+    }
+
+    @Override
+    public byte[] getClientsReportPDF(Integer organizationId, Date startDate, Date endDate) throws IOException, JRException, DataNotFoundException {
+
+        File template = new File( reportsCatalog + "clients.jasper" );
+        InputStream templateStream = new FileInputStream(template);
+
+        String title = String.format("Отчет о реализации за период с %s по %s", DateHelper.formatDate(startDate), DateHelper.formatDate(endDate));
+
+        Map<String, Object> parameters = new HashMap<>();
+        JRBeanCollectionDataSource reportData = new JRBeanCollectionDataSource( getClientsReportData( organizationId, startDate, endDate) );
+        parameters.put("reportData", reportData);
+        parameters.put("reportTitle", title);
+
+        JasperPrint jasperPrint = JasperFillManager.fillReport(templateStream, parameters, new JREmptyDataSource());
+
+        return JasperExportManager.exportReportToPdf( jasperPrint );
+    }
+
+    private List<Map<String, Object>> getClientsReportData(Integer organizationId, Date startDate, Date endDate) throws DataNotFoundException {
+        List<ClientResponse> responses = getClientsResponses(organizationId, startDate, endDate);
+        if ( responses.size() == 0 ) throw new DataNotFoundException();
+
+        List<Map<String, Object>> result = new ArrayList<>();
+        double total = 0.0;
+
+        for ( ClientResponse response : responses ) {
+
+            result.add( response.buildReportData() );
+            total += response.getTotal();
+
+            int index = 0;
+            for ( ClientDocumentResponse clientDocumentResponse : response.getClientDocumentResponses() ) {
+                result.add( clientDocumentResponse.buildReportData( ++index ) );
+            }
+
+        }
+
+        Map<String, Object> totalRow = new HashMap<>();
+        totalRow.put("isBold", true);
+        totalRow.put("fullName", "ИТОГ");
+        totalRow.put("total", total);
+
+        result.add( totalRow );
+
+        return result;
+    }
+
+    @Override
     public byte[] getExecutorsReport(Integer organizationId, Date startDate, Date endDate) throws IOException, DataNotFoundException {
 
         File template = new File(reportsCatalog + "executors.xlsx");
@@ -294,7 +397,7 @@ public class ReportServiceImpl implements ReportService {
                 documentPercentCell.setCellValue( executorResponse.getPercent() / 100.0 );
 
                 XSSFCell documentSalaryCell = documentRow.getCell(EX_SALARY_COLUMN);
-                documentSalaryCell.setCellValue( executorDocumentResponse.getSalary( executorResponse.getPercent() ) );
+                documentSalaryCell.setCellValue( executorDocumentResponse.getSalary() );
 
             }
 
@@ -325,7 +428,7 @@ public class ReportServiceImpl implements ReportService {
         XSSFWorkbook workBook = new XSSFWorkbook( templateStream );
         XSSFSheet dataSheet = workBook.getSheetAt(0);
 
-        List<ClientResponse> clientResponses = getClientsResponse(organizationId, startDate, endDate);
+        List<ClientResponse> clientResponses = getClientsResponses(organizationId, startDate, endDate);
         if ( clientResponses.size() == 0 ) throw new DataNotFoundException();
 
         int bodySize = clientResponses.stream()
@@ -408,8 +511,8 @@ public class ReportServiceImpl implements ReportService {
         titleCell.setCellValue( titleMessage );
     }
 
-
-    private List<ExecutorResponse> getExecutorResponses(Integer organizationId, Date startDate, Date endDate) {
+    @Override
+    public List<ExecutorResponse> getExecutorResponses(Integer organizationId, Date startDate, Date endDate) {
 
         List<ExecutorsNativeResponse> responses = documentServiceDetailRepository.findExecutors(organizationId, startDate, endDate);
         List<ExecutorResponse> executorResponses = new ArrayList<>();
@@ -444,7 +547,8 @@ public class ReportServiceImpl implements ReportService {
 
     }
 
-    private List<ClientResponse> getClientsResponse(Integer organizationId, Date startDate, Date endDate) {
+    @Override
+    public List<ClientResponse> getClientsResponses(Integer organizationId, Date startDate, Date endDate) {
 
         List<ClientsNativeResponse> responses = documentServiceDetailRepository.findClients(organizationId, startDate, endDate);
         List<ClientResponse> clientResponses = new ArrayList<>();

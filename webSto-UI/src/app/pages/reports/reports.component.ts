@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import * as moment from 'moment';
 import {DocumentResponseService} from '../../api/documentResponse.service';
 import {ToastrService} from 'ngx-toastr';
@@ -13,13 +13,30 @@ import {HttpClient} from '@angular/common/http';
 export class ReportsComponent implements OnInit {
 
   private isDownloading: boolean = false;
-  private startDate: moment.Moment = moment( new Date() );
-  private endDate: moment.Moment = moment( new Date() );
+  private isLoading: boolean = false;
+  private selectedMonth: number;
+  private selectedYear: number;
+  private reportData: object[];
+  private totalRow: object;
   private reportType: string = 'executors';
   private reportTypeFileName = {
     executors: 'Выручка по слесарям за период с',
     clients: 'Отчет о реализации за период с'
   };
+  private months = [
+    { id: 0, name: 'Январь' },
+    { id: 1, name: 'Февраль' },
+    { id: 2, name: 'Март' },
+    { id: 3, name: 'Апрель' },
+    { id: 4, name: 'Май' },
+    { id: 5, name: 'Июнь' },
+    { id: 6, name: 'Июль' },
+    { id: 7, name: 'Август' },
+    { id: 8, name: 'Сентябрь' },
+    { id: 9, name: 'Октябрь' },
+    { id: 10, name: 'Ноябрь' },
+    { id: 11, name: 'Декабрь' }
+  ];
 
   private datePickerConfig = {
     locale: 'ru',
@@ -31,20 +48,29 @@ export class ReportsComponent implements OnInit {
   constructor(private httpClient: HttpClient, private toastrService: ToastrService, private userService: UserService) { }
 
   ngOnInit() {
-    this.startDate.startOf('month').set('hour', 0).set('minute', 0).set('second', 0);
-    this.endDate.endOf('month').set('hour', 0).set('minute', 0).set('second', 0);
+    const date = new Date();
+    this.selectedYear = date.getFullYear();
+    this.selectedMonth = date.getMonth();
+    this.requestReportData();
   }
 
-  requestReport() {
+  requestReportPDF() {
+
+    const date: Date = new Date();
+    date.setFullYear( this.selectedYear );
+    date.setMonth( this.selectedMonth );
+
+    const startDate: moment.Moment = moment( date ).startOf('month').set('hour', 0).set('minute', 0).set('second', 0);
+    const endDate: moment.Moment = moment( date ).endOf('month').set('hour', 23).set('minute', 59).set('second', 59);
 
     const headers = this.userService.getHeaders();
     const params = {
-      startDate: this.startDate.format('DD.MM.YYYY hh:mm:ss'),
-      endDate: this.endDate.format('DD.MM.YYYY hh:mm:ss')
+      startDate: startDate.format('DD.MM.YYYY hh:mm:ss'),
+      endDate: endDate.format('DD.MM.YYYY hh:mm:ss')
     };
 
     this.isDownloading = true;
-    this.httpClient.get(`http://localhost:8181/secured/reports/${this.reportType}`,
+    this.httpClient.get(`http://localhost:8181/secured/reports/${this.reportType}/PDF`,
       {headers, params, responseType: 'blob'} ).subscribe( blob => {
 
       this.isDownloading = false;
@@ -53,7 +79,7 @@ export class ReportsComponent implements OnInit {
 
       const link = document.createElement('a');
       link.href = data;
-      link.download = `${this.reportTypeFileName[this.reportType]} ${this.startDate.format('DD.MM.YYYY')} по ${this.endDate.format('DD.MM.YYYY')}.xlsx`;
+      link.download = `${this.reportTypeFileName[this.reportType]} ${startDate.format('DD.MM.YYYY')} по ${endDate.format('DD.MM.YYYY')}.pdf`;
       link.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
 
       setTimeout( () => {
@@ -70,6 +96,76 @@ export class ReportsComponent implements OnInit {
       else
         this.toastrService.error('Ошибка формирования отчета!', 'Внимание!');
     } );
+  }
+
+  requestReportData() {
+
+    const date: Date = new Date();
+    date.setFullYear( this.selectedYear );
+    date.setMonth( this.selectedMonth );
+
+    const startDate: moment.Moment = moment( date ).startOf('month').set('hour', 0).set('minute', 0).set('second', 0);
+    const endDate: moment.Moment = moment( date ).endOf('month').set('hour', 23).set('minute', 59).set('second', 59);
+
+    const headers = this.userService.getHeaders();
+    const params = {
+      startDate: startDate.format('DD.MM.YYYY hh:mm:ss'),
+      endDate: endDate.format('DD.MM.YYYY hh:mm:ss')
+    };
+
+    this.isLoading = true;
+    this.httpClient.get(`http://localhost:8181/secured/reports/${this.reportType}`,
+      {headers, params} ).subscribe( reportData => {
+
+      this.reportData = reportData as object[];
+      if ( this.reportType === 'executors' ) this.setTotalByExecutors();
+      else if ( this.reportType === 'clients' ) this.setTotalByClients();
+      this.isLoading = false;
+
+    }, error => {
+      this.totalRow = {
+        totalByNorm: 0,
+        totalByPrice: 0,
+        totalSum: 0,
+        totalSalary: 0
+      };
+      this.isLoading = false;
+      if ( error.status === 403 )
+        this.toastrService.error('Отчеты недоступны!', 'Внимание!');
+      else
+        this.toastrService.error('Ошибка формирования отчета!', 'Внимание!');
+    } );
+  }
+
+  private setTotalByExecutors() {
+    const totalRow = {
+      totalByNorm: 0,
+      totalByPrice: 0,
+      totalSum: 0,
+      totalSalary: 0
+    };
+    this.reportData.forEach( reportData => {
+      // @ts-ignore
+      totalRow.totalByNorm += reportData.totalByNorm;
+      // @ts-ignore
+      totalRow.totalByPrice += reportData.totalByPrice;
+      // @ts-ignore
+      totalRow.totalSum += reportData.totalSum;
+      // @ts-ignore
+      totalRow.totalSalary += reportData.salary;
+    } );
+    this.totalRow = totalRow;
+  }
+
+  private setTotalByClients() {
+    const totalRow = {
+      total: 0,
+    };
+    this.reportData.forEach( reportData => {
+      // @ts-ignore
+      totalRow.total += reportData.total;
+    } );
+    this.totalRow = totalRow;
   }
 
 }

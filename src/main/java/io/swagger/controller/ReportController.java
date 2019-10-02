@@ -59,19 +59,35 @@ public class ReportController {
         if ( currentUser.getOrganizationId() == null )
             return ResponseEntity.status(404).build();
 
+        return ResponseEntity.ok( reportService.getExecutorResponses( currentUser.getOrganizationId(), startDate, endDate ) );
+
+    }
+
+    @GetMapping("/executors/PDF")
+    public ResponseEntity buildExecutorsReport(@DateTimeFormat(pattern = "dd.MM.yyyy HH:mm:ss") Date startDate,
+                                               @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm:ss") Date endDate) {
+
+        User currentUser = userRepository.findCurrentUser();
+        if ( !UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) )
+            return ResponseEntity.status(403).build();
+
+        if ( currentUser.getOrganizationId() == null )
+            return ResponseEntity.status(404).build();
+
         try {
-            byte[] response = reportService.getExecutorsReport(currentUser.getOrganizationId(), startDate, endDate);
+            byte[] response = reportService.getExecutorsReportPDF(currentUser.getOrganizationId(), startDate, endDate);
 
             return ResponseEntity.ok()
                     .header( HttpHeaders.CONTENT_DISPOSITION, "attachment" )
                     .contentType( MediaType.APPLICATION_OCTET_STREAM )
                     .contentLength( response.length )
                     .body( response );
-        } catch (IOException e) {
+        } catch (IOException | JRException e) {
             e.printStackTrace();
             return ResponseEntity.status(500).build();
         }
         catch (DataNotFoundException dnfe) {
+            dnfe.printStackTrace();
             return ResponseEntity.status(404).build();
         }
 
@@ -88,19 +104,35 @@ public class ReportController {
         if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() )
             return ResponseEntity.status(404).build();
 
+        return ResponseEntity.ok( reportService.getClientsResponses( currentUser.getOrganizationId(), startDate, endDate ) );
+
+    }
+
+    @GetMapping("/clients/PDF")
+    public ResponseEntity buildClientsReport(@DateTimeFormat(pattern = "dd.MM.yyyy HH:mm:ss") Date startDate,
+                                             @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm:ss") Date endDate) {
+
+        User currentUser = userRepository.findCurrentUser();
+        if ( !UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) )
+            return ResponseEntity.status(403).build();
+
+        if ( currentUser.getOrganizationId() == null )
+            return ResponseEntity.status(404).build();
+
         try {
-            byte[] response = reportService.getClientsReport(currentUser.getOrganizationId(), startDate, endDate);
+            byte[] response = reportService.getClientsReportPDF(currentUser.getOrganizationId(), startDate, endDate);
 
             return ResponseEntity.ok()
                     .header( HttpHeaders.CONTENT_DISPOSITION, "attachment" )
                     .contentType( MediaType.APPLICATION_OCTET_STREAM )
                     .contentLength( response.length )
                     .body( response );
-        } catch (IOException e) {
+        } catch (IOException | JRException e) {
             e.printStackTrace();
             return ResponseEntity.status(500).build();
         }
         catch (DataNotFoundException dnfe) {
+            dnfe.printStackTrace();
             return ResponseEntity.status(404).build();
         }
 

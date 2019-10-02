@@ -1,9 +1,12 @@
 package io.swagger.response.report;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Data
 public class ExecutorResponse {
@@ -34,7 +37,7 @@ public class ExecutorResponse {
     }
 
     public void addDocumentResponse(ExecutorsNativeResponse response) {
-        executorDocumentResponses.add( new ExecutorDocumentResponse( response ) );
+        executorDocumentResponses.add( new ExecutorDocumentResponse( response, this ) );
     }
 
     public Double getTotalSum() {
@@ -43,6 +46,20 @@ public class ExecutorResponse {
 
     public Double getSalary() {
         return getTotalSum() * ( percent / 100 );
+    }
+
+    public Map<String, Object> buildReportData() {
+        Map<String, Object> reportData = new HashMap<>();
+
+        reportData.put("isBold", true);
+        reportData.put("fullName", fullName);
+        reportData.put("totalByNorm", totalByNorm);
+        reportData.put("totalByPrice", totalByPrice);
+        reportData.put("percent", percent);
+        reportData.put("totalSum", getTotalSum());
+        reportData.put("salary", getSalary());
+
+        return reportData;
     }
 
 }

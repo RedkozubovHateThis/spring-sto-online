@@ -3,7 +3,9 @@ package io.swagger.response.report;
 import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Data
 public class ClientResponse {
@@ -27,6 +29,16 @@ public class ClientResponse {
         if ( total == null ) return;
 
         this.total += total;
+    }
+
+    public Map<String, Object> buildReportData() {
+        Map<String, Object> reportData = new HashMap<>();
+
+        reportData.put("isBold", true);
+        reportData.put("fullName", fullName);
+        reportData.put("total", total);
+
+        return reportData;
     }
 
 }

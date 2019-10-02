@@ -1,6 +1,6 @@
 <div class="container-fluid mt--7">
   <div class="row">
-    <div class="col-xl-12 mb-5 mb-xl-0">
+    <div class="col-xl-9 mb-5 mb-xl-0">
       <div class="card shadow">
         <div class="card-header border-0">
           <div class="row">
@@ -10,48 +10,128 @@
               </h3>
             </div>
             <div class="col-auto">
-              <button class="btn btn-sm btn-buro-green" (click)="requestReport()" [disabled]="isDownloading">
-                Сформировать<span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+              <button class="btn btn-sm btn-buro-green" (click)="requestReportData()" [disabled]="isLoading">
+                Обновить<span *ngIf="isLoading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+              </button>
+              <button class="btn btn-sm btn-buro-green" (click)="requestReportPDF()" [disabled]="isDownloading">
+                Выгрузить в PDF<span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
               </button>
             </div>
           </div>
 
         </div>
+        <div class="table-responsive">
+
+          <ng-container *ngIf="!isLoading && reportType === 'executors'">
+            <table class="table table-flush table-hover">
+              <thead class="thead-light">
+                <tr>
+                  <th>Исполнитель / Заказ-наряд</th>
+                  <th class="text-center">Выполнение по норме времени</th>
+                  <th class="text-center">Выполнение без нормы времени</th>
+                  <th class="text-center">Выручка</th>
+                  <th class="text-center">Процент</th>
+                  <th class="text-center">ЗП</th>
+                </tr>
+              </thead>
+              <tbody>
+              <ng-container *ngFor="let data of reportData">
+                <tr class="font-weight-bold">
+                  <td>{{data.fullName}}</td>
+                  <td class="text-center">{{data.totalByNorm | number:'.2':'ru'}}</td>
+                  <td class="text-center">{{data.totalByPrice | number:'.2':'ru'}}</td>
+                  <td class="text-center">{{data.totalSum | number:'.2':'ru'}}</td>
+                  <td class="text-center">{{data.percent}}%</td>
+                  <td class="text-center">{{data.salary | number:'.2':'ru'}}</td>
+                </tr>
+                <tr *ngFor="let documents of data.executorDocumentResponses, let i = index" [attr.data-index]="i">
+                  <td>&ensp;№ {{i + 1}} от {{documents.documentDate | date : 'dd.MM.yy'}}</td>
+                  <td class="text-center">{{documents.totalByNorm | number:'.2':'ru'}}</td>
+                  <td class="text-center">{{documents.totalByPrice | number:'.2':'ru'}}</td>
+                  <td class="text-center">{{documents.totalSum | number:'.2':'ru'}}</td>
+                  <td class="text-center">{{documents.percent}}%</td>
+                  <td class="text-center">{{documents.salary | number:'.2':'ru'}}</td>
+                </tr>
+              </ng-container>
+              <tr class="font-weight-bold">
+                <td>ИТОГ</td>
+                <td class="text-center">{{totalRow.totalByNorm | number:'.2':'ru'}}</td>
+                <td class="text-center">{{totalRow.totalByPrice | number:'.2':'ru'}}</td>
+                <td class="text-center">{{totalRow.totalSum | number:'.2':'ru'}}</td>
+                <td></td>
+                <td class="text-center">{{totalRow.totalSalary | number:'.2':'ru'}}</td>
+              </tr>
+              </tbody>
+            </table>
+          </ng-container>
+
+          <ng-container *ngIf="!isLoading && reportType === 'clients'">
+            <table class="table table-flush table-hover">
+              <thead class="thead-light">
+              <tr>
+                <th>Контрагент / Заказ-наряд</th>
+                <th class="text-center">Сумма / Итого</th>
+              </tr>
+              </thead>
+              <tbody>
+              <ng-container *ngFor="let data of reportData">
+                <tr class="font-weight-bold">
+                  <td>{{data.fullName}}</td>
+                  <td class="text-center">{{data.total | number:'.2':'ru'}}</td>
+                </tr>
+                <tr *ngFor="let documents of data.clientDocumentResponses, let i = index" [attr.data-index]="i">
+                  <td>&ensp;№ {{i + 1}} от {{documents.documentDate | date : 'dd.MM.yy'}}</td>
+                  <td class="text-center">{{documents.total | number:'.2':'ru'}}</td>
+                </tr>
+              </ng-container>
+              <tr class="font-weight-bold">
+                <td>ИТОГ</td>
+                <td class="text-center">{{totalRow.total | number:'.2':'ru'}}</td>
+              </tr>
+              </tbody>
+            </table>
+          </ng-container>
+
+          <ng-container *ngIf="isLoading">
+            <div class="text-center">
+              <i class="fas fa-spin fa-spinner"></i> получение данных...
+            </div>
+          </ng-container>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 mb-5 mb-xl-0">
+      <div class="card shadow">
         <div class="card-body">
-          <div class="row">
-            <div class="col-sm-auto" style="font-size: 12px !important;">
-              <div class="row">
-                <div class="col-sm-6">
-                  <h3 class="text-muted">
-                    Дата начала
-                  </h3>
-                  <dp-day-calendar [(ngModel)]="startDate" [config]="datePickerConfig" theme="dp-material"></dp-day-calendar>
-                </div>
-                <div class="col-sm-6">
-                  <h3 class="text-muted">
-                    Дата окончания
-                  </h3>
-                  <dp-day-calendar [(ngModel)]="endDate" [config]="datePickerConfig" theme="dp-material"></dp-day-calendar>
-                </div>
-              </div>
-            </div>
-            <div class="col-sm">
-              <div class="row form-group">
-                <div class="col-lg-12">
-                  <h3 class="text-muted">
-                    Тип отчета
-                  </h3>
-                  <select id="state-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="reportType" style="width: 250px;">
-                    <option [selected]="reportType === 'executors'" [ngValue]="'executors'">
-                      Выручка по слесарям
-                    </option>
-                    <option [selected]="reportType === 'clients'" [ngValue]="'clients'">
-                      Отчет о реализации
-                    </option>
-                  </select>
-                </div>
-              </div>
-            </div>
+          <h3 class="text-muted">Настройки отчетов</h3>
+
+          <div class="form-group">
+            <label class="form-control-label" for="state-select">Тип отчета</label>
+            <select id="state-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="reportType" (change)="requestReportData()">
+              <option [selected]="reportType === 'executors'" [ngValue]="'executors'">
+                Выручка по слесарям
+              </option>
+              <option [selected]="reportType === 'clients'" [ngValue]="'clients'">
+                Отчет о реализации
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-control-label" for="month-select">Месяц</label>
+            <select id="month-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="selectedMonth">
+              <option [selected]="month.id === selectedMonth" *ngFor="let month of months" [ngValue]="month.id">
+                {{month.name}}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-control-label" for="input-year">Год</label>
+            <input type="number" id="input-year" class="form-control form-control-alternative" placeholder="Введите год..."
+                   [(ngModel)]="selectedYear">
           </div>
         </div>
       </div>
