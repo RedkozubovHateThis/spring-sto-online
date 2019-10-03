@@ -36,6 +36,7 @@ public class User implements UserDetails, Serializable {
     private String middleName;
     private String phone;
     private String email;
+    private String inn;
     private Integer clientId;
     private Integer organizationId;
     private Long moderatorId;

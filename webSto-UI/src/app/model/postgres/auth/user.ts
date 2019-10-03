@@ -1,4 +1,4 @@
-import {UserRole} from "./userRole";
+import {UserRole} from './userRole';
 
 export class User {
 
@@ -17,8 +17,9 @@ export class User {
   organizationId: number;
   moderatorId: number;
   isApproved: boolean;
+  inn: string;
 
-  //TODO: подключить js-data-angular и переделать на computed property
+  // TODO: подключить js-data-angular и переделать на computed property
   admin: boolean;
   client: boolean;
   guest: boolean;

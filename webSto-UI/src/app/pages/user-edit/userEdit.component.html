@@ -56,10 +56,10 @@
                 <label class="form-control-label" for="vin-number">ИНН</label>
                 <div class="input-group mb-3">
                   <input type="text" id="inn" class="form-control" placeholder="ИНН"
-                         [(ngModel)]="inn" name="inn">
+                         [(ngModel)]="model.inn" name="inn">
                   <div class="input-group-append">
                     <button class="btn btn-buro-green" type="button" (click)="findOrganizationByInn()"
-                            [disabled]="inn == null || inn.length == 0 || isADLoading">
+                            [disabled]="model.inn == null || model.inn.length == 0 || isADLoading">
                       Найти<span *ngIf="isADLoading">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
                     </button>
                   </div>

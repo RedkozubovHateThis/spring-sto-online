@@ -68,6 +68,10 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
             "WHERE u.email = :email )")
     Boolean isUserExistsEmail(@Param("email") String email);
 
+    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT u.id FROM users AS u " +
+            "WHERE u.inn = :inn )")
+    Boolean isUserExistsInn(@Param("inn") String inn);
+
     @Query(nativeQuery = true, value = "SELECT DISTINCT u.client_id FROM users AS u " +
             "WHERE u.moderator_id = :moderatorId AND u.client_id IS NOT NULL")
     List<Integer> collectClientIds(@Param("moderatorId") Long moderatorId);

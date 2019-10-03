@@ -20,7 +20,6 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
   private isLoading: boolean = false;
 
   private vinNumber: string;
-  private inn: string;
   private clientResponse: ClientResponse;
   private organizationResponse: OrganizationResponse;
   private isADLoading: boolean = false;
@@ -64,11 +63,11 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
 
   findOrganizationByInn() {
 
-    if ( this.inn == null || this.inn.length == 0 ) return;
+    if ( this.model.inn == null || this.model.inn.length == 0 ) return;
 
     this.isADLoading = true;
 
-    this.organizationResponseService.getOneByInn(this.inn).subscribe(data => {
+    this.organizationResponseService.getOneByInn(this.model.inn).subscribe(data => {
       this.organizationResponse = data as OrganizationResponse;
       this.isADLoading = false;
     }, () => {
@@ -77,7 +76,7 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
 
   }
 
-  linkClient(user:User) {
+  linkClient(user: User) {
     if ( this.clientResponse == null ) return;
 
     this.vinNumber = null;
@@ -85,10 +84,9 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
     this.userService.saveUser( user );
   }
 
-  linkOrganization(user:User) {
+  linkOrganization(user: User) {
     if ( this.organizationResponse == null ) return;
 
-    this.inn = null;
     user.organizationId = this.organizationResponse.id;
     this.userService.saveUser( user );
   }

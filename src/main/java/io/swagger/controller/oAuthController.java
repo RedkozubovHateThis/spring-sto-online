@@ -72,8 +72,17 @@ public class oAuthController {
         if ( clientRole != null )
             user.getRoles().add(clientRole);
 
-        if ( roleName.equals("CLIENT") || roleName.equals("SERVICE_LEADER") )
+        if ( roleName.equals("CLIENT") )
             setModerator(user);
+        else if ( roleName.equals("SERVICE_LEADER") ) {
+            if ( user.getInn() == null || user.getInn().isEmpty() )
+                return ResponseEntity.status(400).body("ИНН не может быть пустым.");
+
+            if ( userRepository.isUserExistsInn( user.getInn() ) )
+                return ResponseEntity.status(400).body("Пользователь с таким ИНН уже существует.");
+
+            setModerator(user);
+        }
 
         userRepository.save(user);
 
@@ -95,6 +104,9 @@ public class oAuthController {
 
                 if ( moderator.getLastUserAcceptDate() == null ) {
                     userModerator = moderator;
+                    break;
+                }
+                else if ( userModerator.getLastUserAcceptDate() == null ) {
                     break;
                 }
                 else if ( moderator.getLastUserAcceptDate().before( userModerator.getLastUserAcceptDate() ) ) {
