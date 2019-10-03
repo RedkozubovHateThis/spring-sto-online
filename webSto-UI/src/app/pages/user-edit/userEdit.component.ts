@@ -23,6 +23,7 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
   private clientResponse: ClientResponse;
   private organizationResponse: OrganizationResponse;
   private isADLoading: boolean = false;
+  private moderators: User[];
 
   constructor(private userService: UserService, protected route: ActivatedRoute, private location: Location,
               private clientResponseService: ClientResponseService, private router: Router,
@@ -44,6 +45,8 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
     }, error => {
       this.isLoading = false;
     } );
+
+    this.requestReplacementModerators();
   }
 
   findClientByVin() {
@@ -117,11 +120,19 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
     } );
   }
 
+  requestReplacementModerators() {
+    this.userService.getReplacementModerators().subscribe( response => {
+      this.moderators = response as User[];
+    } );
+  }
+
   onTransferComplete() {
     if ( this.model.client )
       this.requestClient();
     else if ( this.model.serviceLeader )
       this.requestOrganization();
+
+    this.requestReplacementModerators();
   }
 
 }

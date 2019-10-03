@@ -7,6 +7,7 @@ import io.swagger.postgres.model.ChatMessage;
 import io.swagger.postgres.model.UploadFile;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -42,6 +43,8 @@ public class User implements UserDetails, Serializable {
     private Long moderatorId;
     private Boolean isApproved;
     private Date lastUserAcceptDate;
+    private Boolean inVacation;
+//    private Long replacementModeratorId;
 
     @JsonIgnore
     private boolean accountExpired;
@@ -71,6 +74,14 @@ public class User implements UserDetails, Serializable {
     @OneToMany(mappedBy = "uploadUser")
     @OrderBy("uploadDate")
     private Set<UploadFile> uploadFiles = new HashSet<>();
+
+    @ManyToOne
+    private User replacementModerator;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "replacementModerator")
+    @OrderBy("lastName")
+    private Set<User> replacedBy = new HashSet<>();
 
     @JsonIgnore
     @Transient

@@ -17,10 +17,11 @@
                 <div class="opponent" *ngFor="let opponent of opponents"
                      [ngClass]="{
                      'active': selectedOpponent != null && selectedOpponent.id === opponent.id,
-                     'delimeter': opponents.indexOf(opponent) < opponents.length - 1
+                     'delimeter': opponents.indexOf(opponent) < opponents.length - 1,
+                     'text-muted': opponent.inVacation
                      }"
                      (click)="selectOpponent(opponent)">
-                  {{opponent.fio}}
+                  {{opponent.fio}} <span *ngIf="opponent.inVacation" style="color: red !important;"> [ В отпуске ] </span>
                   <div class="small" *ngIf="opponent.lastMessageFromId">
                     <span *ngIf="opponent.lastMessageFromId === userService.currentUser.id; else opponentReply">Вы: </span>
                     <ng-template #opponentReply>

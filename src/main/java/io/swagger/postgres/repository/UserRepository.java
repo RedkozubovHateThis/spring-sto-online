@@ -24,6 +24,13 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
             "WHERE ur.name = :roleName")
     List<User> findUsersByRoleName(@Param("roleName") String roleName);
 
+    @Query("SELECT DISTINCT u FROM User AS u " +
+            "INNER JOIN u.roles AS ur " +
+            "WHERE ur.name = :roleName " +
+            "AND u.id <> :userId")
+    List<User> findUsersByRoleNameExceptId(@Param("roleName") String roleName,
+                                           @Param("userId") Long userId);
+
     @Query("SELECT DISTINCT user FROM User user " +
             "LEFT JOIN FETCH user.roles AS role " +
             "WHERE ( user.username = :username " +
@@ -89,12 +96,21 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
     List<User> findAllByModerator(@Param("moderatorId") Long moderatorId,
                                  @Param("userId") Long userId);
 
-    @Query(nativeQuery = true, value = "SELECT DISTINCT u.* FROM users AS u " +
-            "WHERE u.id = :moderatorId " +
-            "UNION " +
-            "SELECT DISTINCT cu.* FROM chat_message AS cm " +
-            "INNER JOIN users AS cu ON cm.from_user_id = cu.id " +
-            "WHERE cm.to_user_id = :userId " +
+    @Query(nativeQuery = true, value = "SELECT DISTINCT u.* FROM users AS u\n" +
+            "WHERE u.id = :moderatorId\n" +
+            "UNION\n" +
+            "SELECT DISTINCT cu.* FROM chat_message AS cm\n" +
+            "INNER JOIN users AS cu ON cm.from_user_id = cu.id\n" +
+            "WHERE cm.to_user_id = :userId\n" +
+            "UNION\n" +
+            "SELECT DISTINCT cu.* FROM chat_message AS cm\n" +
+            "INNER JOIN users AS cu ON cm.to_user_id = cu.id\n" +
+            "WHERE cm.from_user_id = :userId\n" +
+            "UNION\n" +
+            "SELECT DISTINCT rm.* FROM users AS u\n" +
+            "INNER JOIN users AS rm ON rm.id = u.replacement_moderator_id\n" +
+            "WHERE u.id = :moderatorId\n" +
+            "AND u.in_vacation = TRUE\n" +
             "ORDER BY last_name")
     List<User> findAllModerators(@Param("moderatorId") Long moderatorId,
                                  @Param("userId") Long userId);

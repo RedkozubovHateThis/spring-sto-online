@@ -40,6 +40,15 @@ public class UserController {
         if ( existingUser == null )
             return ResponseEntity.status(404).body("Пользователь не найден");
 
+        User replacementModerator = user.getReplacementModerator();
+        if ( replacementModerator != null ) {
+
+            User origReplacementModerator = userRepository.findOne( replacementModerator.getId() );
+            if ( origReplacementModerator != null ) user.setReplacementModerator( origReplacementModerator );
+            else user.setReplacementModerator( null );
+
+        }
+
         user.setPassword( existingUser.getPassword() );
         user.setAccountExpired( existingUser.isAccountExpired() );
         user.setAccountLocked( existingUser.isAccountLocked() );
@@ -67,6 +76,18 @@ public class UserController {
         }
 
         return ResponseEntity.status(403).build();
+
+    }
+
+    @GetMapping("/findReplacementModerators")
+    public ResponseEntity findReplacementModerators() {
+
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( currentUser == null ) return ResponseEntity.status(401).build();
+        if ( !UserHelper.hasRole( currentUser, "MODERATOR" ) ) return ResponseEntity.status(404).build();
+
+        return ResponseEntity.ok( userRepository.findUsersByRoleNameExceptId( "MODERATOR", currentUser.getId() ) );
 
     }
 

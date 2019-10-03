@@ -17,7 +17,9 @@ export class User {
   organizationId: number;
   moderatorId: number;
   isApproved: boolean;
+  inVacation: boolean;
   inn: string;
+  replacementModerator: User;
 
   // TODO: подключить js-data-angular и переделать на computed property
   admin: boolean;

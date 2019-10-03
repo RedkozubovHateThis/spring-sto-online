@@ -144,6 +144,30 @@
                   </div>
                 </div>
               </div>
+              <div class="row" *ngIf="model.moderator && model.id === userService.currentUser.id">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <div class="form-check">
+                      <input type="checkbox" id="check-vacation" class="form-check-input"
+                             [(ngModel)]="model.inVacation" name="inVacation">
+                      <label class="form-control-label" for="check-vacation">В отпуске</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <label class="form-control-label" for="replacement-moderator-select">Замещающий модератор</label>
+                  <select id="replacement-moderator-select" class="form-control form-control-sm form-control-alternative"
+                          [(ngModel)]="model.replacementModerator" [ngModelOptions]="{standalone: true}">
+                    <option [selected]="model.replacementModerator === null" [ngValue]="null">
+                      Не указан
+                    </option>
+                    <option [selected]="model.replacementModerator != null && model.replacementModerator.id === moderator.id" [ngValue]="moderator"
+                            *ngFor="let moderator of moderators">
+                      {{moderator.fio}}
+                    </option>
+                  </select>
+                </div>
+              </div>
             </div>
             <hr class="my-4" />
             <!-- Address -->

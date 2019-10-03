@@ -3,7 +3,7 @@
     <div class="col-xl-4 order-xl-2 mb-5 mb-xl-0">
       <div class="card bg-secondary shadow">
 
-        <ng-container *ngIf="model.admin && model.id === userService.currentUser.id; else autodealerBlock">
+        <ng-container *ngIf="model != null && userService.currentUser != null && model.admin && model.id === userService.currentUser.id">
 
           <div class="card-header bg-white border-0">
             <div class="row align-items-center">
@@ -40,7 +40,7 @@
           </div>
 
         </ng-container>
-        <ng-template #autodealerBlock>
+        <ng-container *ngIf="model != null && !model.admin">
 
           <div class="card-header bg-white border-0">
             <div class="row align-items-center">
@@ -81,7 +81,7 @@
             </div>
           </div>
 
-        </ng-template>
+        </ng-container>
 
       </div>
     </div>
@@ -92,7 +92,7 @@
             <div class="col-8">
               <h3 class="mb-0">{{title}}</h3>
             </div>
-            <div class="col-4 text-right" *ngIf="userService.currentUser.id == model.id || userService.currentUser.admin">
+            <div class="col-4 text-right" *ngIf="userService.currentUser != null && model != null && ( userService.currentUser.id == model.id || userService.currentUser.admin )">
               <button class="btn btn-sm btn-buro-green" (click)="navigate( model )">
                 Редактировать
               </button>
@@ -129,6 +129,27 @@
                     <label class="form-control-label" for="middle-name">Отчество</label>
                     <span id="middle-name" class="form-control form-control-alternative">{{model.middleName}}</span>
                   </div>
+                </div>
+              </div>
+              <div class="row" *ngIf="model.moderator">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <div class="form-check">
+                      <input type="checkbox" id="check-vacation" class="form-check-input" disabled
+                             [(ngModel)]="model.inVacation" name="inVacation">
+                      <label class="form-control-label" for="check-vacation">В отпуске</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <ng-container *ngIf="model.replacementModerator != null; else noReplacementModerator">
+                    <label class="form-control-label" for="replacement-moderator">Замещающий модератор</label>
+                    <span id="replacement-moderator" class="form-control form-control-alternative">{{model.replacementModerator.fio}}</span>
+                  </ng-container>
+                  <ng-template #noReplacementModerator>
+                    <label class="form-control-label" for="no-replacement-moderator">Замещающий модератор</label>
+                    <span id="no-replacement-moderator" class="form-control form-control-alternative">Не указан</span>
+                  </ng-template>
                 </div>
               </div>
             </div>

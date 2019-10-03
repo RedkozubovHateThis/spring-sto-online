@@ -13,10 +13,12 @@ public class OpponentResponse {
     private String lastMessageText;
     private Long lastMessageFromId;
     private String uploadFileName;
+    private Boolean inVacation;
 
     public OpponentResponse(User opponent, ChatMessage lastMessage) {
         id = opponent.getId();
         fio = opponent.getFio();
+        inVacation = opponent.getInVacation();
 
         if ( lastMessage == null ) return;
 
