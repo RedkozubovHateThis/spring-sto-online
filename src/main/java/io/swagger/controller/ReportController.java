@@ -60,6 +60,7 @@ public class ReportController {
             return ResponseEntity.status(404).build();
 
         return ResponseEntity.ok( reportService.getExecutorResponses( currentUser.getOrganizationId(), startDate, endDate ) );
+//        return ResponseEntity.ok( reportService.getExecutorFakeResponses( startDate, endDate ) );
 
     }
 
@@ -104,6 +105,7 @@ public class ReportController {
         if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() )
             return ResponseEntity.status(404).build();
 
+//        return ResponseEntity.ok( reportService.getClientFakeResponses( startDate, endDate ) );
         return ResponseEntity.ok( reportService.getClientsResponses( currentUser.getOrganizationId(), startDate, endDate ) );
 
     }

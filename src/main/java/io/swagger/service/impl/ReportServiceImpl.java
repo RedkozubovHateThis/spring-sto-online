@@ -23,6 +23,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,6 +48,9 @@ public class ReportServiceImpl implements ReportService {
     private final int CL_TOTAL_COLUMN = 2;
     private final int CL_TITLE_ROW = 1;
     private final int CL_TITLE_COLUMN = 1;
+
+    private final String[] EXECUTORS = new String[] {"Иванов И.И", "Петров П.П", "Сидоров С.С"};
+    private final String[] CLIENTS = new String[] {"ООО \"Вектор\"", "Савельев С.П", "Богатов П.В"};
 
     @Autowired
     private DocumentServiceDetailRepository documentServiceDetailRepository;
@@ -217,6 +221,7 @@ public class ReportServiceImpl implements ReportService {
 
     private List<Map<String, Object>> getExecutorsReportData(Integer organizationId, Date startDate, Date endDate) throws DataNotFoundException {
         List<ExecutorResponse> responses = getExecutorResponses(organizationId, startDate, endDate);
+//        List<ExecutorResponse> responses = getExecutorFakeResponses(startDate, endDate);
         if ( responses.size() == 0 ) throw new DataNotFoundException();
 
         List<Map<String, Object>> result = new ArrayList<>();
@@ -273,6 +278,7 @@ public class ReportServiceImpl implements ReportService {
 
     private List<Map<String, Object>> getClientsReportData(Integer organizationId, Date startDate, Date endDate) throws DataNotFoundException {
         List<ClientResponse> responses = getClientsResponses(organizationId, startDate, endDate);
+//        List<ClientResponse> responses = getClientFakeResponses(startDate, endDate);
         if ( responses.size() == 0 ) throw new DataNotFoundException();
 
         List<Map<String, Object>> result = new ArrayList<>();
@@ -535,6 +541,91 @@ public class ReportServiceImpl implements ReportService {
         }
 
         return executorResponses;
+    }
+
+    @Override
+    public List<ExecutorResponse> getExecutorFakeResponses(Date startDate, Date endDate) {
+
+        List<ExecutorResponse> executorResponses = new ArrayList<>();
+
+        for ( String executor : EXECUTORS ) {
+
+            double byNorm = generateRandomDouble( 0.0, 10000.0 );
+            double byPrice = generateRandomDouble( 0.0, 10000.0 );
+            double percent = generateRandomDouble( 45.0, 100.0 );
+
+            ExecutorResponse fakeResponse = new ExecutorResponse();
+            fakeResponse.setFullName( executor );
+            fakeResponse.setTotalByNorm( byNorm );
+            fakeResponse.setTotalByPrice( byPrice );
+            fakeResponse.setPercent( percent );
+
+            int totalDocuments = generateRandomInteger( 1, 10 );
+            for ( int i = 1; i <= totalDocuments; i++ ) {
+
+                ExecutorDocumentResponse fakeDocumentResponse = new ExecutorDocumentResponse();
+                fakeDocumentResponse.setDocumentDate( generateRandomDate( startDate, endDate ) );
+                fakeDocumentResponse.setPercent( percent );
+                fakeDocumentResponse.setTotalByNorm( byNorm / totalDocuments );
+                fakeDocumentResponse.setTotalByPrice( byPrice / totalDocuments );
+
+                fakeResponse.addDocumentResponse( fakeDocumentResponse );
+
+            }
+
+            fakeResponse.getExecutorDocumentResponses().sort( (o1, o2) -> o1.getDocumentDate().before( o2.getDocumentDate() ) ? 1 : 0 );
+            executorResponses.add( fakeResponse );
+
+        }
+
+        return executorResponses;
+    }
+
+    @Override
+    public List<ClientResponse> getClientFakeResponses(Date startDate, Date endDate) {
+
+        List<ClientResponse> clientResponses = new ArrayList<>();
+
+        for ( String client : CLIENTS ) {
+
+            double total = generateRandomDouble( 0.0, 10000.0 );
+
+            ClientResponse fakeResponse = new ClientResponse();
+            fakeResponse.setFullName( client );
+            fakeResponse.setTotal( total );
+
+            int totalDocuments = generateRandomInteger( 1, 10 );
+            for ( int i = 1; i <= totalDocuments; i++ ) {
+
+                ClientDocumentResponse fakeDocumentResponse = new ClientDocumentResponse();
+                fakeDocumentResponse.setDocumentDate( generateRandomDate( startDate, endDate ) );
+                fakeDocumentResponse.setTotal( total / totalDocuments );
+
+                fakeResponse.addClientResponse( fakeDocumentResponse );
+
+            }
+
+            fakeResponse.getClientDocumentResponses().sort( (o1, o2) -> o1.getDocumentDate().before( o2.getDocumentDate() ) ? 1 : 0 );
+            clientResponses.add( fakeResponse );
+
+        }
+
+        return clientResponses;
+    }
+
+    private Double generateRandomDouble(Double min, Double max) {
+        Random r = new Random();
+        return min + (max - min) * r.nextDouble();
+    }
+
+    private Integer generateRandomInteger(Integer min, Integer max) {
+        Random r = new Random();
+        return r.nextInt((max - min) + 1) + min;
+    }
+
+    private Date generateRandomDate(Date min, Date max) {
+        return new Date(ThreadLocalRandom.current()
+                .nextLong(min.getTime(), max.getTime()));
     }
 
     private ExecutorResponse filterExecutorResponses(List<ExecutorResponse> executorResponses, ExecutorsNativeResponse response) {

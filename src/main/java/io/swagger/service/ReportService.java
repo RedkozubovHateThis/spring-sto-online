@@ -21,5 +21,9 @@ public interface ReportService {
 
     List<ExecutorResponse> getExecutorResponses(Integer organizationId, Date startDate, Date endDate);
 
+    List<ExecutorResponse> getExecutorFakeResponses(Date startDate, Date endDate);
+
+    List<ClientResponse> getClientFakeResponses(Date startDate, Date endDate);
+
     List<ClientResponse> getClientsResponses(Integer organizationId, Date startDate, Date endDate);
 }

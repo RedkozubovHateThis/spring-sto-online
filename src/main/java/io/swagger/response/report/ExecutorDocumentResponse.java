@@ -16,6 +16,8 @@ public class ExecutorDocumentResponse {
     private Double totalByPrice;
     private Double percent;
 
+    public ExecutorDocumentResponse() {}
+
     public ExecutorDocumentResponse(ExecutorsNativeResponse response, ExecutorResponse executorResponse) {
         this.documentDate = response.getDateStart();
         this.totalByNorm = response.getTotalByNorm();

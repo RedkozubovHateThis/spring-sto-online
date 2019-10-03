@@ -15,6 +15,8 @@ public class ClientResponse {
     private Double total;
     private List<ClientDocumentResponse> clientDocumentResponses = new ArrayList<>();
 
+    public ClientResponse() {}
+
     public ClientResponse(ClientsNativeResponse response) {
         this.clientId = response.getClientId();
         this.fullName = response.getFullName();
@@ -23,6 +25,10 @@ public class ClientResponse {
 
     public void addClientResponse(ClientsNativeResponse response) {
         clientDocumentResponses.add( new ClientDocumentResponse( response ) );
+    }
+
+    public void addClientResponse(ClientDocumentResponse response) {
+        clientDocumentResponses.add( response );
     }
 
     public void increaseTotal(Double total) {

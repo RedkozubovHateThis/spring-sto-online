@@ -17,6 +17,8 @@ public class ExecutorResponse {
     private Double percent;
     private List<ExecutorDocumentResponse> executorDocumentResponses = new ArrayList<>();
 
+    public ExecutorResponse() {}
+
     public ExecutorResponse(ExecutorsNativeResponse response) {
         this.fullName = response.getFullName();
         this.percent = response.getPercent();
@@ -38,6 +40,10 @@ public class ExecutorResponse {
 
     public void addDocumentResponse(ExecutorsNativeResponse response) {
         executorDocumentResponses.add( new ExecutorDocumentResponse( response, this ) );
+    }
+
+    public void addDocumentResponse(ExecutorDocumentResponse response) {
+        executorDocumentResponses.add( response );
     }
 
     public Double getTotalSum() {

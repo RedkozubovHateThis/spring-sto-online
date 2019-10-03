@@ -197,7 +197,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Times New Roman" size="11"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{percent}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{percent} != null ? String.format("%.2f", $F{percent}) : null]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
