@@ -4,6 +4,7 @@ import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.response.exception.DataNotFoundException;
+import io.swagger.response.report.ReportType;
 import io.swagger.service.ReportService;
 import net.sf.jasperreports.engine.JRException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +27,24 @@ public class ReportController {
     @Autowired
     private ReportService reportService;
 
-    @GetMapping("{documentId}/order")
-    public ResponseEntity getOrderResponse(@PathVariable("documentId") Integer documentId) {
+    @GetMapping("{documentId}/{reportType}")
+    public ResponseEntity getOrderResponse(@PathVariable("documentId") Integer documentId,
+                                           @PathVariable("reportType") ReportType reportType) {
 
         try {
-            byte[] response = reportService.getOrderReport(documentId);
+            byte[] response;
+            switch (reportType) {
+                case ORDER: response = reportService.getOrderReport(documentId); break;
+                case ORDER_ACT: response = reportService.getOrderActReport(documentId); break;
+                case ORDER_DEFECTION: response = reportService.getOrderDefectionReport(documentId); break;
+                case ORDER_INSPECTION: response = reportService.getOrderInspectionReport(documentId); break;
+                case ORDER_RECEIPT: response = reportService.getOrderReceiptReport(documentId); break;
+                case ORDER_REQUEST: response = reportService.getOrderRequestReport(documentId); break;
+                case ORDER_REQUIREMENT: response = reportService.getOrderRequirementReport(documentId); break;
+                case ORDER_TASK: response = reportService.getOrderTaskReport(documentId); break;
+                case ORDER_TRANSFER: response = reportService.getOrderTransferReport(documentId); break;
+                default: return ResponseEntity.status(400).build();
+            }
 
             return ResponseEntity.ok()
                     .header( HttpHeaders.CONTENT_DISPOSITION, "attachment" )
@@ -76,7 +90,7 @@ public class ReportController {
             return ResponseEntity.status(404).build();
 
         try {
-            byte[] response = reportService.getExecutorsReportPDF(currentUser.getOrganizationId(), startDate, endDate);
+            byte[] response = reportService.getExecutorsReport(currentUser.getOrganizationId(), startDate, endDate);
 
             return ResponseEntity.ok()
                     .header( HttpHeaders.CONTENT_DISPOSITION, "attachment" )
@@ -122,7 +136,7 @@ public class ReportController {
             return ResponseEntity.status(404).build();
 
         try {
-            byte[] response = reportService.getClientsReportPDF(currentUser.getOrganizationId(), startDate, endDate);
+            byte[] response = reportService.getClientsReport(currentUser.getOrganizationId(), startDate, endDate);
 
             return ResponseEntity.ok()
                     .header( HttpHeaders.CONTENT_DISPOSITION, "attachment" )

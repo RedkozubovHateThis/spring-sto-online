@@ -92,11 +92,11 @@ export class DocumentComponent extends ModelTransfer<DocumentResponse, number> i
       } );
   }
 
-  downloadReport() {
+  downloadReport(reportType: string, reportName: string) {
     const headers = this.userService.getHeaders();
 
     this.isDownloading = true;
-    this.httpClient.get(`http://localhost:8181/secured/reports/${this.model.id}/order`,
+    this.httpClient.get(`http://localhost:8181/secured/reports/${this.model.id}/${reportType}`,
       {headers, responseType: 'blob'} ).subscribe( blob => {
 
       this.isDownloading = false;
@@ -105,7 +105,7 @@ export class DocumentComponent extends ModelTransfer<DocumentResponse, number> i
 
       const link = document.createElement('a');
       link.href = data;
-      link.download = `Договор заказ-наряд на работы № ${this.model.documentNumber}.pdf`;
+      link.download = `${reportName} № ${this.model.documentNumber}.pdf`;
       link.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
 
       setTimeout( () => {

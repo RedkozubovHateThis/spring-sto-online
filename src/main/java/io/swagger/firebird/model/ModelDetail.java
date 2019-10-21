@@ -35,8 +35,9 @@ public class ModelDetail {
 
     @Column(name = "CAR_GEARBOX_TYPE_ID")
     private Integer carGearboxType;
-    @Column(name = "CAR_ENGINE_TYPE_ID")
-    private Integer carEngineType;
+    @ManyToOne
+    @JoinColumn(name = "CAR_ENGINE_TYPE_ID")
+    private CarEngineType carEngineType;
     @ManyToOne
     @JoinColumn(name = "CAR_BODY_TYPE_ID")
     private CarBodyType carBodyType;
@@ -93,9 +94,9 @@ public class ModelDetail {
         return color.getName();
     }
 
-    public String getCarBodyTypeName() {
-        if ( carBodyType == null ) return null;
-        return carBodyType.getName();
+    public String getCarEngineTypeName() {
+        if ( carEngineType == null ) return null;
+        return carEngineType.getName();
     }
 
 }

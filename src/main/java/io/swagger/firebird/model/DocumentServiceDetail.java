@@ -140,8 +140,9 @@ public class DocumentServiceDetail {
     @Column(name = "AUTO_UPDATE_DATE")
     private Short autoUpdateDate;
 
-    @Column(name = "INSPECTION_CAR_IMAGE_ID")
-    private Integer documentCarImage;
+    @ManyToOne
+    @JoinColumn(name = "INSPECTION_CAR_IMAGE_ID")
+    private InspectionCarImage inspectionCarImage;
     @Column(name = "PLANNING_WORK_PLACE_ID")
     private Integer planningWorkPlace;
 

@@ -76,6 +76,50 @@ public class ServiceGoodsAddon {
         return reportData;
     }
 
+    public Map<String, Object> buildShortReportData() {
+        Map<String, Object> reportData = new HashMap<>();
+
+        reportData.put("number", number);
+        reportData.put("name", fullName);
+        if ( unit != null )
+            reportData.put("unit", unit.getShortName() );
+        reportData.put("count", goodsCount);
+
+        return reportData;
+    }
+
+    public Map<String, Object> buildTransferReportData(int number) {
+        Map<String, Object> reportData = new HashMap<>();
+
+        reportData.put("number", number);
+        reportData.put("code", this.number);
+        reportData.put("name", fullName);
+        reportData.put("typeCode", "---");
+
+        reportData.put("cost", cost);
+        reportData.put("count", goodsCount != null ? goodsCount.doubleValue() : null);
+
+        if ( unit != null ) {
+            reportData.put("measureCode", unit.getCodeOkey());
+            reportData.put("measureName", unit.getShortName());
+        }
+        else {
+            reportData.put("measureCode", "---");
+            reportData.put("measureName", "---");
+        }
+
+        reportData.put("tax", "---");
+        reportData.put("nds", "Без НДС");
+        reportData.put("excise", "Без акциза");
+        reportData.put("totalCost", getServiceGoodsCost(true));
+        reportData.put("totalCostWithTax", getServiceGoodsCost(true));
+        reportData.put("partCountryCode", "---");
+        reportData.put("partCountryName", "---");
+        reportData.put("declarationCode", "---");
+
+        return reportData;
+    }
+
     public Double getServiceGoodsCost(Boolean withDiscount) {
 
         double totalCost = cost;

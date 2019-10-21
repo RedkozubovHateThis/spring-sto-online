@@ -101,6 +101,52 @@ public class ServiceWork {
         return reportData;
     }
 
+    public Map<String, Object> buildShortReportData() {
+        Map<String, Object> reportData = new HashMap<>();
+
+        reportData.put("workCode", code);
+        reportData.put("workName", name);
+        reportData.put("quantity", quantity);
+        reportData.put("timeValue", timeValue);
+        if ( executor != null )
+            reportData.put("executor", executor.getShortName() );
+
+        return reportData;
+    }
+
+    public Map<String, Object> buildTransferReportData(int number) {
+        Map<String, Object> reportData = new HashMap<>();
+
+        reportData.put("number", number);
+        reportData.put("code", code);
+        reportData.put("name", name);
+        reportData.put("typeCode", "---");
+
+        if ( priceNorm != null && timeValue != null ) {
+            reportData.put("cost", priceNorm);
+            reportData.put("count", timeValue);
+            reportData.put("measureCode", "356");
+            reportData.put("measureName", "ч");
+        }
+        else {
+            reportData.put("cost", price);
+            reportData.put("count", 1.0);
+            reportData.put("measureCode", "---");
+            reportData.put("measureName", "---");
+        }
+
+        reportData.put("tax", "---");
+        reportData.put("nds", "Без НДС");
+        reportData.put("excise", "Без акциза");
+        reportData.put("totalCost", getServiceWorkTotalCost(true));
+        reportData.put("totalCostWithTax", getServiceWorkTotalCost(true));
+        reportData.put("partCountryCode", "---");
+        reportData.put("partCountryName", "---");
+        reportData.put("declarationCode", "---");
+
+        return reportData;
+    }
+
     public Double getServiceWorkTotalCost(Boolean withDiscount) {
 
         double workSum = 0.0;
