@@ -53,6 +53,7 @@ public class UserController {
         user.setAccountExpired( existingUser.isAccountExpired() );
         user.setAccountLocked( existingUser.isAccountLocked() );
         user.setCredentialsExpired( existingUser.isCredentialsExpired() );
+        user.setDocumentUserState( existingUser.getDocumentUserState() );
         userRepository.save( user );
 
         if ( user.getModeratorId() != null )

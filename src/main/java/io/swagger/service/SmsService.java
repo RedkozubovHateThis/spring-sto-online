@@ -8,4 +8,6 @@ import io.swagger.response.api.APIResponse;
 public interface SmsService {
     APIResponse sendSms(String phone, String message);
     APIResponse sendSms(String phone, String message, Integer translit, String charset);
+    void sendSmsAsync(String phone, String message);
+    void sendSmsAsync(String phone, String message, Integer translit, String charset);
 }

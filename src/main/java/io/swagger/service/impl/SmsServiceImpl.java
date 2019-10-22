@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -15,6 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Future;
 
 @Service
 public class SmsServiceImpl implements SmsService {
@@ -46,6 +49,12 @@ public class SmsServiceImpl implements SmsService {
         restTemplate.setMessageConverters(messageConverters);
     }
 
+    @Async
+    @Override
+    public void sendSmsAsync(String phone, String message) {
+        UriComponentsBuilder query = buildParams(phone, message, 0, "utf-8"); //По умолчанию, без транслита, и в кодировке utf-8
+        sendRequest(query);
+    }
     @Override
     public APIResponse sendSms(String phone, String message) {
         UriComponentsBuilder query = buildParams(phone, message, 0, "utf-8"); //По умолчанию, без транслита, и в кодировке utf-8
@@ -54,12 +63,17 @@ public class SmsServiceImpl implements SmsService {
 
     /**
      * Метод, собирающий и отправляющий запрос
-     *
      * @param phone     Номер, или несколько, разделенных запятыми, или точками с запятой, номеров
      * @param message   Сообщение
      * @param translit  Использовать транслит (0 - не использовать, 1 - translit, 2 - mpaHc/Ium)
      * @param charset   Кодировка
      */
+    @Async
+    @Override
+    public void sendSmsAsync(String phone, String message, Integer translit, String charset) {
+        UriComponentsBuilder params = buildParams(phone, message, translit, charset);
+        sendRequest(params);
+    }
     @Override
     public APIResponse sendSms(String phone, String message, Integer translit, String charset) {
         UriComponentsBuilder params = buildParams(phone, message, translit, charset);
@@ -85,7 +99,12 @@ public class SmsServiceImpl implements SmsService {
             logger.info(">");
             logger.info("Sending request to [ {} ]\n", SEND_API_URL);
 
-            ResponseEntity<APIResponse> response = restTemplate.exchange( params.build().toString(), HttpMethod.GET, request, APIResponse.class);
+            String query = params.build().toString();
+
+            if ( useDebug )
+                logger.info("Request: {}", query);
+
+            ResponseEntity<APIResponse> response = restTemplate.exchange( query, HttpMethod.GET, request, APIResponse.class);
 
             logger.info("Response [ STATUS ] : {}", response.getStatusCode().toString() );
 
@@ -143,14 +162,11 @@ public class SmsServiceImpl implements SmsService {
         params.queryParam( "psw", password );
         params.queryParam( "sender", senderName );
         params.queryParam( "phones", phone );
-        params.queryParam( "mes", message );
         params.queryParam( "cost", 3 ); //Всегда ждем полный ответ
         params.queryParam( "translit", translit );
         params.queryParam( "charset", charset );
         params.queryParam( "fmt", 3 ); //Для возврата ответа в формате json
-
-        if ( useDebug )
-            logger.info("Built request: {}", params.toUriString());
+        params.queryParam( "mes", message );
 
         return params;
     }

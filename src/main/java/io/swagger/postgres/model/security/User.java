@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.ChatMessage;
+import io.swagger.postgres.model.DocumentUserState;
 import io.swagger.postgres.model.UploadFile;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -86,6 +87,10 @@ public class User implements UserDetails, Serializable {
     @JsonIgnore
     @Transient
     private Collection<? extends GrantedAuthority> authorities;
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "user")
+    private DocumentUserState documentUserState;
 
     @Override
     public boolean isAccountNonExpired() {
