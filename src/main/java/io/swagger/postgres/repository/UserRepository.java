@@ -24,6 +24,11 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
             "WHERE ur.name = :roleName")
     List<User> findUsersByRoleName(@Param("roleName") String roleName);
 
+    @Query("SELECT DISTINCT u.id FROM User AS u " +
+            "INNER JOIN u.roles AS ur " +
+            "WHERE ur.name = :roleName")
+    List<Long> collectUserIdsByRoleName(@Param("roleName") String roleName);
+
     @Query("SELECT DISTINCT u FROM User AS u " +
             "INNER JOIN u.roles AS ur " +
             "WHERE ur.name = :roleName " +

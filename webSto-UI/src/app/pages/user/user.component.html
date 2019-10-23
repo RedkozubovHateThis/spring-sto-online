@@ -142,9 +142,9 @@
                   </div>
                 </div>
                 <div class="col-lg-6">
-                  <ng-container *ngIf="model.replacementModerator != null; else noReplacementModerator">
+                  <ng-container *ngIf="model.replacementModeratorId != null; else noReplacementModerator">
                     <label class="form-control-label" for="replacement-moderator">Замещающий модератор</label>
-                    <span id="replacement-moderator" class="form-control form-control-alternative">{{model.replacementModerator.fio}}</span>
+                    <span id="replacement-moderator" class="form-control form-control-alternative">{{model.replacementModeratorFio}}</span>
                   </ng-container>
                   <ng-template #noReplacementModerator>
                     <label class="form-control-label" for="no-replacement-moderator">Замещающий модератор</label>

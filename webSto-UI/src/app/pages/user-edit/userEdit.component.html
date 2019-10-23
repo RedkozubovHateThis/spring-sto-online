@@ -157,11 +157,11 @@
                 <div class="col-lg-6">
                   <label class="form-control-label" for="replacement-moderator-select">Замещающий модератор</label>
                   <select id="replacement-moderator-select" class="form-control form-control-sm form-control-alternative"
-                          [(ngModel)]="model.replacementModerator" [ngModelOptions]="{standalone: true}">
-                    <option [selected]="model.replacementModerator === null" [ngValue]="null">
+                          [(ngModel)]="model.replacementModeratorId" [ngModelOptions]="{standalone: true}">
+                    <option [selected]="model.replacementModeratorId === null" [ngValue]="null">
                       Не указан
                     </option>
-                    <option [selected]="model.replacementModerator != null && model.replacementModerator.id === moderator.id" [ngValue]="moderator"
+                    <option [selected]="model.replacementModeratorId != null && model.replacementModeratorId === moderator.id" [ngValue]="moderator.id"
                             *ngFor="let moderator of moderators">
                       {{moderator.fio}}
                     </option>

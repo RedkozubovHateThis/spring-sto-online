@@ -13,7 +13,7 @@ export class AdminLayoutComponent implements OnInit {
   constructor(private router: Router, private userService: UserService, private webSocketService: WebSocketService) {
     router.events.subscribe(val => {
 
-      if ( val instanceof NavigationEnd && location.hash !== '' ) {
+      if ( val instanceof NavigationEnd ) {
 
         if ( !location.hash.includes( 'login' ) &&
           !location.hash.includes( 'register' ) ) {

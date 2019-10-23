@@ -18,7 +18,7 @@ import {LoginComponent} from "./pages/login/login.component";
 import {RegisterComponent} from "./pages/register/register.component";
 import {DocumentResponseService} from "./api/documentResponse.service";
 
-import { registerLocaleData } from '@angular/common';
+import {DatePipe, registerLocaleData} from '@angular/common';
 import localeRu from '@angular/common/locales/ru';
 import { ErrorInterceptor } from './variables/error.interceptor';
 import {ClientResponseService} from "./api/clientResponse.service";
@@ -29,6 +29,7 @@ import {WebSocketService} from './api/webSocket.service';
 import {ClipboardModule} from 'ngx-clipboard';
 import {ToastrModule} from 'ngx-toastr';
 import {DpDatePickerModule} from 'ng2-date-picker';
+import {EventMessageResponseService} from './api/eventMessageResponse.service';
 registerLocaleData(localeRu, 'ru');
 
 @NgModule({
@@ -46,7 +47,7 @@ registerLocaleData(localeRu, 'ru');
     ReactiveFormsModule,
     HttpClientModule,
     ToastrModule.forRoot({
-      timeOut: 1500
+      timeOut: 3000
     }),
     DpDatePickerModule
   ],
@@ -59,12 +60,14 @@ registerLocaleData(localeRu, 'ru');
    // RegisterComponent
   ],
   providers: [
+    DatePipe,
     UserService,
     DocumentResponseService,
     ClientResponseService,
     OrganizationResponseService,
     ServiceWorkResponseService,
     ChatMessageResponseService,
+    EventMessageResponseService,
     WebSocketService,
     {
       provide: HTTP_INTERCEPTORS,

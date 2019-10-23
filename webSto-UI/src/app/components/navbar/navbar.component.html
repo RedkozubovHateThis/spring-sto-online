@@ -6,6 +6,9 @@
     </a>
     <!-- User -->
     <ul class="navbar-nav align-items-center d-none d-md-flex">
+      <ng-container *ngIf="userService.currentUser != null && ( userService.currentUser.admin || userService.currentUser.moderator )">
+        <app-event-messages></app-event-messages>
+      </ng-container>
       <li class="nav-item" ngbDropdown placement="bottom-right">
         <a class="nav-link pr-0" style="cursor: pointer;" role="button" ngbDropdownToggle>
           <div class="media align-items-center">

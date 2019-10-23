@@ -3,6 +3,7 @@ package io.swagger.controller;
 import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.UserRepository;
+import io.swagger.service.EventMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,9 @@ public class UserController {
 
     @Autowired
     private WebSocketController webSocketController;
+
+    @Autowired
+    private EventMessageService eventMessageService;
 
     @GetMapping("/currentUser")
     public ResponseEntity getCurrentUser() {
@@ -40,11 +44,26 @@ public class UserController {
         if ( existingUser == null )
             return ResponseEntity.status(404).body("Пользователь не найден");
 
-        User replacementModerator = user.getReplacementModerator();
-        if ( replacementModerator != null ) {
+        User currentUser = userRepository.findCurrentUser();
+        boolean sendMessage = false;
+        User targetUser = null;
 
-            User origReplacementModerator = userRepository.findOne( replacementModerator.getId() );
-            if ( origReplacementModerator != null ) user.setReplacementModerator( origReplacementModerator );
+        Long replacementModeratorId = user.getCurrentReplacementModeratorId();
+        if ( replacementModeratorId != null ) {
+
+            User origReplacementModerator = userRepository.findOne( replacementModeratorId );
+            if ( origReplacementModerator != null ) {
+
+                User existingReplacementModerator = existingUser.getReplacementModerator();
+
+                if ( existingReplacementModerator == null ||
+                        !existingReplacementModerator.getId().equals( origReplacementModerator.getId() ) ) {
+                    sendMessage = true;
+                    targetUser = origReplacementModerator;
+                }
+
+                user.setReplacementModerator( origReplacementModerator );
+            }
             else user.setReplacementModerator( null );
 
         }
@@ -58,6 +77,10 @@ public class UserController {
 
         if ( user.getModeratorId() != null )
             webSocketController.sendCounterRefreshMessage( user.getModeratorId() );
+
+        if ( sendMessage && targetUser != null ) {
+            eventMessageService.buildModeratorReplacementMessage( currentUser, targetUser );
+        }
 
         return ResponseEntity.ok(user);
 

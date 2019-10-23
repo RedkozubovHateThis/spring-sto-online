@@ -1,7 +1,9 @@
 package io.swagger.controller;
 
 import io.swagger.postgres.model.ChatMessage;
+import io.swagger.postgres.model.EventMessage;
 import io.swagger.response.ChatMessageResponse;
+import io.swagger.response.EventMessageResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,20 @@ public class WebSocketController {
 
         try {
             template.convertAndSend( String.format( "/topic/counters/%s", userId ), userId );
+        }
+        catch ( IllegalArgumentException iae ) {
+            logger.error( "Counter refresh message sending error: {}", iae.getMessage() );
+        }
+
+    }
+
+    public void sendEventMessage(EventMessage eventMessage, Long toId) {
+
+        try {
+            EventMessageResponse eventMessageResponse = new EventMessageResponse(eventMessage);
+            template.convertAndSend( String.format( "/topic/event/%s",
+                    toId != null ? toId :  eventMessageResponse.getToId() ),
+                    eventMessageResponse );
         }
         catch ( IllegalArgumentException iae ) {
             logger.error( "Counter refresh message sending error: {}", iae.getMessage() );

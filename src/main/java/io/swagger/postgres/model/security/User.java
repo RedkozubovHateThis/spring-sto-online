@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.ChatMessage;
 import io.swagger.postgres.model.DocumentUserState;
+import io.swagger.postgres.model.EventMessage;
 import io.swagger.postgres.model.UploadFile;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -76,8 +77,12 @@ public class User implements UserDetails, Serializable {
     @OrderBy("uploadDate")
     private Set<UploadFile> uploadFiles = new HashSet<>();
 
+    @JsonIgnore
     @ManyToOne
     private User replacementModerator;
+
+    @Transient
+    private Long replacementModeratorId;
 
     @JsonIgnore
     @OneToMany(mappedBy = "replacementModerator")
@@ -91,6 +96,16 @@ public class User implements UserDetails, Serializable {
     @JsonIgnore
     @OneToOne(mappedBy = "user")
     private DocumentUserState documentUserState;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "sendUser")
+    @OrderBy("messageDate desc")
+    private Set<EventMessage> messagesAsUser = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "targetUser")
+    @OrderBy("messageDate desc")
+    private Set<EventMessage> messagesAsTargetUser = new HashSet<>();
 
     @Override
     public boolean isAccountNonExpired() {
@@ -149,5 +164,24 @@ public class User implements UserDetails, Serializable {
     @JsonProperty
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getReplacementModeratorFio() {
+        if ( replacementModerator != null )
+            return replacementModerator.getFio();
+
+        return null;
+    }
+
+    public Long getReplacementModeratorId() {
+        if ( replacementModerator != null )
+            return replacementModerator.getId();
+
+        return null;
+    }
+
+    @JsonIgnore
+    public Long getCurrentReplacementModeratorId() {
+        return replacementModeratorId;
     }
 }

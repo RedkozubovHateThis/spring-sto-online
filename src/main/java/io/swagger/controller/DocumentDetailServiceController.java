@@ -10,6 +10,7 @@ import io.swagger.postgres.repository.UserRepository;
 import io.swagger.response.firebird.DocumentResponse;
 import io.swagger.firebird.model.DocumentServiceDetail;
 import io.swagger.firebird.repository.DocumentServiceDetailRepository;
+import io.swagger.service.EventMessageService;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -43,6 +44,9 @@ public class DocumentDetailServiceController {
 
     @Autowired
     private WebSocketController webSocketController;
+
+    @Autowired
+    private EventMessageService eventMessageService;
 
     @GetMapping("/findAll")
     public ResponseEntity findAll(Pageable pageable, FilterPayload filterPayload) {
@@ -103,6 +107,14 @@ public class DocumentDetailServiceController {
         else
             serviceWorkRepository.updateServiceWorkByPriceNorm( serviceWorkId, price );
 
+        User moderator = null;
+
+        if ( currentUser.getModeratorId() != null )
+            moderator = userRepository.findOne( currentUser.getModeratorId() );
+
+        if ( moderator != null )
+            eventMessageService.buildServiceWorkChangeMessage( currentUser, moderator, documentId, serviceWorkId, byPrice, price );
+
         return findOne(documentId);
 
     }
@@ -134,6 +146,14 @@ public class DocumentDetailServiceController {
         if ( !UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) return ResponseEntity.status(403).build();
 
         serviceGoodsAddonRepository.updateCost( serviceGoodsAddonId, cost );
+
+        User moderator = null;
+
+        if ( currentUser.getModeratorId() != null )
+            moderator = userRepository.findOne( currentUser.getModeratorId() );
+
+        if ( moderator != null )
+            eventMessageService.buildServiceGoodsAddonChangeMessage( currentUser, moderator, documentId, serviceGoodsAddonId, cost );
 
         return findOne(documentId);
 

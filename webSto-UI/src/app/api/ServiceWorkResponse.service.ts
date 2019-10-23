@@ -6,7 +6,7 @@ import { UserService } from './user.service';
 @Injectable()
 export class ServiceWorkResponseService {
 
-  constructor(private http: HttpClient, private router: Router, private userService:UserService) { }
+  constructor(private http: HttpClient, private router: Router, private userService: UserService) { }
   private baseUrl: string = 'http://localhost:8181/';
 
   updatePrice(documentId: number, serviceWorkId: number, byPrice: boolean, price: number) {
