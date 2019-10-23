@@ -5,11 +5,16 @@ import SockJS from 'sockjs-client';
 import {Subject, Subscription} from 'rxjs';
 import {ToastrService} from 'ngx-toastr';
 import {ChatMessageResponse} from '../model/postgres/chatMessageResponse';
+import {EventMessageResponseService} from './eventMessageResponse.service';
+import {EventMessageResponse} from '../model/postgres/eventMessageResponse';
+import {DatePipe} from '@angular/common';
 
 @Injectable()
 export class WebSocketService {
 
-  constructor(private userService: UserService, private toastrService: ToastrService) { }
+  constructor(private userService: UserService, private toastrService: ToastrService,
+              private eventMessageResponseService: EventMessageResponseService, private datePipe: DatePipe) { }
+
   private baseUrl = 'http://localhost:8181/ws';
   public clientIsConnected: Subject<Client> = new Subject<Client>();
   public client: Client;
@@ -70,6 +75,28 @@ export class WebSocketService {
         me.toastrService.success( chatMessage.messageText, `${chatMessage.fromFio} написал(а):` );
     });
 
+    if ( this.userService.currentUser.admin || this.userService.currentUser.moderator ) {
+      this.eventMessageResponseService.getMessages();
+      this.client.subscribe('/topic/event/' + this.userService.currentUser.id, message => {
+        const eventMessage: EventMessageResponse = JSON.parse( message.body );
+        this.eventMessageResponseService.messages.unshift( eventMessage );
+        me.buildMessage( eventMessage );
+      });
+    }
+
+  }
+
+  private buildMessage(eventMessage: EventMessageResponse) {
+    let messageText = '';
+
+    if ( eventMessage.messageType === 'DOCUMENT_CHANGE' )
+      messageText = `Пользователь ${eventMessage.fromFio} изменил документ ${eventMessage.documentName}: ${eventMessage.additionalInformation}`;
+    else if ( eventMessage.messageType === 'MODERATOR_REPLACEMENT' )
+      messageText = `Модератор ${eventMessage.fromFio} назначил вас своим замещающим`;
+    else
+      return;
+
+    this.toastrService.info(messageText, this.datePipe.transform(eventMessage.messageDate, 'dd.MM.yyyy HH:mm:ss'));
   }
 
 }

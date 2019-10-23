@@ -9,7 +9,6 @@ import {InfobarComponent} from "./infobar/infobar.component";
 import {ImgPreviewComponent} from './imgPreview/img-preview.component';
 import {DocumentFilterComponent} from './documentFilter/document-filter.component';
 import {FormsModule} from '@angular/forms';
-import {EventMessagesComponent} from './eventMessages/event-messages.component';
 
 @NgModule({
   imports: [
@@ -24,8 +23,7 @@ import {EventMessagesComponent} from './eventMessages/event-messages.component';
     SidebarComponent,
     InfobarComponent,
     ImgPreviewComponent,
-    DocumentFilterComponent,
-    EventMessagesComponent
+    DocumentFilterComponent
   ],
   exports: [
     FooterComponent,
@@ -33,8 +31,7 @@ import {EventMessagesComponent} from './eventMessages/event-messages.component';
     SidebarComponent,
     InfobarComponent,
     ImgPreviewComponent,
-    DocumentFilterComponent,
-    EventMessagesComponent
+    DocumentFilterComponent
   ]
 })
 export class ComponentsModule { }
