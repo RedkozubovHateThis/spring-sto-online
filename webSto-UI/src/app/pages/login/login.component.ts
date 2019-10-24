@@ -3,6 +3,7 @@ import {HttpParams} from "@angular/common/http";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UserService} from "../../api/user.service";
 import {Router} from "@angular/router";
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -12,12 +13,10 @@ import {Router} from "@angular/router";
 export class LoginComponent implements OnInit {
 
   private loginForm: FormGroup;
-  private invalidLogin: boolean = false;
   private isLoggingIn: boolean = false;
-  constructor(private formBuilder: FormBuilder, private router: Router, private userService: UserService) { }
+  constructor(private formBuilder: FormBuilder, private router: Router, private userService: UserService, private toastrService: ToastrService) { }
 
   onSubmit() {
-    this.invalidLogin = false;
     this.isLoggingIn = true;
 
     if (this.loginForm.invalid) return;
@@ -34,8 +33,8 @@ export class LoginComponent implements OnInit {
 
       this.userService.authenticate();
     }, error => {
-      this.invalidLogin = true;
       this.isLoggingIn = false;
+      this.showError('Неправильные телефон/почта или пароль!');
     });
   }
 
@@ -44,6 +43,10 @@ export class LoginComponent implements OnInit {
       username: ['', Validators.compose([Validators.required])],
       password: ['', Validators.required]
     });
+  }
+
+  showError(messageText) {
+    this.toastrService.error(messageText, 'Внимание!');
   }
 
 }
