@@ -1,5 +1,6 @@
 package io.swagger.controller;
 
+import com.sun.javaws.exceptions.InvalidArgumentException;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.model.security.UserRole;
 import io.swagger.postgres.repository.UserRepository;
@@ -22,6 +23,7 @@ import java.util.UUID;
 public class oAuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(oAuthController.class);
+    private final String PHONE_REGEXP = "^((\\+7|7|8)+([0-9]){10})$";
 
     @Autowired
     private UserRepository userRepository;
@@ -40,31 +42,37 @@ public class oAuthController {
                                    @PathVariable("roleName") String roleName) {
 
         if ( user == null )
-            return ResponseEntity.status(400).body("Тело запроса не может быть пустым.");
+            return ResponseEntity.status(400).body("Тело запроса не может быть пустым!");
 
         if ( roleName == null )
-            return ResponseEntity.status(400).body("Роль не может быть пустой.");
-
-        if ( userRepository.isUserExistsPhone( user.getPhone() ) )
-            return ResponseEntity.status(400).body("Пользователь с таким телефоном уже существует.");
-
-        if ( userRepository.isUserExistsEmail( user.getEmail() ) )
-            return ResponseEntity.status(400).body("Пользователь с такой почтой уже существует.");
+            return ResponseEntity.status(400).body("Роль не может быть пустой!");
 
         if ( user.getPassword() == null || user.getPassword().isEmpty() )
-            return ResponseEntity.status(400).body("Пароль не может быть пустым.");
+            return ResponseEntity.status(400).body("Пароль не может быть пустым!");
 
         if ( user.getEmail() == null || user.getEmail().isEmpty() )
-            return ResponseEntity.status(400).body("Почта не может быть пустой.");
+            return ResponseEntity.status(400).body("Почта не может быть пустой!");
 
         if ( user.getPhone() == null || user.getPhone().isEmpty() )
-            return ResponseEntity.status(400).body("Телефон не может быть пустым.");
+            return ResponseEntity.status(400).body("Телефон не может быть пустым!");
+
+        if ( !isPhoneValid( user.getPhone() ) )
+            return ResponseEntity.status(400).body("Неверный номер телефона!");
+
+        processPhone(user);
+
+        if ( userRepository.isUserExistsPhone( user.getPhone() ) )
+            return ResponseEntity.status(400).body("Пользователь с таким телефоном уже существует!");
+
+        if ( userRepository.isUserExistsEmail( user.getEmail() ) )
+            return ResponseEntity.status(400).body("Пользователь с такой почтой уже существует!");
 
         if ( user.getUsername() == null || user.getUsername().isEmpty() )
             user.setUsername( UUID.randomUUID().toString() );
 
         user.setEnabled(true);
         user.setIsApproved(false);
+        user.setInVacation(false);
         user.setPassword( userPasswordEncoder.encode( user.getPassword() ) );
 
         UserRole clientRole = userRoleRepository.findByName(roleName);
@@ -76,10 +84,10 @@ public class oAuthController {
             setModerator(user);
         else if ( roleName.equals("SERVICE_LEADER") ) {
             if ( user.getInn() == null || user.getInn().isEmpty() )
-                return ResponseEntity.status(400).body("ИНН не может быть пустым.");
+                return ResponseEntity.status(400).body("ИНН не может быть пустым!");
 
             if ( userRepository.isUserExistsInn( user.getInn() ) )
-                return ResponseEntity.status(400).body("Пользователь с таким ИНН уже существует.");
+                return ResponseEntity.status(400).body("Пользователь с таким ИНН уже существует!");
 
             setModerator(user);
         }
@@ -88,6 +96,21 @@ public class oAuthController {
 
         return ResponseEntity.ok().build();
 
+    }
+
+    private boolean isPhoneValid(String phone) {
+        return phone.matches(PHONE_REGEXP);
+    }
+
+    private void processPhone(User user) {
+        String originalPhone = user.getPhone();
+
+        if ( originalPhone.charAt(0) == '+' ) {
+            user.setPhone( originalPhone.replaceAll("\\+7", "8") );
+        }
+        else if ( originalPhone.charAt(0) == '7' ) {
+            user.setPhone( originalPhone.replaceFirst("7", "8") );
+        }
     }
 
     private void setModerator(User user) {
