@@ -21,7 +21,7 @@ export class EventMessageResponseService {
   getLast5() {
 
     this.isLoading = true;
-    this.getMessages('messageDate', 0, 5, -5, null, null, null, null).subscribe( response => {
+    this.getMessages('messageDate,desc', 0, 5, -5, null, null, null, null).subscribe( response => {
 
       this.isLoading = false;
       const pageable = response as Pageable<EventMessageResponse>;

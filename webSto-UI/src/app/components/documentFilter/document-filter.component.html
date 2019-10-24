@@ -27,7 +27,7 @@
       </select>
     </div>
 
-    <div class="form-group">
+    <div class="form-group" *ngIf="userService.currentUser && !userService.currentUser.serviceLeader">
       <label class="form-control-label" for="organization-select">Предприятие</label>
       <select id="organization-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.organization" (change)="emitChange()">
         <option [selected]="null === filter.organization" [ngValue]="null">

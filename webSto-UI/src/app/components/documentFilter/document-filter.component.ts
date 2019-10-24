@@ -13,7 +13,7 @@ import {Router} from '@angular/router';
 })
 export class DocumentFilterComponent implements OnInit {
 
-  constructor(private organizationResponseService: OrganizationResponseService) {}
+  constructor(private organizationResponseService: OrganizationResponseService, private userService: UserService) {}
 
   @Input()
   private filter: DocumentsFilter;
