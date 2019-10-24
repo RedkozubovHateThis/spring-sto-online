@@ -76,10 +76,10 @@ export class WebSocketService {
     });
 
     if ( this.userService.currentUser.admin || this.userService.currentUser.moderator ) {
-      this.eventMessageResponseService.getMessages();
+      this.eventMessageResponseService.getLast5();
       this.client.subscribe('/topic/event/' + this.userService.currentUser.id, message => {
         const eventMessage: EventMessageResponse = JSON.parse( message.body );
-        this.eventMessageResponseService.messages.unshift( eventMessage );
+        this.eventMessageResponseService.addMessage( eventMessage );
         me.buildMessage( eventMessage );
       });
     }

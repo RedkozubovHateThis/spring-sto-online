@@ -1,0 +1,91 @@
+<div class="card shadow">
+  <div class="card-body">
+
+    <div class="row">
+      <div class="col">
+        <h3 class="text-muted">
+          Фильтры
+        </h3>
+      </div>
+      <div *ngIf="filter.messageType || filter.fromId || filter.toId || filter.documentId" class="col-auto text-muted">
+        <button class="btn btn-sm btn-buro-green" (click)="resetFilters()">
+          Сбросить
+        </button>
+      </div>
+    </div>
+
+
+    <div class="form-group" *ngIf="userService.currentUser != null && userService.currentUser.moderator">
+      <label class="form-control-label" for="message-type-select">Тип уведомления</label>
+      <select id="message-type-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.messageType" (change)="emitChange()">
+        <option [selected]="null === filter.messageType" [ngValue]="null">
+          Без фильтра
+        </option>
+        <option [selected]="messageType.id === filter.messageType" *ngFor="let messageType of messageTypes" [ngValue]="messageType.id">
+          {{ messageType.name }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="user-from-select">Инициатор</label>
+      <select id="user-from-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.fromId" (change)="emitChange()">
+        <option [selected]="null === filter.fromId" [ngValue]="null">
+          Без фильтра
+        </option>
+        <option [selected]="user.id === filter.fromId" *ngFor="let user of usersFrom" [ngValue]="user.id">
+          {{ user.fio }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group" *ngIf="userService.currentUser != null && userService.currentUser.admin">
+      <label class="form-control-label" for="user-to-select">Получатель</label>
+      <select id="user-to-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.toId" (change)="emitChange()">
+        <option [selected]="null === filter.toId" [ngValue]="null">
+          Без фильтра
+        </option>
+        <option [selected]="user.id === filter.toId" *ngFor="let user of usersTo" [ngValue]="user.id">
+          {{ user.fio }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="vehicle-select">Документ</label>
+      <select id="vehicle-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.documentId" (change)="emitChange()">
+        <option [selected]="null === filter.documentId" [ngValue]="null">
+          Без фильтра
+        </option>
+        <option [selected]="document.id === filter.documentId" *ngFor="let document of documents" [ngValue]="document.id">
+          {{ document.documentNumber }}
+        </option>
+      </select>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <h3 class="text-muted">
+          Сортировка
+        </h3>
+      </div>
+      <div *ngIf="filter.direction !== 'asc'" class="col-auto text-muted">
+        <button class="btn btn-sm btn-buro-green" (click)="resetSort()">
+          Сбросить
+        </button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="direction-select">Порядок сортировки:</label>
+      <select id="direction-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.direction" (change)="emitChange()">
+        <option [selected]="'asc' === filter.direction" [ngValue]="'asc'">
+          По возрастанию
+        </option>
+        <option [selected]="'desc' === filter.direction" [ngValue]="'desc'">
+          По убыванию
+        </option>
+      </select>
+    </div>
+  </div>
+</div>

@@ -163,6 +163,18 @@ export class UserService implements TransferService<User> {
     return this.http.get( `${this.baseUrl}secured/chat/opponents`, {headers} );
   }
 
+  getEventMessageFromUsers() {
+    const headers = this.getHeaders();
+
+    return this.http.get( `${this.baseUrl}secured/users/eventMessages/fromUsers`, {headers} );
+  }
+
+  getEventMessageToUsers() {
+    const headers = this.getHeaders();
+
+    return this.http.get( `${this.baseUrl}secured/users/eventMessages/toUsers`, {headers} );
+  }
+
   getTransferModel() {
     return this.transferModel;
   }

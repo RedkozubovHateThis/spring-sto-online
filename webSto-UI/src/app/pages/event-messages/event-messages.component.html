@@ -1,0 +1,107 @@
+<!-- Page content -->
+<div class="container-fluid mt--7">
+  <!-- Table -->
+  <div class="row">
+    <div class="col-sm-9">
+      <div class="card shadow">
+        <div class="card-header border-0">
+
+          <div class="row">
+
+            <div class="col-sm-4">
+              <h3 class="mb-0">
+                Уведомления&nbsp;
+                <span *ngIf="isLoading"><i class="fas fa-spin fa-spinner"></i></span>
+              </h3>
+            </div>
+            <div class="col-sm-8">
+
+              <nav aria-label="..." *ngIf="pagesInfo.length > 0">
+                <ul class="pagination justify-content-end mb-0">
+
+                  <li class="page-item" *ngIf="!all.first">
+                    <a class="page-link" tabindex="-1" [routerLink]="['/event-messages']" [queryParams]="{page: page, sort: filter.sort, direction: filter.direction, messageType: filter.messageType, toId: filter.toId, fromId: filter.fromId, documentId: filter.documentId}">
+                      <i class="fas fa-angle-left"></i>
+                    </a>
+                  </li>
+
+                  <li class="page-item" *ngFor="let pageInfo of pagesInfo" [ngClass]="{active: pageInfo == page + 1}">
+                    <a class="page-link" [routerLink]="['/event-messages']" [queryParams]="{page: pageInfo, sort: filter.sort, direction: filter.direction, messageType: filter.messageType, toId: filter.toId, fromId: filter.fromId, documentId: filter.documentId}">{{pageInfo}}</a>
+                  </li>
+
+                  <li class="page-item" *ngIf="!all.last">
+                    <a class="page-link" [routerLink]="['/event-messages']" [queryParams]="{page: page + 2, sort: filter.sort, direction: filter.direction, messageType: filter.messageType, toId: filter.toId, fromId: filter.fromId, documentId: filter.documentId}">
+                      <i class="fas fa-angle-right"></i>
+                    </a>
+                  </li>
+
+                </ul>
+              </nav>
+
+            </div>
+
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush table-hover">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">Дата уведомления</th>
+                <th scope="col">Тип уведомления</th>
+                <th scope="col">Инициатор</th>
+                <th scope="col">Получатель</th>
+                <th scope="col">Документ</th>
+                <th scope="col">Доп. информация</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="all != null">
+            <tr *ngFor="let emResponse of all.content">
+              <th>{{emResponse.messageDate | date : 'dd.MM.yyyy HH:mm'}}</th>
+              <th>{{getMessageType(emResponse.messageType)}}</th>
+              <ng-container *ngIf="emResponse.messageType === 'MODERATOR_REPLACEMENT'">
+                <th>{{emResponse.fromFio}}</th>
+                <th>{{emResponse.toFio}}</th>
+                <th></th>
+                <th></th>
+              </ng-container>
+              <ng-container *ngIf="emResponse.messageType === 'DOCUMENT_CHANGE'">
+                <th><a [routerLink]="['/users', emResponse.fromId]">{{emResponse.fromFio}}</a></th>
+                <th>{{emResponse.toFio}}</th>
+                <th><a [routerLink]="['/documents', emResponse.documentId]">{{emResponse.documentName}}</a></th>
+                <th>{{emResponse.additionalInformation}}</th>
+              </ng-container>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card-footer py-4">
+          <nav aria-label="..." *ngIf="pagesInfo.length > 0">
+            <ul class="pagination justify-content-end mb-0">
+
+              <li class="page-item" *ngIf="!all.first">
+                <a class="page-link" tabindex="-1" [routerLink]="['/event-messages']"
+                   [queryParams]="{page: page, sort: filter.sort, direction: filter.direction, messageType: filter.messageType, toId: filter.toId, fromId: filter.fromId, documentId: filter.documentId}">
+                  <i class="fas fa-angle-left"></i>
+                </a>
+              </li>
+
+              <li class="page-item" *ngFor="let pageInfo of pagesInfo" [ngClass]="{active: pageInfo == page + 1}">
+                <a class="page-link" [routerLink]="['/event-messages']" [queryParams]="{page: pageInfo, sort: filter.sort, direction: filter.direction, messageType: filter.messageType, toId: filter.toId, fromId: filter.fromId, documentId: filter.documentId}">{{pageInfo}}</a>
+              </li>
+
+              <li class="page-item" *ngIf="!all.last">
+                <a class="page-link" [routerLink]="['/event-messages']" [queryParams]="{page: page + 2, sort: filter.sort, direction: filter.direction, messageType: filter.messageType, toId: filter.toId, fromId: filter.fromId, documentId: filter.documentId}">
+                  <i class="fas fa-angle-right"></i>
+                </a>
+              </li>
+
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <app-event-message-filter (onChange)="refresh()" [filter]="filter"></app-event-message-filter>
+    </div>
+  </div>
+</div>

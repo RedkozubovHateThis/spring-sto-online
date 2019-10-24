@@ -79,6 +79,30 @@ public class DocumentDetailServiceController {
 
     }
 
+    @GetMapping("/eventMessages/findAll")
+    public ResponseEntity findEventMessagesDocuments() {
+
+        User currentUser = userRepository.findCurrentUser();
+        List<Integer> documentIds = null;
+
+        if ( UserHelper.hasRole( currentUser, "ADMIN" ) ) {
+            documentIds = userRepository.collectDocumentIdsByAdmin();
+        }
+        else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
+            documentIds = userRepository.collectDocumentIds( currentUser.getId() );
+        }
+        else
+            return ResponseEntity.status(404).build();
+
+        if ( documentIds.size() == 0 ) return ResponseEntity.status(404).build();
+
+        List<DocumentServiceDetail> documents = documentsRepository.findByIds(documentIds);
+
+        return ResponseEntity.ok( documents.stream()
+                .map(DocumentResponse::new).collect( Collectors.toList() ) );
+
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity findOne(@PathVariable("id") Integer id) {
 

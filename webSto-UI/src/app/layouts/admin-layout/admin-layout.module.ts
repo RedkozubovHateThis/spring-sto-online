@@ -22,6 +22,7 @@ import {FileSelectDirective} from 'ng2-file-upload';
 import {ComponentsModule} from '../../components/components.module';
 import {ReportsComponent} from '../../pages/reports/reports.component';
 import {DpDatePickerModule} from 'ng2-date-picker';
+import {EventMessagesComponent} from '../../pages/event-messages/event-messages.component';
 
 @NgModule({
   imports: [
@@ -46,7 +47,8 @@ import {DpDatePickerModule} from 'ng2-date-picker';
     UserEditComponent,
     ChatComponent,
     FileSelectDirective,
-    ReportsComponent
+    ReportsComponent,
+    EventMessagesComponent
   ]
 })
 

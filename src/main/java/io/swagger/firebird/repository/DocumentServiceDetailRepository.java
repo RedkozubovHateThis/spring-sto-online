@@ -92,4 +92,8 @@ public interface DocumentServiceDetailRepository extends PagingAndSortingReposit
                                             @Param("startDate") Date startDate,
                                             @Param("endDate") Date endDate);
 
+    @Query("SELECT dsd FROM DocumentServiceDetail AS dsd " +
+            "WHERE dsd.id IN ( :documentIds )")
+    List<DocumentServiceDetail> findByIds(@Param("documentIds") List<Integer> documentIds);
+
 }

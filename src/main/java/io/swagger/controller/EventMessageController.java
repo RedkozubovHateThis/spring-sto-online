@@ -1,5 +1,6 @@
 package io.swagger.controller;
 
+import io.swagger.helper.EventMessageSpecificationBuilder;
 import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.ChatMessage;
 import io.swagger.postgres.model.EventMessage;
@@ -15,6 +16,10 @@ import io.swagger.response.EventMessageResponse;
 import io.swagger.response.OpponentResponse;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,23 +37,34 @@ public class EventMessageController {
     private EventMessageRepository eventMessageRepository;
 
     @GetMapping("/findAll")
-    public ResponseEntity findAll() {
+    public ResponseEntity findAll(Pageable pageable, FilterPayload filterPayload) {
 
         User currentUser = userRepository.findCurrentUser();
-        List<EventMessage> eventMessages = null;
 
-        if ( UserHelper.hasRole( currentUser, "ADMIN" ) ) {
-            eventMessages = eventMessageRepository.findAllByMessageType( MessageType.DOCUMENT_CHANGE );
-        }
-        else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
-            eventMessages = eventMessageRepository.findAllByTargetUser( currentUser );
+        if ( !UserHelper.hasRole( currentUser, "ADMIN" ) && !UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
+            return ResponseEntity.status(404).build();
         }
 
-        if ( eventMessages == null ) return ResponseEntity.status(404).build();
+        Specification<EventMessage> specification = EventMessageSpecificationBuilder.buildSpecification(currentUser, filterPayload);
+        Page<EventMessage> result = eventMessageRepository.findAll(specification, pageable);
 
-        List<EventMessageResponse> responses = eventMessages.stream().map(EventMessageResponse::new).collect( Collectors.toList() );
+        List<EventMessage> resultList = result.getContent();
+        List<EventMessageResponse> responseList = resultList.stream()
+                .map(EventMessageResponse::new).collect( Collectors.toList() );
 
-        return ResponseEntity.ok(responses);
+        Page<EventMessageResponse> responsePage = new PageImpl<>(responseList, pageable, result.getTotalElements());
+
+        return ResponseEntity.ok( responsePage );
+
+    }
+
+    @Data
+    public static class FilterPayload {
+
+        private List<MessageType> messageTypes;
+        private List<Integer> fromIds;
+        private List<Integer> toIds;
+        private List<Integer> documentIds;
 
     }
 

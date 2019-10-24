@@ -163,4 +163,36 @@ public class UserController {
 
     }
 
+    @GetMapping("/eventMessages/fromUsers")
+    public ResponseEntity findEventMessagesFromUsers() {
+
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( UserHelper.hasRole( currentUser, "ADMIN" ) ) {
+            return ResponseEntity.ok( userRepository.findEventMessageFromUsersByAdmin() );
+        }
+        else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
+            return ResponseEntity.ok( userRepository.findEventMessageFromUsers( currentUser.getId() ) );
+        }
+        else
+            return ResponseEntity.status(404).build();
+
+    }
+
+    @GetMapping("/eventMessages/toUsers")
+    public ResponseEntity findEventMessagesToUsers() {
+
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( UserHelper.hasRole( currentUser, "ADMIN" ) ) {
+            return ResponseEntity.ok( userRepository.findEventMessageToUsersByAdmin() );
+        }
+        else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
+            return ResponseEntity.ok( userRepository.findEventMessageToUsers( currentUser.getId() ) );
+        }
+        else
+            return ResponseEntity.status(404).build();
+
+    }
+
 }

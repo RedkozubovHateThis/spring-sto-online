@@ -119,4 +119,37 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
             "ORDER BY last_name")
     List<User> findAllModerators(@Param("moderatorId") Long moderatorId,
                                  @Param("userId") Long userId);
+
+    @Query(nativeQuery = true, value = "SELECT DISTINCT fu.* FROM event_message AS em " +
+            "INNER JOIN users AS fu ON em.send_user_id = fu.id " +
+            "WHERE em.message_type = 'DOCUMENT_CHANGE' " +
+            "ORDER BY fu.last_name, fu.first_name, fu.middle_name")
+    List<User> findEventMessageFromUsersByAdmin();
+
+    @Query(nativeQuery = true, value = "SELECT DISTINCT fu.* FROM event_message AS em " +
+            "INNER JOIN users AS fu ON em.send_user_id = fu.id " +
+            "AND em.target_user_id = :targetUserId " +
+            "ORDER BY fu.last_name, fu.first_name, fu.middle_name")
+    List<User> findEventMessageFromUsers(@Param("targetUserId") Long targetUserId);
+
+    @Query(nativeQuery = true, value = "SELECT DISTINCT tu.* FROM event_message AS em " +
+            "INNER JOIN users AS tu ON em.target_user_id = tu.id " +
+            "WHERE em.message_type = 'DOCUMENT_CHANGE' " +
+            "ORDER BY tu.last_name, tu.first_name, tu.middle_name")
+    List<User> findEventMessageToUsersByAdmin();
+
+    @Query(nativeQuery = true, value = "SELECT DISTINCT tu.* FROM event_message AS em " +
+            "INNER JOIN users AS tu ON em.target_user_id = tu.id " +
+            "AND em.target_user_id = :targetUserId " +
+            "ORDER BY tu.last_name, tu.first_name, tu.middle_name")
+    List<User> findEventMessageToUsers(@Param("targetUserId") Long targetUserId);
+
+    @Query(nativeQuery = true, value = "SELECT DISTINCT em.document_id FROM event_message AS em " +
+            "WHERE em.document_id IS NOT NULL")
+    List<Integer> collectDocumentIdsByAdmin();
+
+    @Query(nativeQuery = true, value = "SELECT DISTINCT em.document_id FROM event_message AS em " +
+            "WHERE em.document_id IS NOT NULL " +
+            "AND em.target_user_id = :targetUserId")
+    List<Integer> collectDocumentIds(@Param("targetUserId") Long targetUserId);
 }

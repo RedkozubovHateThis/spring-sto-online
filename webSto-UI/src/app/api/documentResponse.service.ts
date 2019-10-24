@@ -60,6 +60,14 @@ export class DocumentResponseService implements TransferService<DocumentResponse
 
   }
 
+  getDocumentsByEventMessage() {
+
+    const headers = this.userService.getHeaders();
+
+    return this.http.get( `${this.baseUrl}secured/documents/eventMessages/findAll`, {headers} );
+
+  }
+
   getTransferModel() {
     return this.transferModel;
   }

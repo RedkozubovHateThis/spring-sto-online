@@ -22,7 +22,7 @@
           </ng-container>
           <ng-container *ngIf="eventMessageResponseService.messages.length > 0">
             <div class="dropdown-item-text small" *ngFor="let message of eventMessageResponseService.messages">
-              {{message.messageDate | date : 'dd.MM.yyyy HH:mm:ss'}}
+              {{message.messageDate | date : 'dd.MM.yyyy HH:mm'}}
               <div *ngIf="message.messageType === 'DOCUMENT_CHANGE'">
                 Пользователь <a [routerLink]="['/users', message.fromId]">{{message.fromFio}}</a> изменил документ <a [routerLink]="['/documents', message.documentId]">{{message.documentName}}</a>:
                 <div class="text-muted">
