@@ -60,7 +60,7 @@
 		<field name="code" class="java.lang.String"/>
 		<field name="name" class="java.lang.String"/>
 		<field name="typeCode" class="java.lang.String"/>
-		<field name="measureCode" class="java.lang.String"/>
+		<field name="measureCode" class="java.lang.Object"/>
 		<field name="measureName" class="java.lang.String"/>
 		<field name="count" class="java.lang.Double"/>
 		<field name="cost" class="java.lang.Double"/>
