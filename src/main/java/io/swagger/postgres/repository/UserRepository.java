@@ -73,6 +73,10 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
     Long countAllNotApproved();
 
     @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT u.id FROM users AS u " +
+            "WHERE u.username = :username )")
+    Boolean isUserExistsUsername(@Param("username") String username);
+
+    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT u.id FROM users AS u " +
             "WHERE u.phone = :phone )")
     Boolean isUserExistsPhone(@Param("phone") String phone);
 

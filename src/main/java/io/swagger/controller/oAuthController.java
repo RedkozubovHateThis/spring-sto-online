@@ -61,6 +61,10 @@ public class oAuthController {
 
         processPhone(user);
 
+        if ( user.getUsername() != null && user.getUsername().length() > 0 &&
+                userRepository.isUserExistsUsername( user.getUsername() ) )
+            return ResponseEntity.status(400).body("Пользователь с таким логином уже существует!");
+
         if ( userRepository.isUserExistsPhone( user.getPhone() ) )
             return ResponseEntity.status(400).body("Пользователь с таким телефоном уже существует!");
 

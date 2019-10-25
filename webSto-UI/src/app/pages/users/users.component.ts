@@ -39,4 +39,8 @@ export class UsersComponent extends Pagination {
 
   prepareFilter(queryParams: Params) {}
 
+  refresh() {
+    this.requestData();
+  }
+
 }

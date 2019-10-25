@@ -1,40 +1,40 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {UserService} from "../../api/user.service";
-import {Router} from "@angular/router";
+import {UserService} from '../../api/user.service';
+import { Location } from '@angular/common';
+import {Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss']
+  selector: 'app-user-add',
+  templateUrl: './user-add.component.html',
+  styleUrls: ['./user-add.component.scss']
 })
-export class RegisterComponent implements OnInit {
+export class UserAddComponent implements OnInit {
 
-  constructor(private formBuilder: FormBuilder, private router: Router, private userService: UserService,
-              private toastrService: ToastrService) { }
+  constructor(private formBuilder: FormBuilder, private userService: UserService, private location: Location, private router: Router,
+              private toastrService: ToastrService) {}
 
-  private addForm: FormGroup;
+  private addForm: FormGroup = this.formBuilder.group({
+    email: ['', Validators.required],
+    inn: [''],
+    phone: ['', Validators.required],
+    password: ['', Validators.required],
+    rePassword: ['', Validators.required],
+    firstName: ['', Validators.required],
+    lastName: ['', Validators.required],
+    middleName: ['', Validators.required],
+    username: [''],
+    selectedRole: [null, Validators.required]
+  });
   private isRegistering: boolean = false;
   private roles = [
-    { name: 'Клиент', id: 'CLIENT' },
-    { name: 'Руководитель сервиса', id: 'SERVICE_LEADER' },
     { name: 'Модератор', id: 'MODERATOR' },
+    { name: 'Администратор', id: 'ADMIN' }
   ];
 
   ngOnInit() {
-    this.addForm = this.formBuilder.group({
-      email: ['', Validators.required],
-      inn: [''],
-      phone: ['', Validators.required],
-      password: ['', Validators.required],
-      rePassword: ['', Validators.required],
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      middleName: ['', Validators.required],
-      selectedRole: [null, Validators.required]
-    });
-
+    // TODO: добавить проверку на админа
   }
 
   onSubmit() {
@@ -61,7 +61,7 @@ export class RegisterComponent implements OnInit {
     this.userService.createUser(this.addForm.value, this.addForm.controls.selectedRole.value)
       .subscribe( data => {
         this.isRegistering = false;
-        this.router.navigate(['login']);
+        this.router.navigate(['users']);
       }, error => {
         this.isRegistering = false;
         if ( error.status === 400 ) {

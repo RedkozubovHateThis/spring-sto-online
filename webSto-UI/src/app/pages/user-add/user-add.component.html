@@ -1,0 +1,117 @@
+<div class="container-fluid mt--7">
+  <div class="row">
+    <div class="col-xl-12">
+      <div class="card bg-secondary shadow">
+        <div class="card-header bg-white border-0">
+          <div class="row align-items-center">
+            <div class="col-8">
+              <h3 class="mb-0">Данные пользователя: добавление</h3>
+            </div>
+            <div class="col-4 text-right">
+              <button class="btn btn-sm btn-buro-green" [disabled]="userService.isSaving" (click)="location.back()">
+                Назад
+              </button>
+              <button class="btn btn-sm btn-buro-green" [disabled]="addForm.invalid || isRegistering" (click)="onSubmit()">
+                Добавить<span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="addForm" (ngSubmit)="onSubmit()">
+            <h6 class="heading-small text-muted mb-4">Личные данные</h6>
+            <div class="pl-lg-4">
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-username">Логин</label>
+                    <input type="text" id="input-username" class="form-control form-control-alternative" placeholder="Логин (не обязательно к заполнению)"
+                           name="username" formControlName="username">
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-first-name">Имя</label>
+                    <input type="email" id="input-first-name" class="form-control form-control-alternative" placeholder="Имя"
+                           name="firstName" formControlName="firstName">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-last-name">Фамилия</label>
+                    <input type="text" id="input-last-name" class="form-control form-control-alternative" placeholder="Фамилия"
+                           name="lastName" formControlName="lastName">
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-middle-name">Отчество</label>
+                    <input type="text" id="input-middle-name" class="form-control form-control-alternative" placeholder="Отчество"
+                           name="middleName" formControlName="middleName">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-password">Пароль</label>
+                    <input type="password" id="input-password" class="form-control form-control-alternative" placeholder="Пароль"
+                           name="password" formControlName="password">
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-rePassword">Подтверждение пароля</label>
+                    <input type="text" id="input-rePassword" class="form-control form-control-alternative" placeholder="Подтверждение пароля"
+                           name="password" formControlName="rePassword">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr class="my-4" />
+            <!-- Address -->
+            <h6 class="heading-small text-muted mb-4">Контактная информация</h6>
+            <div class="pl-lg-4">
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-email">Email</label>
+                    <input type="text" id="input-email" class="form-control form-control-alternative" placeholder="Email"
+                           name="email" formControlName="email">
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-phone">Телефон</label>
+                    <input type="text" id="input-phone" class="form-control form-control-alternative" placeholder="Телефон"
+                           name="phone" formControlName="phone">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Roles -->
+            <h6 class="heading-small text-muted mb-4">Роли</h6>
+            <div class="pl-lg-4">
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <select id="role-select" class="form-control form-control-alternative" formControlName="selectedRole">
+                      <option disabled [value]="null">
+                        Выберите роль
+                      </option>
+                      <option *ngFor="let role of roles" [value]="role.id">
+                        {{ role.name }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

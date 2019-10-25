@@ -8,6 +8,9 @@
               Данные заказ-наряда
             </div>
             <div class="col-auto">
+              <button class="btn btn-sm btn-buro-green" (click)="location.back()">
+                Назад
+              </button>
               <div ngbDropdown class="d-inline-block" placement="bottom-right">
                 <button class="btn btn-sm btn-buro-green" id="reports-dropdown" [disabled]="isDownloading" ngbDropdownToggle>
                   Выгрузить...

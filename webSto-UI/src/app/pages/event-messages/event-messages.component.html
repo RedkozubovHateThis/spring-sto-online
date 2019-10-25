@@ -8,36 +8,16 @@
 
           <div class="row">
 
-            <div class="col-sm-4">
+            <div class="col">
               <h3 class="mb-0">
                 Уведомления&nbsp;
                 <span *ngIf="isLoading"><i class="fas fa-spin fa-spinner"></i></span>
               </h3>
             </div>
-            <div class="col-sm-8">
-
-              <nav aria-label="..." *ngIf="pagesInfo.length > 0">
-                <ul class="pagination justify-content-end mb-0">
-
-                  <li class="page-item" *ngIf="!all.first">
-                    <a class="page-link" tabindex="-1" [routerLink]="['/event-messages']" [queryParams]="{page: page, sort: filter.sort, direction: filter.direction, messageType: filter.messageType, toId: filter.toId, fromId: filter.fromId, documentId: filter.documentId}">
-                      <i class="fas fa-angle-left"></i>
-                    </a>
-                  </li>
-
-                  <li class="page-item" *ngFor="let pageInfo of pagesInfo" [ngClass]="{active: pageInfo == page + 1}">
-                    <a class="page-link" [routerLink]="['/event-messages']" [queryParams]="{page: pageInfo, sort: filter.sort, direction: filter.direction, messageType: filter.messageType, toId: filter.toId, fromId: filter.fromId, documentId: filter.documentId}">{{pageInfo}}</a>
-                  </li>
-
-                  <li class="page-item" *ngIf="!all.last">
-                    <a class="page-link" [routerLink]="['/event-messages']" [queryParams]="{page: page + 2, sort: filter.sort, direction: filter.direction, messageType: filter.messageType, toId: filter.toId, fromId: filter.fromId, documentId: filter.documentId}">
-                      <i class="fas fa-angle-right"></i>
-                    </a>
-                  </li>
-
-                </ul>
-              </nav>
-
+            <div class="col-auto">
+              <button class="btn btn-sm btn-buro-green" (click)="refresh()" [disabled]="isLoading">
+                Обновить
+              </button>
             </div>
 
           </div>

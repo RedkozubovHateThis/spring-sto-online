@@ -23,6 +23,7 @@ import {ComponentsModule} from '../../components/components.module';
 import {ReportsComponent} from '../../pages/reports/reports.component';
 import {DpDatePickerModule} from 'ng2-date-picker';
 import {EventMessagesComponent} from '../../pages/event-messages/event-messages.component';
+import {UserAddComponent} from '../../pages/user-add/user-add.component';
 
 @NgModule({
   imports: [
@@ -33,7 +34,8 @@ import {EventMessagesComponent} from '../../pages/event-messages/event-messages.
     NgbModule,
     ClipboardModule,
     ComponentsModule,
-    DpDatePickerModule
+    DpDatePickerModule,
+    ReactiveFormsModule
   ],
   declarations: [
     DashboardComponent,
@@ -48,7 +50,8 @@ import {EventMessagesComponent} from '../../pages/event-messages/event-messages.
     ChatComponent,
     FileSelectDirective,
     ReportsComponent,
-    EventMessagesComponent
+    EventMessagesComponent,
+    UserAddComponent
   ]
 })
 

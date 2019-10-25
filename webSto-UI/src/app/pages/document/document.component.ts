@@ -7,6 +7,7 @@ import {ServiceWorkResponseService} from "../../api/ServiceWorkResponse.service"
 import {UserService} from "../../api/user.service";
 import {HttpClient} from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
+import {Location} from '@angular/common';
 
 @Component({
   selector: 'app-documents',
@@ -31,7 +32,8 @@ export class DocumentComponent extends ModelTransfer<DocumentResponse, number> i
   ];
 
   constructor(private documentResponseService: DocumentResponseService, protected route: ActivatedRoute, private toastrService: ToastrService,
-              private serviceWorkResponseService: ServiceWorkResponseService, private userService: UserService, private httpClient: HttpClient) {
+              private serviceWorkResponseService: ServiceWorkResponseService, private userService: UserService, private httpClient: HttpClient,
+              private location: Location) {
     super(documentResponseService, route);
   }
 

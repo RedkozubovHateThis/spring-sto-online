@@ -3,85 +3,44 @@
     <div class="col-xl-4 order-xl-2 mb-5 mb-xl-0">
       <div class="card bg-secondary shadow">
 
-        <ng-container *ngIf="model != null && userService.currentUser != null && model.admin && model.id === userService.currentUser.id">
-
-          <div class="card-header bg-white border-0">
-            <div class="row align-items-center">
-              <div class="col-12">
-                <h3 class="mb-0">SMS-рассылка (тестирование)</h3>
-              </div>
+        <div class="card-header bg-white border-0">
+          <div class="row align-items-center">
+            <div class="col-12">
+              <h3 class="mb-0">АвтоДилер</h3>
             </div>
           </div>
+        </div>
 
-          <div class="card-body">
+        <div class="card-body">
 
-            <div class="row">
-              <div class="col-lg-12">
+          <div class="row">
+            <div class="col-lg-12" *ngIf="model != null">
 
-                <div class="form-group">
-                  <label class="form-control-label" for="input-phone">Телефон</label>
-                  <input type="text" id="input-phone" class="form-control form-control-alternative" placeholder="Телефон"
-                         [(ngModel)]="phoneNumber" name="middleName">
-                </div>
-                <div class="form-group">
-                  <label class="form-control-label" for="input-middle-name">Сообщение</label>
-                  <input type="text" id="input-middle-name" class="form-control form-control-alternative" placeholder="Сообщение"
-                         [(ngModel)]="messageText" name="middleName">
-                </div>
+              <div class="form-group" *ngIf="model.client && clientResponse != null">
+                <label class="form-control-label" for="client-full-name">Имя клиента</label>
+                <span id="client-full-name" class="form-control form-control-alternative">{{clientResponse.fullName}}</span>
+              </div>
 
-                <div class="form-group">
-                  <button class="btn btn-buro-green" [disabled]="smsSending || ( !phoneNumber || !messageText )" (click)="sendSms()">
-                    Отправить<span *ngIf="smsSending">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
+              <div class="form-group" *ngIf="model.serviceLeader && organizationResponse != null">
+                <label class="form-control-label" for="organization-full-name">Наименование предприятия</label>
+                <span id="organization-full-name" class="form-control form-control-alternative">{{organizationResponse.fullName}}</span>
+              </div>
+
+              <div class="form-group"
+                   *ngIf="userService.currentUser != null && model != null && userService.currentUser.moderator && model.id != userService.currentUser.id">
+                <button class="btn btn-buro-green" [disabled]="model.clientId == null && model.organizationId == null" (click)="approve( model, true )" *ngIf="!model.isApproved; else disapprove">
+                  Подвердить<span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
+                </button>
+                <ng-template #disapprove>
+                  <button class="btn btn-buro-green" (click)="approve( model, false )">
+                    Отменить<span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
                   </button>
-                </div>
-
+                </ng-template>
               </div>
+
             </div>
           </div>
-
-        </ng-container>
-        <ng-container *ngIf="model != null && !model.admin">
-
-          <div class="card-header bg-white border-0">
-            <div class="row align-items-center">
-              <div class="col-12">
-                <h3 class="mb-0">АвтоДилер</h3>
-              </div>
-            </div>
-          </div>
-
-          <div class="card-body">
-
-            <div class="row">
-              <div class="col-lg-12" *ngIf="model != null">
-
-                <div class="form-group" *ngIf="model.client && clientResponse != null">
-                  <label class="form-control-label" for="client-full-name">Имя клиента</label>
-                  <span id="client-full-name" class="form-control form-control-alternative">{{clientResponse.fullName}}</span>
-                </div>
-
-                <div class="form-group" *ngIf="model.serviceLeader && organizationResponse != null">
-                  <label class="form-control-label" for="organization-full-name">Наименование предприятия</label>
-                  <span id="organization-full-name" class="form-control form-control-alternative">{{organizationResponse.fullName}}</span>
-                </div>
-
-                <div class="form-group"
-                     *ngIf="userService.currentUser != null && model != null && userService.currentUser.moderator && model.id != userService.currentUser.id">
-                  <button class="btn btn-buro-green" [disabled]="model.clientId == null && model.organizationId == null" (click)="approve( model, true )" *ngIf="!model.isApproved; else disapprove">
-                    Подвердить<span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
-                  </button>
-                  <ng-template #disapprove>
-                    <button class="btn btn-buro-green" (click)="approve( model, false )">
-                      Отменить<span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
-                    </button>
-                  </ng-template>
-                </div>
-
-              </div>
-            </div>
-          </div>
-
-        </ng-container>
+        </div>
 
       </div>
     </div>
@@ -89,11 +48,15 @@
       <div class="card bg-secondary shadow">
         <div class="card-header bg-white border-0">
           <div class="row align-items-center">
-            <div class="col-8">
+            <div class="col">
               <h3 class="mb-0">{{title}}</h3>
             </div>
-            <div class="col-4 text-right" *ngIf="userService.currentUser != null && model != null && ( userService.currentUser.id == model.id || userService.currentUser.admin )">
-              <button class="btn btn-sm btn-buro-green" (click)="navigate( model )">
+            <div class="col-auto">
+              <button class="btn btn-sm btn-buro-green" (click)="location.back()" *ngIf="showBack">
+                Назад
+              </button>
+              <button class="btn btn-sm btn-buro-green" (click)="navigate( model )"
+                      *ngIf="userService.currentUser != null && model != null && ( userService.currentUser.id == model.id || userService.currentUser.admin )">
                 Редактировать
               </button>
             </div>

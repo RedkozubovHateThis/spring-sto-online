@@ -22,6 +22,7 @@ export class UserProfileComponent implements OnInit {
   private organizationResponse: OrganizationResponse;
   private isADLoading:boolean = false;
   private title: string = "Профиль";
+  private showBack: boolean = false;
 
   constructor(private userService: UserService, private clientResponseService: ClientResponseService,
               private router: Router, private organizationResponseService: OrganizationResponseService, private httpClient: HttpClient,
