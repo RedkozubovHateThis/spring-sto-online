@@ -24,6 +24,7 @@ import {ReportsComponent} from '../../pages/reports/reports.component';
 import {DpDatePickerModule} from 'ng2-date-picker';
 import {EventMessagesComponent} from '../../pages/event-messages/event-messages.component';
 import {UserAddComponent} from '../../pages/user-add/user-add.component';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 @NgModule({
   imports: [
@@ -35,7 +36,8 @@ import {UserAddComponent} from '../../pages/user-add/user-add.component';
     ClipboardModule,
     ComponentsModule,
     DpDatePickerModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    PdfViewerModule
   ],
   declarations: [
     DashboardComponent,

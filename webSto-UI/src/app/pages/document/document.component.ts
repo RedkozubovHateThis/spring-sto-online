@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {DocumentResponse} from "../../model/firebird/documentResponse";
 import {DocumentResponseService} from "../../api/documentResponse.service";
 import { ActivatedRoute, Router } from '@angular/router';
@@ -16,7 +16,6 @@ import {Location} from '@angular/common';
 })
 export class DocumentComponent extends ModelTransfer<DocumentResponse, number> implements OnInit {
 
-  private isDownloading: boolean = false;
   private isLoading: boolean = false;
   private price: number;
   private isUpdating: boolean = false;
@@ -93,35 +92,4 @@ export class DocumentComponent extends ModelTransfer<DocumentResponse, number> i
         this.isUpdating = false;
       } );
   }
-
-  downloadReport(reportType: string, reportName: string) {
-    const headers = this.userService.getHeaders();
-
-    this.isDownloading = true;
-    this.httpClient.get(`http://localhost:8181/secured/reports/${this.model.id}/${reportType}`,
-      {headers, responseType: 'blob'} ).subscribe( blob => {
-
-      this.isDownloading = false;
-
-      const data = window.URL.createObjectURL(blob);
-
-      const link = document.createElement('a');
-      link.href = data;
-      link.download = `${reportName} № ${this.model.documentNumber}.pdf`;
-      link.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
-
-      setTimeout( () => {
-        window.URL.revokeObjectURL(data);
-        link.remove();
-      }, 100 );
-
-    }, error => {
-      this.isDownloading = false;
-      if ( error.status === 404 )
-        this.toastrService.error('Необходимые данные не найдены!', 'Внимание!');
-      else
-        this.toastrService.error('Ошибка формирования заказ-наряда!', 'Внимание!');
-    } );
-  }
-
 }

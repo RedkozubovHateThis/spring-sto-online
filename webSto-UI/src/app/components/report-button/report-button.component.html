@@ -1,0 +1,64 @@
+<div ngbDropdown class="d-inline-block" placement="bottom-right">
+  <button class="btn btn-sm btn-buro-green" id="reports-dropdown" [disabled]="isDownloading" ngbDropdownToggle>
+    Выгрузить...
+    <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+  </button>
+  <div ngbDropdownMenu aria-labelledby="reports-dropdown">
+    <button class="dropdown-item" (click)="downloadReport('ORDER', 'Заказ-наряд')" [disabled]="isDownloading">
+      Заказ-наряд
+      <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+    </button>
+    <button class="dropdown-item" (click)="downloadReport('ORDER_ACT', 'Акт на выполненные работы')" [disabled]="isDownloading">
+      Акт на выполненные работы
+      <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+    </button>
+    <button class="dropdown-item" (click)="downloadReport('ORDER_REQUEST', 'Заявка на ремонт автомобиля')" [disabled]="isDownloading">
+      Заявка на ремонт автомобиля
+      <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+    </button>
+    <button class="dropdown-item" (click)="downloadReport('ORDER_INSPECTION', 'Акт осмотра')" [disabled]="isDownloading">
+      Акт осмотра
+      <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+    </button>
+    <button class="dropdown-item" (click)="downloadReport('ORDER_TRANSFER', 'Универсальный передаточный документ')" [disabled]="isDownloading">
+      Универсальный передаточный документ
+      <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+    </button>
+    <button class="dropdown-item" (click)="downloadReport('ORDER_TASK', 'Задание на ремонтные работы')" [disabled]="isDownloading">
+      Задание на ремонтные работы
+      <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+    </button>
+    <button class="dropdown-item" (click)="downloadReport('ORDER_REQUIREMENT', 'Требование на запчасти')" [disabled]="isDownloading">
+      Требование на запчасти
+      <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+    </button>
+    <button class="dropdown-item" (click)="downloadReport('ORDER_RECEIPT', 'Расписка о приеме автомобиля')" [disabled]="isDownloading">
+      Расписка о приеме автомобиля
+      <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+    </button>
+    <button class="dropdown-item" (click)="downloadReport('ORDER_DEFECTION', 'Акт дефектовки')" [disabled]="isDownloading">
+      Акт дефектовки
+      <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+    </button>
+  </div>
+</div>
+
+<!-- Modal -->
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">{{modalTitle}}</h3>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <pdf-viewer [src]="pdfSrc"
+                [render-text]="true"
+    ></pdf-viewer>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-buro-green" (click)="save()">Сохранить как...</button>
+    <button type="button" class="btn btn-sm btn-buro-green" (click)="print()">Распечатать</button>
+    <button type="button" class="btn btn-sm btn-buro-green" (click)="modal.dismiss()">Закрыть</button>
+  </div>
+</ng-template>

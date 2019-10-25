@@ -10,13 +10,16 @@ import {ImgPreviewComponent} from './imgPreview/img-preview.component';
 import {DocumentFilterComponent} from './documentFilter/document-filter.component';
 import {FormsModule} from '@angular/forms';
 import { EventMessageFilterComponent } from './eventMessageFilter/event-message-filter.component';
+import {ReportButtonComponent} from './report-button/report-button.component';
+import {PdfViewerModule} from 'ng2-pdf-viewer';
 
 @NgModule({
   imports: [
     CommonModule,
     RouterModule,
     NgbModule,
-    FormsModule
+    FormsModule,
+    PdfViewerModule
   ],
   declarations: [
     FooterComponent,
@@ -25,7 +28,8 @@ import { EventMessageFilterComponent } from './eventMessageFilter/event-message-
     InfobarComponent,
     ImgPreviewComponent,
     DocumentFilterComponent,
-    EventMessageFilterComponent
+    EventMessageFilterComponent,
+    ReportButtonComponent
   ],
   exports: [
     FooterComponent,
@@ -34,7 +38,8 @@ import { EventMessageFilterComponent } from './eventMessageFilter/event-message-
     InfobarComponent,
     ImgPreviewComponent,
     DocumentFilterComponent,
-    EventMessageFilterComponent
+    EventMessageFilterComponent,
+    ReportButtonComponent
   ]
 })
 export class ComponentsModule { }
