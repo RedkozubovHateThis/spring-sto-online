@@ -7,8 +7,9 @@
           Фильтры
         </h3>
       </div>
-      <div *ngIf="filter.state || filter.organization || filter.vehicle" class="col-auto text-muted">
-        <button class="btn btn-sm btn-buro-green" (click)="resetFilters()">
+      <div class="col-auto text-muted">
+        <app-report-button [model]="document"></app-report-button>
+        <button class="btn btn-sm btn-buro-green" (click)="resetFilters()" *ngIf="filter.state || filter.organization || filter.vehicle">
           Сбросить
         </button>
       </div>

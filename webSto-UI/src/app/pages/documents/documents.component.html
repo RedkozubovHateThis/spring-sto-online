@@ -36,18 +36,23 @@
               </tr>
             </thead>
             <tbody *ngIf="all != null">
-            <tr *ngFor="let fbResponse of all.content, let i = index" [attr.data-index]="i" style="cursor: pointer;" (click)="navigate(fbResponse)">
-              <th scope="row">{{( i + 1 ) + ( page * size )}}</th>
-              <th>{{fbResponse.startDate}}</th>
-              <th>{{fbResponse.endDate}}</th>
-              <th>
+            <tr *ngFor="let fbResponse of all.content, let i = index" [attr.data-index]="i">
+              <th scope="row" style="cursor: pointer;" (click)="selected = fbResponse">
+                {{( i + 1 ) + ( page * size )}}
+                &nbsp;
+                <i class="far fa-check-circle" *ngIf="selected === fbResponse"></i>
+                <i class="far fa-circle" *ngIf="selected !== fbResponse"></i>
+              </th>
+              <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.startDate}}</th>
+              <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.endDate}}</th>
+              <th style="cursor: pointer;" (click)="navigate(fbResponse)">
                   <span class="badge badge-dot">
                     <i class="bg-{{fbResponse.style}}"></i>{{fbResponse.stateRus}}
                   </span>
               </th>
-              <th>{{fbResponse.client}}</th>
-              <th>{{fbResponse.vehicle.name}}</th>
-              <th>{{fbResponse.sum | number:'.2':'ru'}}</th>
+              <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.client}}</th>
+              <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.vehicle.name}}</th>
+              <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.sum | number:'.2':'ru'}}</th>
             </tr>
             </tbody>
           </table>
@@ -79,7 +84,7 @@
       </div>
     </div>
     <div class="col-sm-3">
-      <app-document-filter (onChange)="refresh()" [filter]="filter"></app-document-filter>
+      <app-document-filter (onChange)="refresh()" [filter]="filter" [document]="selected"></app-document-filter>
     </div>
   </div>
 </div>

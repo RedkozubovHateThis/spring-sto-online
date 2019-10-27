@@ -5,6 +5,7 @@ import {OrganizationResponse} from '../../model/firebird/organizationResponse';
 import {VehicleResponse} from '../../model/firebird/vehicleResponse';
 import {DocumentsFilter} from '../../model/documentsFilter';
 import {Router} from '@angular/router';
+import {DocumentResponse} from '../../model/firebird/documentResponse';
 
 @Component({
   selector: 'app-document-filter',
@@ -17,6 +18,8 @@ export class DocumentFilterComponent implements OnInit {
 
   @Input()
   private filter: DocumentsFilter;
+  @Input()
+  private document: DocumentResponse;
   @Output()
   private onChange: EventEmitter<any> = new EventEmitter();
   private states = [

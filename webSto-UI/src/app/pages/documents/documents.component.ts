@@ -16,12 +16,14 @@ export class DocumentsComponent extends Pagination {
   private all: Pageable<DocumentResponse>;
   private isLoading: boolean = false;
   private filter: DocumentsFilter = new DocumentsFilter();
+  private selected: DocumentResponse;
 
   constructor(private documentResponseService: DocumentResponseService, protected route: ActivatedRoute, private router: Router) {
     super(route);
   }
 
   requestData() {
+    this.selected = null;
     this.isLoading = true;
     this.documentResponseService.getAll(this.page, this.size, this.offset, this.filter).subscribe(data => {
       this.all = data as Pageable<DocumentResponse>;
