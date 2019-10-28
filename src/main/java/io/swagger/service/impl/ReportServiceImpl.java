@@ -442,6 +442,7 @@ public class ReportServiceImpl implements ReportService {
         fillOrderTransferReportParameters( parameters, document );
         JRBeanCollectionDataSource transferData = new JRBeanCollectionDataSource( getTransferData( document ) );
         parameters.put("workData", transferData);
+        parameters.put("subReportFile", reportsCatalog + "orderTransferSub.jasper");
 
         JasperPrint jasperPrint = JasperFillManager.fillReport(templateStream, parameters, new JREmptyDataSource());
 
