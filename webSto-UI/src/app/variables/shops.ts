@@ -14,6 +14,8 @@ export class Shops {
     { id: 11, name: 'PartSib', imgName: 'partsib.jpg'},
     { id: 12, name: 'Rossko', imgName: 'rossko.jpg'},
     { id: 13, name: 'Stutzen', imgName: 'shtutzen.jpg'},
+    { id: 29, name: 'The-Parts', imgName: 'the-parts.jpg'},
+    { id: 30, name: 'АвтоGut', imgName: 'autogut.jpg'},
     { id: 14, name: 'Автоконтинент', imgName: 'autokontinent.jpg'},
     { id: 15, name: 'Авторусь логистика', imgName: 'autoruslogo.jpg'},
     { id: 16, name: 'Авторусь ритейл', imgName: 'autorus.jpg'},
@@ -26,11 +28,9 @@ export class Shops {
     { id: 23, name: 'Москворечье', imgName: 'moskvorech.jpg'},
     { id: 24, name: 'ПартКом', imgName: 'partcom.jpg'},
     { id: 25, name: 'Профит Лига', imgName: 'profiliga.jpg'},
+    { id: 28, name: 'СтройПромКапитал', imgName: 'stroyprom.jpg'},
     { id: 26, name: 'Форум-Авто', imgName: 'forumauto.jpg'},
     { id: 27, name: 'Шате-М', imgName: 'shatemm.jpg'}
   ];
 
 }
-/*
-* The-Parts, АвтоGut, СтройПромКапитал
-* */
