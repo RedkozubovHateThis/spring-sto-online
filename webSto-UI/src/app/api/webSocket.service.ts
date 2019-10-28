@@ -8,14 +8,15 @@ import {ChatMessageResponse} from '../model/postgres/chatMessageResponse';
 import {EventMessageResponseService} from './eventMessageResponse.service';
 import {EventMessageResponse} from '../model/postgres/eventMessageResponse';
 import {DatePipe} from '@angular/common';
+import {ChatMessageResponseService} from './chatMessageResponse.service';
 
 @Injectable()
 export class WebSocketService {
 
   constructor(private userService: UserService, private toastrService: ToastrService,
+              private chatMessageResponseService: ChatMessageResponseService,
               private eventMessageResponseService: EventMessageResponseService, private datePipe: DatePipe) { }
 
-  private baseUrl = 'http://localhost:8181/ws';
   public clientIsConnected: Subject<Client> = new Subject<Client>();
   public client: Client;
 
@@ -30,7 +31,7 @@ export class WebSocketService {
         console.log(str);
       },
       webSocketFactory() {
-        return new SockJS('http://localhost:8181/secured/ws/?access_token=' + JSON.parse(localStorage.getItem('token')).access_token);
+        return new SockJS(`${me.userService.getApiUrl()}secured/ws/?access_token=${JSON.parse(localStorage.getItem('token')).access_token}`);
       },
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
@@ -82,6 +83,10 @@ export class WebSocketService {
         this.eventMessageResponseService.addMessage( eventMessage );
         me.buildMessage( eventMessage );
       });
+    }
+
+    if ( localStorage.getItem('demoDomain') != null && localStorage.getItem('demoDomain') !== 'null' ) {
+      this.chatMessageResponseService.createGreetMessage();
     }
 
   }

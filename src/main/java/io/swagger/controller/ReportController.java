@@ -4,10 +4,13 @@ import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.response.exception.DataNotFoundException;
+import io.swagger.response.report.ClientResponse;
+import io.swagger.response.report.ExecutorResponse;
 import io.swagger.response.report.ReportType;
 import io.swagger.service.ReportService;
 import net.sf.jasperreports.engine.JRException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 @RequestMapping("/secured/reports/")
 @RestController
@@ -26,6 +30,9 @@ public class ReportController {
 
     @Autowired
     private ReportService reportService;
+
+    @Value("${domain.demo}")
+    private Boolean demoDomain;
 
     @GetMapping("{documentId}/{reportType}")
     public ResponseEntity getOrderResponse(@PathVariable("documentId") Integer documentId,
@@ -73,8 +80,12 @@ public class ReportController {
         if ( currentUser.getOrganizationId() == null )
             return ResponseEntity.status(404).build();
 
-        return ResponseEntity.ok( reportService.getExecutorResponses( currentUser.getOrganizationId(), startDate, endDate ) );
-//        return ResponseEntity.ok( reportService.getExecutorFakeResponses( startDate, endDate ) );
+        List<ExecutorResponse> responses = reportService.getExecutorResponses(currentUser.getOrganizationId(), startDate, endDate);
+
+        if ( demoDomain && responses.size() == 0 )
+            responses = reportService.getExecutorFakeResponses( startDate, endDate );
+
+        return ResponseEntity.ok(responses);
 
     }
 
@@ -119,8 +130,12 @@ public class ReportController {
         if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() )
             return ResponseEntity.status(404).build();
 
-//        return ResponseEntity.ok( reportService.getClientFakeResponses( startDate, endDate ) );
-        return ResponseEntity.ok( reportService.getClientsResponses( currentUser.getOrganizationId(), startDate, endDate ) );
+        List<ClientResponse> responses = reportService.getClientsResponses( currentUser.getOrganizationId(), startDate, endDate );
+
+        if ( demoDomain && responses.size() == 0 )
+            responses = reportService.getClientFakeResponses( startDate, endDate );
+
+        return ResponseEntity.ok( responses );
 
     }
 

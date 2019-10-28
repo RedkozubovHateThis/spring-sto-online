@@ -41,6 +41,9 @@ public class ReportServiceImpl implements ReportService {
     @Value("${reports.catalog}")
     private String reportsCatalog;
 
+    @Value("${domain.demo}")
+    private Boolean demoDomain;
+
     @Override
     public byte[] getOrderReport(Integer documentId) throws IOException, JRException, DataNotFoundException {
 
@@ -766,7 +769,9 @@ public class ReportServiceImpl implements ReportService {
 
     private List<Map<String, Object>> getExecutorsReportData(Integer organizationId, Date startDate, Date endDate) throws DataNotFoundException {
         List<ExecutorResponse> responses = getExecutorResponses(organizationId, startDate, endDate);
-//        List<ExecutorResponse> responses = getExecutorFakeResponses(startDate, endDate);
+        if ( demoDomain && responses.size() == 0 )
+            responses = getExecutorFakeResponses(startDate, endDate);
+
         if ( responses.size() == 0 ) throw new DataNotFoundException();
 
         List<Map<String, Object>> result = new ArrayList<>();
@@ -823,7 +828,9 @@ public class ReportServiceImpl implements ReportService {
 
     private List<Map<String, Object>> getClientsReportData(Integer organizationId, Date startDate, Date endDate) throws DataNotFoundException {
         List<ClientResponse> responses = getClientsResponses(organizationId, startDate, endDate);
-//        List<ClientResponse> responses = getClientFakeResponses(startDate, endDate);
+        if ( demoDomain && responses.size() == 0 )
+            responses = getClientFakeResponses(startDate, endDate);
+
         if ( responses.size() == 0 ) throw new DataNotFoundException();
 
         List<Map<String, Object>> result = new ArrayList<>();

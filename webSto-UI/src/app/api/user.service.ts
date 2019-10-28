@@ -4,12 +4,13 @@ import {Observable, Subject} from 'rxjs';
 import {User} from '../model/postgres/auth/user';
 import {Router} from '@angular/router';
 import {TransferService} from './transfer.service';
+import {environment} from '../../environments/environment';
+import {ChatMessageResponseService} from './chatMessageResponse.service';
 
 @Injectable()
 export class UserService implements TransferService<User> {
 
   constructor(private http: HttpClient, private router: Router) { }
-  private baseUrl = 'http://localhost:8181/';
   currentUser: User;
   isSaving = false;
   private transferModel: User;
@@ -22,14 +23,15 @@ export class UserService implements TransferService<User> {
       Authorization: 'Basic ' + btoa('spring-security-oauth2-read-write-client:spring-security-oauth2-read-write-client-password1234'),
       'Content-type': 'application/x-www-form-urlencoded'
     };
-    return this.http.post('http://localhost:8181/' + 'oauth/token', loginPayload, {headers});
+    return this.http.post(`${this.getApiUrl()}oauth/token`, loginPayload, {headers});
   }
 
   logout() {
     localStorage.setItem('isAuthenticated', 'false');
     this.currentUser = null;
     localStorage.setItem( 'token', null );
-    this.router.navigate(['login']);
+    localStorage.removeItem( 'demoDomain' );
+    this.router.navigate(['/login']);
   }
 
   getUsername(): string {
@@ -60,6 +62,15 @@ export class UserService implements TransferService<User> {
     }
   }
 
+  getApiUrl(): string {
+    if ( localStorage.getItem('demoDomain') != null && localStorage.getItem('demoDomain') !== null ) {
+      console.warn('DEMO DOMAIN IS ACTIVE');
+      return environment.demoUrl;
+    }
+    else
+      return environment.apiUrl;
+  }
+
   isAuthenticated(): boolean {
     const isAuthenticated = localStorage.getItem('isAuthenticated') as unknown;
 
@@ -83,7 +94,7 @@ export class UserService implements TransferService<User> {
 
     const headers = this.getHeaders();
 
-    this.http.get( this.baseUrl + 'secured/users/currentUser', {headers} ).subscribe( data => {
+    this.http.get( this.getApiUrl() + 'secured/users/currentUser', {headers} ).subscribe( data => {
 
       this.setCurrentUserData( data as User );
       localStorage.setItem('isAuthenticated', 'true');
@@ -98,7 +109,7 @@ export class UserService implements TransferService<User> {
 
     const headers = this.getHeaders();
 
-    this.http.get( this.baseUrl + 'secured/users/currentUser', {headers} ).subscribe( data => {
+    this.http.get( this.getApiUrl() + 'secured/users/currentUser', {headers} ).subscribe( data => {
       this.setCurrentUserData( data as User );
       this.currentUserIsLoaded.next( this.currentUser );
     } );
@@ -110,7 +121,11 @@ export class UserService implements TransferService<User> {
   }
 
   createUser(user: User, selectedRole: string) {
-    return this.http.post(`${this.baseUrl}oauth/register/${selectedRole}`, user);
+    return this.http.post(`${this.getApiUrl()}oauth/register/${selectedRole}`, user);
+  }
+
+  createDemoUser() {
+    return this.http.get(`${this.getApiUrl()}oauth/demo/register`);
   }
 
   saveUser(user: User) {
@@ -118,7 +133,7 @@ export class UserService implements TransferService<User> {
     const headers = this.getHeaders();
     this.isSaving = true;
 
-    return this.http.put( this.baseUrl + `secured/users/${user.id}`, user,{headers} ).subscribe( data => {
+    return this.http.put( this.getApiUrl() + `secured/users/${user.id}`, user,{headers} ).subscribe( data => {
 
       let user: User = data as User;
 
@@ -136,43 +151,43 @@ export class UserService implements TransferService<User> {
   getAll(page: number, size: number, offset: number) {
     const headers = this.getHeaders();
 
-    return this.http.get( `${this.baseUrl}secured/users/findAll?sort=lastName&size=${size}&page=${page}&offset=${offset}`, {headers} );
+    return this.http.get( `${this.getApiUrl()}secured/users/findAll?sort=lastName&size=${size}&page=${page}&offset=${offset}`, {headers} );
   }
 
   getReplacementModerators() {
     const headers = this.getHeaders();
 
-    return this.http.get( `${this.baseUrl}secured/users/findReplacementModerators`, {headers} );
+    return this.http.get( `${this.getApiUrl()}secured/users/findReplacementModerators`, {headers} );
   }
 
   getOne(id: number) {
     const headers = this.getHeaders();
 
-    return this.http.get( `${this.baseUrl}secured/users/${id}`, {headers} );
+    return this.http.get( `${this.getApiUrl()}secured/users/${id}`, {headers} );
   }
 
   getUsersCount(notApprovedOnly: boolean) {
     const headers = this.getHeaders();
 
-    return this.http.get( `${this.baseUrl}secured/users/count?notApprovedOnly=${notApprovedOnly}`, {headers} );
+    return this.http.get( `${this.getApiUrl()}secured/users/count?notApprovedOnly=${notApprovedOnly}`, {headers} );
   }
 
   getOpponents() {
     const headers = this.getHeaders();
 
-    return this.http.get( `${this.baseUrl}secured/chat/opponents`, {headers} );
+    return this.http.get( `${this.getApiUrl()}secured/chat/opponents`, {headers} );
   }
 
   getEventMessageFromUsers() {
     const headers = this.getHeaders();
 
-    return this.http.get( `${this.baseUrl}secured/users/eventMessages/fromUsers`, {headers} );
+    return this.http.get( `${this.getApiUrl()}secured/users/eventMessages/fromUsers`, {headers} );
   }
 
   getEventMessageToUsers() {
     const headers = this.getHeaders();
 
-    return this.http.get( `${this.baseUrl}secured/users/eventMessages/toUsers`, {headers} );
+    return this.http.get( `${this.getApiUrl()}secured/users/eventMessages/toUsers`, {headers} );
   }
 
   getTransferModel() {

@@ -70,7 +70,7 @@ export class ReportsComponent implements OnInit {
     };
 
     this.isDownloading = true;
-    this.httpClient.get(`http://localhost:8181/secured/reports/${this.reportType}/PDF`,
+    this.httpClient.get(`${this.userService.getApiUrl()}secured/reports/${this.reportType}/PDF`,
       {headers, params, responseType: 'blob'} ).subscribe( blob => {
 
       this.isDownloading = false;
@@ -114,7 +114,7 @@ export class ReportsComponent implements OnInit {
     };
 
     this.isLoading = true;
-    this.httpClient.get(`http://localhost:8181/secured/reports/${this.reportType}`,
+    this.httpClient.get(`${this.userService.getApiUrl()}secured/reports/${this.reportType}`,
       {headers, params} ).subscribe( reportData => {
 
       this.reportData = reportData as object[];

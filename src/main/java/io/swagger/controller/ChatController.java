@@ -11,6 +11,7 @@ import io.swagger.response.ChatMessageResponse;
 import io.swagger.response.OpponentResponse;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +31,9 @@ public class ChatController {
     private UserRepository userRepository;
     @Autowired
     private UploadFileRepository uploadFileRepository;
+
+    @Value("${domain.demo}")
+    private Boolean demoDomain;
 
     @PutMapping
     public ResponseEntity saveNewMessage(@RequestBody ChatMessagePayload payload) {
@@ -88,6 +92,43 @@ public class ChatController {
                 .map(ChatMessageResponse::new).collect(Collectors.toList());
 
         return ResponseEntity.ok( chatMessageResponses );
+
+    }
+
+    @GetMapping("/greet")
+    public ResponseEntity createGreetMessage() {
+
+        if ( !demoDomain ) return ResponseEntity.status(401).build();
+
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( currentUser.getModeratorId() == null ) return ResponseEntity.status(400).build();
+
+        User fromUser = userRepository.findOne( currentUser.getModeratorId() );
+        if ( fromUser == null ) return ResponseEntity.status(400).build();
+
+        String messageText = "В чате можно уточнить информацию у вашего менеджера.";
+
+//        String messageText = "Приветствуем вас в демонстрационной версии приложения BUROMOTORS. " +
+//                "На странице \"Главная\" вы можете увидеть 5 последних заказ-нарядов. " +
+//                "В чате вы можете задать все интересующие вас вопросы вашему модератору. " +
+//                "На странице \"Заказ-наряды\" вы можете увидеть все ваши заказ-наряды с возможностью фильтрации. " +
+//                "Так-же, в самом заказ-наряде, вы можете редактировать стоимость работ и запчастей. " +
+//                "На странице \"Профиль\" вы можете увидеть и изменить вашу персональную информацию. " +
+//                "На странице \"Отчеты\" вы можете увидеть и выгрузить отчеты \"Выручка по слесарям\" и " +
+//                "\"Отчет о реализации\" за выбранный вами период.";
+
+        ChatMessage chatMessage = new ChatMessage();
+        chatMessage.setFromUser( fromUser );
+        chatMessage.setToUser( currentUser );
+        chatMessage.setMessageDate( new Date() );
+        chatMessage.setMessageText( messageText );
+
+        chatMessageRepository.save( chatMessage );
+
+        webSocketController.sendChatMessage( chatMessage );
+
+        return ResponseEntity.ok( new ChatMessageResponse(chatMessage) );
 
     }
 

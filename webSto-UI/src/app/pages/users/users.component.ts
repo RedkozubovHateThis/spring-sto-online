@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import {ActivatedRoute, Params, Router} from '@angular/router';
-import {Pageable} from "../../model/Pageable";
+import {Pageable} from "../../model/pageable";
 import { Subscription } from 'rxjs';
 import {Pagination} from "../pagination";
 import {User} from "../../model/postgres/auth/user";

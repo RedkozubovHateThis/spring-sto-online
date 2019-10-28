@@ -38,6 +38,7 @@ export class RegisterComponent implements OnInit {
   }
 
   onSubmit() {
+    localStorage.removeItem('demoDomain');
 
     if ( this.addForm.invalid ) return;
 

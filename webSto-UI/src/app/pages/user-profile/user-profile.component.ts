@@ -20,7 +20,7 @@ export class UserProfileComponent implements OnInit {
   private model: User;
   private clientResponse: ClientResponse;
   private organizationResponse: OrganizationResponse;
-  private isADLoading:boolean = false;
+  private isADLoading: boolean = false;
   private title: string = "Профиль";
   private showBack: boolean = false;
 
@@ -87,7 +87,6 @@ export class UserProfileComponent implements OnInit {
   private phoneNumber: string;
   private messageText: string;
   private smsSending = false;
-  private baseUrl = 'http://localhost:8181/';
 
   private sendSms() {
     if ( !this.phoneNumber || !this.messageText ) return;
@@ -100,7 +99,7 @@ export class UserProfileComponent implements OnInit {
     };
 
     this.smsSending = true;
-    this.httpClient.get( `${this.baseUrl}secured/sms/send`, { headers, params } ).subscribe( response => {
+    this.httpClient.get( `${this.userService.getApiUrl()}secured/sms/send`, { headers, params } ).subscribe( response => {
       this.smsSending = false;
       // @ts-ignore
       if ( response.error ) {

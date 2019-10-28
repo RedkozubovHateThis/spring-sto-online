@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import {DocumentResponse} from '../../model/firebird/documentResponse';
 import {DocumentResponseService} from '../../api/documentResponse.service';
 import {ActivatedRoute, Params, Router} from '@angular/router';
-import {Pageable} from '../../model/Pageable';
+import {Pageable} from '../../model/pageable';
 import {Pagination} from '../pagination';
 import { DocumentsFilter } from 'src/app/model/documentsFilter';
 import {EventMessageResponseService} from '../../api/eventMessageResponse.service';

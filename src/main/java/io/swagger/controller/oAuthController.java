@@ -1,6 +1,8 @@
 package io.swagger.controller;
 
 import com.sun.javaws.exceptions.InvalidArgumentException;
+import io.swagger.firebird.model.Organization;
+import io.swagger.firebird.repository.OrganizationRepository;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.model.security.UserRole;
 import io.swagger.postgres.repository.UserRepository;
@@ -8,15 +10,14 @@ import io.swagger.postgres.repository.UserRoleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @RequestMapping("/oauth")
 @RestController
@@ -36,6 +37,12 @@ public class oAuthController {
 
     @Autowired
     private WebSocketController webSocketController;
+
+    @Autowired
+    private OrganizationRepository organizationRepository;
+
+    @Value("${domain.demo}")
+    private Boolean demoDomain;
 
     @PostMapping("/register/{roleName}")
     public ResponseEntity register(@RequestBody User user,
@@ -100,6 +107,67 @@ public class oAuthController {
 
         return ResponseEntity.ok().build();
 
+    }
+
+    @GetMapping("/demo/register")
+    public ResponseEntity registerDemo() {
+
+        if ( !demoDomain ) return ResponseEntity.status(401).build();
+
+        long usersCount = userRepository.countAll();
+        String password = UUID.randomUUID().toString();
+        String email = String.format( "demo_user%s@buromotors.ru", usersCount );
+
+        User user = new User();
+        user.setFirstName("Пользователь");
+        user.setLastName("Демонстрационный");
+        user.setPassword( password );
+        user.setEmail( email );
+        user.setPhone( buildDemoPhone( usersCount ) );
+
+        if ( user.getUsername() == null || user.getUsername().isEmpty() )
+            user.setUsername( UUID.randomUUID().toString() );
+
+        user.setEnabled(true);
+        user.setInVacation(false);
+        user.setPassword( userPasswordEncoder.encode( user.getPassword() ) );
+
+        UserRole clientRole = userRoleRepository.findByName("SERVICE_LEADER");
+
+        if ( clientRole != null )
+            user.getRoles().add(clientRole);
+
+        Organization organization = organizationRepository.findOne(1);
+
+        if ( organization != null ) {
+            user.setInn( organization.getInn() );
+            user.setOrganizationId( organization.getId() );
+            user.setIsApproved(true);
+        }
+
+        setModerator(user);
+
+        userRepository.save(user);
+
+        Map<String, String> credentials = new HashMap<>();
+        credentials.put("username", email);
+        credentials.put("password", password);
+
+        return ResponseEntity.ok(credentials);
+
+    }
+
+    private String buildDemoPhone(long usersCount) {
+        String lastNumbers = String.valueOf( usersCount );
+        StringBuilder sb = new StringBuilder("8");
+
+        for ( int z = 0; z < 11 - lastNumbers.length(); z++ ) {
+            sb.append("0");
+        }
+
+        sb.append(lastNumbers);
+
+        return sb.toString();
     }
 
     private boolean isPhoneValid(String phone) {

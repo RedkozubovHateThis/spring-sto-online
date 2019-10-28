@@ -6,19 +6,18 @@ import { UserService } from './user.service';
 @Injectable()
 export class ClientResponseService {
 
-  constructor(private http: HttpClient, private router: Router, private userService:UserService) { }
-  baseUrl: string = 'http://localhost:8181/';
+  constructor(private http: HttpClient, private router: Router, private userService: UserService) { }
 
-  getOne(id:number) {
+  getOne(id: number) {
     const headers = this.userService.getHeaders();
 
-    return this.http.get( this.baseUrl + 'secured/clients/' + id, {headers} );
+    return this.http.get( this.userService.getApiUrl() + 'secured/clients/' + id, {headers} );
   }
 
-  getOneByVin(vinNumber:string) {
+  getOneByVin(vinNumber: string) {
     const headers = this.userService.getHeaders();
 
-    return this.http.get( this.baseUrl + 'secured/clients/vin/' + vinNumber, {headers} );
+    return this.http.get( this.userService.getApiUrl() + 'secured/clients/vin/' + vinNumber, {headers} );
   }
 
 }

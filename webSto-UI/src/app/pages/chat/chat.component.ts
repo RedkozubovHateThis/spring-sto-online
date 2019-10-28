@@ -47,7 +47,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
 
     this.uploader = new FileUploader({
-      url: 'http://localhost:8181/secured/files/upload',
+      url: `${this.userService.getApiUrl()}secured/files/upload`,
       autoUpload: true,
       authTokenHeader: 'Authorization',
       authToken: `Bearer ${this.userService.getToken()}`

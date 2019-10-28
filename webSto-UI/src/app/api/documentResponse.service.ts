@@ -10,7 +10,6 @@ import {DocumentsFilter} from '../model/documentsFilter';
 export class DocumentResponseService implements TransferService<DocumentResponse> {
 
   constructor(private http: HttpClient, private router: Router, private userService: UserService) { }
-  private baseUrl: string = 'http://localhost:8181/';
   private transferModel: DocumentResponse;
 
   getLast5() {
@@ -24,7 +23,7 @@ export class DocumentResponseService implements TransferService<DocumentResponse
   getOne(id) {
     const headers = this.userService.getHeaders();
 
-    return this.http.get( this.baseUrl + 'secured/documents/' + id, {headers} );
+    return this.http.get( this.userService.getApiUrl() + 'secured/documents/' + id, {headers} );
   }
 
   getDocumentResponse(sort: string, page: number, size: number, offset: number, state: number, organization: number, vehicle: number) {
@@ -40,7 +39,7 @@ export class DocumentResponseService implements TransferService<DocumentResponse
       vehicles: vehicle != null ? vehicle.toString() : ''
     };
 
-    return this.http.get( `${this.baseUrl}secured/documents/findAll`, {headers, params} );
+    return this.http.get( `${this.userService.getApiUrl()}secured/documents/findAll`, {headers, params} );
 
   }
 
@@ -48,7 +47,7 @@ export class DocumentResponseService implements TransferService<DocumentResponse
 
     const headers = this.userService.getHeaders();
 
-    return this.http.get( `${this.baseUrl}secured/documents/count`, {headers} );
+    return this.http.get( `${this.userService.getApiUrl()}secured/documents/count`, {headers} );
 
   }
 
@@ -56,7 +55,7 @@ export class DocumentResponseService implements TransferService<DocumentResponse
 
     const headers = this.userService.getHeaders();
 
-    return this.http.get( `${this.baseUrl}secured/documents/count/state?state=${state}`, {headers} );
+    return this.http.get( `${this.userService.getApiUrl()}secured/documents/count/state?state=${state}`, {headers} );
 
   }
 
@@ -64,7 +63,7 @@ export class DocumentResponseService implements TransferService<DocumentResponse
 
     const headers = this.userService.getHeaders();
 
-    return this.http.get( `${this.baseUrl}secured/documents/eventMessages/findAll`, {headers} );
+    return this.http.get( `${this.userService.getApiUrl()}secured/documents/eventMessages/findAll`, {headers} );
 
   }
 

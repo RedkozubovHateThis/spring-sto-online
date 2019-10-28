@@ -29,7 +29,7 @@ export class ImgPreviewComponent implements OnInit {
     const headers = this.userService.getHeaders();
 
     this.isImageLoading = true;
-    this.httpClient.get(`http://localhost:8181/secured/files/${this.message.uploadFileUuid}/preview`,
+    this.httpClient.get(`${this.userService.getApiUrl()}secured/files/${this.message.uploadFileUuid}/preview`,
       {headers, responseType: 'blob'} ).subscribe( blob => {
       this.src = this.domSanitizer.bypassSecurityTrustUrl( URL.createObjectURL( blob ) );
       this.isImageLoading = false;
@@ -49,7 +49,7 @@ export class ImgPreviewComponent implements OnInit {
     const headers = this.userService.getHeaders();
 
     this.isDownloading = true;
-    this.httpClient.get(`http://localhost:8181/secured/files/${this.message.uploadFileUuid}/download`,
+    this.httpClient.get(`${this.userService.getApiUrl()}secured/files/${this.message.uploadFileUuid}/download`,
       {headers, responseType: 'blob'} ).subscribe( blob => {
 
         this.isDownloading = false;

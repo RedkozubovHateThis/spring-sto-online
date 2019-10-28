@@ -13,7 +13,6 @@ import {EventMessagesFilter} from '../model/eventMessagesFilter';
 export class EventMessageResponseService {
 
   constructor(private http: HttpClient, private router: Router, private userService: UserService) { }
-  baseUrl = 'http://localhost:8181/';
 
   public isLoading: boolean = false;
   public messages: EventMessageResponse[] = [];
@@ -50,7 +49,7 @@ export class EventMessageResponseService {
       documentIds: documentId != null ? documentId.toString() : ''
     };
 
-    return this.http.get( `${this.baseUrl}secured/eventMessages/findAll`, {headers, params} );
+    return this.http.get( `${this.userService.getApiUrl()}secured/eventMessages/findAll`, {headers, params} );
   }
 
   addMessage(eventMessage: EventMessageResponse) {

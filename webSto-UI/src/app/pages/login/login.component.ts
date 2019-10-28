@@ -17,9 +17,11 @@ export class LoginComponent implements OnInit {
   constructor(private formBuilder: FormBuilder, private router: Router, private userService: UserService, private toastrService: ToastrService) { }
 
   onSubmit() {
-    this.isLoggingIn = true;
+    localStorage.removeItem('demoDomain');
 
     if (this.loginForm.invalid) return;
+    
+    this.isLoggingIn = true;
 
     const body = new HttpParams()
       .set('username', this.loginForm.controls.username.value)

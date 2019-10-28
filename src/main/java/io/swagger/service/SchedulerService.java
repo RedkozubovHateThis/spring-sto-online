@@ -35,8 +35,14 @@ public class SchedulerService {
     @Value("${domain.url}")
     private String domainUrl;
 
+    @Value("${domain.demo}")
+    private Boolean demoDomain;
+
     @Scheduled(fixedRate = 600000)
     public void scheduleFixedRateTask() {
+
+        if ( demoDomain ) return;
+
         logger.info(" [ SCHEDULER ] Starting schedule...");
 
         List<User> users = userRepository.findUsersByRoleName("CLIENT");
