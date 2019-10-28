@@ -2,3 +2,17 @@
   height: auto !important;
   min-height: 41px;
 }
+.img-container {
+  display: inline-block;
+  position: relative;
+}
+.img-container > .shop-image {
+  border-radius: 10px;
+  border: 1px solid #bbbbbb;
+  width: 125px;
+  height: 125px;
+}
+.shop-name {
+  max-width: 125px;
+  margin-bottom: 5px;
+}

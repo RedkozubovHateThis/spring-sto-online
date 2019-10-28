@@ -9,6 +9,7 @@ import {ClientResponse} from "../../model/firebird/clientResponse";
 import {ClientResponseService} from "../../api/clientResponse.service";
 import {OrganizationResponseService} from "../../api/organizationResponse.service";
 import {OrganizationResponse} from "../../model/firebird/organizationResponse";
+import { Shops } from './../../variables/shops';
 
 @Component({
   selector: 'app-user-edit',
@@ -24,11 +25,13 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
   private organizationResponse: OrganizationResponse;
   private isADLoading: boolean = false;
   private moderators: User[];
+  private shops: ShopInterface[] = [];
 
   constructor(private userService: UserService, protected route: ActivatedRoute, private location: Location,
               private clientResponseService: ClientResponseService, private router: Router,
               private organizationResponseService: OrganizationResponseService) {
     super(userService, route);
+    this.shops = Shops.shops;
   }
 
   requestData() {
@@ -47,6 +50,24 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
     } );
 
     this.requestReplacementModerators();
+  }
+
+  manageShop(user: User, shopId: number) {
+    if ( user == null ) return;
+
+    if ( user.partShops == null )
+      user.partShops = [];
+
+    const index = user.partShops.indexOf( shopId );
+    if ( index > -1 )
+      user.partShops.splice(index, 1);
+    else
+      user.partShops.push(shopId);
+  }
+
+  containsShop(user: User, shopId: number): boolean {
+    if ( user == null || user.partShops == null ) return false;
+    return this.model.partShops.includes(shopId);
   }
 
   findClientByVin() {

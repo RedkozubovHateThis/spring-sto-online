@@ -8,6 +8,7 @@ import {ClientResponseService} from '../../api/clientResponse.service';
 import {OrganizationResponse} from '../../model/firebird/organizationResponse';
 import {OrganizationResponseService} from '../../api/organizationResponse.service';
 import {Location} from '@angular/common';
+import {Shops} from '../../variables/shops';
 
 @Component({
   selector: 'app-user',
@@ -22,11 +23,13 @@ export class UserComponent extends ModelTransfer<User, number> implements OnInit
   private isADLoading: boolean = false;
   private title: string = "Данные пользователя";
   private showBack: boolean = true;
+  private shops: ShopInterface[] = [];
 
   constructor(private userService: UserService, protected route: ActivatedRoute, private location: Location,
               private clientResponseService: ClientResponseService, private router: Router,
               private organizationResponseService: OrganizationResponseService) {
     super(userService, route);
+    this.shops = Shops.shops;
   }
 
   requestData() {
@@ -43,6 +46,11 @@ export class UserComponent extends ModelTransfer<User, number> implements OnInit
     }, error => {
       this.isLoading = false;
     } );
+  }
+
+  containsShop(user: User, shopId: number): boolean {
+    if ( user == null || user.partShops == null ) return false;
+    return this.model.partShops.includes(shopId);
   }
 
   requestClient() {

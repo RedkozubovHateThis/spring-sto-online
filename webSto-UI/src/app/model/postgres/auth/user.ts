@@ -28,5 +28,6 @@ export class User {
   guest: boolean;
   serviceLeader: boolean;
   moderator: boolean;
+  partShops: number[];
 
 }

@@ -9,11 +9,12 @@ import {OrganizationResponseService} from "../../api/organizationResponse.servic
 import {OrganizationResponse} from "../../model/firebird/organizationResponse";
 import {HttpClient} from '@angular/common/http';
 import {ToastrService} from 'ngx-toastr';
+import {Shops} from '../../variables/shops';
 
 @Component({
   selector: 'app-user-profile',
   templateUrl: './../user/user.component.html',
-  styleUrls: ['./user-profile.component.scss']
+  styleUrls: ['./../user/user.component.scss']
 })
 export class UserProfileComponent implements OnInit {
 
@@ -23,10 +24,13 @@ export class UserProfileComponent implements OnInit {
   private isADLoading: boolean = false;
   private title: string = "Профиль";
   private showBack: boolean = false;
+  private shops: ShopInterface[] = [];
 
   constructor(private userService: UserService, private clientResponseService: ClientResponseService,
               private router: Router, private organizationResponseService: OrganizationResponseService, private httpClient: HttpClient,
-              private toastrService: ToastrService) { }
+              private toastrService: ToastrService) {
+    this.shops = Shops.shops;
+  }
 
   ngOnInit() {
 
@@ -66,6 +70,11 @@ export class UserProfileComponent implements OnInit {
     }, () => {
       this.isADLoading = false;
     } );
+  }
+
+  containsShop(user: User, shopId: number): boolean {
+    if ( user == null || user.partShops == null ) return false;
+    return this.model.partShops.includes(shopId);
   }
 
   requestOrganization() {

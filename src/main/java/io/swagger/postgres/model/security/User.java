@@ -9,6 +9,7 @@ import io.swagger.postgres.model.EventMessage;
 import io.swagger.postgres.model.UploadFile;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.Type;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -106,6 +107,9 @@ public class User implements UserDetails, Serializable {
     @OneToMany(mappedBy = "targetUser")
     @OrderBy("messageDate desc")
     private Set<EventMessage> messagesAsTargetUser = new HashSet<>();
+
+    @Type(type ="io.swagger.config.database.GenericArrayUserType")
+    private Integer[] partShops;
 
     @Override
     public boolean isAccountNonExpired() {
