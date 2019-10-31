@@ -31,7 +31,9 @@ public class DocumentSpecificationBuilder {
 
                 if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
                     List<Integer> clientIds = userRepository.collectClientIds( currentUser.getId() );
-                    predicates.add( clientJoin.get( Client_.id ).in( clientIds ) );
+                    List<Integer> organizationIds = userRepository.collectOrganizationIds( currentUser.getId() );
+
+                    predicates.add( cb.or( clientJoin.get( Client_.id ).in( clientIds ), orgJoin.get( Organization_.id ).in( organizationIds ) ) );
                 }
                 else if ( UserHelper.hasRole( currentUser, "CLIENT" ) ) {
                     predicates.add( cb.equal( clientJoin.get( Client_.id ), currentUser.getClientId() ) );

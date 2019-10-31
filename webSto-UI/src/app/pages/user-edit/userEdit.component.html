@@ -1,104 +1,13 @@
 <div class="container-fluid mt--7">
   <div class="row">
-    <div class="col-xl-4 order-xl-2 mb-5 mb-xl-0">
-      <div class="card bg-secondary shadow">
-
-        <div class="card-header bg-white border-0">
-          <div class="row align-items-center">
-            <div class="col-8">
-              <h3 class="mb-0">АвтоДилер</h3>
-            </div>
-            <div class="col-4 text-right" *ngIf="model != null">
-
-              <span *ngIf="model.client">
-                <button class="btn btn-sm btn-buro-green"
-                        [disabled]="userService.isSaving || clientResponse == null || ( clientResponse.id == model.clientId )"
-                        (click)="linkClient(model)">
-                  Привязать <span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
-                </button>
-              </span>
-
-              <span *ngIf="model.serviceLeader">
-                <button class="btn btn-sm btn-buro-green"
-                        [disabled]="userService.isSaving || organizationResponse == null || ( organizationResponse.id == model.organizationId )"
-                        (click)="linkOrganization(model)">
-                  Привязать <span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
-                </button>
-              </span>
-
-            </div>
-          </div>
-        </div>
-
-        <div class="card-body">
-
-          <div class="row">
-            <div class="col-lg-12" *ngIf="model != null">
-
-              <div class="form-group" *ngIf="model.client">
-
-                <label class="form-control-label" for="vin-number">VIN - номер</label>
-                <div class="input-group mb-3">
-                  <input type="text" id="vin-number" class="form-control" placeholder="VIN - номер"
-                         [(ngModel)]="vinNumber" name="vinNumber">
-                  <div class="input-group-append">
-                    <button class="btn btn-buro-green" type="button" (click)="findClientByVin()"
-                            [disabled]="vinNumber == null || vinNumber.length == 0 || isADLoading">
-                      Найти<span *ngIf="isADLoading">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
-                    </button>
-                  </div>
-                </div>
-
-              </div>
-
-              <div class="form-group" *ngIf="model.serviceLeader">
-
-                <label class="form-control-label" for="vin-number">ИНН</label>
-                <div class="input-group mb-3">
-                  <input type="text" id="inn" class="form-control" placeholder="ИНН"
-                         [(ngModel)]="model.inn" name="inn">
-                  <div class="input-group-append">
-                    <button class="btn btn-buro-green" type="button" (click)="findOrganizationByInn()"
-                            [disabled]="model.inn == null || model.inn.length == 0 || isADLoading">
-                      Найти<span *ngIf="isADLoading">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
-                    </button>
-                  </div>
-                </div>
-
-              </div>
-
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-lg-12" *ngIf="model != null">
-
-              <div class="form-group" *ngIf="model.client && clientResponse != null">
-                <label class="form-control-label" for="client-full-name">Имя клиента</label>
-                <input type="text" id="client-full-name" class="form-control form-control-alternative" placeholder="Имя клиента"
-                       disabled [value]="clientResponse.fullName" name="clientFullName">
-              </div>
-
-              <div class="form-group" *ngIf="model.serviceLeader && organizationResponse != null">
-                <label class="form-control-label" for="organization-full-name">Наименование предприятия</label>
-                <input type="text" id="organization-full-name" class="form-control form-control-alternative" placeholder="Наименование предприятия"
-                       disabled [value]="organizationResponse.fullName" name="organizationFullName">
-              </div>
-
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-    <div class="col-xl-8 order-xl-1">
+    <div class="col-xl-8 mb-5">
       <div class="card bg-secondary shadow">
         <div class="card-header bg-white border-0">
           <div class="row align-items-center">
-            <div class="col-8">
+            <div class="col-md mb-3">
               <h3 class="mb-0">Данные пользователя: редактирование</h3>
             </div>
-            <div class="col-4 text-right">
+            <div class="col-auto">
               <button class="btn btn-sm btn-buro-green" [disabled]="userService.isSaving" (click)="location.back()">
                 Назад
               </button>
@@ -225,6 +134,97 @@
             </ng-container>
           </form>
         </div>
+      </div>
+    </div>
+    <div class="col-xl-4 mb-5">
+      <div class="card bg-secondary shadow">
+
+        <div class="card-header bg-white border-0">
+          <div class="row align-items-center">
+            <div class="col-md mb-3">
+              <h3 class="mb-0">АвтоДилер</h3>
+            </div>
+            <div class="col-auto text-right" *ngIf="model != null">
+
+              <span *ngIf="model.client">
+                <button class="btn btn-sm btn-buro-green"
+                        [disabled]="userService.isSaving || clientResponse == null || ( clientResponse.id == model.clientId )"
+                        (click)="linkClient(model)">
+                  Привязать <span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
+                </button>
+              </span>
+
+              <span *ngIf="model.serviceLeader">
+                <button class="btn btn-sm btn-buro-green"
+                        [disabled]="userService.isSaving || organizationResponse == null || ( organizationResponse.id == model.organizationId )"
+                        (click)="linkOrganization(model)">
+                  Привязать <span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
+                </button>
+              </span>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body">
+
+          <div class="row">
+            <div class="col-lg-12" *ngIf="model != null">
+
+              <div class="form-group" *ngIf="model.client">
+
+                <label class="form-control-label" for="vin-number">VIN - номер</label>
+                <div class="input-group mb-3">
+                  <input type="text" id="vin-number" class="form-control" placeholder="VIN - номер"
+                         [(ngModel)]="vinNumber" name="vinNumber">
+                  <div class="input-group-append">
+                    <button class="btn btn-buro-green" type="button" (click)="findClientByVin()"
+                            [disabled]="vinNumber == null || vinNumber.length == 0 || isADLoading">
+                      Найти<span *ngIf="isADLoading">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="form-group" *ngIf="model.serviceLeader">
+
+                <label class="form-control-label" for="vin-number">ИНН</label>
+                <div class="input-group mb-3">
+                  <input type="text" id="inn" class="form-control" placeholder="ИНН"
+                         [(ngModel)]="model.inn" name="inn">
+                  <div class="input-group-append">
+                    <button class="btn btn-buro-green" type="button" (click)="findOrganizationByInn()"
+                            [disabled]="model.inn == null || model.inn.length == 0 || isADLoading">
+                      Найти<span *ngIf="isADLoading">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-12" *ngIf="model != null">
+
+              <div class="form-group" *ngIf="model.client && clientResponse != null">
+                <label class="form-control-label" for="client-full-name">Имя клиента</label>
+                <input type="text" id="client-full-name" class="form-control form-control-alternative" placeholder="Имя клиента"
+                       disabled [value]="clientResponse.fullName" name="clientFullName">
+              </div>
+
+              <div class="form-group" *ngIf="model.serviceLeader && organizationResponse != null">
+                <label class="form-control-label" for="organization-full-name">Наименование предприятия</label>
+                <input type="text" id="organization-full-name" class="form-control form-control-alternative" placeholder="Наименование предприятия"
+                       disabled [value]="organizationResponse.fullName" name="organizationFullName">
+              </div>
+
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>

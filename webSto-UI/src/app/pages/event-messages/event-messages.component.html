@@ -2,13 +2,13 @@
 <div class="container-fluid mt--7">
   <!-- Table -->
   <div class="row">
-    <div class="col-sm-9">
+    <div class="col-xl-9 mb-5">
       <div class="card shadow">
         <div class="card-header border-0">
 
           <div class="row">
 
-            <div class="col">
+            <div class="col-sm mb-3">
               <h3 class="mb-0">
                 Уведомления&nbsp;
                 <span *ngIf="isLoading"><i class="fas fa-spin fa-spinner"></i></span>
@@ -80,7 +80,7 @@
         </div>
       </div>
     </div>
-    <div class="col-sm-3">
+    <div class="col-xl-3 mb-5">
       <app-event-message-filter (onChange)="refresh()" [filter]="filter"></app-event-message-filter>
     </div>
   </div>

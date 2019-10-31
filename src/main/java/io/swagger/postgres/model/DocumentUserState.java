@@ -5,11 +5,12 @@ import lombok.Data;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @Data
-public class DocumentUserState {
+public class DocumentUserState implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -11,7 +11,7 @@
     </a>
     <!-- User -->
     <ul class="nav align-items-center d-md-none">
-      <li class="nav-item" ngbDropdown placement="bottom-right" *ngIf="userService.currentUser && ( userService.currentUser.moderator || userService.currentUser.admin )">
+      <li class="nav-item" ngbDropdown placement="auto" *ngIf="userService.currentUser && ( userService.currentUser.moderator || userService.currentUser.admin )">
         <a class="nav-link pr-0" style="cursor: pointer;" role="button" ngbDropdownToggle>
           <div class="media align-items-center">
             <span class="avatar avatar-sm rounded-circle">
@@ -41,7 +41,7 @@
           </ng-container>
         </div>
       </li>
-      <li class="nav-item" ngbDropdown placement="bottom-right">
+      <li class="nav-item" ngbDropdown placement="auto">
         <a class="nav-link" role="button" ngbDropdownToggle>
           <div class="media align-items-center">
             <span class="avatar avatar-sm rounded-circle">

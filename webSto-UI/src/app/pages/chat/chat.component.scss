@@ -57,3 +57,12 @@
   height: 51px;
   padding-top: 20px;
 }
+@media (max-width: 991px) {
+  .opponents-list {
+    height: auto;
+    overflow: auto;
+  }
+  .chat-block {
+    height: 70vh;
+  }
+}

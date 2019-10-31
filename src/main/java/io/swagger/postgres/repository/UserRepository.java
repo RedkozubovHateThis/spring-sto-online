@@ -92,6 +92,10 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
             "WHERE u.moderator_id = :moderatorId AND u.client_id IS NOT NULL")
     List<Integer> collectClientIds(@Param("moderatorId") Long moderatorId);
 
+    @Query(nativeQuery = true, value = "SELECT DISTINCT u.organization_id FROM users AS u " +
+            "WHERE u.moderator_id = :moderatorId AND u.organization_id IS NOT NULL")
+    List<Integer> collectOrganizationIds(@Param("moderatorId") Long moderatorId);
+
     @Query("SELECT u FROM User AS u WHERE u.username <> ?#{principal.username} ORDER BY u.lastName")
     List<User> findAllExceptSelf();
 

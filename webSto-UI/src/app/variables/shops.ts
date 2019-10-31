@@ -4,7 +4,7 @@ export class Shops {
     { id: 1, name: 'Autodoc', imgName: 'autodoc.jpg'},
     { id: 2, name: 'Autopiter', imgName: 'autopiter.jpg'},
     { id: 3, name: 'Berg', imgName: 'berg.jpg'},
-    { id: 4, name: 'Carreta', imgName: 'caretta.jpg'},
+    { id: 4, name: 'Carreta', imgName: 'carreta.jpg'},
     { id: 5, name: 'CTOparts', imgName: 'ctoparts.jpg'},
     { id: 6, name: 'Emex', imgName: 'emex.jpg'},
     { id: 7, name: 'Exists', imgName: 'exist.jpg'},
