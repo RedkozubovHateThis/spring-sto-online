@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit {
     localStorage.removeItem('demoDomain');
 
     if (this.loginForm.invalid) return;
-    
+
     this.isLoggingIn = true;
 
     const body = new HttpParams()

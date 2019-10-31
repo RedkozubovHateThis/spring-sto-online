@@ -59,6 +59,9 @@
                       *ngIf="userService.currentUser != null && model != null && ( userService.currentUser.id == model.id || userService.currentUser.admin )">
                 Редактировать
               </button>
+              <app-password-change-button [model]="model" [currentUser]="userService.currentUser"
+                                          *ngIf="model != null && userService.currentUser != null
+                                          && ( userService.currentUser.admin || userService.currentUser.id === model.id )"></app-password-change-button>
             </div>
           </div>
         </div>

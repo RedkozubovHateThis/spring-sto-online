@@ -6,7 +6,10 @@ import io.swagger.postgres.repository.UserRepository;
 import io.swagger.service.EventMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +26,9 @@ public class UserController {
 
     @Autowired
     private EventMessageService eventMessageService;
+
+    @Autowired
+    private PasswordEncoder userPasswordEncoder;
 
     @GetMapping("/currentUser")
     public ResponseEntity getCurrentUser() {
@@ -84,6 +90,72 @@ public class UserController {
 
         return ResponseEntity.ok(user);
 
+    }
+
+    @PostMapping(value = "/{id}/password/change")
+    public ResponseEntity changePassword(@PathVariable("id") Long id,
+                                         @RequestParam("oldPassword") String oldPassword,
+                                         @RequestParam("newPassword") String newPassword,
+                                         @RequestParam("rePassword") String rePassword) {
+
+        if ( newPassword == null || newPassword.length() == 0 )
+            return ResponseEntity.status(400).body("Новый пароль не указан!");
+        if ( rePassword == null || rePassword.length() == 0 )
+            return ResponseEntity.status(400).body("Подтверждение пароля не указано!");
+        if ( !newPassword.equals( rePassword ) )
+            return ResponseEntity.status(400).body("Пароли не совпадают!");
+        if ( newPassword.length() < 6 )
+            return ResponseEntity.status(400).body("Пароль не может содержать менее 6 символов!");
+
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( UserHelper.hasRole( currentUser, "ADMIN" ) ) {
+
+            if ( currentUser.getId().equals( id ) ) {
+
+                if ( oldPassword == null || oldPassword.length() == 0 )
+                    return ResponseEntity.status(400).body("Старый пароль не указан!");
+                if ( !isPasswordEquals( currentUser, oldPassword ) )
+                    return ResponseEntity.status(403).body("Старый и новый пароли не совпадают!");
+
+                currentUser.setPassword( userPasswordEncoder.encode( newPassword ) );
+                userRepository.save(currentUser);
+
+            }
+            else {
+
+                User user = userRepository.findOne(id);
+                if ( user == null )
+                    return ResponseEntity.status(404).body("Пользователь не найден!");
+
+                user.setPassword( userPasswordEncoder.encode( newPassword ) );
+                userRepository.save( user );
+
+            }
+
+        }
+        else {
+            if ( currentUser.getId().equals( id ) ) {
+
+                if ( oldPassword == null || oldPassword.length() == 0 )
+                    return ResponseEntity.status(400).body("Старый пароль не указан!");
+                if ( !isPasswordEquals( currentUser, oldPassword ) )
+                    return ResponseEntity.status(403).body("Старый и новый пароли не совпадают!");
+
+                currentUser.setPassword( userPasswordEncoder.encode( newPassword ) );
+                userRepository.save(currentUser);
+
+            }
+            else {
+                return ResponseEntity.status(403).body("Вам запрещено изменять пароль этого пользователя!");
+            }
+        }
+
+        return ResponseEntity.status(200).build();
+    }
+
+    private boolean isPasswordEquals(User user, String oldPass) {
+        return userPasswordEncoder.matches( oldPass, user.getPassword() );
     }
 
     @GetMapping("/findAll")

@@ -1,6 +1,5 @@
 package io.swagger.controller;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import io.swagger.firebird.model.Organization;
 import io.swagger.firebird.repository.OrganizationRepository;
 import io.swagger.postgres.model.security.User;
@@ -12,8 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,6 +53,9 @@ public class oAuthController {
 
         if ( user.getPassword() == null || user.getPassword().isEmpty() )
             return ResponseEntity.status(400).body("Пароль не может быть пустым!");
+
+        if ( user.getPassword().length() < 6 )
+            return ResponseEntity.status(400).body("Пароль не может содержать менее 6 символов!");
 
         if ( user.getEmail() == null || user.getEmail().isEmpty() )
             return ResponseEntity.status(400).body("Почта не может быть пустой!");

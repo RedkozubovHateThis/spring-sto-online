@@ -19,7 +19,7 @@ export class RegisterComponent implements OnInit {
   private roles = [
     { name: 'Клиент', id: 'CLIENT' },
     { name: 'Руководитель сервиса', id: 'SERVICE_LEADER' },
-    { name: 'Модератор', id: 'MODERATOR' },
+    // { name: 'Модератор', id: 'MODERATOR' },
   ];
 
   ngOnInit() {

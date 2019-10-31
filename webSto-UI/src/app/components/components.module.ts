@@ -12,6 +12,7 @@ import {FormsModule} from '@angular/forms';
 import { EventMessageFilterComponent } from './eventMessageFilter/event-message-filter.component';
 import {ReportButtonComponent} from './report-button/report-button.component';
 import {PdfViewerModule} from 'ng2-pdf-viewer';
+import {PasswordChangeButtonComponent} from './password-change-button/password-change-button.component';
 
 @NgModule({
   imports: [
@@ -29,7 +30,8 @@ import {PdfViewerModule} from 'ng2-pdf-viewer';
     ImgPreviewComponent,
     DocumentFilterComponent,
     EventMessageFilterComponent,
-    ReportButtonComponent
+    ReportButtonComponent,
+    PasswordChangeButtonComponent
   ],
   exports: [
     FooterComponent,
@@ -39,7 +41,8 @@ import {PdfViewerModule} from 'ng2-pdf-viewer';
     ImgPreviewComponent,
     DocumentFilterComponent,
     EventMessageFilterComponent,
-    ReportButtonComponent
+    ReportButtonComponent,
+    PasswordChangeButtonComponent
   ]
 })
 export class ComponentsModule { }
