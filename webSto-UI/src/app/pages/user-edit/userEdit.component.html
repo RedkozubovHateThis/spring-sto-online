@@ -148,7 +148,7 @@
 
               <span *ngIf="model.client">
                 <button class="btn btn-sm btn-buro-green"
-                        [disabled]="userService.isSaving || clientResponse == null || ( clientResponse.id == model.clientId )"
+                        [disabled]="model.isApproved || userService.isSaving || clientResponse == null || ( clientResponse.id == model.clientId )"
                         (click)="linkClient(model)">
                   Привязать <span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
                 </button>
@@ -156,7 +156,7 @@
 
               <span *ngIf="model.serviceLeader">
                 <button class="btn btn-sm btn-buro-green"
-                        [disabled]="userService.isSaving || organizationResponse == null || ( organizationResponse.id == model.organizationId )"
+                        [disabled]="model.isApproved || userService.isSaving || organizationResponse == null || ( organizationResponse.id == model.organizationId )"
                         (click)="linkOrganization(model)">
                   Привязать <span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
                 </button>
@@ -175,11 +175,11 @@
 
                 <label class="form-control-label" for="vin-number">VIN - номер</label>
                 <div class="input-group mb-3">
-                  <input type="text" id="vin-number" class="form-control" placeholder="VIN - номер"
+                  <input type="text" id="vin-number" class="form-control" placeholder="VIN - номер" [disabled]="model.isApproved"
                          [(ngModel)]="vinNumber" name="vinNumber">
                   <div class="input-group-append">
                     <button class="btn btn-buro-green" type="button" (click)="findClientByVin()"
-                            [disabled]="vinNumber == null || vinNumber.length == 0 || isADLoading">
+                            [disabled]="model.isApproved || vinNumber == null || vinNumber.length == 0 || isADLoading">
                       Найти<span *ngIf="isADLoading">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
                     </button>
                   </div>
@@ -191,11 +191,11 @@
 
                 <label class="form-control-label" for="vin-number">ИНН</label>
                 <div class="input-group mb-3">
-                  <input type="text" id="inn" class="form-control" placeholder="ИНН"
+                  <input type="text" id="inn" class="form-control" placeholder="ИНН" [disabled]="model.isApproved"
                          [(ngModel)]="model.inn" name="inn">
                   <div class="input-group-append">
                     <button class="btn btn-buro-green" type="button" (click)="findOrganizationByInn()"
-                            [disabled]="model.inn == null || model.inn.length == 0 || isADLoading">
+                            [disabled]="model.isApproved || model.inn == null || model.inn.length == 0 || isADLoading">
                       Найти<span *ngIf="isADLoading">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
                     </button>
                   </div>
