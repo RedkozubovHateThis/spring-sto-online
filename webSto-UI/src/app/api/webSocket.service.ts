@@ -9,16 +9,18 @@ import {EventMessageResponseService} from './eventMessageResponse.service';
 import {EventMessageResponse} from '../model/postgres/eventMessageResponse';
 import {DatePipe} from '@angular/common';
 import {ChatMessageResponseService} from './chatMessageResponse.service';
+import {Router} from '@angular/router';
 
 @Injectable()
 export class WebSocketService {
 
-  constructor(private userService: UserService, private toastrService: ToastrService,
+  constructor(private userService: UserService, private toastrService: ToastrService, private router: Router,
               private chatMessageResponseService: ChatMessageResponseService,
               private eventMessageResponseService: EventMessageResponseService, private datePipe: DatePipe) { }
 
   public clientIsConnected: Subject<Client> = new Subject<Client>();
   public client: Client;
+  public opponentId: number;
 
   connect() {
     const me = this;
@@ -70,10 +72,16 @@ export class WebSocketService {
     this.client.subscribe('/topic/message/' + this.userService.currentUser.id, message => {
       const chatMessage = JSON.parse( message.body ) as ChatMessageResponse;
 
+      let bubble;
       if ( chatMessage.uploadFileUuid != null )
-        me.toastrService.success( chatMessage.uploadFileName, `${chatMessage.fromFio} отправил(а) файл:` );
+        bubble = me.toastrService.success( chatMessage.uploadFileName, `${chatMessage.fromFio} отправил(а) файл:` );
       else
-        me.toastrService.success( chatMessage.messageText, `${chatMessage.fromFio} написал(а):` );
+        bubble = me.toastrService.success( chatMessage.messageText, `${chatMessage.fromFio} написал(а):` );
+
+      bubble.onTap.subscribe(() => {
+        me.opponentId = chatMessage.fromId;
+        me.router.navigate(['/chat']);
+      });
     });
 
     if ( this.userService.currentUser.admin || this.userService.currentUser.moderator ) {
@@ -101,7 +109,10 @@ export class WebSocketService {
     else
       return;
 
-    this.toastrService.info(messageText, this.datePipe.transform(eventMessage.messageDate, 'dd.MM.yyyy HH:mm:ss'));
+    const bubble = this.toastrService.info(messageText, this.datePipe.transform(eventMessage.messageDate, 'dd.MM.yyyy HH:mm:ss'));
+    bubble.onTap.subscribe(() => {
+      this.router.navigate(['/event-messages']);
+    });
   }
 
 }

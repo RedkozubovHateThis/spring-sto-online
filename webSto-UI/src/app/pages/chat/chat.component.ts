@@ -101,7 +101,18 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     this.userService.getOpponents().subscribe( opponents => {
       this.opponents = opponents as OpponentResponse[];
-      // if ( this.opponents.length > 0 && this.selectedOpponent == null ) this.selectOpponent( this.opponents[0] );
+
+      if ( this.opponents.length > 0 && this.webSocketService.opponentId != null ) {
+        const filtered = this.opponents.filter( opponent => {
+          return opponent.id === this.webSocketService.opponentId;
+        } );
+        if ( filtered.length > 0 ) {
+          this.selectedOpponent = filtered[0];
+          this.findMessages();
+        }
+        this.webSocketService.opponentId = null;
+      }
+
       this.isOpponentsLoading = false;
     }, error => {
       this.isOpponentsLoading = false;
