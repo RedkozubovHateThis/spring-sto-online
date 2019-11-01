@@ -12,7 +12,12 @@ import java.util.List;
 
 public class DocumentSpecificationBuilder {
 
-    public static Specification<DocumentServiceDetail> buildSpecification(UserRepository userRepository, User currentUser,
+    public static Specification<DocumentServiceDetail> buildSpecification(User currentUser,
+                                                                          DocumentDetailServiceController.FilterPayload filterPayload) {
+        return buildSpecification( new ArrayList<>(), new ArrayList<>(), currentUser, filterPayload );
+    }
+
+    public static Specification<DocumentServiceDetail> buildSpecification(List<Integer> clientIds, List<Integer> organizationIds, User currentUser,
                                                                           DocumentDetailServiceController.FilterPayload filterPayload) {
 
         return new Specification<DocumentServiceDetail>() {
@@ -30,10 +35,16 @@ public class DocumentSpecificationBuilder {
                 Join<ModelDetail, Model> modelJoin = mdJoin.join(ModelDetail_.model);
 
                 if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
-                    List<Integer> clientIds = userRepository.collectClientIds( currentUser.getId() );
-                    List<Integer> organizationIds = userRepository.collectOrganizationIds( currentUser.getId() );
 
-                    predicates.add( cb.or( clientJoin.get( Client_.id ).in( clientIds ), orgJoin.get( Organization_.id ).in( organizationIds ) ) );
+                    if ( organizationIds.size() == 0 && clientIds.size() > 0 )
+                        predicates.add( clientJoin.get( Client_.id ).in( clientIds ) );
+
+                    else if ( organizationIds.size() > 0 && clientIds.size() == 0 )
+                        predicates.add( orgJoin.get( Organization_.id ).in( organizationIds ) );
+
+                    else if ( organizationIds.size() > 0 && clientIds.size() > 0 )
+                        predicates.add( cb.or( clientJoin.get( Client_.id ).in( clientIds ), orgJoin.get( Organization_.id ).in( organizationIds ) ) );
+
                 }
                 else if ( UserHelper.hasRole( currentUser, "CLIENT" ) ) {
                     predicates.add( cb.equal( clientJoin.get( Client_.id ), currentUser.getClientId() ) );

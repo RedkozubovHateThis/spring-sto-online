@@ -64,8 +64,19 @@ public class DocumentDetailServiceController {
                 ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ) )
             return ResponseEntity.status(404).build();
 
-        Specification<DocumentServiceDetail> specification =
-                DocumentSpecificationBuilder.buildSpecification(userRepository, currentUser, filterPayload);
+        Specification<DocumentServiceDetail> specification;
+
+        if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
+            List<Integer> clientIds = userRepository.collectClientIds( currentUser.getId() );
+            List<Integer> organizationIds = userRepository.collectOrganizationIds( currentUser.getId() );
+
+            if ( clientIds.size() == 0 && organizationIds.size() == 0 )
+                return ResponseEntity.status(404).build();
+
+            specification = DocumentSpecificationBuilder.buildSpecification(clientIds, organizationIds, currentUser, filterPayload);
+        }
+        else
+            specification = DocumentSpecificationBuilder.buildSpecification(currentUser, filterPayload);
 
         Page<DocumentServiceDetail> result = documentsRepository.findAll(specification, pageable);
 
