@@ -61,6 +61,8 @@ export class EventMessagesComponent extends Pagination {
     switch (messageType) {
       case 'MODERATOR_REPLACEMENT': return 'Назначение замещающего';
       case 'DOCUMENT_CHANGE': return 'Изменение документа';
+      case 'USER_REGISTER': return 'Регистрация пользователя';
+      case 'USER_AUTODEALER': return 'Привязка к системе АвтоДилер';
     }
   }
 

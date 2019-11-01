@@ -106,6 +106,10 @@ export class WebSocketService {
       messageText = `Пользователь ${eventMessage.fromFio} изменил документ ${eventMessage.documentName}: ${eventMessage.additionalInformation}`;
     else if ( eventMessage.messageType === 'MODERATOR_REPLACEMENT' )
       messageText = `Модератор ${eventMessage.fromFio} назначил вас своим замещающим`;
+    else if ( eventMessage.messageType === 'USER_REGISTER' )
+      messageText = `Пользователь ${eventMessage.fromFio} зарегистрировался на сайте`;
+    else if ( eventMessage.messageType === 'USER_AUTODEALER' )
+      messageText = `Пользователь ${eventMessage.fromFio} совершил привязку к системе АвтоДилер`;
     else
       return;
 

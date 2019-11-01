@@ -31,6 +31,14 @@ export class EventMessageFilterComponent implements OnInit {
     {
       name: 'Изменение документа',
       id: 'DOCUMENT_CHANGE'
+    },
+    {
+      name: 'Регистрация пользователя',
+      id: 'USER_REGISTER'
+    },
+    {
+      name: 'Привязка к системе АвтоДилер',
+      id: 'USER_AUTODEALER'
     }
   ];
   private usersFrom: User[] = [];

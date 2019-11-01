@@ -37,6 +37,12 @@
               <div *ngIf="message.messageType === 'MODERATOR_REPLACEMENT'">
                 Модератор {{message.fromFio}} назначил вас своим замещающим
               </div>
+              <div *ngIf="message.messageType === 'USER_REGISTER'">
+                Пользователь {{message.fromFio}} зарегистрировался на сайте
+              </div>
+              <div *ngIf="message.messageType === 'USER_REGISTER'">
+                Пользователь {{message.fromFio}} совершил привязку к системе АвтоДилер
+              </div>
             </div>
           </ng-container>
         </div>

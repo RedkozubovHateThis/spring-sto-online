@@ -50,6 +50,12 @@
                 <th><a [routerLink]="['/documents', emResponse.documentId]">{{emResponse.documentName}}</a></th>
                 <th>{{emResponse.additionalInformation}}</th>
               </ng-container>
+              <ng-container *ngIf="emResponse.messageType === 'USER_REGISTER' || emResponse.messageType === 'USER_AUTODEALER'">
+                <th><a [routerLink]="['/users', emResponse.fromId]">{{emResponse.fromFio}}</a></th>
+                <th>{{emResponse.toFio}}</th>
+                <th></th>
+                <th></th>
+              </ng-container>
             </tr>
             </tbody>
           </table>

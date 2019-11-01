@@ -2,8 +2,11 @@ package io.swagger.controller;
 
 import io.swagger.firebird.model.Organization;
 import io.swagger.firebird.repository.OrganizationRepository;
+import io.swagger.postgres.model.EventMessage;
+import io.swagger.postgres.model.enums.MessageType;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.model.security.UserRole;
+import io.swagger.postgres.repository.EventMessageRepository;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.postgres.repository.UserRoleRepository;
 import org.slf4j.Logger;
@@ -37,6 +40,9 @@ public class oAuthController {
 
     @Autowired
     private OrganizationRepository organizationRepository;
+
+    @Autowired
+    private EventMessageRepository eventMessageRepository;
 
     @Value("${domain.demo}")
     private Boolean demoDomain;
@@ -95,8 +101,10 @@ public class oAuthController {
         if ( clientRole != null )
             user.getRoles().add(clientRole);
 
+        User userModerator = null;
+
         if ( roleName.equals("CLIENT") )
-            setModerator(user);
+            userModerator = setModerator(user);
         else if ( roleName.equals("SERVICE_LEADER") ) {
             if ( user.getInn() == null || user.getInn().isEmpty() )
                 return ResponseEntity.status(400).body("ИНН не может быть пустым!");
@@ -104,10 +112,13 @@ public class oAuthController {
             if ( userRepository.isUserExistsInn( user.getInn() ) )
                 return ResponseEntity.status(400).body("Пользователь с таким ИНН уже существует!");
 
-            setModerator(user);
+            userModerator = setModerator(user);
         }
 
         userRepository.save(user);
+
+        if ( userModerator != null )
+            buildRegistrationEventMessage( userModerator, user );
 
         return ResponseEntity.ok().build();
 
@@ -189,7 +200,7 @@ public class oAuthController {
         }
     }
 
-    private void setModerator(User user) {
+    private User setModerator(User user) {
 
         List<User> moderators = userRepository.findUsersByRoleName("MODERATOR");
 
@@ -223,10 +234,27 @@ public class oAuthController {
 
             userModerator.setLastUserAcceptDate( new Date() );
             userRepository.save( userModerator );
+
+            return userModerator;
         }
         else {
             logger.error("Moderator not found");
+            return null;
         }
+
+    }
+
+    private void buildRegistrationEventMessage(User targetUser, User sendUser) {
+
+        EventMessage eventMessage = new EventMessage();
+        eventMessage.setSendUser( sendUser );
+        eventMessage.setTargetUser( targetUser );
+        eventMessage.setMessageType( MessageType.USER_REGISTER );
+        eventMessage.setMessageDate( new Date() );
+
+        eventMessageRepository.save(eventMessage);
+
+        webSocketController.sendEventMessage( eventMessage, targetUser.getId() );
 
     }
 

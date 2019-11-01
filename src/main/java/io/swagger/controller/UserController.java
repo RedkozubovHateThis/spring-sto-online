@@ -1,8 +1,12 @@
 package io.swagger.controller;
 
 import io.swagger.helper.UserHelper;
+import io.swagger.postgres.model.EventMessage;
+import io.swagger.postgres.model.enums.MessageType;
 import io.swagger.postgres.model.security.User;
+import io.swagger.postgres.repository.EventMessageRepository;
 import io.swagger.postgres.repository.UserRepository;
+import io.swagger.response.api.EventMessageStatus;
 import io.swagger.service.EventMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RequestMapping("/secured/users")
@@ -29,6 +34,9 @@ public class UserController {
 
     @Autowired
     private PasswordEncoder userPasswordEncoder;
+
+    @Autowired
+    private EventMessageRepository eventMessageRepository;
 
     @GetMapping("/currentUser")
     public ResponseEntity getCurrentUser() {
@@ -53,6 +61,13 @@ public class UserController {
         User currentUser = userRepository.findCurrentUser();
         boolean sendMessage = false;
         User targetUser = null;
+        EventMessageStatus eventMessageStatus = null;
+
+        if ( UserHelper.hasRole( user, "CLIENT" ) && user.getModeratorId() != null )
+            eventMessageStatus = isClientIdChanged(user, existingUser);
+
+        if ( UserHelper.hasRole( user, "SERVICE_LEADER" ) && user.getModeratorId() != null )
+            eventMessageStatus = isOrganizationIdChanged(user, existingUser);
 
         Long replacementModeratorId = user.getCurrentReplacementModeratorId();
         if ( replacementModeratorId != null ) {
@@ -64,8 +79,8 @@ public class UserController {
 
                 if ( existingReplacementModerator == null ||
                         !existingReplacementModerator.getId().equals( origReplacementModerator.getId() ) ) {
-                    sendMessage = true;
                     targetUser = origReplacementModerator;
+                    sendMessage = true;
                 }
 
                 user.setReplacementModerator( origReplacementModerator );
@@ -84,11 +99,59 @@ public class UserController {
         if ( user.getModeratorId() != null )
             webSocketController.sendCounterRefreshMessage( user.getModeratorId() );
 
-        if ( sendMessage && targetUser != null ) {
+        if ( sendMessage ) {
             eventMessageService.buildModeratorReplacementMessage( currentUser, targetUser );
+        }
+        if ( eventMessageStatus != null && eventMessageStatus.getSending() ) {
+            buildAutodealerEventMessage(eventMessageStatus.getTargetUser(), user);
         }
 
         return ResponseEntity.ok(user);
+
+    }
+
+    private EventMessageStatus isClientIdChanged(User user, User existingUser) {
+        Integer existingId = existingUser.getClientId();
+        Integer newId = user.getClientId();
+
+        return isIdChanged(user, existingId, newId);
+    }
+
+    private EventMessageStatus isOrganizationIdChanged(User user, User existingUser) {
+        Integer existingId = existingUser.getOrganizationId();
+        Integer newId = user.getOrganizationId();
+
+        return isIdChanged(user, existingId, newId);
+    }
+
+    private EventMessageStatus isIdChanged(User user, Integer existingId, Integer newId) {
+        EventMessageStatus eventMessageStatus = new EventMessageStatus();
+
+        boolean setNewClientId = existingId == null && newId != null;
+        boolean changeClientId = existingId != null && newId != null &&
+                !existingId.equals( newId );
+
+        if ( setNewClientId || changeClientId ) {
+
+            eventMessageStatus.setTargetUser( userRepository.findOne( user.getModeratorId() ) );
+            eventMessageStatus.setSendEventMessage( true );
+
+        }
+
+        return eventMessageStatus;
+    }
+
+    private void buildAutodealerEventMessage(User targetUser, User sendUser) {
+
+        EventMessage eventMessage = new EventMessage();
+        eventMessage.setSendUser( sendUser );
+        eventMessage.setTargetUser( targetUser );
+        eventMessage.setMessageType( MessageType.USER_AUTODEALER );
+        eventMessage.setMessageDate( new Date() );
+
+        eventMessageRepository.save(eventMessage);
+
+        webSocketController.sendEventMessage( eventMessage, targetUser.getId() );
 
     }
 
