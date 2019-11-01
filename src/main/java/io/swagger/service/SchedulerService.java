@@ -89,7 +89,7 @@ public class SchedulerService {
                                 "Просмотр доступен по адресу: %s/documents/%s", user.getFio(), domainUrl, documentId);
                         logger.info(" [ SCHEDULER ] Prepared sms text: \"{}\"", smsText );
 
-                        if ( user.getPhone() != null ) {
+                        if ( user.getPhone() != null && user.getAllowSms() ) {
                             smsService.sendSmsAsync( user.getPhone(), smsText );
                         }
                         else

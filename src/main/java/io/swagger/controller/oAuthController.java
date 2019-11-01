@@ -51,6 +51,9 @@ public class oAuthController {
         if ( roleName == null )
             return ResponseEntity.status(400).body("Роль не может быть пустой!");
 
+        if ( !roleName.equals("CLIENT") && !roleName.equals("SERVICE_LEADER") )
+            return ResponseEntity.status(400).body("Недопустимая роль!");
+
         if ( user.getPassword() == null || user.getPassword().isEmpty() )
             return ResponseEntity.status(400).body("Пароль не может быть пустым!");
 
@@ -84,6 +87,7 @@ public class oAuthController {
         user.setEnabled(true);
         user.setIsApproved(false);
         user.setInVacation(false);
+        user.setAllowSms(false);
         user.setPassword( userPasswordEncoder.encode( user.getPassword() ) );
 
         UserRole clientRole = userRoleRepository.findByName(roleName);

@@ -111,6 +111,8 @@ public class User implements UserDetails, Serializable {
     @Type(type ="io.swagger.config.database.GenericArrayUserType")
     private Integer[] partShops;
 
+    private Boolean allowSms;
+
     @Override
     public boolean isAccountNonExpired() {
         return !accountExpired;

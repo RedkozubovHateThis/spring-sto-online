@@ -21,6 +21,8 @@ export class User {
   inn: string;
   replacementModeratorId: number;
   replacementModeratorFio: string;
+  partShops: number[];
+  allowSms: boolean;
 
   // TODO: подключить js-data-angular и переделать на computed property
   admin: boolean;
@@ -28,6 +30,5 @@ export class User {
   guest: boolean;
   serviceLeader: boolean;
   moderator: boolean;
-  partShops: number[];
 
 }
