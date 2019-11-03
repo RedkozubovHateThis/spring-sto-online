@@ -88,8 +88,10 @@ export class DocumentComponent extends ModelTransfer<DocumentResponse, number> i
       .subscribe( data => {
           this.model = data as DocumentResponse;
           this.isUpdating = false;
+          this.toastrService.success('Статус заказ-наряда успешно изменен');
       }, () => {
         this.isUpdating = false;
+        this.toastrService.error('Ошибка изменения статуса заказ-наряда!', 'Внимание!');
       } );
   }
 }

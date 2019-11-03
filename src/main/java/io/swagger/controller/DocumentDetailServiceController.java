@@ -12,6 +12,7 @@ import io.swagger.firebird.model.DocumentServiceDetail;
 import io.swagger.firebird.repository.DocumentServiceDetailRepository;
 import io.swagger.service.EventMessageService;
 import lombok.Data;
+import org.hibernate.TransactionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -187,7 +188,8 @@ public class DocumentDetailServiceController {
         User currentUser = userRepository.findCurrentUser();
         if ( currentUser == null ) return ResponseEntity.status(401).build();
 
-        if ( !UserHelper.hasRole( currentUser, "MODERATOR" ) ) return ResponseEntity.status(403).build();
+        if ( !UserHelper.hasRole( currentUser, "MODERATOR" ) &&
+                !UserHelper.hasRole( currentUser, "ADMIN" )) return ResponseEntity.status(403).build();
 
         documentOutHeaderRepository.updateState( documentOutHeaderId, state );
 
