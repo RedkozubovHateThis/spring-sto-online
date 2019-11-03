@@ -144,7 +144,7 @@ public class ChatController {
         else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
             opponents = userRepository.findAllByModerator( currentUser.getId(), currentUser.getId() );
         }
-        else if ( currentUser.getModeratorId() != null )
+        else if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) && currentUser.getModeratorId() != null )
             opponents = userRepository.findAllModerators( currentUser.getModeratorId(), currentUser.getId() );
 
         if ( opponents == null ) return ResponseEntity.status(404).build();
