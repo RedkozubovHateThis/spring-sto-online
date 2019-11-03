@@ -93,7 +93,7 @@ export class UserComponent extends ModelTransfer<User, number> implements OnInit
 
   private approve(user: User, approved: boolean) {
     user.isApproved = approved;
-    this.userService.saveUser(user);
+    this.userService.saveUser(user, `Пользователь успешно ${approved ? 'подвтержден' : 'отменен'}!`);
   }
 
 }

@@ -11,7 +11,7 @@
               <button class="btn btn-sm btn-buro-green" [disabled]="userService.isSaving" (click)="location.back()">
                 Назад
               </button>
-              <button class="btn btn-sm btn-buro-green" [disabled]="userService.isSaving" (click)="userService.saveUser( model )">
+              <button class="btn btn-sm btn-buro-green" [disabled]="userService.isSaving" (click)="userService.saveUser( model, 'Пользователь успешно сохранен!' )">
                 Сохранить<span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
               </button>
             </div>

@@ -6,11 +6,12 @@ import {Router} from '@angular/router';
 import {TransferService} from './transfer.service';
 import {environment} from '../../environments/environment';
 import {ChatMessageResponseService} from './chatMessageResponse.service';
+import {ToastrService} from 'ngx-toastr';
 
 @Injectable()
 export class UserService implements TransferService<User> {
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router, private toastrService: ToastrService) { }
   currentUser: User;
   isSaving = false;
   private transferModel: User;
@@ -131,7 +132,7 @@ export class UserService implements TransferService<User> {
     return this.http.get(`${this.getApiUrl()}oauth/demo/register`);
   }
 
-  saveUser(user: User) {
+  saveUser(user: User, message: string) {
 
     const headers = this.getHeaders();
     this.isSaving = true;
@@ -144,9 +145,11 @@ export class UserService implements TransferService<User> {
         this.setCurrentUserData( data as User );
 
       this.isSaving = false;
+      this.toastrService.success(message);
 
     }, error => {
       this.isSaving = false;
+      this.toastrService.error('Ошибка сохранения пользователя!', 'Внимание!');
     } );
 
   }
