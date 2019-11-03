@@ -3,7 +3,6 @@ package io.swagger.helper;
 import io.swagger.controller.DocumentDetailServiceController;
 import io.swagger.firebird.model.*;
 import io.swagger.postgres.model.security.User;
-import io.swagger.postgres.repository.UserRepository;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.*;
@@ -12,13 +11,13 @@ import java.util.List;
 
 public class DocumentSpecificationBuilder {
 
-    public static Specification<DocumentServiceDetail> buildSpecification(User currentUser,
-                                                                          DocumentDetailServiceController.FilterPayload filterPayload) {
-        return buildSpecification( new ArrayList<>(), new ArrayList<>(), currentUser, filterPayload );
+    public static Specification<DocumentServiceDetail> buildSpecificationList(User currentUser,
+                                                                              DocumentDetailServiceController.FilterPayload filterPayload) {
+        return buildSpecificationList( new ArrayList<>(), new ArrayList<>(), currentUser, filterPayload );
     }
 
-    public static Specification<DocumentServiceDetail> buildSpecification(List<Integer> clientIds, List<Integer> organizationIds, User currentUser,
-                                                                          DocumentDetailServiceController.FilterPayload filterPayload) {
+    public static Specification<DocumentServiceDetail> buildSpecificationList(List<Integer> clientIds, List<Integer> organizationIds, User currentUser,
+                                                                              DocumentDetailServiceController.FilterPayload filterPayload) {
 
         return new Specification<DocumentServiceDetail>() {
             @Override

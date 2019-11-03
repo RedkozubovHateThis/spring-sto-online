@@ -145,6 +145,7 @@ public class oAuthController {
 
         user.setEnabled(true);
         user.setInVacation(false);
+        user.setAllowSms(false);
         user.setPassword( userPasswordEncoder.encode( user.getPassword() ) );
 
         UserRole clientRole = userRoleRepository.findByName("SERVICE_LEADER");

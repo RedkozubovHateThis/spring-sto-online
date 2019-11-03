@@ -1,1 +1,1 @@
-ng build --base-href "/sto/" --prod --aot=false --build-optimizer=false
+ng build --prod --aot=false --build-optimizer=false

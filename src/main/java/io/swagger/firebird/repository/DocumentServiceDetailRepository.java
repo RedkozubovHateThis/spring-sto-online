@@ -21,6 +21,48 @@ public interface DocumentServiceDetailRepository extends PagingAndSortingReposit
 
     Page<DocumentServiceDetail> findAll(Pageable pageable);
 
+    @Query("SELECT DISTINCT dsd FROM DocumentServiceDetail AS dsd " +
+            "INNER JOIN dsd.documentOutHeader AS doh " +
+            "INNER JOIN doh.documentOut AS do " +
+            "INNER JOIN do.client AS c " +
+            "WHERE dsd.id = :documentId AND c.id = :clientId")
+    DocumentServiceDetail findOneByClientId(@Param("documentId") Integer documentId,
+                                            @Param("clientId") Integer clientId);
+
+    @Query("SELECT DISTINCT dsd FROM DocumentServiceDetail AS dsd " +
+            "INNER JOIN dsd.documentOutHeader AS doh " +
+            "INNER JOIN doh.documentOut AS do " +
+            "INNER JOIN do.organization AS o " +
+            "WHERE dsd.id = :documentId AND o.id = :organizationId")
+    DocumentServiceDetail findOneByOrganizationId(@Param("documentId") Integer documentId,
+                                                  @Param("organizationId") Integer organizationId);
+
+    @Query("SELECT DISTINCT dsd FROM DocumentServiceDetail AS dsd " +
+            "INNER JOIN dsd.documentOutHeader AS doh " +
+            "INNER JOIN doh.documentOut AS do " +
+            "INNER JOIN do.organization AS o " +
+            "WHERE dsd.id = :documentId AND o.id IN ( :organizationIds )")
+    DocumentServiceDetail findOneByOrganizationIds(@Param("documentId") Integer documentId,
+                                                   @Param("organizationIds") List<Integer> organizationIds);
+
+    @Query("SELECT DISTINCT dsd FROM DocumentServiceDetail AS dsd " +
+            "INNER JOIN dsd.documentOutHeader AS doh " +
+            "INNER JOIN doh.documentOut AS do " +
+            "INNER JOIN do.client AS c " +
+            "WHERE dsd.id = :documentId AND c.id IN ( :clientIds )")
+    DocumentServiceDetail findOneByClientIds(@Param("documentId") Integer documentId,
+                                             @Param("clientIds") List<Integer> clientIds);
+
+    @Query("SELECT DISTINCT dsd FROM DocumentServiceDetail AS dsd " +
+            "INNER JOIN dsd.documentOutHeader AS doh " +
+            "INNER JOIN doh.documentOut AS do " +
+            "INNER JOIN do.client AS c " +
+            "INNER JOIN do.organization AS o " +
+            "WHERE dsd.id = :documentId AND ( c.id IN ( :clientIds ) OR o.id IN ( :organizationIds ) )")
+    DocumentServiceDetail findOneByClientIdsAndOrganizationIds(@Param("documentId") Integer documentId,
+                                                               @Param("clientIds") List<Integer> clientIds,
+                                                               @Param("organizationIds") List<Integer> organizationIds);
+
     @Query("SELECT COUNT(DISTINCT dsd.id) FROM DocumentServiceDetail AS dsd")
     Integer countAll();
 

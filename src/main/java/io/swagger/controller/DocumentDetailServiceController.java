@@ -73,10 +73,10 @@ public class DocumentDetailServiceController {
             if ( clientIds.size() == 0 && organizationIds.size() == 0 )
                 return ResponseEntity.status(404).build();
 
-            specification = DocumentSpecificationBuilder.buildSpecification(clientIds, organizationIds, currentUser, filterPayload);
+            specification = DocumentSpecificationBuilder.buildSpecificationList(clientIds, organizationIds, currentUser, filterPayload);
         }
         else
-            specification = DocumentSpecificationBuilder.buildSpecification(currentUser, filterPayload);
+            specification = DocumentSpecificationBuilder.buildSpecificationList(currentUser, filterPayload);
 
         Page<DocumentServiceDetail> result = documentsRepository.findAll(specification, pageable);
 
@@ -117,10 +117,35 @@ public class DocumentDetailServiceController {
     @GetMapping("/{id}")
     public ResponseEntity findOne(@PathVariable("id") Integer id) {
 
-        DocumentServiceDetail result = documentsRepository.findOne(id);
+        User currentUser = userRepository.findCurrentUser();
+        DocumentServiceDetail result;
+
+        if ( UserHelper.hasRole( currentUser, "CLIENT" ) ) {
+            if ( currentUser.getClientId() == null || !currentUser.getIsApproved() ) return ResponseEntity.status(403).build();
+            result = documentsRepository.findOneByClientId( id, currentUser.getClientId() );
+        }
+        else if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
+            if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ) return ResponseEntity.status(403).build();
+            result = documentsRepository.findOneByOrganizationId( id, currentUser.getOrganizationId() );
+        }
+        else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
+            List<Integer> clientIds = userRepository.collectClientIds( currentUser.getId() );
+            List<Integer> organizationIds = userRepository.collectOrganizationIds( currentUser.getId() );
+
+            if ( clientIds.size() == 0 && organizationIds.size() == 0 )
+                return ResponseEntity.status(403).build();
+            else if ( clientIds.size() > 0 && organizationIds.size() == 0 )
+                result = documentsRepository.findOneByClientIds( id, clientIds );
+            else if ( clientIds.size() == 0 )
+                result = documentsRepository.findOneByOrganizationIds( id, organizationIds );
+            else
+                result = documentsRepository.findOneByClientIdsAndOrganizationIds( id, clientIds, organizationIds );
+        }
+        else
+            result = documentsRepository.findOne(id);
 
         if ( result == null )
-            return ResponseEntity.status(404).build();
+            return ResponseEntity.status(403).build();
 
         return ResponseEntity.ok( new DocumentResponse( result ) );
 
