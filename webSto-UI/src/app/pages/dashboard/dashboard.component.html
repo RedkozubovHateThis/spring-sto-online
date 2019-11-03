@@ -26,6 +26,7 @@
                 <th scope="col">Состояние</th>
                 <th scope="col">Клиент</th>
                 <th scope="col">Автомобиль</th>
+                <th scope="col">Гос. номер</th>
                 <th scope="col">Сумма, руб.</th>
               </tr>
             </thead>
@@ -41,6 +42,7 @@
                 </th>
                 <th>{{fbResponse.client}}</th>
                 <th>{{fbResponse.vehicle.name}}</th>
+                <th>{{fbResponse.vehicle.regNumber}}</th>
                 <th>{{fbResponse.sum | number:'.2':'ru'}}</th>
               </tr>
             </tbody>

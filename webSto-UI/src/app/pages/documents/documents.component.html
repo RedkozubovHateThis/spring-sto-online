@@ -32,6 +32,7 @@
                 <th scope="col">Состояние</th>
                 <th scope="col">Клиент</th>
                 <th scope="col">Автомобиль</th>
+                <th scope="col">Гос. номер</th>
                 <th scope="col">Сумма, руб.</th>
               </tr>
             </thead>
@@ -52,6 +53,7 @@
               </th>
               <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.client}}</th>
               <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.vehicle.name}}</th>
+              <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.vehicle.regNumber}}</th>
               <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.sum | number:'.2':'ru'}}</th>
             </tr>
             </tbody>
