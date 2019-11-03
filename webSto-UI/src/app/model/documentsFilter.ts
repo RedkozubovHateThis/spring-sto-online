@@ -19,7 +19,7 @@ export class DocumentsFilter {
     this.fromDate = null;
     this.toDate = null;
     this.sort = 'dateStart';
-    this.direction = 'asc';
+    this.direction = 'desc';
   }
 
 }

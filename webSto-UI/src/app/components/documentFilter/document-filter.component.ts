@@ -88,7 +88,7 @@ export class DocumentFilterComponent implements OnInit {
 
   resetSort() {
     this.filter.sort = 'dateStart';
-    this.filter.direction = 'asc';
+    this.filter.direction = 'desc';
     this.emitChange();
   }
 
