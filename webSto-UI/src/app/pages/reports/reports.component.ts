@@ -4,6 +4,8 @@ import {DocumentResponseService} from '../../api/documentResponse.service';
 import {ToastrService} from 'ngx-toastr';
 import {UserService} from '../../api/user.service';
 import {HttpClient} from '@angular/common/http';
+import {OrganizationResponse} from '../../model/firebird/organizationResponse';
+import {OrganizationResponseService} from '../../api/organizationResponse.service';
 
 @Component({
   selector: 'app-reports',
@@ -19,6 +21,8 @@ export class ReportsComponent implements OnInit {
   private reportData: object[];
   private totalRow: object;
   private reportType: string = 'executors';
+  private organizationId: number = null;
+  private organizations: OrganizationResponse[] = [];
   private reportTypeFileName = {
     executors: 'Выручка по слесарям за период с',
     clients: 'Отчет о реализации за период с'
@@ -45,9 +49,13 @@ export class ReportsComponent implements OnInit {
     // monthFormat: 'MM, YYYY'
   };
 
-  constructor(private httpClient: HttpClient, private toastrService: ToastrService, private userService: UserService) { }
+  constructor(private httpClient: HttpClient, private toastrService: ToastrService, private userService: UserService,
+              private organizationResponseService: OrganizationResponseService) { }
 
   ngOnInit() {
+    this.organizationResponseService.getAll().subscribe( response => {
+      this.organizations = response as OrganizationResponse[];
+    } );
     const date = new Date();
     this.selectedYear = date.getFullYear();
     this.selectedMonth = date.getMonth();
@@ -66,7 +74,8 @@ export class ReportsComponent implements OnInit {
     const headers = this.userService.getHeaders();
     const params = {
       startDate: startDate.format('DD.MM.YYYY hh:mm:ss'),
-      endDate: endDate.format('DD.MM.YYYY hh:mm:ss')
+      endDate: endDate.format('DD.MM.YYYY hh:mm:ss'),
+      organizationId: this.organizationId != null ? this.organizationId.toString() : ''
     };
 
     this.isDownloading = true;
@@ -110,7 +119,8 @@ export class ReportsComponent implements OnInit {
     const headers = this.userService.getHeaders();
     const params = {
       startDate: startDate.format('DD.MM.YYYY hh:mm:ss'),
-      endDate: endDate.format('DD.MM.YYYY hh:mm:ss')
+      endDate: endDate.format('DD.MM.YYYY hh:mm:ss'),
+      organizationId: this.organizationId != null ? this.organizationId.toString() : ''
     };
 
     this.isLoading = true;
@@ -132,7 +142,7 @@ export class ReportsComponent implements OnInit {
       this.isLoading = false;
       if ( error.status === 403 )
         this.toastrService.error('Отчеты недоступны!', 'Внимание!');
-      else
+      else if ( error.status !== 404 )
         this.toastrService.error('Ошибка формирования отчета!', 'Внимание!');
     } );
   }

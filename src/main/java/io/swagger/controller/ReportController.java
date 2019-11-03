@@ -38,6 +38,10 @@ public class ReportController {
     public ResponseEntity getOrderResponse(@PathVariable("documentId") Integer documentId,
                                            @PathVariable("reportType") ReportType reportType) {
 
+        User currentUser = userRepository.findCurrentUser();
+        if ( !UserHelper.hasRole(currentUser, "ADMIN") && UserHelper.hasRole(currentUser, "MODERATOR") )
+            return ResponseEntity.status(403).build();
+
         try {
             byte[] response;
             switch (reportType) {
@@ -71,16 +75,29 @@ public class ReportController {
 
     @GetMapping("/executors")
     public ResponseEntity findExecutors(@DateTimeFormat(pattern = "dd.MM.yyyy HH:mm:ss") Date startDate,
-                                        @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm:ss") Date endDate) {
+                                        @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm:ss") Date endDate,
+                                        @RequestParam(value = "organizationId", required = false) Integer organizationId) {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) )
+        List<ExecutorResponse> responses;
+
+        if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
+
+            if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() )
+                return ResponseEntity.status(404).build();
+
+            responses = reportService.getExecutorResponses(currentUser.getOrganizationId(), startDate, endDate);
+        }
+        else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ||
+                UserHelper.hasRole( currentUser, "ADMIN" ) ) {
+
+            if ( organizationId == null )
+                return ResponseEntity.status(404).build();
+
+            responses = reportService.getExecutorResponses(organizationId, startDate, endDate);
+        }
+        else
             return ResponseEntity.status(403).build();
-
-        if ( currentUser.getOrganizationId() == null )
-            return ResponseEntity.status(404).build();
-
-        List<ExecutorResponse> responses = reportService.getExecutorResponses(currentUser.getOrganizationId(), startDate, endDate);
 
         if ( demoDomain && responses.size() == 0 )
             responses = reportService.getExecutorFakeResponses( startDate, endDate );
@@ -91,17 +108,32 @@ public class ReportController {
 
     @GetMapping("/executors/PDF")
     public ResponseEntity buildExecutorsReport(@DateTimeFormat(pattern = "dd.MM.yyyy HH:mm:ss") Date startDate,
-                                               @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm:ss") Date endDate) {
+                                               @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm:ss") Date endDate,
+                                               @RequestParam(value = "organizationId", required = false) Integer organizationId) {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) )
-            return ResponseEntity.status(403).build();
-
-        if ( currentUser.getOrganizationId() == null )
-            return ResponseEntity.status(404).build();
 
         try {
-            byte[] response = reportService.getExecutorsReport(currentUser.getOrganizationId(), startDate, endDate);
+
+            byte[] response;
+
+            if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
+
+                if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() )
+                    return ResponseEntity.status(404).build();
+
+                response = reportService.getExecutorsReport(currentUser.getOrganizationId(), startDate, endDate);
+            }
+            else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ||
+                    UserHelper.hasRole( currentUser, "ADMIN" ) ) {
+
+                if ( organizationId == null )
+                    return ResponseEntity.status(404).build();
+
+                response = reportService.getExecutorsReport(organizationId, startDate, endDate);
+            }
+            else
+                return ResponseEntity.status(403).build();
 
             return ResponseEntity.ok()
                     .header( HttpHeaders.CONTENT_DISPOSITION, "attachment" )
@@ -121,16 +153,29 @@ public class ReportController {
 
     @GetMapping("/clients")
     public ResponseEntity findClients(@DateTimeFormat(pattern = "dd.MM.yyyy HH:mm:ss") Date startDate,
-                                      @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm:ss") Date endDate) {
+                                      @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm:ss") Date endDate,
+                                      @RequestParam(value = "organizationId", required = false) Integer organizationId) {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) )
+        List<ClientResponse> responses;
+
+        if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
+
+            if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() )
+                return ResponseEntity.status(404).build();
+
+            responses = reportService.getClientsResponses(currentUser.getOrganizationId(), startDate, endDate);
+        }
+        else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ||
+                UserHelper.hasRole( currentUser, "ADMIN" ) ) {
+
+            if ( organizationId == null )
+                return ResponseEntity.status(404).build();
+
+            responses = reportService.getClientsResponses(organizationId, startDate, endDate);
+        }
+        else
             return ResponseEntity.status(403).build();
-
-        if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() )
-            return ResponseEntity.status(404).build();
-
-        List<ClientResponse> responses = reportService.getClientsResponses( currentUser.getOrganizationId(), startDate, endDate );
 
         if ( demoDomain && responses.size() == 0 )
             responses = reportService.getClientFakeResponses( startDate, endDate );
@@ -141,17 +186,32 @@ public class ReportController {
 
     @GetMapping("/clients/PDF")
     public ResponseEntity buildClientsReport(@DateTimeFormat(pattern = "dd.MM.yyyy HH:mm:ss") Date startDate,
-                                             @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm:ss") Date endDate) {
+                                             @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm:ss") Date endDate,
+                                             @RequestParam(value = "organizationId", required = false) Integer organizationId) {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) )
-            return ResponseEntity.status(403).build();
-
-        if ( currentUser.getOrganizationId() == null )
-            return ResponseEntity.status(404).build();
 
         try {
-            byte[] response = reportService.getClientsReport(currentUser.getOrganizationId(), startDate, endDate);
+
+            byte[] response;
+
+            if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
+
+                if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() )
+                    return ResponseEntity.status(404).build();
+
+                response = reportService.getClientsReport(currentUser.getOrganizationId(), startDate, endDate);
+            }
+            else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ||
+                    UserHelper.hasRole( currentUser, "ADMIN" ) ) {
+
+                if ( organizationId == null )
+                    return ResponseEntity.status(404).build();
+
+                response = reportService.getClientsReport(organizationId, startDate, endDate);
+            }
+            else
+                return ResponseEntity.status(403).build();
 
             return ResponseEntity.ok()
                     .header( HttpHeaders.CONTENT_DISPOSITION, "attachment" )

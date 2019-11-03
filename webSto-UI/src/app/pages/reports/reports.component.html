@@ -119,9 +119,21 @@
             </select>
           </div>
 
+          <div class="form-group" *ngIf="userService.currentUser && !userService.currentUser.serviceLeader">
+            <label class="form-control-label" for="organization-select">Предприятие</label>
+            <select id="organization-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="organizationId" (change)="requestReportData()">
+              <option [selected]="true" disabled [ngValue]="null">
+                Выберите организацию
+              </option>
+              <option [selected]="organization.id === organizationId" *ngFor="let organization of organizations" [ngValue]="organization.id">
+                {{ organization.fullName }}
+              </option>
+            </select>
+          </div>
+
           <div class="form-group">
             <label class="form-control-label" for="month-select">Месяц</label>
-            <select id="month-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="selectedMonth">
+            <select id="month-select" class="form-control form-control-sm form-control-alternative" (change)="requestReportData()" [(ngModel)]="selectedMonth">
               <option [selected]="month.id === selectedMonth" *ngFor="let month of months" [ngValue]="month.id">
                 {{month.name}}
               </option>
@@ -130,8 +142,15 @@
 
           <div class="form-group">
             <label class="form-control-label" for="input-year">Год</label>
-            <input type="number" id="input-year" class="form-control form-control-alternative" placeholder="Введите год..."
-                   [(ngModel)]="selectedYear">
+            <div class="input-group input-group-sm">
+              <input type="number" id="input-year" class="form-control" placeholder="Введите год..."
+                     [(ngModel)]="selectedYear" (keyup.enter)="requestReportData()">
+              <div class="input-group-append">
+                <button class="btn btn-buro-green" type="button" (click)="requestReportData()">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

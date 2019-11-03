@@ -110,7 +110,8 @@
             <i class="fas fa-users text-buro-green"></i> Пользователи
         </a>
         <a routerLinkActive="active" [routerLink]="['/reports']" class="nav-link"
-           *ngIf="userService.currentUser != null && userService.currentUser.serviceLeader">
+           *ngIf="userService.currentUser != null &&  ( userService.currentUser.admin ||
+           userService.currentUser.moderator || userService.currentUser.serviceLeader)">
             <i class="fas fa-copy text-buro-green"></i> Отчеты
         </a>
         <a routerLinkActive="active" [routerLink]="['/event-messages']" class="nav-link"

@@ -105,14 +105,14 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
 
     this.vinNumber = null;
     user.clientId = this.clientResponse.id;
-    this.userService.saveUser( user, 'Автомобиль успешно привязан!' );
+    this.userService.saveUser( user, 'Автомобиль успешно привязан! Ожидайте подтверждения данных модератором!' );
   }
 
   linkOrganization(user: User) {
     if ( this.organizationResponse == null ) return;
 
     user.organizationId = this.organizationResponse.id;
-    this.userService.saveUser( user, 'Организация успешно привязана!' );
+    this.userService.saveUser( user, 'Организация успешно привязана! Ожидайте подтверждения данных модератором!' );
   }
 
   requestClient() {
