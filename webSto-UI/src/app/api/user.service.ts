@@ -99,7 +99,10 @@ export class UserService implements TransferService<User> {
       this.setCurrentUserData( data as User );
       localStorage.setItem('isAuthenticated', 'true');
 
-      this.router.navigate(['dashboard']);
+      if ( this.currentUser.client )
+        this.router.navigate(['/documents']);
+      else
+        this.router.navigate(['/dashboard']);
 
     } );
 
