@@ -38,12 +38,20 @@
             </thead>
             <tbody *ngIf="all != null">
             <tr *ngFor="let fbResponse of all.content, let i = index" [attr.data-index]="i">
-              <th scope="row" style="cursor: pointer;" (click)="selected = fbResponse">
-                {{( i + 1 ) + ( page * size )}}
-                &nbsp;
-                <i class="far fa-check-circle" *ngIf="selected === fbResponse"></i>
-                <i class="far fa-circle" *ngIf="selected !== fbResponse"></i>
-              </th>
+              <ng-container *ngIf="userService.currentUser != null &&
+              ( userService.currentUser.admin || userService.currentUser.moderator ); else navigateTh">
+                <th scope="row" style="cursor: pointer;" (click)="selected = fbResponse">
+                  {{( i + 1 ) + ( page * size )}}
+                  &nbsp;
+                  <i class="far fa-check-circle" *ngIf="selected === fbResponse"></i>
+                  <i class="far fa-circle" *ngIf="selected !== fbResponse"></i>
+                </th>
+              </ng-container>
+              <ng-template #navigateTh>
+                <th scope="row" style="cursor: pointer;" (click)="navigate(fbResponse)">
+                  {{( i + 1 ) + ( page * size )}}
+                </th>
+              </ng-template>
               <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.startDate}}</th>
               <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.endDate}}</th>
               <th style="cursor: pointer;" (click)="navigate(fbResponse)">
@@ -65,17 +73,25 @@
 
               <li class="page-item" *ngIf="!all.first">
                 <a class="page-link" tabindex="-1" [routerLink]="['/documents']"
-                   [queryParams]="{page: page, sort: filter.sort, direction: filter.direction, state: filter.state, vehicle: filter.vehicle, organization: filter.organization}">
+                   [queryParams]="{page: page, sort: filter.sort, direction: filter.direction, state: filter.state,
+                   vehicle: filter.vehicle, organization: filter.organization, client: filter.client,
+                   vinNumber: filter.vinNumber, fromDate: filter.fromDate, toDate: filter.toDate}">
                   <i class="fas fa-angle-left"></i>
                 </a>
               </li>
 
               <li class="page-item" *ngFor="let pageInfo of pagesInfo" [ngClass]="{active: pageInfo == page + 1}">
-                <a class="page-link" [routerLink]="['/documents']" [queryParams]="{page: pageInfo, sort: filter.sort, direction: filter.direction, state: filter.state, vehicle: filter.vehicle, organization: filter.organization}">{{pageInfo}}</a>
+                <a class="page-link" [routerLink]="['/documents']" [queryParams]="{page: pageInfo, sort: filter.sort,
+                direction: filter.direction, state: filter.state, vehicle: filter.vehicle, organization: filter.organization,
+                client: filter.client, vinNumber: filter.vinNumber, fromDate: filter.fromDate, toDate: filter.toDate}">
+                  {{pageInfo}}
+                </a>
               </li>
 
               <li class="page-item" *ngIf="!all.last">
-                <a class="page-link" [routerLink]="['/documents']" [queryParams]="{page: page + 2, sort: filter.sort, direction: filter.direction, state: filter.state, vehicle: filter.vehicle, organization: filter.organization}">
+                <a class="page-link" [routerLink]="['/documents']" [queryParams]="{page: page + 2, sort: filter.sort,
+                direction: filter.direction, state: filter.state, vehicle: filter.vehicle, organization: filter.organization,
+                client: filter.client, vinNumber: filter.vinNumber, fromDate: filter.fromDate, toDate: filter.toDate}">
                   <i class="fas fa-angle-right"></i>
                 </a>
               </li>

@@ -13,11 +13,13 @@ export class DocumentResponseService implements TransferService<DocumentResponse
   private transferModel: DocumentResponse;
 
   getLast5() {
-    return this.getDocumentResponse('dateStart,desc', 0, 5, -5, null, null, null);
+    return this.getDocumentResponse('dateStart,desc', 0, 5, -5, null, null, null,
+      null, null, null, null);
   }
 
   getAll(page: number, size: number, offset: number, filter: DocumentsFilter) {
-    return this.getDocumentResponse(`${filter.sort},${filter.direction}`, page, size, offset, filter.state, filter.organization, filter.vehicle);
+    return this.getDocumentResponse(`${filter.sort},${filter.direction}`, page, size, offset, filter.state, filter.organization,
+      filter.vehicle, filter.client, filter.vinNumber, filter.fromDate, filter.toDate);
   }
 
   getOne(id) {
@@ -26,7 +28,8 @@ export class DocumentResponseService implements TransferService<DocumentResponse
     return this.http.get( this.userService.getApiUrl() + 'secured/documents/' + id, {headers} );
   }
 
-  getDocumentResponse(sort: string, page: number, size: number, offset: number, state: number, organization: number, vehicle: number) {
+  getDocumentResponse(sort: string, page: number, size: number, offset: number, state: number, organization: number, vehicle: string,
+                      client: number, vinNumber: string, fromDate: string, toDate: string) {
 
     const headers = this.userService.getHeaders();
     const params = {
@@ -36,7 +39,11 @@ export class DocumentResponseService implements TransferService<DocumentResponse
       offset: offset.toString(),
       states: state != null ? state.toString() : '',
       organizations: organization != null ? organization.toString() : '',
-      vehicles: vehicle != null ? vehicle.toString() : ''
+      clients: client != null ? client.toString() : '',
+      vehicle: vehicle != null ? vehicle : '',
+      vinNumber: vinNumber != null ? vinNumber : '',
+      fromDate: fromDate != null ? fromDate : '',
+      toDate: toDate != null ? toDate : '',
     };
 
     return this.http.get( `${this.userService.getApiUrl()}secured/documents/findAll`, {headers, params} );

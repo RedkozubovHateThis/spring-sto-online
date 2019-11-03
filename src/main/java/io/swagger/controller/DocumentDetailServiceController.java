@@ -1,5 +1,6 @@
 package io.swagger.controller;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.firebird.repository.DocumentOutHeaderRepository;
 import io.swagger.firebird.repository.ServiceGoodsAddonRepository;
 import io.swagger.firebird.repository.ServiceWorkRepository;
@@ -18,9 +19,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -302,7 +305,15 @@ public class DocumentDetailServiceController {
 
         private List<Integer> organizations;
         private List<Integer> states;
-        private List<Integer> vehicles;
+        private String vehicle;
+        private String vinNumber;
+        private List<Integer> clients;
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
+        @DateTimeFormat(pattern = "dd.MM.yyyy")
+        private Date fromDate;
+        @DateTimeFormat(pattern = "dd.MM.yyyy")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
+        private Date toDate;
 
     }
 

@@ -13,6 +13,7 @@ import { EventMessageFilterComponent } from './eventMessageFilter/event-message-
 import {ReportButtonComponent} from './report-button/report-button.component';
 import {PdfViewerModule} from 'ng2-pdf-viewer';
 import {PasswordChangeButtonComponent} from './password-change-button/password-change-button.component';
+import {DpDatePickerModule} from 'ng2-date-picker';
 
 @NgModule({
   imports: [
@@ -20,7 +21,8 @@ import {PasswordChangeButtonComponent} from './password-change-button/password-c
     RouterModule,
     NgbModule,
     FormsModule,
-    PdfViewerModule
+    PdfViewerModule,
+    DpDatePickerModule
   ],
   declarations: [
     FooterComponent,

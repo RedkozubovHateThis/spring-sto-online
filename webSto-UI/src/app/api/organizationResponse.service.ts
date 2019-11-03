@@ -27,10 +27,10 @@ export class OrganizationResponseService {
   }
 
   // TODO: вынести в отдельный сервис
-  getAllVehicles() {
+  getAllClients() {
     const headers = this.userService.getHeaders();
 
-    return this.http.get( this.userService.getApiUrl() + 'secured/vehicles/findAll', {headers} );
+    return this.http.get( this.userService.getApiUrl() + 'secured/clients/findAll', {headers} );
   }
 
 }

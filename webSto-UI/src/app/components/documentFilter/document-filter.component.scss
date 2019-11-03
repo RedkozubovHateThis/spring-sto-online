@@ -1,34 +1,4 @@
-.img-container > .img-preview {
-  //border: 1px solid #eeeeee;
-  border-radius: 10px;
-}
-//.img-container > .img-preview:hover {
-//  border: 1px solid #60B61C;
-//}
-.img-container {
-  display: inline-block;
-  position: relative;
-  cursor: pointer;
-}
-.img-container > .overlay,
-.img-container > .download-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 10px;
-  color: #60B61C;
-  background: rgba(96, 182, 28, 0.1);
-}
-.img-container > .overlay {
-  display: none;
-  border: 2px solid #60B61C;
-}
-.img-container > .download-overlay,
-.img-container:hover > .overlay {
-  display: flex;
-  display: -ms-flex;
-  align-items: center;
-  justify-content: center;
+#to-date-picker,
+#from-date-picker {
+  font-size: 12px !important;
 }

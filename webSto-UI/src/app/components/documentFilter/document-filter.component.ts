@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {UserService} from '../../api/user.service';
 import {OrganizationResponseService} from '../../api/organizationResponse.service';
 import {OrganizationResponse} from '../../model/firebird/organizationResponse';
@@ -6,6 +6,8 @@ import {VehicleResponse} from '../../model/firebird/vehicleResponse';
 import {DocumentsFilter} from '../../model/documentsFilter';
 import {Router} from '@angular/router';
 import {DocumentResponse} from '../../model/firebird/documentResponse';
+import {ClientResponse} from '../../model/firebird/clientResponse';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-document-filter',
@@ -32,16 +34,39 @@ export class DocumentFilterComponent implements OnInit {
       id: 4
     }
   ];
+  private datePickerConfig = {
+    locale: 'ru',
+    firstDayOfWeek: 'mo',
+    showGoToCurrent: true,
+    format: 'DD.MM.YYYY',
+    monthFormat: 'MM, YYYY'
+  };
+  private fromDate: moment.Moment;
+  private toDate: moment.Moment;
   private organizations: OrganizationResponse[] = [];
-  private vehicles: VehicleResponse[] = [];
+  private clients: ClientResponse[] = [];
 
   ngOnInit(): void {
     this.organizationResponseService.getAll().subscribe( response => {
       this.organizations = response as OrganizationResponse[];
     } );
-    this.organizationResponseService.getAllVehicles().subscribe( response => {
-      this.vehicles = response as VehicleResponse[];
+    this.organizationResponseService.getAllClients().subscribe( response => {
+      this.clients = response as ClientResponse[];
     } );
+    if ( this.filter.fromDate )
+      this.fromDate = moment(this.filter.fromDate, 'DD.MM.YYYY');
+    if ( this.filter.toDate )
+      this.toDate = moment(this.filter.toDate, 'DD.MM.YYYY');
+  }
+
+  setFromDate() {
+    this.filter.fromDate = this.fromDate.format('DD.MM.YYYY');
+    this.emitChange();
+  }
+
+  setToDate() {
+    this.filter.toDate = this.toDate.format('DD.MM.YYYY');
+    this.emitChange();
   }
 
   emitChange() {
@@ -52,6 +77,12 @@ export class DocumentFilterComponent implements OnInit {
     this.filter.state = null;
     this.filter.organization = null;
     this.filter.vehicle = null;
+    this.filter.client = null;
+    this.filter.vinNumber = null;
+    this.filter.fromDate = null;
+    this.filter.toDate = null;
+    this.fromDate = null;
+    this.toDate = null;
     this.emitChange();
   }
 

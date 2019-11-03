@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ClientRepository extends JpaRepository<Client, Integer> {
 
@@ -17,5 +19,10 @@ public interface ClientRepository extends JpaRepository<Client, Integer> {
             "INNER JOIN MODEL_DETAIL AS md ON ml.MODEL_DETAIL_ID = md.MODEL_DETAIL_ID\n" +
             "WHERE LOWER(md.VIN) = LOWER(:vinNumber)")
     Client findClientByVinNumber(@Param("vinNumber") String vinNumber);
+
+    @Query(nativeQuery = true, value = "SELECT c.* FROM CLIENT AS c " +
+            "WHERE c.CLIENT_ID IN ( :clientIds ) " +
+            "ORDER BY c.FULLNAME")
+    List<Client> findClientsByIds(@Param("clientIds") List<Integer> clientIds);
 
 }

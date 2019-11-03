@@ -8,8 +8,11 @@
         </h3>
       </div>
       <div class="col-auto mb-3">
-        <app-report-button [model]="document"></app-report-button>
-        <button class="btn btn-sm btn-buro-green" (click)="resetFilters()" *ngIf="filter.state || filter.organization || filter.vehicle">
+        <app-report-button [model]="document"
+                           *ngIf="userService.currentUser && ( userService.currentUser.admin || userService.currentUser.moderator )">
+        </app-report-button>
+        <button class="btn btn-sm btn-buro-green" (click)="resetFilters()" *ngIf="filter.state || filter.organization ||
+        filter.vehicle || filter.vinNumber || filter.client || filter.fromDate || filter.toDate">
           Сбросить
         </button>
       </div>
@@ -39,16 +42,56 @@
       </select>
     </div>
 
-    <div class="form-group">
-      <label class="form-control-label" for="vehicle-select">Автомобиль</label>
-      <select id="vehicle-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.vehicle" (change)="emitChange()">
-        <option [selected]="null === filter.vehicle" [ngValue]="null">
+    <div class="form-group" *ngIf="userService.currentUser && ( userService.currentUser.admin || userService.currentUser.moderator )">
+      <label class="form-control-label" for="client-select">Клиент</label>
+      <select id="client-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.client" (change)="emitChange()">
+        <option [selected]="null === filter.client" [ngValue]="null">
           Без фильтра
         </option>
-        <option [selected]="vehicle.id === filter.vehicle" *ngFor="let vehicle of vehicles" [ngValue]="vehicle.id">
-          {{ vehicle.name }}
+        <option [selected]="client.id === filter.client" *ngFor="let client of clients" [ngValue]="client.id">
+          {{ client.shortName }}
         </option>
       </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="model-input">Марка/модель автомобиля</label>
+      <div class="input-group input-group-sm">
+        <input id="model-input" class="form-control" placeholder="Марка/модель автомобиля"
+               [(ngModel)]="filter.vehicle" (keyup.enter)="emitChange()">
+        <div class="input-group-append">
+          <button class="btn btn-buro-green" type="button" (click)="emitChange()">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="vin-input">VIN-номер</label>
+      <div class="input-group input-group-sm">
+        <input id="vin-input" class="form-control" placeholder="VIN-номер"
+               [(ngModel)]="filter.vinNumber" (keyup.enter)="emitChange()">
+        <div class="input-group-append">
+          <button class="btn btn-buro-green" type="button" (click)="emitChange()">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="from-date-picker">Дата начала ремонта - от</label>
+      <div>
+        <dp-day-calendar id="from-date-picker" (onSelect)="setFromDate()" [(ngModel)]="fromDate" [config]="datePickerConfig" theme="dp-material"></dp-day-calendar>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="to-date-picker">Дата начала ремонта - до</label>
+      <div>
+        <dp-day-calendar id="to-date-picker" (onSelect)="setToDate()" [(ngModel)]="toDate" [config]="datePickerConfig" theme="dp-material"></dp-day-calendar>
+      </div>
     </div>
 
     <div class="row">

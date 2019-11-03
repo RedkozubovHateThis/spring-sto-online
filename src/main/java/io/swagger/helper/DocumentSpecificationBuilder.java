@@ -32,6 +32,7 @@ public class DocumentSpecificationBuilder {
                 Join<DocumentServiceDetail, ModelLink> mlJoin = root.join(DocumentServiceDetail_.modelLink);
                 Join<ModelLink, ModelDetail> mdJoin = mlJoin.join(ModelLink_.modelDetail);
                 Join<ModelDetail, Model> modelJoin = mdJoin.join(ModelDetail_.model);
+                Join<Model, Mark> markJoin = modelJoin.join(Model_.mark);
 
                 if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
 
@@ -42,7 +43,12 @@ public class DocumentSpecificationBuilder {
                         predicates.add( orgJoin.get( Organization_.id ).in( organizationIds ) );
 
                     else if ( organizationIds.size() > 0 && clientIds.size() > 0 )
-                        predicates.add( cb.or( clientJoin.get( Client_.id ).in( clientIds ), orgJoin.get( Organization_.id ).in( organizationIds ) ) );
+                        predicates.add(
+                                cb.or(
+                                        clientJoin.get( Client_.id ).in( clientIds ),
+                                        orgJoin.get( Organization_.id ).in( organizationIds )
+                                )
+                        );
 
                 }
                 else if ( UserHelper.hasRole( currentUser, "CLIENT" ) ) {
@@ -58,8 +64,51 @@ public class DocumentSpecificationBuilder {
                 if ( filterPayload.getOrganizations() != null && filterPayload.getOrganizations().size() > 0 ) {
                     predicates.add( orgJoin.get( Organization_.id ).in( filterPayload.getOrganizations() ) );
                 }
-                if ( filterPayload.getVehicles() != null && filterPayload.getVehicles().size() > 0 ) {
-                    predicates.add( modelJoin.get( Model_.id ).in( filterPayload.getVehicles() ) );
+                if ( filterPayload.getClients() != null && filterPayload.getClients().size() > 0 ) {
+                    predicates.add( clientJoin.get( Client_.id ).in( filterPayload.getClients() ) );
+                }
+                if ( filterPayload.getVehicle() != null && filterPayload.getVehicle().length() > 0 ) {
+                    predicates.add(
+                            cb.or(
+                                    cb.like(
+                                            cb.upper( modelJoin.get( Model_.name ) ), "%" + filterPayload.getVehicle().toUpperCase() + "%"
+                                    ),
+                                    cb.like(
+                                            cb.upper( markJoin.get( Mark_.name ) ), "%" + filterPayload.getVehicle().toUpperCase() + "%"
+                                    )
+                            )
+                    );
+                }
+                if ( filterPayload.getVinNumber() != null && filterPayload.getVinNumber().length() > 0 ) {
+                    predicates.add(
+                            cb.like(
+                                    cb.upper( mdJoin.get( ModelDetail_.vinNumber ) ), "%" + filterPayload.getVinNumber().toUpperCase() + "%"
+                            )
+                    );
+                }
+                if ( filterPayload.getFromDate() != null && filterPayload.getToDate() != null ) {
+                    predicates.add(
+                            cb.between(
+                                    root.get( DocumentServiceDetail_.dateStart ),
+                                    filterPayload.getFromDate(), filterPayload.getToDate()
+                            )
+                    );
+                }
+                else if ( filterPayload.getFromDate() == null && filterPayload.getToDate() != null ) {
+                    predicates.add(
+                            cb.lessThanOrEqualTo(
+                                    root.get( DocumentServiceDetail_.dateStart ),
+                                    filterPayload.getToDate()
+                            )
+                    );
+                }
+                else if ( filterPayload.getFromDate() != null && filterPayload.getToDate() == null ) {
+                    predicates.add(
+                            cb.greaterThanOrEqualTo(
+                                    root.get( DocumentServiceDetail_.dateStart ),
+                                    filterPayload.getFromDate()
+                            )
+                    );
                 }
 
                 query.distinct(true);

@@ -5,6 +5,7 @@ import {ActivatedRoute, Params, Router} from '@angular/router';
 import {Pageable} from '../../model/pageable';
 import {Pagination} from '../pagination';
 import { DocumentsFilter } from 'src/app/model/documentsFilter';
+import {UserService} from '../../api/user.service';
 
 @Component({
   selector: 'app-tables',
@@ -18,7 +19,8 @@ export class DocumentsComponent extends Pagination {
   private filter: DocumentsFilter = new DocumentsFilter();
   private selected: DocumentResponse;
 
-  constructor(private documentResponseService: DocumentResponseService, protected route: ActivatedRoute, private router: Router) {
+  constructor(private documentResponseService: DocumentResponseService, protected route: ActivatedRoute, private router: Router,
+              private userService: UserService) {
     super(route);
   }
 
@@ -50,8 +52,20 @@ export class DocumentsComponent extends Pagination {
     if ( queryParams.organization ) this.filter.organization = parseInt(queryParams.organization, 10);
     else this.filter.organization = null;
 
-    if ( queryParams.vehicle ) this.filter.vehicle = parseInt(queryParams.vehicle, 10);
+    if ( queryParams.client ) this.filter.client = parseInt(queryParams.client, 10);
+    else this.filter.client = null;
+
+    if ( queryParams.vehicle ) this.filter.vehicle = queryParams.vehicle;
     else this.filter.vehicle = null;
+
+    if ( queryParams.vinNumber ) this.filter.vinNumber = queryParams.vinNumber;
+    else this.filter.vinNumber = null;
+
+    if ( queryParams.fromDate ) this.filter.fromDate = queryParams.fromDate;
+    else this.filter.fromDate = null;
+
+    if ( queryParams.toDate ) this.filter.toDate = queryParams.toDate;
+    else this.filter.toDate = null;
   }
 
   refresh() {
