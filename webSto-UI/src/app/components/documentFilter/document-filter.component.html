@@ -8,6 +8,9 @@
         </h3>
       </div>
       <div class="col-auto mb-3">
+        <app-report-button [model]="document" [withPrint]="false"
+                           *ngIf="userService.currentUser && ( userService.currentUser.admin || userService.currentUser.moderator )">
+        </app-report-button>
         <app-report-button [model]="document"
                            *ngIf="userService.currentUser && ( userService.currentUser.admin || userService.currentUser.moderator )">
         </app-report-button>
@@ -18,7 +21,7 @@
       </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group" *ngIf="userService.currentUser && ( userService.currentUser.admin || userService.currentUser.moderator )">
       <label class="form-control-label" for="state-select">Состояние</label>
       <select id="state-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.state" (change)="emitChange()">
         <option [selected]="null === filter.state" [ngValue]="null">

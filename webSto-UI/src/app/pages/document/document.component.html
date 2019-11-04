@@ -13,6 +13,9 @@
               </button>
               <app-report-button *ngIf="userService.currentUser &&
               ( userService.currentUser.moderator || userService.currentUser.admin )"
+                                 [model]="model" [withPrint]="false"></app-report-button>
+              <app-report-button *ngIf="userService.currentUser &&
+              ( userService.currentUser.moderator || userService.currentUser.admin )"
                                  [model]="model"></app-report-button>
             </div>
           </div>

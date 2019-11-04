@@ -89,20 +89,20 @@ public class ReportServiceImpl implements ReportService {
 
         parameters.put( "employeeFio", employee.getShortName() );
 
-        try {
-
-            Organization organization = documentOut.getOrganization();
-            if ( organization == null ) throw new DataNotFoundException();
-
-            ByteArrayInputStream bais = new ByteArrayInputStream( organization.getStampSource() );
-            BufferedImage bufferedImage = ImageIO.read( bais );
-
-            parameters.put("stamp", bufferedImage);
-
-        }
-        catch ( Exception e ) {
-            e.printStackTrace();
-        }
+//        try {
+//
+//            Organization organization = documentOut.getOrganization();
+//            if ( organization == null ) throw new DataNotFoundException();
+//
+//            ByteArrayInputStream bais = new ByteArrayInputStream( organization.getStampSource() );
+//            BufferedImage bufferedImage = ImageIO.read( bais );
+//
+//            parameters.put("stamp", bufferedImage);
+//
+//        }
+//        catch ( Exception e ) {
+//            e.printStackTrace();
+//        }
 
     }
 

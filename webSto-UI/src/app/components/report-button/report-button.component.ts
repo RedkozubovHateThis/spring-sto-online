@@ -18,6 +18,8 @@ export class ReportButtonComponent implements OnInit {
   private aLink: any;
   @ViewChild('content', {static: false}) private content;
   private isDownloading: boolean = false;
+  @Input()
+  private withPrint: boolean = true;
 
   @Input()
   private model: DocumentResponse;
@@ -41,7 +43,14 @@ export class ReportButtonComponent implements OnInit {
 
       this.pdfSrc = window.URL.createObjectURL(new Blob([response], { type: 'application/pdf' }));
       this.modalTitle = reportName;
-      this.open(this.content);
+      if ( this.withPrint )
+        this.open(this.content);
+      else {
+        this.save();
+        setTimeout( () => {
+          this.clean();
+        }, 100 );
+      }
 
     }, error => {
       this.isDownloading = false;

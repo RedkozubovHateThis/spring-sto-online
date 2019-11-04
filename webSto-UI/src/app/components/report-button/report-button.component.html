@@ -1,6 +1,11 @@
 <div ngbDropdown class="d-inline-block" placement="auto">
   <button class="btn btn-sm btn-buro-green" id="reports-dropdown" [disabled]="isDownloading || model == null" ngbDropdownToggle>
-    Выгрузить...
+    <span *ngIf="withPrint">
+      <i class="fas fa-print"></i>
+    </span>
+    <span *ngIf="!withPrint">
+      <i class="fas fa-download"></i>
+    </span>
     <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
   </button>
   <div ngbDropdownMenu aria-labelledby="reports-dropdown">
@@ -44,7 +49,7 @@
 </div>
 
 <!-- Modal -->
-<ng-template #content let-modal>
+<ng-template #content let-modal *ngIf="withPrint">
   <div class="modal-header">
     <h3 class="modal-title">{{modalTitle}}</h3>
     <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">

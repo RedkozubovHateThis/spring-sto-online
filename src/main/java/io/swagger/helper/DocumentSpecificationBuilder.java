@@ -53,6 +53,7 @@ public class DocumentSpecificationBuilder {
                 }
                 else if ( UserHelper.hasRole( currentUser, "CLIENT" ) ) {
                     predicates.add( cb.equal( clientJoin.get( Client_.id ), currentUser.getClientId() ) );
+                    predicates.add( cb.equal( dohJoin.get( DocumentOutHeader_.state ), (short) 4 ) );
                 }
                 else if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
                     predicates.add( cb.equal( orgJoin.get( Organization_.id ), currentUser.getOrganizationId() ) );
