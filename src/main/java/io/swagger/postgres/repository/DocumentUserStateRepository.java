@@ -8,5 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface DocumentUserStateRepository extends JpaRepository<DocumentUserState, Long> {
 
     DocumentUserState findByUserId(Long userId);
+    DocumentUserState findByClientId(Integer clientId);
 
 }

@@ -16,8 +16,11 @@ export class ErrorInterceptor implements HttpInterceptor {
       .pipe(
         catchError((err, caught: Observable<HttpEvent<any>>) => {
           if (err instanceof HttpErrorResponse) {
-            if ( err.status == 401 )
+            if ( err.status == 401 ) {
+              if ( localStorage.getItem('redirectUrl') == null )
+                localStorage.setItem('redirectUrl', this.router.url);
               this.userService.logout();
+            }
             else if ( err.status == 403 )
               this.router.navigate(["dashboard"]);
           }

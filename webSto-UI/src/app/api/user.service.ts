@@ -100,7 +100,15 @@ export class UserService implements TransferService<User> {
       this.setCurrentUserData( data as User );
       localStorage.setItem('isAuthenticated', 'true');
 
-      if ( this.currentUser.client )
+      const redirectUrl: string = localStorage.getItem('redirectUrl');
+
+      console.log(redirectUrl);
+
+      if ( redirectUrl != null && redirectUrl.length > 0 ) {
+        this.router.navigate([redirectUrl]);
+        localStorage.removeItem('redirectUrl');
+      }
+      else if ( this.currentUser.client )
         this.router.navigate(['/documents']);
       else
         this.router.navigate(['/dashboard']);

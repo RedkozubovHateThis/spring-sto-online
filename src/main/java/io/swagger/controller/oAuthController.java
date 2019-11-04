@@ -2,6 +2,7 @@ package io.swagger.controller;
 
 import io.swagger.firebird.model.Organization;
 import io.swagger.firebird.repository.OrganizationRepository;
+import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.EventMessage;
 import io.swagger.postgres.model.enums.MessageType;
 import io.swagger.postgres.model.security.User;
@@ -9,6 +10,7 @@ import io.swagger.postgres.model.security.UserRole;
 import io.swagger.postgres.repository.EventMessageRepository;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.postgres.repository.UserRoleRepository;
+import io.swagger.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,6 @@ import java.util.*;
 public class oAuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(oAuthController.class);
-    private final String PHONE_REGEXP = "^((\\+7|7|8)+([0-9]){10})$";
 
     @Autowired
     private UserRepository userRepository;
@@ -36,13 +37,10 @@ public class oAuthController {
     private PasswordEncoder userPasswordEncoder;
 
     @Autowired
-    private WebSocketController webSocketController;
-
-    @Autowired
     private OrganizationRepository organizationRepository;
 
     @Autowired
-    private EventMessageRepository eventMessageRepository;
+    private UserService userService;
 
     @Value("${domain.demo}")
     private Boolean demoDomain;
@@ -72,10 +70,10 @@ public class oAuthController {
         if ( user.getPhone() == null || user.getPhone().isEmpty() )
             return ResponseEntity.status(400).body("Телефон не может быть пустым!");
 
-        if ( !isPhoneValid( user.getPhone() ) )
+        if ( !userService.isPhoneValid( user.getPhone() ) )
             return ResponseEntity.status(400).body("Неверный номер телефона!");
 
-        processPhone(user);
+        userService.processPhone(user);
 
         if ( user.getUsername() != null && user.getUsername().length() > 0 &&
                 userRepository.isUserExistsUsername( user.getUsername() ) )
@@ -104,7 +102,7 @@ public class oAuthController {
         User userModerator = null;
 
         if ( roleName.equals("CLIENT") )
-            userModerator = setModerator(user);
+            userModerator = userService.setModerator(user);
         else if ( roleName.equals("SERVICE_LEADER") ) {
             if ( user.getInn() == null || user.getInn().isEmpty() )
                 return ResponseEntity.status(400).body("ИНН не может быть пустым!");
@@ -112,13 +110,13 @@ public class oAuthController {
             if ( userRepository.isUserExistsInn( user.getInn() ) )
                 return ResponseEntity.status(400).body("Пользователь с таким ИНН уже существует!");
 
-            userModerator = setModerator(user);
+            userModerator = userService.setModerator(user);
         }
 
         userRepository.save(user);
 
         if ( userModerator != null )
-            buildRegistrationEventMessage( userModerator, user );
+            userService.buildRegistrationEventMessage( userModerator, user );
 
         return ResponseEntity.ok().build();
 
@@ -161,7 +159,7 @@ public class oAuthController {
             user.setIsApproved(true);
         }
 
-        setModerator(user);
+        userService.setModerator(user);
 
         userRepository.save(user);
 
@@ -184,79 +182,6 @@ public class oAuthController {
         sb.append(lastNumbers);
 
         return sb.toString();
-    }
-
-    private boolean isPhoneValid(String phone) {
-        return phone.matches(PHONE_REGEXP);
-    }
-
-    private void processPhone(User user) {
-        String originalPhone = user.getPhone();
-
-        if ( originalPhone.charAt(0) == '+' ) {
-            user.setPhone( originalPhone.replaceAll("\\+7", "8") );
-        }
-        else if ( originalPhone.charAt(0) == '7' ) {
-            user.setPhone( originalPhone.replaceFirst("7", "8") );
-        }
-    }
-
-    private User setModerator(User user) {
-
-        List<User> moderators = userRepository.findUsersByRoleName("MODERATOR");
-
-        User userModerator = null;
-
-        for (User moderator : moderators) {
-
-            if ( userModerator == null )
-                userModerator = moderator;
-            else {
-
-                if ( moderator.getLastUserAcceptDate() == null ) {
-                    userModerator = moderator;
-                    break;
-                }
-                else if ( userModerator.getLastUserAcceptDate() == null ) {
-                    break;
-                }
-                else if ( moderator.getLastUserAcceptDate().before( userModerator.getLastUserAcceptDate() ) ) {
-                    userModerator = moderator;
-                }
-
-            }
-
-        }
-
-        if ( userModerator != null ) {
-            logger.info( "Got moderator \"{}\" for user \"{}\"", userModerator.getFio(), user.getFio() );
-            user.setModeratorId( userModerator.getId() );
-            webSocketController.sendCounterRefreshMessage( userModerator.getId() );
-
-            userModerator.setLastUserAcceptDate( new Date() );
-            userRepository.save( userModerator );
-
-            return userModerator;
-        }
-        else {
-            logger.error("Moderator not found");
-            return null;
-        }
-
-    }
-
-    private void buildRegistrationEventMessage(User targetUser, User sendUser) {
-
-        EventMessage eventMessage = new EventMessage();
-        eventMessage.setSendUser( sendUser );
-        eventMessage.setTargetUser( targetUser );
-        eventMessage.setMessageType( MessageType.USER_REGISTER );
-        eventMessage.setMessageDate( new Date() );
-
-        eventMessageRepository.save(eventMessage);
-
-        webSocketController.sendEventMessage( eventMessage, targetUser.getId() );
-
     }
 
 }

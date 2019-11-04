@@ -22,8 +22,10 @@ export class AdminLayoutComponent implements OnInit {
 
             if ( userService.isTokenExists() )
               userService.getCurrentUser();
-            else
+            else {
+              localStorage.setItem('redirectUrl', val.url);
               router.navigate(['login']);
+            }
 
           }
           else if ( userService.isAuthenticated() )

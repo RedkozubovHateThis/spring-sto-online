@@ -85,6 +85,15 @@ public interface DocumentServiceDetailRepository extends PagingAndSortingReposit
             "WHERE c.id = :clientId")
     Integer[] collectIdsByClientId(@Param("clientId") Integer clientId);
 
+    @Query("SELECT DISTINCT dsd.id FROM DocumentServiceDetail AS dsd " +
+            "INNER JOIN dsd.documentOutHeader AS doh " +
+            "INNER JOIN doh.documentOut AS do " +
+            "INNER JOIN do.client AS c " +
+            "WHERE c.id = :clientId " +
+            "AND doh.state = :state")
+    Integer[] collectIdsByClientIdAndState(@Param("clientId") Integer clientId,
+                                           @Param("state") Integer state);
+
     @Query("SELECT COUNT(DISTINCT dsd.id) FROM DocumentServiceDetail AS dsd " +
             "INNER JOIN dsd.documentOutHeader AS doh " +
             "INNER JOIN doh.documentOut AS do " +

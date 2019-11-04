@@ -11,7 +11,9 @@
               <button class="btn btn-sm btn-buro-green" (click)="location.back()">
                 Назад
               </button>
-              <app-report-button [model]="model"></app-report-button>
+              <app-report-button *ngIf="userService.currentUser &&
+              ( userService.currentUser.moderator || userService.currentUser.admin )"
+                                 [model]="model"></app-report-button>
             </div>
           </div>
         </div>

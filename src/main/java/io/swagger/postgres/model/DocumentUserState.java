@@ -24,4 +24,6 @@ public class DocumentUserState implements Serializable {
 
     private Date lastUpdateDate;
 
+    private Integer clientId;
+
 }
