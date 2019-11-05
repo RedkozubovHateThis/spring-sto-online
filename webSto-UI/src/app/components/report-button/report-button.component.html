@@ -9,39 +9,51 @@
     <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
   </button>
   <div ngbDropdownMenu aria-labelledby="reports-dropdown">
-    <button class="dropdown-item" (click)="downloadReport('ORDER', 'Заказ-наряд')" [disabled]="isDownloading">
+    <button class="dropdown-item" (click)="downloadReport('ORDER', 'Заказ-наряд', false)" [disabled]="isDownloading">
       Заказ-наряд
       <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
     </button>
-    <button class="dropdown-item" (click)="downloadReport('ORDER_ACT', 'Акт на выполненные работы')" [disabled]="isDownloading">
+    <button class="dropdown-item" (click)="downloadReport('ORDER', 'Заказ-наряд', true)" [disabled]="isDownloading">
+      Заказ-наряд (с печатью)
+      <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+    </button>
+    <button class="dropdown-item" (click)="downloadReport('ORDER_ACT', 'Акт на выполненные работы', false)" [disabled]="isDownloading">
       Акт на выполненные работы
       <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
     </button>
-    <button class="dropdown-item" (click)="downloadReport('ORDER_REQUEST', 'Заявка на ремонт автомобиля')" [disabled]="isDownloading">
+    <button class="dropdown-item" (click)="downloadReport('ORDER_ACT', 'Акт на выполненные работы', true)" [disabled]="isDownloading">
+      Акт на выполненные работы (с печатью)
+      <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+    </button>
+    <button class="dropdown-item" (click)="downloadReport('ORDER_REQUEST', 'Заявка на ремонт автомобиля', false)" [disabled]="isDownloading">
       Заявка на ремонт автомобиля
       <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
     </button>
-    <button class="dropdown-item" (click)="downloadReport('ORDER_INSPECTION', 'Акт осмотра')" [disabled]="isDownloading">
+    <button class="dropdown-item" (click)="downloadReport('ORDER_INSPECTION', 'Акт осмотра', false)" [disabled]="isDownloading">
       Акт осмотра
       <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
     </button>
-    <button class="dropdown-item" (click)="downloadReport('ORDER_TRANSFER', 'Универсальный передаточный документ')" [disabled]="isDownloading">
+    <button class="dropdown-item" (click)="downloadReport('ORDER_TRANSFER', 'Универсальный передаточный документ', false)" [disabled]="isDownloading">
       Универсальный передаточный документ
       <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
     </button>
-    <button class="dropdown-item" (click)="downloadReport('ORDER_TASK', 'Задание на ремонтные работы')" [disabled]="isDownloading">
+    <button class="dropdown-item" (click)="downloadReport('ORDER_TRANSFER', 'Универсальный передаточный документ', true)" [disabled]="isDownloading">
+      Универсальный передаточный документ (с печатью)
+      <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+    </button>
+    <button class="dropdown-item" (click)="downloadReport('ORDER_TASK', 'Задание на ремонтные работы', false)" [disabled]="isDownloading">
       Задание на ремонтные работы
       <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
     </button>
-    <button class="dropdown-item" (click)="downloadReport('ORDER_REQUIREMENT', 'Требование на запчасти')" [disabled]="isDownloading">
+    <button class="dropdown-item" (click)="downloadReport('ORDER_REQUIREMENT', 'Требование на запчасти', false)" [disabled]="isDownloading">
       Требование на запчасти
       <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
     </button>
-    <button class="dropdown-item" (click)="downloadReport('ORDER_RECEIPT', 'Расписка о приеме автомобиля')" [disabled]="isDownloading">
+    <button class="dropdown-item" (click)="downloadReport('ORDER_RECEIPT', 'Расписка о приеме автомобиля', false)" [disabled]="isDownloading">
       Расписка о приеме автомобиля
       <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
     </button>
-    <button class="dropdown-item" (click)="downloadReport('ORDER_DEFECTION', 'Акт дефектовки')" [disabled]="isDownloading">
+    <button class="dropdown-item" (click)="downloadReport('ORDER_DEFECTION', 'Акт дефектовки', false)" [disabled]="isDownloading">
       Акт дефектовки
       <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
     </button>

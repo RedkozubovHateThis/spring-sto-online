@@ -45,7 +45,7 @@ public class ReportServiceImpl implements ReportService {
     private Boolean demoDomain;
 
     @Override
-    public byte[] getOrderReport(Integer documentId) throws IOException, JRException, DataNotFoundException {
+    public byte[] getOrderReport(Integer documentId, Boolean printStamp) throws IOException, JRException, DataNotFoundException {
 
         DocumentServiceDetail document = documentServiceDetailRepository.findOne( documentId );
         if ( document == null ) throw new DataNotFoundException();
@@ -54,7 +54,7 @@ public class ReportServiceImpl implements ReportService {
         InputStream templateStream = new FileInputStream(template);
 
         Map<String, Object> parameters = new HashMap<>();
-        fillOrderReportParameters( parameters, document );
+        fillOrderReportParameters( parameters, document, printStamp );
         JRBeanCollectionDataSource serviceWorkData = new JRBeanCollectionDataSource( getServiceWorkData( parameters, document ) );
         JRBeanCollectionDataSource serviceGoodsData = new JRBeanCollectionDataSource( getServiceGoodsData( parameters, document ) );
         JRBeanCollectionDataSource clientGoodsData = new JRBeanCollectionDataSource( getClientGoodsData( document ) );
@@ -67,7 +67,7 @@ public class ReportServiceImpl implements ReportService {
         return JasperExportManager.exportReportToPdf( jasperPrint );
     }
 
-    private void fillOrderReportParameters(Map<String, Object> parameters, DocumentServiceDetail document) throws DataNotFoundException {
+    private void fillOrderReportParameters(Map<String, Object> parameters, DocumentServiceDetail document, Boolean printStamp) throws DataNotFoundException {
 
         DocumentOutHeader documentOutHeader = document.getDocumentOutHeader();
         if ( documentOutHeader == null ) throw new DataNotFoundException();
@@ -89,25 +89,27 @@ public class ReportServiceImpl implements ReportService {
 
         parameters.put( "employeeFio", employee.getShortName() );
 
-//        try {
-//
-//            Organization organization = documentOut.getOrganization();
-//            if ( organization == null ) throw new DataNotFoundException();
-//
-//            ByteArrayInputStream bais = new ByteArrayInputStream( organization.getStampSource() );
-//            BufferedImage bufferedImage = ImageIO.read( bais );
-//
-//            parameters.put("stamp", bufferedImage);
-//
-//        }
-//        catch ( Exception e ) {
-//            e.printStackTrace();
-//        }
+        if ( printStamp ) {
+            try {
+
+                Organization organization = documentOut.getOrganization();
+                if ( organization == null ) throw new DataNotFoundException();
+
+                ByteArrayInputStream bais = new ByteArrayInputStream( organization.getStampSource() );
+                BufferedImage bufferedImage = ImageIO.read( bais );
+
+                parameters.put("stamp", bufferedImage);
+
+            }
+            catch ( Exception e ) {
+                e.printStackTrace();
+            }
+        }
 
     }
 
     @Override
-    public byte[] getOrderActReport(Integer documentId) throws IOException, JRException, DataNotFoundException {
+    public byte[] getOrderActReport(Integer documentId, Boolean printStamp) throws IOException, JRException, DataNotFoundException {
 
         DocumentServiceDetail document = documentServiceDetailRepository.findOne( documentId );
         if ( document == null ) throw new DataNotFoundException();
@@ -116,7 +118,7 @@ public class ReportServiceImpl implements ReportService {
         InputStream templateStream = new FileInputStream(template);
 
         Map<String, Object> parameters = new HashMap<>();
-        fillOrderActReportParameters( parameters, document );
+        fillOrderActReportParameters( parameters, document, printStamp );
         JRBeanCollectionDataSource serviceWorkData = new JRBeanCollectionDataSource( getServiceWorkData( parameters, document ) );
         JRBeanCollectionDataSource serviceGoodsData = new JRBeanCollectionDataSource( getServiceGoodsData( parameters, document ) );
         parameters.put("serviceWorkData", serviceWorkData);
@@ -132,7 +134,7 @@ public class ReportServiceImpl implements ReportService {
         return JasperExportManager.exportReportToPdf( jasperPrint );
     }
 
-    private void fillOrderActReportParameters(Map<String, Object> parameters, DocumentServiceDetail document) throws DataNotFoundException {
+    private void fillOrderActReportParameters(Map<String, Object> parameters, DocumentServiceDetail document, Boolean printStamp) throws DataNotFoundException {
 
         DocumentOutHeader documentOutHeader = document.getDocumentOutHeader();
         if ( documentOutHeader == null ) throw new DataNotFoundException();
@@ -148,6 +150,23 @@ public class ReportServiceImpl implements ReportService {
         fillCustomerParameters(parameters, documentOut, true, false);
         fillVehicleParameters(parameters, document, false, true, false);
         fillRepairParameters(parameters, document, false, false, true);
+
+        if ( printStamp ) {
+            try {
+
+                Organization organization = documentOut.getOrganization();
+                if ( organization == null ) throw new DataNotFoundException();
+
+                ByteArrayInputStream bais = new ByteArrayInputStream( organization.getStampSource() );
+                BufferedImage bufferedImage = ImageIO.read( bais );
+
+                parameters.put("stamp", bufferedImage);
+
+            }
+            catch ( Exception e ) {
+                e.printStackTrace();
+            }
+        }
 
     }
 
@@ -430,7 +449,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public byte[] getOrderTransferReport(Integer documentId) throws IOException, JRException, DataNotFoundException {
+    public byte[] getOrderTransferReport(Integer documentId, Boolean printStamp) throws IOException, JRException, DataNotFoundException {
 
         DocumentServiceDetail document = documentServiceDetailRepository.findOne( documentId );
         if ( document == null ) throw new DataNotFoundException();
@@ -439,7 +458,7 @@ public class ReportServiceImpl implements ReportService {
         InputStream templateStream = new FileInputStream(template);
 
         Map<String, Object> parameters = new HashMap<>();
-        fillOrderTransferReportParameters( parameters, document );
+        fillOrderTransferReportParameters( parameters, document, printStamp );
         JRBeanCollectionDataSource transferData = new JRBeanCollectionDataSource( getTransferData( document ) );
         parameters.put("workData", transferData);
         parameters.put("subReportFile", reportsCatalog + "orderTransferSub.jasper");
@@ -449,7 +468,7 @@ public class ReportServiceImpl implements ReportService {
         return JasperExportManager.exportReportToPdf( jasperPrint );
     }
 
-    private void fillOrderTransferReportParameters(Map<String, Object> parameters, DocumentServiceDetail document) throws DataNotFoundException {
+    private void fillOrderTransferReportParameters(Map<String, Object> parameters, DocumentServiceDetail document, Boolean printStamp) throws DataNotFoundException {
 
         DocumentOutHeader documentOutHeader = document.getDocumentOutHeader();
         if ( documentOutHeader == null ) throw new DataNotFoundException();
@@ -486,6 +505,20 @@ public class ReportServiceImpl implements ReportService {
         parameters.put( "clientName", client.getFullName() );
         if ( clientContact != null ) {
             parameters.put( "clientAddress", clientContact.getContactFull() );
+        }
+
+        if ( printStamp ) {
+            try {
+
+                ByteArrayInputStream bais = new ByteArrayInputStream( organization.getStampSource() );
+                BufferedImage bufferedImage = ImageIO.read( bais );
+
+                parameters.put("stamp", bufferedImage);
+
+            }
+            catch ( Exception e ) {
+                e.printStackTrace();
+            }
         }
 
     }

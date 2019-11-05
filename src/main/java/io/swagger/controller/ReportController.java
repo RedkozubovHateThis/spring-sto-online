@@ -34,8 +34,9 @@ public class ReportController {
     @Value("${domain.demo}")
     private Boolean demoDomain;
 
-    @GetMapping("{documentId}/{reportType}")
+    @GetMapping("{documentId}/{reportType}/{printStamp}")
     public ResponseEntity getOrderResponse(@PathVariable("documentId") Integer documentId,
+                                           @PathVariable("printStamp") Boolean printStamp,
                                            @PathVariable("reportType") ReportType reportType) {
 
         User currentUser = userRepository.findCurrentUser();
@@ -45,15 +46,15 @@ public class ReportController {
         try {
             byte[] response;
             switch (reportType) {
-                case ORDER: response = reportService.getOrderReport(documentId); break;
-                case ORDER_ACT: response = reportService.getOrderActReport(documentId); break;
+                case ORDER: response = reportService.getOrderReport(documentId, printStamp); break;
+                case ORDER_ACT: response = reportService.getOrderActReport(documentId, printStamp); break;
                 case ORDER_DEFECTION: response = reportService.getOrderDefectionReport(documentId); break;
                 case ORDER_INSPECTION: response = reportService.getOrderInspectionReport(documentId); break;
                 case ORDER_RECEIPT: response = reportService.getOrderReceiptReport(documentId); break;
                 case ORDER_REQUEST: response = reportService.getOrderRequestReport(documentId); break;
                 case ORDER_REQUIREMENT: response = reportService.getOrderRequirementReport(documentId); break;
                 case ORDER_TASK: response = reportService.getOrderTaskReport(documentId); break;
-                case ORDER_TRANSFER: response = reportService.getOrderTransferReport(documentId); break;
+                case ORDER_TRANSFER: response = reportService.getOrderTransferReport(documentId, printStamp); break;
                 default: return ResponseEntity.status(400).build();
             }
 

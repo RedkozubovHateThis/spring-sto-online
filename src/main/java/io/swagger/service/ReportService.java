@@ -11,9 +11,9 @@ import java.util.Date;
 import java.util.List;
 
 public interface ReportService {
-    byte[] getOrderReport(Integer documentId) throws IOException, JRException, DataNotFoundException;
+    byte[] getOrderReport(Integer documentId, Boolean printStamp) throws IOException, JRException, DataNotFoundException;
 
-    byte[] getOrderActReport(Integer documentId) throws IOException, JRException, DataNotFoundException;
+    byte[] getOrderActReport(Integer documentId, Boolean printStamp) throws IOException, JRException, DataNotFoundException;
 
     byte[] getOrderRequestReport(Integer documentId) throws IOException, JRException, DataNotFoundException;
 
@@ -27,7 +27,7 @@ public interface ReportService {
 
     byte[] getOrderDefectionReport(Integer documentId) throws IOException, JRException, DataNotFoundException;
 
-    byte[] getOrderTransferReport(Integer documentId) throws IOException, JRException, DataNotFoundException;
+    byte[] getOrderTransferReport(Integer documentId, Boolean printStamp) throws IOException, JRException, DataNotFoundException;
 
     byte[] getExecutorsReport(Integer organizationId, Date startDate, Date endDate) throws IOException, JRException, DataNotFoundException;
 

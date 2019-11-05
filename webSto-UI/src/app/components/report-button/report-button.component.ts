@@ -32,11 +32,11 @@ export class ReportButtonComponent implements OnInit {
   ngOnInit() {
   }
 
-  downloadReport(reportType: string, reportName: string) {
+  downloadReport(reportType: string, reportName: string, printStamp: boolean) {
     const headers = this.userService.getHeaders();
 
     this.isDownloading = true;
-    this.httpClient.get(`${this.userService.getApiUrl()}secured/reports/${this.model.id}/${reportType}`,
+    this.httpClient.get(`${this.userService.getApiUrl()}secured/reports/${this.model.id}/${reportType}/${printStamp}`,
       {headers, responseType: 'blob'} ).subscribe( response => {
 
       this.isDownloading = false;
