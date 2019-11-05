@@ -13,7 +13,7 @@ export class EventMessagesFilter {
     this.toId = null;
     this.documentId = null;
     this.sort = 'messageDate';
-    this.direction = 'asc';
+    this.direction = 'desc';
   }
 
 }

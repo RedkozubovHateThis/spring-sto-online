@@ -63,6 +63,8 @@ export class EventMessagesComponent extends Pagination {
       case 'DOCUMENT_CHANGE': return 'Изменение документа';
       case 'USER_REGISTER': return 'Регистрация пользователя';
       case 'USER_AUTODEALER': return 'Привязка к системе АвтоДилер';
+      case 'USER_APPROVE': return 'Подтверждение привязки к системе АвтоДилер';
+      case 'USER_REJECT': return 'Отмена привязки к системе АвтоДилер';
     }
   }
 

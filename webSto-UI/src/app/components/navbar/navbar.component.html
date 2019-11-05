@@ -6,7 +6,7 @@
     </a>
     <!-- User -->
     <ul class="navbar-nav align-items-center d-none d-md-flex">
-      <li class="nav-item" ngbDropdown placement="bottom-right" *ngIf="userService.currentUser && ( userService.currentUser.moderator || userService.currentUser.admin )">
+      <li class="nav-item" ngbDropdown placement="bottom-right" *ngIf="userService.currentUser">
         <a class="nav-link pr-0" style="cursor: pointer;" role="button" ngbDropdownToggle>
           <div class="media align-items-center">
             <span class="avatar avatar-sm rounded-circle">
@@ -35,8 +35,14 @@
               <div *ngIf="message.messageType === 'USER_REGISTER'">
                 Пользователь {{message.fromFio}} зарегистрировался на сайте
               </div>
-              <div *ngIf="message.messageType === 'USER_REGISTER'">
+              <div *ngIf="message.messageType === 'USER_AUTODEALER'">
                 Пользователь {{message.fromFio}} совершил привязку к системе АвтоДилер
+              </div>
+              <div *ngIf="message.messageType === 'USER_APPROVE'">
+                Модератор {{message.fromFio}} подтвердил привязку к системе АвтоДилер
+              </div>
+              <div *ngIf="message.messageType === 'USER_REJECT'">
+                Модератор {{message.fromFio}} отменил привязку к системе АвтоДилер
               </div>
             </div>
           </ng-container>

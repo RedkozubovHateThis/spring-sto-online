@@ -95,6 +95,11 @@ public class SchedulerService {
         logger.info(" [ SCHEDULER ] Found documents {}", Arrays.toString( documentIds ) );
 
         if ( documentUserState == null ) {
+            logger.info(" [ SCHEDULER ] State not found. Searching by client id...");
+            documentUserState = documentUserStateRepository.findByClientId( user.getClientId() );
+        }
+
+        if ( documentUserState == null ) {
             logger.info(" [ SCHEDULER ] State not found. Creating new...");
 
             documentUserState = new DocumentUserState();

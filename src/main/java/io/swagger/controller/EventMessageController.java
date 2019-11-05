@@ -41,10 +41,6 @@ public class EventMessageController {
 
         User currentUser = userRepository.findCurrentUser();
 
-        if ( !UserHelper.hasRole( currentUser, "ADMIN" ) && !UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
-            return ResponseEntity.status(404).build();
-        }
-
         Specification<EventMessage> specification = EventMessageSpecificationBuilder.buildSpecification(currentUser, filterPayload);
         Page<EventMessage> result = eventMessageRepository.findAll(specification, pageable);
 

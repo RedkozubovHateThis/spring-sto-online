@@ -84,14 +84,12 @@ export class WebSocketService {
       });
     });
 
-    if ( this.userService.currentUser.admin || this.userService.currentUser.moderator ) {
-      this.eventMessageResponseService.getLast5();
-      this.client.subscribe('/topic/event/' + this.userService.currentUser.id, message => {
-        const eventMessage: EventMessageResponse = JSON.parse( message.body );
-        this.eventMessageResponseService.addMessage( eventMessage );
-        me.buildMessage( eventMessage );
-      });
-    }
+    this.eventMessageResponseService.getLast5();
+    this.client.subscribe('/topic/event/' + this.userService.currentUser.id, message => {
+      const eventMessage: EventMessageResponse = JSON.parse( message.body );
+      this.eventMessageResponseService.addMessage( eventMessage );
+      me.buildMessage( eventMessage );
+    });
 
     if ( localStorage.getItem('demoDomain') != null && localStorage.getItem('demoDomain') !== 'null' ) {
       this.chatMessageResponseService.createGreetMessage();
@@ -110,6 +108,10 @@ export class WebSocketService {
       messageText = `Пользователь ${eventMessage.fromFio} зарегистрировался на сайте`;
     else if ( eventMessage.messageType === 'USER_AUTODEALER' )
       messageText = `Пользователь ${eventMessage.fromFio} совершил привязку к системе АвтоДилер`;
+    else if ( eventMessage.messageType === 'USER_APPROVE' )
+      messageText = `Модератор ${eventMessage.fromFio} подтвердил привязку к системе АвтоДилер`;
+    else if ( eventMessage.messageType === 'USER_REJECT' )
+      messageText = `Модератор ${eventMessage.fromFio} отменил привязку к системе АвтоДилер`;
     else
       return;
 

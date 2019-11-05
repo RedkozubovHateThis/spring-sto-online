@@ -11,7 +11,7 @@
     </a>
     <!-- User -->
     <ul class="nav align-items-center d-md-none">
-      <li class="nav-item" ngbDropdown placement="auto" *ngIf="userService.currentUser && ( userService.currentUser.moderator || userService.currentUser.admin )">
+      <li class="nav-item" ngbDropdown placement="auto" *ngIf="userService.currentUser">
         <a class="nav-link pr-0" style="cursor: pointer;" role="button" ngbDropdownToggle>
           <div class="media align-items-center">
             <span class="avatar avatar-sm rounded-circle">
@@ -40,8 +40,14 @@
               <div *ngIf="message.messageType === 'USER_REGISTER'">
                 Пользователь {{message.fromFio}} зарегистрировался на сайте
               </div>
-              <div *ngIf="message.messageType === 'USER_REGISTER'">
+              <div *ngIf="message.messageType === 'USER_AUTODEALER'">
                 Пользователь {{message.fromFio}} совершил привязку к системе АвтоДилер
+              </div>
+              <div *ngIf="message.messageType === 'USER_APPROVE'">
+                Модератор {{message.fromFio}} подтвердил привязку к системе АвтоДилер
+              </div>
+              <div *ngIf="message.messageType === 'USER_REJECT'">
+                Модератор {{message.fromFio}} отменил привязку к системе АвтоДилер
               </div>
             </div>
           </ng-container>
@@ -114,8 +120,7 @@
            userService.currentUser.moderator || userService.currentUser.serviceLeader)">
             <i class="fas fa-copy text-buro-green"></i> Отчеты
         </a>
-        <a routerLinkActive="active" [routerLink]="['/event-messages']" class="nav-link"
-           *ngIf="userService.currentUser != null && ( userService.currentUser.admin || userService.currentUser.moderator )">
+        <a routerLinkActive="active" [routerLink]="['/event-messages']" class="nav-link">
           <i class="fas fa-bell text-buro-green"></i> Уведомления
         </a>
       </ul>

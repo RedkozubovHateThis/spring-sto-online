@@ -34,6 +34,18 @@ public class EventMessageSpecificationBuilder {
                         filterPayload.getMessageTypes() != null && filterPayload.getMessageTypes().size() > 0 ) {
                     predicates.add( root.get( EventMessage_.messageType ).in( filterPayload.getMessageTypes() ) );
                 }
+                else if ( UserHelper.hasRole( currentUser, "CLIENT" ) ||
+                        UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
+                    predicates.add(
+                        cb.or(
+                                cb.equal( root.get( EventMessage_.messageType ), MessageType.USER_APPROVE ),
+                                cb.equal( root.get( EventMessage_.messageType ), MessageType.USER_REJECT )
+                        )
+                    );
+                    predicates.add(
+                            cb.equal( toUserJoin.get( User_.id ), currentUser.getId() )
+                    );
+                }
 
                 if ( filterPayload.getFromIds() != null && filterPayload.getFromIds().size() > 0 ) {
                     predicates.add( fromUserJoin.get( User_.id ).in( filterPayload.getFromIds() ) );

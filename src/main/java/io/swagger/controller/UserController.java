@@ -62,12 +62,29 @@ public class UserController {
         boolean sendMessage = false;
         User targetUser = null;
         EventMessageStatus eventMessageStatus = null;
+        boolean sendEventMessage = false;
+        MessageType eventMessageType = null;
 
         if ( UserHelper.hasRole( user, "CLIENT" ) && user.getModeratorId() != null )
             eventMessageStatus = isClientIdChanged(user, existingUser);
 
         if ( UserHelper.hasRole( user, "SERVICE_LEADER" ) && user.getModeratorId() != null )
             eventMessageStatus = isOrganizationIdChanged(user, existingUser);
+
+        if ( UserHelper.hasRole( currentUser, "MODERATOR" ) &&
+                ( UserHelper.hasRole( user, "CLIENT" ) ||
+                        UserHelper.hasRole( user, "SERVICE_LEADER" ) ) ) {
+
+            if ( !existingUser.getIsApproved() && user.getIsApproved() ) {
+                eventMessageType = MessageType.USER_APPROVE;
+                sendEventMessage = true;
+            }
+            else if ( existingUser.getIsApproved() && !user.getIsApproved() ) {
+                eventMessageType = MessageType.USER_REJECT;
+                sendEventMessage = true;
+            }
+
+        }
 
         Long replacementModeratorId = user.getCurrentReplacementModeratorId();
         if ( replacementModeratorId != null ) {
@@ -104,6 +121,9 @@ public class UserController {
         }
         if ( eventMessageStatus != null && eventMessageStatus.getSending() ) {
             buildAutodealerEventMessage(eventMessageStatus.getTargetUser(), user);
+        }
+        if ( sendEventMessage ) {
+            buildAutodealerApproveEventMessage(user, currentUser, eventMessageType);
         }
 
         return ResponseEntity.ok(user);
@@ -147,6 +167,20 @@ public class UserController {
         eventMessage.setSendUser( sendUser );
         eventMessage.setTargetUser( targetUser );
         eventMessage.setMessageType( MessageType.USER_AUTODEALER );
+        eventMessage.setMessageDate( new Date() );
+
+        eventMessageRepository.save(eventMessage);
+
+        webSocketController.sendEventMessage( eventMessage, targetUser.getId() );
+
+    }
+
+    private void buildAutodealerApproveEventMessage(User targetUser, User sendUser, MessageType messageType) {
+
+        EventMessage eventMessage = new EventMessage();
+        eventMessage.setSendUser( sendUser );
+        eventMessage.setTargetUser( targetUser );
+        eventMessage.setMessageType( messageType );
         eventMessage.setMessageDate( new Date() );
 
         eventMessageRepository.save(eventMessage);

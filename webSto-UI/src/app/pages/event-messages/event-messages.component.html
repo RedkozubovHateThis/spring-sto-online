@@ -56,6 +56,12 @@
                 <th></th>
                 <th></th>
               </ng-container>
+              <ng-container *ngIf="emResponse.messageType === 'USER_APPROVE' || emResponse.messageType === 'USER_REJECT'">
+                <th>{{emResponse.fromFio}}</th>
+                <th>{{emResponse.toFio}}</th>
+                <th></th>
+                <th></th>
+              </ng-container>
             </tr>
             </tbody>
           </table>
