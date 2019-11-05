@@ -169,6 +169,9 @@
                     Отменить<span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
                   </button>
                 </ng-template>
+                <button class="btn btn-danger" (click)="removeLink( model )" [disabled]="model.clientId == null && model.organizationId == null">
+                  Отклонить<span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
+                </button>
               </div>
 
             </div>

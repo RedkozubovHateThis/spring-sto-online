@@ -96,4 +96,13 @@ export class UserComponent extends ModelTransfer<User, number> implements OnInit
     this.userService.saveUser(user, `Пользователь успешно ${approved ? 'подвтержден' : 'отменен'}!`);
   }
 
+  private removeLink(user: User) {
+    user.isApproved = false;
+    user.clientId = null;
+    user.organizationId = null;
+    this.clientResponse = null;
+    this.organizationResponse = null;
+    this.userService.saveUser(user, `Привязка успешно удалена!`);
+  }
+
 }
