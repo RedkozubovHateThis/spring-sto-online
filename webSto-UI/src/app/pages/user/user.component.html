@@ -154,6 +154,11 @@
                 <span id="organization-full-name" class="form-control form-control-alternative">{{organizationResponse.fullName}}</span>
               </div>
 
+              <div class="form-group" *ngIf="( model.serviceLeader && model.organizationId == null ) ||
+              ( model.client && model.clientId == null )">
+                <span class="form-control form-control-alternative">Необходимо выполнить привязку к системе АвтоДилер</span>
+              </div>
+
               <div class="form-group"
                    *ngIf="userService.currentUser != null && model != null && userService.currentUser.moderator && model.id != userService.currentUser.id">
                 <button class="btn btn-buro-green" [disabled]="model.clientId == null && model.organizationId == null" (click)="approve( model, true )" *ngIf="!model.isApproved; else disapprove">
