@@ -58,8 +58,10 @@ export class DocumentComponent extends ModelTransfer<DocumentResponse, number> i
       .subscribe( data => {
           this.model = data as DocumentResponse;
           this.isUpdating = false;
+        this.toastrService.success('Стоимость работы успешно изменена');
       }, () => {
         this.isUpdating = false;
+        this.toastrService.error('Ошибка изменения стоимости работы!');
       } );
   }
 
@@ -73,8 +75,10 @@ export class DocumentComponent extends ModelTransfer<DocumentResponse, number> i
       .subscribe( data => {
           this.model = data as DocumentResponse;
           this.isUpdating = false;
+        this.toastrService.success('Стоимость товара успешно изменена');
       }, () => {
         this.isUpdating = false;
+        this.toastrService.error('Ошибка изменения стоимости товара!');
       } );
   }
 
