@@ -85,16 +85,20 @@
 
     <div class="form-group">
       <div class="row">
-        <div class="col-xl-auto col-lg-auto col-sm-auto col-xs-12 mb-3">
+        <div class="col-xl-12 col-lg-6 col-sm col-xs-12">
           <label class="form-control-label" for="from-date-picker">Дата начала ремонта - от</label>
           <div>
-            <dp-day-calendar id="from-date-picker" (onSelect)="setFromDate()" [(ngModel)]="fromDate" [config]="datePickerConfig" theme="dp-material"></dp-day-calendar>
+            <input class="form-control form-control-alternative form-control-sm" id="from-date-picker" [mode]="'day'"
+                   placeholder="выберите дату - от"
+                   (ngModelChange)="setFromDate($event)" [(ngModel)]="fromDate" [dpDayPicker]="datePickerConfig" theme="dp-material" />
           </div>
         </div>
-        <div class="col-xl-auto col-lg-auto col-sm-auto col-xs-12">
+        <div class="col-xl-12 col-lg-6 col-sm col-xs-12">
           <label class="form-control-label" for="to-date-picker">Дата начала ремонта - до</label>
           <div>
-            <dp-day-calendar id="to-date-picker" (onSelect)="setToDate()" [(ngModel)]="toDate" [config]="datePickerConfig" theme="dp-material"></dp-day-calendar>
+            <input class="form-control form-control-alternative form-control-sm" id="to-date-picker" [mode]="'day'"
+                   placeholder="выберите дату - до"
+                   (ngModelChange)="setToDate($event)" [(ngModel)]="toDate" [dpDayPicker]="datePickerConfig" theme="dp-material" />
           </div>
         </div>
       </div>

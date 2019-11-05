@@ -37,9 +37,9 @@ export class DocumentFilterComponent implements OnInit {
   private datePickerConfig = {
     locale: 'ru',
     firstDayOfWeek: 'mo',
-    showGoToCurrent: true,
+    // showGoToCurrent: true,
     format: 'DD.MM.YYYY',
-    monthFormat: 'MM, YYYY'
+    // monthFormat: 'MM, YYYY'
   };
   private fromDate: moment.Moment;
   private toDate: moment.Moment;
@@ -59,13 +59,13 @@ export class DocumentFilterComponent implements OnInit {
       this.toDate = moment(this.filter.toDate, 'DD.MM.YYYY');
   }
 
-  setFromDate() {
-    this.filter.fromDate = this.fromDate.format('DD.MM.YYYY');
+  setFromDate(e) {
+    this.filter.fromDate = e;
     this.emitChange();
   }
 
-  setToDate() {
-    this.filter.toDate = this.toDate.format('DD.MM.YYYY');
+  setToDate(e) {
+    this.filter.toDate = e;
     this.emitChange();
   }
 
