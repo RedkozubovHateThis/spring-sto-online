@@ -1,5 +1,6 @@
 <div ngbDropdown class="d-inline-block" placement="auto">
-  <button class="btn btn-sm btn-buro-green" id="reports-dropdown" [disabled]="isDownloading || model == null" ngbDropdownToggle>
+  <button class="btn btn-sm btn-buro-green" id="reports-dropdown" [disabled]="isDownloading || model == null" ngbDropdownToggle
+          [ngbTooltip]="withPrint ? 'Выгрузить и распечатать...' : 'Выгрузить...'">
     <span *ngIf="withPrint">
       <i class="fas fa-print"></i>
     </span>
