@@ -36,6 +36,7 @@
                 <th scope="col">Телефон</th>
                 <th scope="col">Email</th>
                 <th scope="col">Роли</th>
+                <th scope="col">Утвержден</th>
               </tr>
             </thead>
             <tbody *ngIf="all != null">
@@ -49,6 +50,11 @@
                 <span *ngFor="let userRole of user.roles">
                   {{userRole.nameRus}}&nbsp;
                 </span>
+              </th>
+              <th>
+                <ng-container *ngIf="user.client || user.serviceLeader">
+                  {{user.isApproved ? 'Да' : 'Нет'}}
+                </ng-container>
               </th>
             </tr>
             </tbody>
