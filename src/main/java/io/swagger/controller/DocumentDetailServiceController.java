@@ -164,7 +164,9 @@ public class DocumentDetailServiceController {
         User currentUser = userRepository.findCurrentUser();
         if ( currentUser == null ) return ResponseEntity.status(401).build();
 
-        if ( !UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) return ResponseEntity.status(403).build();
+        if ( !UserHelper.hasRole( currentUser, "MODERATOR" ) &&
+                !UserHelper.hasRole( currentUser, "ADMIN" ) &&
+                !UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) return ResponseEntity.status(403).build();
 
         if ( byPrice )
             serviceWorkRepository.updateServiceWorkByPrice( serviceWorkId, price );
@@ -208,7 +210,9 @@ public class DocumentDetailServiceController {
         User currentUser = userRepository.findCurrentUser();
         if ( currentUser == null ) return ResponseEntity.status(401).build();
 
-        if ( !UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) return ResponseEntity.status(403).build();
+        if ( !UserHelper.hasRole( currentUser, "MODERATOR" ) &&
+                !UserHelper.hasRole( currentUser, "ADMIN" ) &&
+                !UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) return ResponseEntity.status(403).build();
 
         serviceGoodsAddonRepository.updateCost( serviceGoodsAddonId, cost );
 

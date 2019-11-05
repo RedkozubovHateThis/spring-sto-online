@@ -167,7 +167,8 @@
                   <thead class="thead-light">
                   <tr>
                     <th scope="col">Наименование работ</th>
-                    <th scope="col" style="width: 175px;" *ngIf="userService.currentUser && userService.currentUser.serviceLeader">
+                    <th scope="col" style="width: 175px;" *ngIf="userService.currentUser &&
+                    ( userService.currentUser.serviceLeader || userService.currentUser.admin || userService.currentUser.moderator )">
                       Стоимость по Н/Ч /
                       <div>
                         Фиксированная стоимость
@@ -186,7 +187,8 @@
                     <th>
                       {{work.name}}
                     </th>
-                    <th *ngIf="userService.currentUser && userService.currentUser.serviceLeader">
+                    <th *ngIf="userService.currentUser &&
+                    ( userService.currentUser.serviceLeader || userService.currentUser.admin || userService.currentUser.moderator )">
                       <div class="input-group input-group-sm" *ngIf="work.byPrice; else byPriceNorm">
                         <input type="number" class="form-control" (keyup.enter)="updatePrice(model, work, work.price)"
                                [(ngModel)]="work.price" [placeholder]="work.price"/>
@@ -248,7 +250,8 @@
                   <thead class="thead-light">
                   <tr>
                     <th scope="col">Наименование товара</th>
-                    <th scope="col" style="width: 175px;" *ngIf="userService.currentUser && userService.currentUser.serviceLeader">Стоимость товара</th>
+                    <th scope="col" style="width: 175px;" *ngIf="userService.currentUser &&
+                    ( userService.currentUser.serviceLeader || userService.currentUser.admin || userService.currentUser.moderator )">Стоимость товара</th>
                     <th scope="col" style="text-align: right; width: 175px;">
                       Стоимость товара
                       <div class="text-muted">
@@ -262,7 +265,8 @@
                     <th>
                       {{addon.fullName}}
                     </th>
-                    <th *ngIf="userService.currentUser && userService.currentUser.serviceLeader">
+                    <th *ngIf="userService.currentUser &&
+                    ( userService.currentUser.serviceLeader || userService.currentUser.admin || userService.currentUser.moderator )">
                       <div class="input-group input-group-sm">
                         <input type="number" class="form-control" (keyup.enter)="updateCost(model, addon, addon.cost)"
                                [(ngModel)]="addon.cost" [placeholder]="addon.cost"/>
