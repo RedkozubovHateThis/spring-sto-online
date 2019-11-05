@@ -8,5 +8,6 @@ export class OpponentResponse {
   lastMessageText: string;
 
   uploadFileName: string;
+  roles: string[];
 
 }

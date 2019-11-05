@@ -139,7 +139,7 @@ public class ChatController {
         List<User> opponents = null;
 
         if ( UserHelper.hasRole( currentUser, "ADMIN" ) ) {
-            opponents = userRepository.findAllExceptSelf();
+            opponents = userRepository.findAllByAdmin( currentUser.getUsername() );
         }
         else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
             opponents = userRepository.findAllByModerator( currentUser.getId(), currentUser.getId() );

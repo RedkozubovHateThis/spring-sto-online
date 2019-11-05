@@ -21,7 +21,11 @@
                      'text-muted': opponent.inVacation
                      }"
                      (click)="selectOpponent(opponent)">
-                  {{opponent.fio}} <span *ngIf="opponent.inVacation" style="color: red !important;"> [ В отпуске ] </span>
+                  {{opponent.fio}}
+                  <span *ngIf="opponent.inVacation" style="color: red !important;">&nbsp;[ В отпуске ]</span>
+                  &nbsp;[<span class="text-muted" *ngFor="let role of opponent.roles">
+                    &nbsp;{{role}}
+                  </span>&nbsp;]
                   <div class="small" *ngIf="opponent.lastMessageFromId">
                     <span *ngIf="opponent.lastMessageFromId === userService.currentUser.id; else opponentReply">Вы: </span>
                     <ng-template #opponentReply>

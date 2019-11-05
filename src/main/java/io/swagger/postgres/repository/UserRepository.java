@@ -104,14 +104,25 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
     List<User> findAllExceptSelf();
 
     @Query(nativeQuery = true, value = "SELECT DISTINCT u.* FROM users AS u " +
+            "INNER JOIN users_user_roles AS uur ON u.id = uur.user_id " +
+            "INNER JOIN user_role AS ur ON uur.user_role_id = ur.id " +
             "WHERE u.moderator_id = :moderatorId " +
+            "AND ur.name = 'SERVICE_LEADER' " +
             "UNION " +
             "SELECT DISTINCT cu.* FROM chat_message AS cm " +
             "INNER JOIN users AS cu ON cm.from_user_id = cu.id " +
             "WHERE cm.to_user_id = :userId " +
             "ORDER BY last_name")
     List<User> findAllByModerator(@Param("moderatorId") Long moderatorId,
-                                 @Param("userId") Long userId);
+                                  @Param("userId") Long userId);
+
+    @Query(nativeQuery = true, value = "SELECT DISTINCT u.* FROM users AS u " +
+            "INNER JOIN users_user_roles AS uur ON u.id = uur.user_id " +
+            "INNER JOIN user_role AS ur ON uur.user_role_id = ur.id " +
+            "WHERE ur.name IN ('SERVICE_LEADER','MODERATOR','ADMIN') " +
+            "AND u.username <> :username " +
+            "ORDER BY u.last_name")
+    List<User> findAllByAdmin(@Param("username") String username);
 
     @Query(nativeQuery = true, value = "SELECT DISTINCT u.* FROM users AS u\n" +
             "WHERE u.id = :moderatorId\n" +
