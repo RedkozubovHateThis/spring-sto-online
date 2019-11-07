@@ -16,7 +16,7 @@ export class UserAddComponent implements OnInit {
               private toastrService: ToastrService) {}
 
   private addForm: FormGroup = this.formBuilder.group({
-    email: ['', Validators.required],
+    email: [''],
     inn: [''],
     phone: ['', Validators.required],
     password: ['', Validators.required],
