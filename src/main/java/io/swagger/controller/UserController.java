@@ -68,6 +68,9 @@ public class UserController {
         if ( !userService.isPhoneValid( user.getPhone() ) )
             return ResponseEntity.status(400).body("Неверный номер телефона!");
 
+        if ( user.getEmail() != null && user.getEmail().length() == 0 )
+            user.setEmail(null);
+
         userService.processPhone(user);
 
         User currentUser = userRepository.findCurrentUser();

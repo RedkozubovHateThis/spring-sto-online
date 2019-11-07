@@ -16,7 +16,7 @@ export class UserAddComponent implements OnInit {
               private toastrService: ToastrService) {}
 
   private addForm: FormGroup = this.formBuilder.group({
-    email: [''],
+    email: [null],
     inn: [''],
     phone: ['', Validators.required],
     password: ['', Validators.required],
@@ -62,6 +62,7 @@ export class UserAddComponent implements OnInit {
       .subscribe( data => {
         this.isRegistering = false;
         this.router.navigate(['users']);
+        this.toastrService.success('Пользователь успешно добавлен!');
       }, error => {
         this.isRegistering = false;
         if ( error.status === 400 ) {

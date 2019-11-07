@@ -233,6 +233,11 @@
                        disabled [value]="organizationResponse.fullName" name="organizationFullName">
               </div>
 
+              <div class="form-group" *ngIf="!userService.isSameUser( model ) && ( ( model.serviceLeader && model.organizationId == null ) ||
+              ( model.client && model.clientId == null ) )">
+                <span class="form-control form-control-alternative">Необходимо выполнить привязку к системе АвтоДилер</span>
+              </div>
+
             </div>
           </div>
         </div>
