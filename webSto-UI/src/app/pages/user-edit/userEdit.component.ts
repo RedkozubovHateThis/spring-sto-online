@@ -156,4 +156,13 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
     this.requestReplacementModerators();
   }
 
+  private removeLink(user: User) {
+    user.isApproved = false;
+    user.clientId = null;
+    user.organizationId = null;
+    this.clientResponse = null;
+    this.organizationResponse = null;
+    this.userService.saveUser(user, `Привязка успешно удалена!`);
+  }
+
 }

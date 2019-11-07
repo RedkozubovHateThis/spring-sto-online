@@ -38,20 +38,12 @@
             </thead>
             <tbody *ngIf="all != null">
             <tr *ngFor="let fbResponse of all.content, let i = index" [attr.data-index]="i">
-              <ng-container *ngIf="userService.currentUser != null &&
-              ( userService.currentUser.admin || userService.currentUser.moderator ); else navigateTh">
-                <th scope="row" style="cursor: pointer;" (click)="selected = fbResponse">
-                  {{( i + 1 ) + ( page * size )}}
-                  &nbsp;
-                  <i class="far fa-check-circle" *ngIf="selected === fbResponse"></i>
-                  <i class="far fa-circle" *ngIf="selected !== fbResponse"></i>
-                </th>
-              </ng-container>
-              <ng-template #navigateTh>
-                <th scope="row" style="cursor: pointer;" (click)="navigate(fbResponse)">
-                  {{( i + 1 ) + ( page * size )}}
-                </th>
-              </ng-template>
+              <th scope="row" style="cursor: pointer;" (click)="selected = fbResponse">
+                {{( i + 1 ) + ( page * size )}}
+                &nbsp;
+                <i class="far fa-check-circle" *ngIf="selected === fbResponse"></i>
+                <i class="far fa-circle" *ngIf="selected !== fbResponse"></i>
+              </th>
               <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.startDate}}</th>
               <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.endDate}}</th>
               <th style="cursor: pointer;" (click)="navigate(fbResponse)">

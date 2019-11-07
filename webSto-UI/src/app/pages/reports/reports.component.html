@@ -119,7 +119,7 @@
             </select>
           </div>
 
-          <div class="form-group" *ngIf="userService.currentUser && !userService.currentUser.serviceLeader">
+          <div class="form-group" *ngIf="!userService.isServiceLeader()">
             <label class="form-control-label" for="organization-select">Предприятие</label>
             <select id="organization-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="organizationId" (change)="requestReportData()">
               <option [selected]="true" disabled [ngValue]="null">

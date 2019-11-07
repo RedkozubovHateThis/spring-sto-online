@@ -6,7 +6,7 @@
     </a>
     <!-- User -->
     <ul class="navbar-nav align-items-center d-none d-md-flex">
-      <li class="nav-item" ngbDropdown placement="bottom-right" *ngIf="userService.currentUser">
+      <li class="nav-item" ngbDropdown placement="bottom-right" *ngIf="userService.currentUser != null">
         <a class="nav-link pr-0" style="cursor: pointer;" role="button" ngbDropdownToggle>
           <div class="media align-items-center">
             <span class="avatar avatar-sm rounded-circle">

@@ -14,7 +14,7 @@
       </div>
     </div>
 
-    <div class="form-group" *ngIf="userService.currentUser != null && userService.currentUser.moderator">
+    <div class="form-group" *ngIf="userService.isModerator()">
       <label class="form-control-label" for="message-type-select">Тип уведомления</label>
       <select id="message-type-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.messageType" (change)="emitChange()">
         <option [selected]="null === filter.messageType" [ngValue]="null">
@@ -26,7 +26,7 @@
       </select>
     </div>
 
-    <div class="form-group" *ngIf="userService.currentUser != null && ( userService.currentUser.admin || userService.currentUser.moderator )">
+    <div class="form-group" *ngIf="userService.isModeratorOrAdmin()">
       <label class="form-control-label" for="user-from-select">Инициатор</label>
       <select id="user-from-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.fromId" (change)="emitChange()">
         <option [selected]="null === filter.fromId" [ngValue]="null">
@@ -38,7 +38,7 @@
       </select>
     </div>
 
-    <div class="form-group" *ngIf="userService.currentUser != null && userService.currentUser.admin">
+    <div class="form-group" *ngIf="userService.isAdmin()">
       <label class="form-control-label" for="user-to-select">Получатель</label>
       <select id="user-to-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.toId" (change)="emitChange()">
         <option [selected]="null === filter.toId" [ngValue]="null">
@@ -50,7 +50,7 @@
       </select>
     </div>
 
-    <div class="form-group" *ngIf="userService.currentUser != null && ( userService.currentUser.admin || userService.currentUser.moderator )">
+    <div class="form-group" *ngIf="userService.isModeratorOrAdmin()">
       <label class="form-control-label" for="vehicle-select">Документ</label>
       <select id="vehicle-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.documentId" (change)="emitChange()">
         <option [selected]="null === filter.documentId" [ngValue]="null">

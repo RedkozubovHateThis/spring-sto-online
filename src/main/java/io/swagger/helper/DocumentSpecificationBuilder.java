@@ -62,10 +62,12 @@ public class DocumentSpecificationBuilder {
                 if ( filterPayload.getStates() != null && filterPayload.getStates().size() > 0 ) {
                     predicates.add( dohJoin.get( DocumentOutHeader_.state ).in( filterPayload.getStates() ) );
                 }
-                if ( filterPayload.getOrganizations() != null && filterPayload.getOrganizations().size() > 0 ) {
+                if ( !UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) &&
+                        filterPayload.getOrganizations() != null && filterPayload.getOrganizations().size() > 0 ) {
                     predicates.add( orgJoin.get( Organization_.id ).in( filterPayload.getOrganizations() ) );
                 }
-                if ( filterPayload.getClients() != null && filterPayload.getClients().size() > 0 ) {
+                if ( !UserHelper.hasRole( currentUser, "CLIENT" ) &&
+                        filterPayload.getClients() != null && filterPayload.getClients().size() > 0 ) {
                     predicates.add( clientJoin.get( Client_.id ).in( filterPayload.getClients() ) );
                 }
                 if ( filterPayload.getVehicle() != null && filterPayload.getVehicle().length() > 0 ) {
@@ -83,7 +85,7 @@ public class DocumentSpecificationBuilder {
                 if ( filterPayload.getVinNumber() != null && filterPayload.getVinNumber().length() > 0 ) {
                     predicates.add(
                             cb.like(
-                                    cb.upper( mdJoin.get( ModelDetail_.vinNumber ) ), "%" + filterPayload.getVinNumber().toUpperCase() + "%"
+                                    cb.upper( mdJoin.get( ModelDetail_.regNumber ) ), "%" + filterPayload.getVinNumber().toUpperCase() + "%"
                             )
                     );
                 }

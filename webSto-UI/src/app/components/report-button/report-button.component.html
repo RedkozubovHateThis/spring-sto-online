@@ -10,7 +10,8 @@
     <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
   </button>
   <div ngbDropdownMenu aria-labelledby="reports-dropdown">
-    <button class="dropdown-item" (click)="downloadReport('ORDER', 'Заказ-наряд', false)" [disabled]="isDownloading">
+    <button class="dropdown-item" (click)="downloadReport('ORDER', 'Заказ-наряд', false)" [disabled]="isDownloading"
+            *ngIf="userService.isModeratorOrAdmin()">
       Заказ-наряд
       <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
     </button>
@@ -18,7 +19,8 @@
       Заказ-наряд (с печатью)
       <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
     </button>
-    <button class="dropdown-item" (click)="downloadReport('ORDER_ACT', 'Акт на выполненные работы', false)" [disabled]="isDownloading">
+    <button class="dropdown-item" (click)="downloadReport('ORDER_ACT', 'Акт на выполненные работы', false)" [disabled]="isDownloading"
+            *ngIf="userService.isModeratorOrAdmin()">
       Акт на выполненные работы
       <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
     </button>
@@ -26,15 +28,18 @@
       Акт на выполненные работы (с печатью)
       <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
     </button>
-    <button class="dropdown-item" (click)="downloadReport('ORDER_REQUEST', 'Заявка на ремонт автомобиля', false)" [disabled]="isDownloading">
+    <button class="dropdown-item" (click)="downloadReport('ORDER_REQUEST', 'Заявка на ремонт автомобиля', false)" [disabled]="isDownloading"
+            *ngIf="userService.isModeratorOrAdmin()">
       Заявка на ремонт автомобиля
       <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
     </button>
-    <button class="dropdown-item" (click)="downloadReport('ORDER_INSPECTION', 'Акт осмотра', false)" [disabled]="isDownloading">
+    <button class="dropdown-item" (click)="downloadReport('ORDER_INSPECTION', 'Акт осмотра', false)" [disabled]="isDownloading"
+            *ngIf="userService.isModeratorOrAdmin()">
       Акт осмотра
       <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
     </button>
-    <button class="dropdown-item" (click)="downloadReport('ORDER_TRANSFER', 'Универсальный передаточный документ', false)" [disabled]="isDownloading">
+    <button class="dropdown-item" (click)="downloadReport('ORDER_TRANSFER', 'Универсальный передаточный документ', false)" [disabled]="isDownloading"
+            *ngIf="userService.isModeratorOrAdmin()">
       Универсальный передаточный документ
       <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
     </button>
@@ -42,19 +47,23 @@
       Универсальный передаточный документ (с печатью)
       <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
     </button>
-    <button class="dropdown-item" (click)="downloadReport('ORDER_TASK', 'Задание на ремонтные работы', false)" [disabled]="isDownloading">
+    <button class="dropdown-item" (click)="downloadReport('ORDER_TASK', 'Задание на ремонтные работы', false)" [disabled]="isDownloading"
+            *ngIf="userService.isModeratorOrAdmin()">
       Задание на ремонтные работы
       <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
     </button>
-    <button class="dropdown-item" (click)="downloadReport('ORDER_REQUIREMENT', 'Требование на запчасти', false)" [disabled]="isDownloading">
+    <button class="dropdown-item" (click)="downloadReport('ORDER_REQUIREMENT', 'Требование на запчасти', false)" [disabled]="isDownloading"
+            *ngIf="userService.isModeratorOrAdmin()">
       Требование на запчасти
       <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
     </button>
-    <button class="dropdown-item" (click)="downloadReport('ORDER_RECEIPT', 'Расписка о приеме автомобиля', false)" [disabled]="isDownloading">
+    <button class="dropdown-item" (click)="downloadReport('ORDER_RECEIPT', 'Расписка о приеме автомобиля', false)" [disabled]="isDownloading"
+            *ngIf="userService.isModeratorOrAdmin()">
       Расписка о приеме автомобиля
       <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
     </button>
-    <button class="dropdown-item" (click)="downloadReport('ORDER_DEFECTION', 'Акт дефектовки', false)" [disabled]="isDownloading">
+    <button class="dropdown-item" (click)="downloadReport('ORDER_DEFECTION', 'Акт дефектовки', false)" [disabled]="isDownloading"
+            *ngIf="userService.isModeratorOrAdmin()">
       Акт дефектовки
       <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
     </button>

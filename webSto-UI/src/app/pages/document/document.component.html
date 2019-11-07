@@ -11,11 +11,9 @@
               <button class="btn btn-sm btn-buro-green" (click)="location.back()">
                 Назад
               </button>
-              <app-report-button *ngIf="userService.currentUser &&
-              ( userService.currentUser.moderator || userService.currentUser.admin )"
+              <app-report-button *ngIf="userService.currentUser != null"
                                  [model]="model" [withPrint]="false"></app-report-button>
-              <app-report-button *ngIf="userService.currentUser &&
-              ( userService.currentUser.moderator || userService.currentUser.admin )"
+              <app-report-button *ngIf="userService.currentUser != null"
                                  [model]="model"></app-report-button>
             </div>
           </div>
@@ -28,7 +26,7 @@
               <div class="row">
                 <div class="col-md-5 mb-3">
 
-                  <div class="row" *ngIf="userService.currentUser && ( userService.currentUser.moderator || userService.currentUser.admin ); else staticText">
+                  <div class="row" *ngIf="userService.isNotClient(); else staticText">
                     <div class="col-auto col-lg-5">
                       <h2 *ngIf="model != null">{{model.documentNumber}}</h2>
                     </div>
@@ -167,8 +165,7 @@
                   <thead class="thead-light">
                   <tr>
                     <th scope="col">Наименование работ</th>
-                    <th scope="col" style="width: 175px;" *ngIf="userService.currentUser &&
-                    ( userService.currentUser.serviceLeader || userService.currentUser.admin || userService.currentUser.moderator )">
+                    <th scope="col" style="width: 175px;" *ngIf="userService.isNotClient()">
                       Стоимость по Н/Ч /
                       <div>
                         Фиксированная стоимость
@@ -187,8 +184,7 @@
                     <th>
                       {{work.name}}
                     </th>
-                    <th *ngIf="userService.currentUser &&
-                    ( userService.currentUser.serviceLeader || userService.currentUser.admin || userService.currentUser.moderator )">
+                    <th *ngIf="userService.isNotClient()">
                       <div class="input-group input-group-sm" *ngIf="work.byPrice; else byPriceNorm">
                         <input type="number" class="form-control" (keyup.enter)="updatePrice(model, work, work.price)"
                                [(ngModel)]="work.price" [placeholder]="work.price"/>
@@ -250,8 +246,7 @@
                   <thead class="thead-light">
                   <tr>
                     <th scope="col">Наименование товара</th>
-                    <th scope="col" style="width: 175px;" *ngIf="userService.currentUser &&
-                    ( userService.currentUser.serviceLeader || userService.currentUser.admin || userService.currentUser.moderator )">Стоимость товара</th>
+                    <th scope="col" style="width: 175px;" *ngIf="userService.isNotClient()">Стоимость товара</th>
                     <th scope="col" style="text-align: right; width: 175px;">
                       Стоимость товара
                       <div class="text-muted">
@@ -265,8 +260,7 @@
                     <th>
                       {{addon.fullName}}
                     </th>
-                    <th *ngIf="userService.currentUser &&
-                    ( userService.currentUser.serviceLeader || userService.currentUser.admin || userService.currentUser.moderator )">
+                    <th *ngIf="userService.isNotClient()">
                       <div class="input-group input-group-sm">
                         <input type="number" class="form-control" (keyup.enter)="updateCost(model, addon, addon.cost)"
                                [(ngModel)]="addon.cost" [placeholder]="addon.cost"/>

@@ -28,7 +28,6 @@ import {ChatMessageResponseService} from './api/chatMessageResponse.service';
 import {WebSocketService} from './api/webSocket.service';
 import {ClipboardModule} from 'ngx-clipboard';
 import {ToastrModule} from 'ngx-toastr';
-import {DpDatePickerModule} from 'ng2-date-picker';
 import {EventMessageResponseService} from './api/eventMessageResponse.service';
 registerLocaleData(localeRu, 'ru');
 
@@ -48,8 +47,7 @@ registerLocaleData(localeRu, 'ru');
     HttpClientModule,
     ToastrModule.forRoot({
       timeOut: 3000
-    }),
-    DpDatePickerModule
+    })
   ],
   declarations: [
     AppComponent,

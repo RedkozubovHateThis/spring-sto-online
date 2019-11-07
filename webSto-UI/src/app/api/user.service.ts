@@ -216,4 +216,36 @@ export class UserService implements TransferService<User> {
     this.transferModel = null;
   }
 
+  isNotClient(): boolean {
+    return this.currentUser != null && ( this.currentUser.admin || this.currentUser.serviceLeader || this.currentUser.moderator );
+  }
+
+  isClient(): boolean {
+    return this.currentUser != null && this.currentUser.client;
+  }
+
+  isModerator(): boolean {
+    return this.currentUser != null && this.currentUser.moderator;
+  }
+
+  isServiceLeader(): boolean {
+    return this.currentUser != null && this.currentUser.serviceLeader;
+  }
+
+  isAdmin(): boolean {
+    return this.currentUser != null && this.currentUser.admin;
+  }
+
+  isModeratorOrAdmin(): boolean {
+    return this.currentUser != null && ( this.currentUser.admin || this.currentUser.moderator );
+  }
+
+  isClientOrServiceLeader(): boolean {
+    return this.currentUser != null && ( this.currentUser.client || this.currentUser.serviceLeader );
+  }
+
+  isSameUser(model: User) {
+    return this.currentUser != null && model != null && this.currentUser.id === model.id;
+  }
+
 }

@@ -40,8 +40,15 @@ public class ReportController {
                                            @PathVariable("reportType") ReportType reportType) {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.hasRole(currentUser, "ADMIN") && UserHelper.hasRole(currentUser, "MODERATOR") )
-            return ResponseEntity.status(403).build();
+        if ( !UserHelper.hasRole(currentUser, "ADMIN") && !UserHelper.hasRole(currentUser, "MODERATOR") ) {
+
+            if ( !reportType.equals( ReportType.ORDER ) && !reportType.equals( ReportType.ORDER_ACT )
+                    && !reportType.equals( ReportType.ORDER_TRANSFER ) )
+                return ResponseEntity.status(403).build();
+
+            printStamp = true;
+
+        }
 
         try {
             byte[] response;

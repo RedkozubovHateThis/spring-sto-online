@@ -9,10 +9,10 @@
       </div>
       <div class="col-auto mb-3">
         <app-report-button [model]="document" [withPrint]="false"
-                           *ngIf="userService.currentUser && ( userService.currentUser.admin || userService.currentUser.moderator )">
+                           *ngIf="userService.currentUser != null">
         </app-report-button>
         <app-report-button [model]="document"
-                           *ngIf="userService.currentUser && ( userService.currentUser.admin || userService.currentUser.moderator )">
+                           *ngIf="userService.currentUser != null">
         </app-report-button>
         <button class="btn btn-sm btn-buro-green" (click)="resetFilters()" *ngIf="filter.state || filter.organization ||
         filter.vehicle || filter.vinNumber || filter.client || filter.fromDate || filter.toDate">
@@ -21,7 +21,7 @@
       </div>
     </div>
 
-    <div class="form-group" *ngIf="userService.currentUser && ( userService.currentUser.admin || userService.currentUser.moderator )">
+    <div class="form-group" *ngIf="userService.isModeratorOrAdmin()">
       <label class="form-control-label" for="state-select">Состояние</label>
       <select id="state-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.state" (change)="emitChange()">
         <option [selected]="null === filter.state" [ngValue]="null">
@@ -33,7 +33,7 @@
       </select>
     </div>
 
-    <div class="form-group" *ngIf="userService.currentUser && !userService.currentUser.serviceLeader">
+    <div class="form-group" *ngIf="!userService.isServiceLeader()">
       <label class="form-control-label" for="organization-select">Предприятие</label>
       <select id="organization-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.organization" (change)="emitChange()">
         <option [selected]="null === filter.organization" [ngValue]="null">
@@ -45,7 +45,7 @@
       </select>
     </div>
 
-    <div class="form-group" *ngIf="userService.currentUser && ( userService.currentUser.admin || userService.currentUser.moderator )">
+    <div class="form-group" *ngIf="userService.isNotClient()">
       <label class="form-control-label" for="client-select">Клиент</label>
       <select id="client-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.client" (change)="emitChange()">
         <option [selected]="null === filter.client" [ngValue]="null">
@@ -55,6 +55,23 @@
           {{ client.shortName }}
         </option>
       </select>
+    </div>
+
+    <div class="form-group" *ngIf="userService.isNotClient()">
+      <label class="form-control-label" for="client-select-ahead">Клиент (поиск)</label>
+      <div class="input-group input-group-sm">
+        <input id="client-select-ahead" type="text" class="form-control form-control-sm"
+               (selectItem)="setClient($event)" [(ngModel)]="selectedClient" [ngbTypeahead]="search"
+               [resultTemplate]="rt" [inputFormatter]="formatter"/>
+        <div class="input-group-append">
+          <button class="btn btn-buro-green" type="button" (click)="setClient(null)">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+      <ng-template #rt let-r="result" let-t="term">
+        <ngb-highlight [result]="r.shortName" [term]="t"></ngb-highlight>
+      </ng-template>
     </div>
 
     <div class="form-group">
@@ -71,9 +88,9 @@
     </div>
 
     <div class="form-group">
-      <label class="form-control-label" for="vin-input">VIN-номер</label>
+      <label class="form-control-label" for="vin-input">Рег. номер</label>
       <div class="input-group input-group-sm">
-        <input id="vin-input" class="form-control" placeholder="VIN-номер"
+        <input id="vin-input" class="form-control" placeholder="Рег. номер"
                [(ngModel)]="filter.vinNumber" (keyup.enter)="emitChange()">
         <div class="input-group-append">
           <button class="btn btn-buro-green" type="button" (click)="emitChange()">

@@ -9,3 +9,6 @@
 .dropdown-item:active {
   background-color: #60B61C;
 }
+button:focus {
+  outline: none !important;
+}

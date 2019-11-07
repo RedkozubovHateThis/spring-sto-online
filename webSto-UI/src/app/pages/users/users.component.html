@@ -16,7 +16,7 @@
             </div>
             <div class="col-auto">
               <a href="#" class="btn btn-sm btn-buro-green" [routerLink]="['/users/add']"
-                 *ngIf="userService.currentUser != null && userService.currentUser.admin">
+                 *ngIf="userService.isAdmin()">
                 Добавить
               </a>
               <button class="btn btn-sm btn-buro-green" (click)="refresh()" [disabled]="isLoading">

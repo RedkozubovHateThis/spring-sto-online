@@ -65,6 +65,9 @@ public class ClientController {
 
             clients = clientRepository.findClientsByIds( clientIds );
         }
+        else if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) &&
+                currentUser.getOrganizationId() != null && currentUser.getIsApproved() )
+            clients = clientRepository.findClientsByOrganizationId( currentUser.getOrganizationId() );
         else
             return ResponseEntity.status(404).build();
 

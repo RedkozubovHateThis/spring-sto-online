@@ -8,6 +8,8 @@ import {Router} from '@angular/router';
 import {DocumentResponse} from '../../model/firebird/documentResponse';
 import {ClientResponse} from '../../model/firebird/clientResponse';
 import * as moment from 'moment';
+import {Observable} from 'rxjs';
+import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-document-filter',
@@ -43,6 +45,7 @@ export class DocumentFilterComponent implements OnInit {
   };
   private fromDate: moment.Moment;
   private toDate: moment.Moment;
+  private selectedClient: ClientResponse;
   private organizations: OrganizationResponse[] = [];
   private clients: ClientResponse[] = [];
 
@@ -52,6 +55,12 @@ export class DocumentFilterComponent implements OnInit {
     } );
     this.organizationResponseService.getAllClients().subscribe( response => {
       this.clients = response as ClientResponse[];
+
+      if ( this.filter.client != null ) {
+        this.selectedClient = this.clients.find( client => {
+          return client.id === this.filter.client;
+        } );
+      }
     } );
     if ( this.filter.fromDate )
       this.fromDate = moment(this.filter.fromDate, 'DD.MM.YYYY');
@@ -68,6 +77,26 @@ export class DocumentFilterComponent implements OnInit {
     this.filter.toDate = e;
     this.emitChange();
   }
+
+  setClient(e) {
+    if ( e == null ) {
+      this.filter.client = null;
+      this.selectedClient = null;
+    }
+    else
+      this.filter.client = e.item.id;
+    this.emitChange();
+  }
+
+  formatter = (result: ClientResponse) => result.shortName;
+
+  search = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(750),
+      distinctUntilChanged(),
+      map(term => term === '' ? []
+        : this.clients.filter(client => client.shortName.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10))
+    )
 
   emitChange() {
     this.onChange.emit();
