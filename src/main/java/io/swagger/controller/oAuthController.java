@@ -64,9 +64,6 @@ public class oAuthController {
         if ( user.getPassword().length() < 6 )
             return ResponseEntity.status(400).body("Пароль не может содержать менее 6 символов!");
 
-        if ( user.getEmail() == null || user.getEmail().isEmpty() )
-            return ResponseEntity.status(400).body("Почта не может быть пустой!");
-
         if ( user.getPhone() == null || user.getPhone().isEmpty() )
             return ResponseEntity.status(400).body("Телефон не может быть пустым!");
 

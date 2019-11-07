@@ -8,6 +8,7 @@ import io.swagger.postgres.repository.EventMessageRepository;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.response.api.EventMessageStatus;
 import io.swagger.service.EventMessageService;
+import io.swagger.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -38,6 +39,9 @@ public class UserController {
     @Autowired
     private EventMessageRepository eventMessageRepository;
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping("/currentUser")
     public ResponseEntity getCurrentUser() {
 
@@ -56,7 +60,15 @@ public class UserController {
         User existingUser = userRepository.findOne(id);
 
         if ( existingUser == null )
-            return ResponseEntity.status(404).body("Пользователь не найден");
+            return ResponseEntity.status(404).body("Пользователь не найден!");
+
+        if ( user.getPhone() == null || user.getPhone().isEmpty() )
+            return ResponseEntity.status(400).body("Телефон не может быть пустым!");
+
+        if ( !userService.isPhoneValid( user.getPhone() ) )
+            return ResponseEntity.status(400).body("Неверный номер телефона!");
+
+        userService.processPhone(user);
 
         User currentUser = userRepository.findCurrentUser();
         boolean sendMessage = false;

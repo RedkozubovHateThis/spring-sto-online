@@ -157,7 +157,12 @@ export class UserService implements TransferService<User> {
 
     }, error => {
       this.isSaving = false;
-      this.toastrService.error('Ошибка сохранения пользователя!', 'Внимание!');
+
+      if ( error.status === 400 || error.status === 404 )
+        this.toastrService.error(error.error, 'Внимание!');
+      else
+        this.toastrService.error('Ошибка сохранения пользователя!', 'Внимание!');
+
     } );
 
   }
