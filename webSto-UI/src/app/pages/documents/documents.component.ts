@@ -30,7 +30,6 @@ export class DocumentsComponent extends Pagination {
     this.isLoading = true;
     this.documentResponseService.getAll(this.size, this.offset, this.filter).subscribe(data => {
       this.all = data as Pageable<DocumentResponse>;
-      this.setPageData(this.all);
 
       this.isLoading = false;
     }, error => {

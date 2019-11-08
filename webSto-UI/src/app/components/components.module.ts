@@ -6,15 +6,16 @@ import { FooterComponent } from './footer/footer.component';
 import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {InfobarComponent} from "./infobar/infobar.component";
-import {ImgPreviewComponent} from './imgPreview/img-preview.component';
-import {DocumentFilterComponent} from './documentFilter/document-filter.component';
+import {ImgPreviewComponent} from './img-preview/img-preview.component';
+import {DocumentFilterComponent} from './document-filter/document-filter.component';
 import {FormsModule} from '@angular/forms';
-import { EventMessageFilterComponent } from './eventMessageFilter/event-message-filter.component';
+import { EventMessageFilterComponent } from './event-message-filter/event-message-filter.component';
 import {ReportButtonComponent} from './report-button/report-button.component';
 import {PdfViewerModule} from 'ng2-pdf-viewer';
 import {PasswordChangeButtonComponent} from './password-change-button/password-change-button.component';
 import {DpDatePickerModule} from 'ng2-date-picker';
 import {UserFilterComponent} from './user-filter/user-filter.component';
+import {PaginationComponent} from './pagination/pagination.component';
 
 @NgModule({
   imports: [
@@ -35,7 +36,8 @@ import {UserFilterComponent} from './user-filter/user-filter.component';
     EventMessageFilterComponent,
     ReportButtonComponent,
     PasswordChangeButtonComponent,
-    UserFilterComponent
+    UserFilterComponent,
+    PaginationComponent
   ],
   exports: [
     FooterComponent,
@@ -47,7 +49,8 @@ import {UserFilterComponent} from './user-filter/user-filter.component';
     EventMessageFilterComponent,
     ReportButtonComponent,
     PasswordChangeButtonComponent,
-    UserFilterComponent
+    UserFilterComponent,
+    PaginationComponent
   ]
 })
 export class ComponentsModule { }

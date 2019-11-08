@@ -27,7 +27,6 @@ export class UsersComponent extends Pagination {
     this.isLoading = true;
     this.userService.getAll(this.size, this.offset, this.filter).subscribe( data => {
       this.all = data as Pageable<User>;
-      this.setPageData(this.all);
 
       this.isLoading = false;
     }, error => {
