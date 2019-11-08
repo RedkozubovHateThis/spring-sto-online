@@ -47,6 +47,7 @@ public class User implements UserDetails, Serializable {
     private Boolean isApproved;
     private Date lastUserAcceptDate;
     private Boolean inVacation;
+    private Boolean isAutoRegistered;
 //    private Long replacementModeratorId;
 
     @JsonIgnore

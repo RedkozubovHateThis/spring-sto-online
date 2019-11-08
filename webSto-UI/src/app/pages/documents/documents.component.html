@@ -15,7 +15,7 @@
               </h3>
             </div>
             <div class="col-auto">
-              <button class="btn btn-sm btn-buro-green" (click)="refresh()" [disabled]="isLoading">
+              <button class="btn btn-sm btn-buro-green" (click)="requestData()" [disabled]="isLoading">
                 Обновить
               </button>
             </div>
@@ -64,26 +64,17 @@
             <ul class="pagination justify-content-end mb-0">
 
               <li class="page-item" *ngIf="!all.first">
-                <a class="page-link" tabindex="-1" [routerLink]="['/documents']"
-                   [queryParams]="{page: page, sort: filter.sort, direction: filter.direction, state: filter.state,
-                   vehicle: filter.vehicle, organization: filter.organization, client: filter.client,
-                   vinNumber: filter.vinNumber, fromDate: filter.fromDate, toDate: filter.toDate}">
+                <a class="page-link" tabindex="-1" (click)="goToPage( filter.page - 1, $event )">
                   <i class="fas fa-angle-left"></i>
                 </a>
               </li>
 
-              <li class="page-item" *ngFor="let pageInfo of pagesInfo" [ngClass]="{active: pageInfo == page + 1}">
-                <a class="page-link" [routerLink]="['/documents']" [queryParams]="{page: pageInfo, sort: filter.sort,
-                direction: filter.direction, state: filter.state, vehicle: filter.vehicle, organization: filter.organization,
-                client: filter.client, vinNumber: filter.vinNumber, fromDate: filter.fromDate, toDate: filter.toDate}">
-                  {{pageInfo}}
-                </a>
+              <li class="page-item" *ngFor="let pageInfo of pagesInfo" [ngClass]="{active: pageInfo == filter.page + 1}">
+                <a class="page-link" (click)="goToPage( pageInfo - 1, $event )">{{pageInfo}}</a>
               </li>
 
               <li class="page-item" *ngIf="!all.last">
-                <a class="page-link" [routerLink]="['/documents']" [queryParams]="{page: page + 2, sort: filter.sort,
-                direction: filter.direction, state: filter.state, vehicle: filter.vehicle, organization: filter.organization,
-                client: filter.client, vinNumber: filter.vinNumber, fromDate: filter.fromDate, toDate: filter.toDate}">
+                <a class="page-link" (click)="goToPage( filter.page + 1, $event )">
                   <i class="fas fa-angle-right"></i>
                 </a>
               </li>
@@ -94,7 +85,7 @@
       </div>
     </div>
     <div class="col-xl-3 mb-5">
-      <app-document-filter (onChange)="refresh()" [filter]="filter" [document]="selected"></app-document-filter>
+      <app-document-filter (onChange)="applyFilter()" [filter]="filter" [document]="selected"></app-document-filter>
     </div>
   </div>
 </div>

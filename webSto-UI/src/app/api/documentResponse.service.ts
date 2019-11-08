@@ -17,8 +17,8 @@ export class DocumentResponseService implements TransferService<DocumentResponse
       null, null, null, null);
   }
 
-  getAll(page: number, size: number, offset: number, filter: DocumentsFilter) {
-    return this.getDocumentResponse(`${filter.sort},${filter.direction}`, page, size, offset, filter.state, filter.organization,
+  getAll(size: number, offset: number, filter: DocumentsFilter) {
+    return this.getDocumentResponse(`${filter.sort},${filter.direction}`, filter.page, size, offset, filter.state, filter.organization,
       filter.vehicle, filter.client, filter.vinNumber, filter.fromDate, filter.toDate);
   }
 

@@ -2,7 +2,7 @@
 <div class="container-fluid mt--7">
   <!-- Table -->
   <div class="row">
-    <div class="col mb-5">
+    <div class="col-xl-9 mb-5">
       <div class="card shadow">
         <div class="card-header border-0">
 
@@ -19,7 +19,7 @@
                  *ngIf="userService.isAdmin()">
                 Добавить
               </a>
-              <button class="btn btn-sm btn-buro-green" (click)="refresh()" [disabled]="isLoading">
+              <button class="btn btn-sm btn-buro-green" (click)="requestData()" [disabled]="isLoading">
                 Обновить
               </button>
             </div>
@@ -37,6 +37,10 @@
                 <th scope="col">Email</th>
                 <th scope="col">Роли</th>
                 <th scope="col">Утвержден</th>
+                <th scope="col">
+                  Авторегистрация
+                  <div class="small">Из системы АвтоДилер</div>
+                </th>
               </tr>
             </thead>
             <tbody *ngIf="all != null">
@@ -56,6 +60,11 @@
                   {{user.isApproved ? 'Да' : 'Нет'}}
                 </ng-container>
               </th>
+              <th>
+                <ng-container *ngIf="user.client">
+                  {{user.isAutoRegistered ? 'Да' : 'Нет'}}
+                </ng-container>
+              </th>
             </tr>
             </tbody>
           </table>
@@ -65,17 +74,17 @@
             <ul class="pagination justify-content-end mb-0">
 
               <li class="page-item" *ngIf="!all.first">
-                <a class="page-link" tabindex="-1" [routerLink]="['/users']" [queryParams]="{page: page}">
+                <a class="page-link" tabindex="-1" (click)="goToPage( filter.page - 1, $event )">
                   <i class="fas fa-angle-left"></i>
                 </a>
               </li>
 
-              <li class="page-item" *ngFor="let pageInfo of pagesInfo" [ngClass]="{active: pageInfo == page + 1}">
-                <a class="page-link" [routerLink]="['/users']" [queryParams]="{page: pageInfo}">{{pageInfo}}</a>
+              <li class="page-item" *ngFor="let pageInfo of pagesInfo" [ngClass]="{active: pageInfo == filter.page + 1}">
+                <a class="page-link" (click)="goToPage( pageInfo - 1, $event )">{{pageInfo}}</a>
               </li>
 
               <li class="page-item" *ngIf="!all.last">
-                <a class="page-link" [routerLink]="['/users']" [queryParams]="{page: page + 2}">
+                <a class="page-link" (click)="goToPage( filter.page + 1, $event )">
                   <i class="fas fa-angle-right"></i>
                 </a>
               </li>
@@ -84,6 +93,9 @@
           </nav>
         </div>
       </div>
+    </div>
+    <div class="col-xl-3">
+      <app-user-filter (onChange)="applyFilter()" [filter]="filter"></app-user-filter>
     </div>
   </div>
 </div>

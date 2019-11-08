@@ -1,6 +1,7 @@
 package io.swagger.controller;
 
 import io.swagger.helper.UserHelper;
+import io.swagger.helper.UserSpecificationBuilder;
 import io.swagger.postgres.model.EventMessage;
 import io.swagger.postgres.model.enums.MessageType;
 import io.swagger.postgres.model.security.User;
@@ -9,8 +10,12 @@ import io.swagger.postgres.repository.UserRepository;
 import io.swagger.response.api.EventMessageStatus;
 import io.swagger.service.EventMessageService;
 import io.swagger.service.UserService;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequestMapping("/secured/users")
 @RestController
@@ -271,20 +277,19 @@ public class UserController {
     }
 
     @GetMapping("/findAll")
-    public ResponseEntity findAll(Pageable pageable) {
+    public ResponseEntity findAll(Pageable pageable, FilterPayload filterPayload) {
 
         User currentUser = userRepository.findCurrentUser();
 
         if ( currentUser == null ) return ResponseEntity.status(401).build();
 
-        if ( UserHelper.hasRole( currentUser, "ADMIN" ) )
-            return ResponseEntity.ok( userRepository.findAll(pageable) );
-        else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
-            return ResponseEntity.ok( userRepository.findAllByModeratorId(currentUser.getId(), pageable) );
-        }
+        if ( !UserHelper.hasRole( currentUser, "ADMIN" ) &&
+                !UserHelper.hasRole( currentUser, "MODERATOR" ) )
+            return ResponseEntity.status(403).build();
 
-        return ResponseEntity.status(403).build();
+        Specification<User> specification = UserSpecificationBuilder.buildSpecification( currentUser, filterPayload );
 
+        return ResponseEntity.ok( userRepository.findAll(specification, pageable) );
     }
 
     @GetMapping("/findReplacementModerators")
@@ -376,6 +381,18 @@ public class UserController {
         }
         else
             return ResponseEntity.status(404).build();
+
+    }
+
+    @Data
+    public static class FilterPayload {
+
+        private String role;
+        private Boolean isApproved;
+        private Boolean isAutoRegistered;
+        private String phone;
+        private String email;
+        private String fio;
 
     }
 

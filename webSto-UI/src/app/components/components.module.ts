@@ -14,6 +14,7 @@ import {ReportButtonComponent} from './report-button/report-button.component';
 import {PdfViewerModule} from 'ng2-pdf-viewer';
 import {PasswordChangeButtonComponent} from './password-change-button/password-change-button.component';
 import {DpDatePickerModule} from 'ng2-date-picker';
+import {UserFilterComponent} from './user-filter/user-filter.component';
 
 @NgModule({
   imports: [
@@ -33,7 +34,8 @@ import {DpDatePickerModule} from 'ng2-date-picker';
     DocumentFilterComponent,
     EventMessageFilterComponent,
     ReportButtonComponent,
-    PasswordChangeButtonComponent
+    PasswordChangeButtonComponent,
+    UserFilterComponent
   ],
   exports: [
     FooterComponent,
@@ -44,7 +46,8 @@ import {DpDatePickerModule} from 'ng2-date-picker';
     DocumentFilterComponent,
     EventMessageFilterComponent,
     ReportButtonComponent,
-    PasswordChangeButtonComponent
+    PasswordChangeButtonComponent,
+    UserFilterComponent
   ]
 })
 export class ComponentsModule { }

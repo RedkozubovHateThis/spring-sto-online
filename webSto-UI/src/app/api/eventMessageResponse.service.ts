@@ -20,7 +20,8 @@ export class EventMessageResponseService {
   getLast5() {
 
     this.isLoading = true;
-    this.getMessages('messageDate,desc', 0, 5, -5, null, null, null, null).subscribe( response => {
+    this.getMessages('messageDate,desc', 0, 5, -5, null, null, null, null)
+      .subscribe( response => {
 
       this.isLoading = false;
       const pageable = response as Pageable<EventMessageResponse>;
@@ -32,11 +33,13 @@ export class EventMessageResponseService {
 
   }
 
-  getAll(page: number, size: number, offset: number, filter: EventMessagesFilter) {
-    return this.getMessages(`${filter.sort},${filter.direction}`, page, size, offset, filter.messageType, filter.fromId, filter.toId, filter.documentId);
+  getAll(size: number, offset: number, filter: EventMessagesFilter) {
+    return this.getMessages(`${filter.sort},${filter.direction}`, filter.page, size, offset, filter.messageType, filter.fromId,
+      filter.toId, filter.documentId);
   }
 
-  private getMessages(sort: string, page: number, size: number, offset: number, messageType: string, fromId: number, toId: number, documentId: number) {
+  private getMessages(sort: string, page: number, size: number, offset: number, messageType: string, fromId: number, toId: number,
+                      documentId: number) {
     const headers = this.userService.getHeaders();
     const params = {
       sort,

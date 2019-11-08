@@ -18,15 +18,16 @@ export class EventMessagesComponent extends Pagination {
 
   private all: Pageable<EventMessageResponse>;
   private isLoading: boolean = false;
-  private filter: EventMessagesFilter = new EventMessagesFilter();
+  protected filter: EventMessagesFilter = new EventMessagesFilter();
+  protected routeName = '/event-messages';
 
-  constructor(private eventMessageResponseService: EventMessageResponseService, protected route: ActivatedRoute, private router: Router) {
-    super(route);
+  constructor(private eventMessageResponseService: EventMessageResponseService, protected route: ActivatedRoute, protected router: Router) {
+    super(route, router);
   }
 
   requestData() {
     this.isLoading = true;
-    this.eventMessageResponseService.getAll(this.page, this.size, this.offset, this.filter).subscribe(data => {
+    this.eventMessageResponseService.getAll(this.size, this.offset, this.filter).subscribe(data => {
       this.all = data as Pageable<EventMessageResponse>;
       this.setPageData(this.all);
 
@@ -34,27 +35,6 @@ export class EventMessagesComponent extends Pagination {
     }, error => {
       this.isLoading = false;
     } );
-  }
-
-  prepareFilter(queryParams: Params) {
-    if ( queryParams.sort ) this.filter.sort = queryParams.sort;
-    if ( queryParams.direction ) this.filter.direction = queryParams.direction;
-
-    if ( queryParams.messageType ) this.filter.messageType = queryParams.messageType;
-    else this.filter.messageType = null;
-
-    if ( queryParams.fromId ) this.filter.fromId = parseInt(queryParams.fromId, 10);
-    else this.filter.fromId = null;
-
-    if ( queryParams.toId ) this.filter.toId = parseInt(queryParams.toId, 10);
-    else this.filter.toId = null;
-
-    if ( queryParams.documentId ) this.filter.documentId = parseInt(queryParams.documentId, 10);
-    else this.filter.documentId = null;
-  }
-
-  refresh() {
-    this.router.navigate(['event-messages'], { queryParams: this.filter });
   }
 
   getMessageType(messageType: string) {

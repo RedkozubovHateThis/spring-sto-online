@@ -112,6 +112,7 @@ export class DocumentFilterComponent implements OnInit {
     this.filter.toDate = null;
     this.fromDate = null;
     this.toDate = null;
+    this.selectedClient = null;
     this.emitChange();
   }
 

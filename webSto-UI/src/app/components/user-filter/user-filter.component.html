@@ -1,0 +1,148 @@
+<div class="card shadow">
+  <div class="card-body">
+
+    <div class="row">
+      <div class="col-sm mb-3">
+        <h3 class="text-muted mb-0">
+          Фильтры
+        </h3>
+      </div>
+      <div class="col-auto mb-3">
+        <button class="btn btn-sm btn-buro-green" (click)="resetFilters()" *ngIf="filter.role || filter.isApproved != null ||
+        filter.isAutoRegistered != null || filter.phone || filter.email || filter.fio">
+          Сбросить
+        </button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="role-select">Роль</label>
+      <select id="role-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.role" (change)="emitChange()">
+        <option [selected]="null === filter.role" [ngValue]="null">
+          Без фильтра
+        </option>
+        <option [selected]="'CLIENT' === filter.role" [ngValue]="'CLIENT'">
+          Автовладелец
+        </option>
+        <option [selected]="'SERVICE_LEADER' === filter.role" [ngValue]="'SERVICE_LEADER'">
+          Автосервис
+        </option>
+        <option [selected]="'MODERATOR' === filter.role" [ngValue]="'MODERATOR'" *ngIf="userService.isAdmin()">
+          Модератор
+        </option>
+        <option [selected]="'ADMIN' === filter.role" [ngValue]="'ADMIN'" *ngIf="userService.isAdmin()">
+          Администратор
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="is-approved-select">Утвержден</label>
+      <select id="is-approved-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.isApproved" (change)="emitChange()">
+        <option [selected]="null === filter.isApproved" [ngValue]="null">
+          Без фильтра
+        </option>
+        <option [selected]="'false' === filter.isApproved" [ngValue]="'false'">
+          Нет
+        </option>
+        <option [selected]="'true' === filter.isApproved" [ngValue]="'true'">
+          Да
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="is-auto-registered">Зарегистрирован автоматически</label>
+      <select id="is-auto-registered" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.isAutoRegistered" (change)="emitChange()">
+        <option [selected]="null === filter.isAutoRegistered" [ngValue]="null">
+          Без фильтра
+        </option>
+        <option [selected]="'false' === filter.isAutoRegistered" [ngValue]="'false'">
+          Нет
+        </option>
+        <option [selected]="'true' === filter.isAutoRegistered" [ngValue]="'true'">
+          Да
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="phone-input">Телефон</label>
+      <div class="input-group input-group-sm">
+        <input id="phone-input" class="form-control" placeholder="Телефон"
+               [(ngModel)]="filter.phone" (keyup.enter)="emitChange()">
+        <div class="input-group-append">
+          <button class="btn btn-buro-green" type="button" (click)="emitChange()">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="email-input">Email</label>
+      <div class="input-group input-group-sm">
+        <input id="email-input" class="form-control" placeholder="Email"
+               [(ngModel)]="filter.email" (keyup.enter)="emitChange()">
+        <div class="input-group-append">
+          <button class="btn btn-buro-green" type="button" (click)="emitChange()">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="fio-input">ФИО</label>
+      <div class="input-group input-group-sm">
+        <input id="fio-input" class="form-control" placeholder="ФИО"
+               [(ngModel)]="filter.fio" (keyup.enter)="emitChange()">
+        <div class="input-group-append">
+          <button class="btn btn-buro-green" type="button" (click)="emitChange()">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <h3 class="text-muted">
+          Сортировка
+        </h3>
+      </div>
+      <div *ngIf="filter.sort !== 'lastName' || filter.direction !== 'asc'" class="col-auto text-muted">
+        <button class="btn btn-sm btn-buro-green" (click)="resetSort()">
+          Сбросить
+        </button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="sort-select">Сортировать по:</label>
+      <select id="sort-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.sort" (change)="emitChange()">
+        <option [selected]="'lastName' === filter.sort" [ngValue]="'lastName'">
+          Фамилия
+        </option>
+        <option [selected]="'firstName' === filter.sort" [ngValue]="'firstName'">
+          Имя
+        </option>
+        <option [selected]="'middleName' === filter.sort" [ngValue]="'middleName'">
+          Отчество
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="direction-select">Порядок сортировки:</label>
+      <select id="direction-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.direction" (change)="emitChange()">
+        <option [selected]="'asc' === filter.direction" [ngValue]="'asc'">
+          По возрастанию
+        </option>
+        <option [selected]="'desc' === filter.direction" [ngValue]="'desc'">
+          По убыванию
+        </option>
+      </select>
+    </div>
+  </div>
+</div>

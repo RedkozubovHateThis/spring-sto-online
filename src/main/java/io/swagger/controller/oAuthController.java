@@ -90,6 +90,7 @@ public class oAuthController {
         user.setIsApproved(false);
         user.setInVacation(false);
         user.setAllowSms(false);
+        user.setIsAutoRegistered(false);
         user.setPassword( userPasswordEncoder.encode( user.getPassword() ) );
 
         UserRole clientRole = userRoleRepository.findByName(roleName);
@@ -142,6 +143,7 @@ public class oAuthController {
         user.setEnabled(true);
         user.setInVacation(false);
         user.setAllowSms(false);
+        user.setIsAutoRegistered(false);
         user.setPassword( userPasswordEncoder.encode( user.getPassword() ) );
 
         UserRole clientRole = userRoleRepository.findByName("SERVICE_LEADER");
