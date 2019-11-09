@@ -1,5 +1,5 @@
 import {Injectable, Input, Output, EventEmitter} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable, Subject} from 'rxjs';
 import {User} from '../model/postgres/auth/user';
 import {Router} from '@angular/router';
@@ -26,6 +26,15 @@ export class UserService implements TransferService<User> {
       'Content-type': 'application/x-www-form-urlencoded'
     };
     return this.http.post(`${this.getApiUrl()}oauth/token`, loginPayload, {headers});
+  }
+
+  restore(restoreData: HttpParams) {
+    const headers = {
+      Authorization: 'Basic ' + btoa('spring-security-oauth2-read-write-client:spring-security-oauth2-read-write-client-password1234'),
+      'Content-type': 'application/x-www-form-urlencoded'
+    };
+
+    return this.http.post(`${this.getApiUrl()}oauth/restore`, restoreData, {headers});
   }
 
   logout() {

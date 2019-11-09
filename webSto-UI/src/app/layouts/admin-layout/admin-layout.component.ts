@@ -16,7 +16,8 @@ export class AdminLayoutComponent implements OnInit {
       if ( val instanceof NavigationEnd ) {
 
         if ( !location.pathname.includes( '/login' ) &&
-          !location.pathname.includes( '/register' ) ) {
+          !location.pathname.includes( '/register' ) &&
+          !location.pathname.includes( '/restore' ) ) {
 
           if ( !userService.isAuthenticated() ) {
 

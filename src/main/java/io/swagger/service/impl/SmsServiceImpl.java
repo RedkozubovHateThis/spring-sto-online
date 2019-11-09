@@ -1,6 +1,6 @@
 package io.swagger.service.impl;
 
-import io.swagger.response.api.APIResponse;
+import io.swagger.response.api.SMSAPIResponse;
 import io.swagger.service.SmsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +9,6 @@ import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -17,7 +16,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Future;
 
 @Service
 public class SmsServiceImpl implements SmsService {
@@ -56,7 +54,7 @@ public class SmsServiceImpl implements SmsService {
         sendRequest(query);
     }
     @Override
-    public APIResponse sendSms(String phone, String message) {
+    public SMSAPIResponse sendSms(String phone, String message) {
         UriComponentsBuilder query = buildParams(phone, message, 0, "utf-8"); //По умолчанию, без транслита, и в кодировке utf-8
         return sendRequest(query);
     }
@@ -75,7 +73,7 @@ public class SmsServiceImpl implements SmsService {
         sendRequest(params);
     }
     @Override
-    public APIResponse sendSms(String phone, String message, Integer translit, String charset) {
+    public SMSAPIResponse sendSms(String phone, String message, Integer translit, String charset) {
         UriComponentsBuilder params = buildParams(phone, message, translit, charset);
         return sendRequest(params);
     }
@@ -87,7 +85,7 @@ public class SmsServiceImpl implements SmsService {
      *
      * @param params    Параметры запроса (массив с данными)
      */
-    private APIResponse sendRequest(UriComponentsBuilder params) {
+    private SMSAPIResponse sendRequest(UriComponentsBuilder params) {
         HttpHeaders headers = new HttpHeaders();
 
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -104,35 +102,35 @@ public class SmsServiceImpl implements SmsService {
             if ( useDebug )
                 logger.info("Request: {}", query);
 
-            ResponseEntity<APIResponse> response = restTemplate.exchange( query, HttpMethod.GET, request, APIResponse.class);
+            ResponseEntity<SMSAPIResponse> response = restTemplate.exchange( query, HttpMethod.GET, request, SMSAPIResponse.class);
 
             logger.info("Response [ STATUS ] : {}", response.getStatusCode().toString() );
 
             if ( response.getBody() != null ) {
 
-                APIResponse apiResponse = response.getBody();
+                SMSAPIResponse SMSAPIResponse = response.getBody();
 
-                if ( apiResponse.getError() == null && apiResponse.getErrorCode() == null ) {
-                    logger.info("API response [ ID ] : {}", apiResponse.getId() );
+                if ( SMSAPIResponse.getError() == null && SMSAPIResponse.getErrorCode() == null ) {
+                    logger.info("API response [ ID ] : {}", SMSAPIResponse.getId() );
 
                     if ( useDebug ) {
-                        logger.info("API response [ COUNT ] : {}", apiResponse.getCnt() );
-                        logger.info("API response [ COST ] : {}", apiResponse.getCost() );
-                        logger.info("API response [ BALANCE ] : {}", apiResponse.getBalance() );
+                        logger.info("API response [ COUNT ] : {}", SMSAPIResponse.getCnt() );
+                        logger.info("API response [ COST ] : {}", SMSAPIResponse.getCost() );
+                        logger.info("API response [ BALANCE ] : {}", SMSAPIResponse.getBalance() );
                     }
                 }
                 else {
-                    if ( apiResponse.getId() != null ) {
-                        logger.error("API response [ ID ] : {}", apiResponse.getId() );
+                    if ( SMSAPIResponse.getId() != null ) {
+                        logger.error("API response [ ID ] : {}", SMSAPIResponse.getId() );
                     }
-                    logger.error("API response [ ERROR ] : {}", apiResponse.getError() );
+                    logger.error("API response [ ERROR ] : {}", SMSAPIResponse.getError() );
 
                     if ( useDebug ) {
-                        logger.error("API response [ ERROR_CODE ] : {}", apiResponse.getErrorCode() );
+                        logger.error("API response [ ERROR_CODE ] : {}", SMSAPIResponse.getErrorCode() );
                     }
                 }
 
-                return apiResponse;
+                return SMSAPIResponse;
 
             }
 

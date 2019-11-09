@@ -11,5 +11,9 @@ public interface UserService {
 
     boolean isPhoneValid(String phone);
 
+    boolean isEmailValid(String email);
+
     void processPhone(User user);
+
+    String processPhone(String phone);
 }

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Created by phoenix on 01.11.17.
  */
-public class APIResponse {
+public class SMSAPIResponse {
     private Long id;
     private Integer cnt;
     private Double cost;
@@ -15,7 +15,7 @@ public class APIResponse {
     @JsonProperty("error_code")
     private Integer errorCode;
 
-    public APIResponse() {}
+    public SMSAPIResponse() {}
 
     public Long getId() {
         return id;

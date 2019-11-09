@@ -45,6 +45,9 @@
 <!--                <div class="error" *ngIf="loginForm.controls['password'].hasError('required') && loginForm.controls['password'].touched">Пароль необходим</div>-->
               </div>
             </div>
+            <div class="text-right">
+              <a href="#" class="text-muted" [routerLink]="['/restore']"><small>Забыли пароль?</small></a>
+            </div>
 <!--            <div class="custom-control custom-control-alternative custom-checkbox">-->
 <!--              <input class="custom-control-input" id=" customCheckLogin" type="checkbox">-->
 <!--              <label class="custom-control-label" for=" customCheckLogin">-->
@@ -64,14 +67,6 @@
           </form>
         </div>
       </div>
-<!--      <div class="row mt-3">-->
-<!--        <div class="col-6">-->
-<!--          <a href="javascript:void(0)" class="text-light"><small>Забыли пароль?</small></a>-->
-<!--        </div>-->
-<!--        <div class="col-6 text-right">-->
-<!--          <a href="javascript:void(0)" class="text-light"><small>Создать новый аккаунт</small></a>-->
-<!--        </div>-->
-<!--      </div>-->
     </div>
   </div>
 </div>

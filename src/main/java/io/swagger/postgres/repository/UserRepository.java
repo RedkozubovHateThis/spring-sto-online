@@ -46,6 +46,18 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long>, 
             "AND user.enabled = true")
     User findByUsername(@Param("username") String username);
 
+    @Query("SELECT DISTINCT user FROM User user " +
+            "LEFT JOIN FETCH user.roles AS role " +
+            "WHERE user.phone = :phone " +
+            "AND user.enabled = true")
+    User findByPhone(@Param("phone") String phone);
+
+    @Query("SELECT DISTINCT user FROM User user " +
+            "LEFT JOIN FETCH user.roles AS role " +
+            "WHERE user.email = :email " +
+            "AND user.enabled = true")
+    User findByEmail(@Param("email") String email);
+
     @Query("SELECT u FROM User AS u " +
             "WHERE u.id = :moderatorId " +
             "OR u.moderatorId = :moderatorId")

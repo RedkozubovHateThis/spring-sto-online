@@ -2,14 +2,15 @@ package io.swagger.controller;
 
 import io.swagger.firebird.model.Organization;
 import io.swagger.firebird.repository.OrganizationRepository;
-import io.swagger.helper.UserHelper;
-import io.swagger.postgres.model.EventMessage;
-import io.swagger.postgres.model.enums.MessageType;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.model.security.UserRole;
-import io.swagger.postgres.repository.EventMessageRepository;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.postgres.repository.UserRoleRepository;
+import io.swagger.response.api.ApiResponse;
+import io.swagger.response.api.PasswordRestoreData;
+import io.swagger.service.MailSendService;
+import io.swagger.service.PasswordGenerationService;
+import io.swagger.service.SmsService;
 import io.swagger.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,13 +38,27 @@ public class oAuthController {
     private PasswordEncoder userPasswordEncoder;
 
     @Autowired
+    private PasswordGenerationService passwordGenerationService;
+
+    @Autowired
     private OrganizationRepository organizationRepository;
 
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private SmsService smsService;
+
+    @Autowired
+    private MailSendService mailSendService;
+
     @Value("${domain.demo}")
     private Boolean demoDomain;
+
+    @Value("${domain.origin}")
+    private String originalDomain;
+
+    private Map<String, PasswordRestoreData> hashPool = new HashMap<>();
 
     @PostMapping("/register/{roleName}")
     public ResponseEntity register(@RequestBody User user,
@@ -63,6 +78,10 @@ public class oAuthController {
 
         if ( user.getEmail() != null && user.getEmail().length() == 0 )
             user.setEmail(null);
+
+        if ( user.getEmail() != null && user.getEmail().length() > 0 &&
+                !userService.isEmailValid( user.getEmail() ) )
+            return ResponseEntity.status(400).body("Неверный формат почты!");
 
         if ( user.getPhone() == null || user.getPhone().isEmpty() )
             return ResponseEntity.status(400).body("Телефон не может быть пустым!");
@@ -118,6 +137,54 @@ public class oAuthController {
             userService.buildRegistrationEventMessage( userModerator, user );
 
         return ResponseEntity.ok().build();
+
+    }
+
+    @PostMapping("/restore")
+    public ResponseEntity restore(@RequestParam("restoreData") String restoreData) {
+
+        if ( restoreData == null || restoreData.length() == 0 )
+            return ResponseEntity.status(400).body("Почта не может быть пустой!");
+
+        //Если данные для восстановления проходят как валидный телефон, то отправляем смс
+        if ( userService.isPhoneValid( restoreData ) ) {
+            String processedPhone = userService.processPhone(restoreData);
+
+            User user = userRepository.findByPhone( processedPhone );
+
+            if ( user == null )
+                return ResponseEntity.status(400).body( new ApiResponse ( "Пользователя с таким телефоном не существует!" ) );
+
+            String newPassword = passwordGenerationService.generatePassword();
+
+            user.setPassword( userPasswordEncoder.encode( newPassword ) );
+            userRepository.save( user );
+
+            String smsText = String.format( "Ваш новый пароль для доступа к BUROMOTORS: %s", newPassword );
+            smsService.sendSms( processedPhone, smsText );
+
+            return ResponseEntity.ok( new ApiResponse( "Ваш новый пароль отправлен вам на телефон!" ) );
+        }
+        //Если нет, то пытаемся восстановить по почте
+        else if ( userService.isEmailValid( restoreData ) ) {
+
+            User user = userRepository.findByEmail( restoreData );
+
+            if ( user == null )
+                return ResponseEntity.status(400).body( new ApiResponse ( "Пользователя с такой почтой не существует!" ) );
+
+            String uuid = UUID.randomUUID().toString();
+
+            PasswordRestoreData passwordRestoreData = new PasswordRestoreData(user);
+            hashPool.put( uuid, passwordRestoreData );
+
+            String mailText = String.format( "Ссылка на восстановление вашего пароля: %s/restore?hash=%s . Внимание, ссылка будет действительна 15 минут!", originalDomain, uuid );
+            mailSendService.sendMail( restoreData, "Восстановление пароля к BUROMOTORS", mailText );
+
+            return ResponseEntity.ok( new ApiResponse( "Ссылка на страницу восстановления пароля отправлена вам на почту!" ) );
+        }
+        else
+            return ResponseEntity.status(400).body( new ApiResponse ( "Неверные данные для восстановления пароля!" ) );
 
     }
 
