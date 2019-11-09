@@ -1,0 +1,21 @@
+<nav aria-label="..." *ngIf="pagesInfo.length > 0">
+  <ul class="pagination justify-content-end mb-0">
+
+    <li class="page-item" *ngIf="!isFirst">
+      <a class="page-link" tabindex="-1" (click)="goToPage( filter.page - 1, $event )">
+        <i class="fas fa-angle-left"></i>
+      </a>
+    </li>
+
+    <li class="page-item" *ngFor="let pageInfo of pagesInfo" [ngClass]="{active: pageInfo == filter.page + 1}">
+      <a class="page-link" (click)="goToPage( pageInfo - 1, $event )">{{pageInfo}}</a>
+    </li>
+
+    <li class="page-item" *ngIf="!isLast">
+      <a class="page-link" (click)="goToPage( filter.page + 1, $event )">
+        <i class="fas fa-angle-right"></i>
+      </a>
+    </li>
+
+  </ul>
+</nav>

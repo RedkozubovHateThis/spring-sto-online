@@ -15,7 +15,7 @@
               </h3>
             </div>
             <div class="col-auto">
-              <button class="btn btn-sm btn-buro-green" (click)="refresh()" [disabled]="isLoading">
+              <button class="btn btn-sm btn-buro-green" (click)="applyFilter()" [disabled]="isLoading">
                 Обновить
               </button>
             </div>
@@ -67,33 +67,17 @@
           </table>
         </div>
         <div class="card-footer py-4table-responsive">
-          <nav aria-label="..." *ngIf="pagesInfo.length > 0">
-            <ul class="pagination justify-content-end mb-0">
-
-              <li class="page-item" *ngIf="!all.first">
-                <a class="page-link" tabindex="-1" [routerLink]="['/event-messages']"
-                   [queryParams]="{page: page, sort: filter.sort, direction: filter.direction, messageType: filter.messageType, toId: filter.toId, fromId: filter.fromId, documentId: filter.documentId}">
-                  <i class="fas fa-angle-left"></i>
-                </a>
-              </li>
-
-              <li class="page-item" *ngFor="let pageInfo of pagesInfo" [ngClass]="{active: pageInfo == page + 1}">
-                <a class="page-link" [routerLink]="['/event-messages']" [queryParams]="{page: pageInfo, sort: filter.sort, direction: filter.direction, messageType: filter.messageType, toId: filter.toId, fromId: filter.fromId, documentId: filter.documentId}">{{pageInfo}}</a>
-              </li>
-
-              <li class="page-item" *ngIf="!all.last">
-                <a class="page-link" [routerLink]="['/event-messages']" [queryParams]="{page: page + 2, sort: filter.sort, direction: filter.direction, messageType: filter.messageType, toId: filter.toId, fromId: filter.fromId, documentId: filter.documentId}">
-                  <i class="fas fa-angle-right"></i>
-                </a>
-              </li>
-
-            </ul>
-          </nav>
+          <app-pagination *ngIf="all != null"
+                          [totalPages]="all.totalPages"
+                          [isFirst]="all.first"
+                          [isLast]="all.last"
+                          [filter]="filter"
+                          (onPageChange)="goToPage($event)"></app-pagination>
         </div>
       </div>
     </div>
     <div class="col-xl-3 mb-5">
-      <app-event-message-filter (onChange)="refresh()" [filter]="filter"></app-event-message-filter>
+      <app-event-message-filter (onChange)="applyFilter()" [filter]="filter"></app-event-message-filter>
     </div>
   </div>
 </div>

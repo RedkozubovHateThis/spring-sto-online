@@ -7,6 +7,7 @@ import {TransferService} from './transfer.service';
 import {environment} from '../../environments/environment';
 import {ChatMessageResponseService} from './chatMessageResponse.service';
 import {ToastrService} from 'ngx-toastr';
+import {UsersFilter} from '../model/usersFilter';
 
 @Injectable()
 export class UserService implements TransferService<User> {
@@ -157,15 +158,33 @@ export class UserService implements TransferService<User> {
 
     }, error => {
       this.isSaving = false;
-      this.toastrService.error('Ошибка сохранения пользователя!', 'Внимание!');
+
+      if ( error.status === 400 || error.status === 404 )
+        this.toastrService.error(error.error, 'Внимание!');
+      else
+        this.toastrService.error('Ошибка сохранения пользователя!', 'Внимание!');
+
     } );
 
   }
 
-  getAll(page: number, size: number, offset: number) {
+  getAll(size: number, offset: number, filter: UsersFilter) {
     const headers = this.getHeaders();
 
-    return this.http.get( `${this.getApiUrl()}secured/users/findAll?sort=lastName&size=${size}&page=${page}&offset=${offset}`, {headers} );
+    const params = {
+      sort: `${filter.sort},${filter.direction}`,
+      page: filter.page.toString(),
+      size: size.toString(),
+      offset: offset.toString(),
+      role: filter.role != null ? filter.role : '',
+      isApproved: filter.isApproved != null ? filter.isApproved : '',
+      isAutoRegistered: filter.isAutoRegistered != null ? filter.isAutoRegistered : '',
+      phone: filter.phone != null ? filter.phone : '',
+      email: filter.email != null ? filter.email : '',
+      fio: filter.fio != null ? filter.fio : ''
+    };
+
+    return this.http.get( `${this.getApiUrl()}secured/users/findAll`, {headers, params} );
   }
 
   getReplacementModerators() {

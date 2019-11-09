@@ -17,6 +17,7 @@ export class User {
   organizationId: number;
   moderatorId: number;
   isApproved: boolean;
+  isAutoRegistered: boolean;
   inVacation: boolean;
   inn: string;
   replacementModeratorId: number;

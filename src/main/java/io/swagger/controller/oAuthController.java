@@ -55,17 +55,14 @@ public class oAuthController {
         if ( roleName == null )
             return ResponseEntity.status(400).body("Роль не может быть пустой!");
 
-        if ( !roleName.equals("CLIENT") && !roleName.equals("SERVICE_LEADER") )
-            return ResponseEntity.status(400).body("Недопустимая роль!");
-
         if ( user.getPassword() == null || user.getPassword().isEmpty() )
             return ResponseEntity.status(400).body("Пароль не может быть пустым!");
 
         if ( user.getPassword().length() < 6 )
             return ResponseEntity.status(400).body("Пароль не может содержать менее 6 символов!");
 
-        if ( user.getEmail() == null || user.getEmail().isEmpty() )
-            return ResponseEntity.status(400).body("Почта не может быть пустой!");
+        if ( user.getEmail() != null && user.getEmail().length() == 0 )
+            user.setEmail(null);
 
         if ( user.getPhone() == null || user.getPhone().isEmpty() )
             return ResponseEntity.status(400).body("Телефон не может быть пустым!");
@@ -82,7 +79,8 @@ public class oAuthController {
         if ( userRepository.isUserExistsPhone( user.getPhone() ) )
             return ResponseEntity.status(400).body("Пользователь с таким телефоном уже существует!");
 
-        if ( userRepository.isUserExistsEmail( user.getEmail() ) )
+        if ( user.getEmail() != null && user.getEmail().length() > 0 &&
+                userRepository.isUserExistsEmail( user.getEmail() ) )
             return ResponseEntity.status(400).body("Пользователь с такой почтой уже существует!");
 
         if ( user.getUsername() == null || user.getUsername().isEmpty() )
@@ -92,6 +90,7 @@ public class oAuthController {
         user.setIsApproved(false);
         user.setInVacation(false);
         user.setAllowSms(false);
+        user.setIsAutoRegistered(false);
         user.setPassword( userPasswordEncoder.encode( user.getPassword() ) );
 
         UserRole clientRole = userRoleRepository.findByName(roleName);
@@ -144,6 +143,7 @@ public class oAuthController {
         user.setEnabled(true);
         user.setInVacation(false);
         user.setAllowSms(false);
+        user.setIsAutoRegistered(false);
         user.setPassword( userPasswordEncoder.encode( user.getPassword() ) );
 
         UserRole clientRole = userRoleRepository.findByName("SERVICE_LEADER");

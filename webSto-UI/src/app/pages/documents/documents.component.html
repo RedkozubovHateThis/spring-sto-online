@@ -15,7 +15,7 @@
               </h3>
             </div>
             <div class="col-auto">
-              <button class="btn btn-sm btn-buro-green" (click)="refresh()" [disabled]="isLoading">
+              <button class="btn btn-sm btn-buro-green" (click)="requestData()" [disabled]="isLoading">
                 Обновить
               </button>
             </div>
@@ -39,7 +39,7 @@
             <tbody *ngIf="all != null">
             <tr *ngFor="let fbResponse of all.content, let i = index" [attr.data-index]="i">
               <th scope="row" style="cursor: pointer;" (click)="selected = fbResponse">
-                {{( i + 1 ) + ( page * size )}}
+                {{( i + 1 ) + ( filter.page * size )}}
                 &nbsp;
                 <i class="far fa-check-circle" *ngIf="selected === fbResponse"></i>
                 <i class="far fa-circle" *ngIf="selected !== fbResponse"></i>
@@ -60,41 +60,17 @@
           </table>
         </div>
         <div class="card-footer py-4 table-responsive">
-          <nav aria-label="..." *ngIf="pagesInfo.length > 0">
-            <ul class="pagination justify-content-end mb-0">
-
-              <li class="page-item" *ngIf="!all.first">
-                <a class="page-link" tabindex="-1" [routerLink]="['/documents']"
-                   [queryParams]="{page: page, sort: filter.sort, direction: filter.direction, state: filter.state,
-                   vehicle: filter.vehicle, organization: filter.organization, client: filter.client,
-                   vinNumber: filter.vinNumber, fromDate: filter.fromDate, toDate: filter.toDate}">
-                  <i class="fas fa-angle-left"></i>
-                </a>
-              </li>
-
-              <li class="page-item" *ngFor="let pageInfo of pagesInfo" [ngClass]="{active: pageInfo == page + 1}">
-                <a class="page-link" [routerLink]="['/documents']" [queryParams]="{page: pageInfo, sort: filter.sort,
-                direction: filter.direction, state: filter.state, vehicle: filter.vehicle, organization: filter.organization,
-                client: filter.client, vinNumber: filter.vinNumber, fromDate: filter.fromDate, toDate: filter.toDate}">
-                  {{pageInfo}}
-                </a>
-              </li>
-
-              <li class="page-item" *ngIf="!all.last">
-                <a class="page-link" [routerLink]="['/documents']" [queryParams]="{page: page + 2, sort: filter.sort,
-                direction: filter.direction, state: filter.state, vehicle: filter.vehicle, organization: filter.organization,
-                client: filter.client, vinNumber: filter.vinNumber, fromDate: filter.fromDate, toDate: filter.toDate}">
-                  <i class="fas fa-angle-right"></i>
-                </a>
-              </li>
-
-            </ul>
-          </nav>
+          <app-pagination *ngIf="all != null"
+                          [totalPages]="all.totalPages"
+                          [isFirst]="all.first"
+                          [isLast]="all.last"
+                          [filter]="filter"
+                          (onPageChange)="goToPage($event)"></app-pagination>
         </div>
       </div>
     </div>
     <div class="col-xl-3 mb-5">
-      <app-document-filter (onChange)="refresh()" [filter]="filter" [document]="selected"></app-document-filter>
+      <app-document-filter (onChange)="applyFilter()" [filter]="filter" [document]="selected"></app-document-filter>
     </div>
   </div>
 </div>

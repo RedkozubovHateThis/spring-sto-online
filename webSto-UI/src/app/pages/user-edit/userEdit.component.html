@@ -86,7 +86,7 @@
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="input-email">Email</label>
-                    <input type="text" id="input-email" class="form-control form-control-alternative" placeholder="Email"
+                    <input type="text" id="input-email" class="form-control form-control-alternative" placeholder="Email (не обязательно к заполнению)"
                            [(ngModel)]="model.email" name="email">
                   </div>
                 </div>
@@ -94,7 +94,7 @@
                   <div class="form-group">
                     <label class="form-control-label" for="input-phone">Телефон</label>
                     <input type="text" id="input-phone" class="form-control form-control-alternative" placeholder="Телефон"
-                           disabled="true" [(ngModel)]="model.phone" name="phone">
+                           [(ngModel)]="model.phone" name="phone">
                   </div>
                 </div>
               </div>
@@ -231,6 +231,11 @@
                 <label class="form-control-label" for="organization-full-name">Наименование предприятия</label>
                 <input type="text" id="organization-full-name" class="form-control form-control-alternative" placeholder="Наименование предприятия"
                        disabled [value]="organizationResponse.fullName" name="organizationFullName">
+              </div>
+
+              <div class="form-group" *ngIf="!userService.isSameUser( model ) && ( ( model.serviceLeader && model.organizationId == null ) ||
+              ( model.client && model.clientId == null ) )">
+                <span class="form-control form-control-alternative">Необходимо выполнить привязку к системе АвтоДилер</span>
               </div>
 
             </div>
