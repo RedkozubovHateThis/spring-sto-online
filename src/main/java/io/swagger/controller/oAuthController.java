@@ -55,9 +55,6 @@ public class oAuthController {
     @Value("${domain.demo}")
     private Boolean demoDomain;
 
-    @Value("${domain.origin}")
-    private String originalDomain;
-
     private Map<String, PasswordRestoreData> hashPool = new HashMap<>();
 
     @PostMapping("/register/{roleName}")
@@ -178,8 +175,7 @@ public class oAuthController {
             PasswordRestoreData passwordRestoreData = new PasswordRestoreData(user);
             hashPool.put( uuid, passwordRestoreData );
 
-            String mailText = String.format( "Ссылка на восстановление вашего пароля: %s/restore?hash=%s . Внимание, ссылка будет действительна 15 минут!", originalDomain, uuid );
-            mailSendService.sendMail( restoreData, "Восстановление пароля к BUROMOTORS", mailText );
+            mailSendService.sendPasswordRestoreMail( restoreData, "Восстановление пароля к BUROMOTORS", uuid );
 
             return ResponseEntity.ok( new ApiResponse( "Ссылка на страницу восстановления пароля отправлена вам на почту!" ) );
         }
