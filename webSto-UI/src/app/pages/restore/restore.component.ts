@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {HttpParams} from "@angular/common/http";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UserService} from "../../api/user.service";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
 
 @Component({
@@ -12,19 +12,22 @@ import {ToastrService} from 'ngx-toastr';
 })
 export class RestoreComponent implements OnInit {
 
-  private loginForm: FormGroup;
+  private restoreForm: FormGroup;
+  private passwordForm: FormGroup;
   private isRestoring: boolean = false;
-  constructor(private formBuilder: FormBuilder, private router: Router, private userService: UserService, private toastrService: ToastrService) { }
+  private hashFound: boolean = false;
+  private hash: string;
+  constructor(private formBuilder: FormBuilder, private router: Router, private route: ActivatedRoute, private userService: UserService, private toastrService: ToastrService) { }
 
-  onSubmit() {
+  onRestoreSubmit() {
     localStorage.removeItem('demoDomain');
 
-    if (this.loginForm.invalid) return;
+    if (this.restoreForm.invalid) return;
 
     this.isRestoring = true;
 
     const body = new HttpParams()
-      .set('restoreData', this.loginForm.controls.username.value);
+      .set('restoreData', this.restoreForm.controls.username.value);
 
     this.userService.restore(body)
       .subscribe(data => {
@@ -40,9 +43,47 @@ export class RestoreComponent implements OnInit {
     });
   }
 
+  onPasswordSubmit() {
+    localStorage.removeItem('demoDomain');
+
+    if (this.passwordForm.invalid) return;
+
+    this.isRestoring = true;
+
+    const password = this.passwordForm.controls.password.value;
+    const rePassword = this.passwordForm.controls.rePassword.value;
+
+    const body = new HttpParams()
+      .set('password', password)
+      .set('rePassword', rePassword)
+      .set('hash', this.hash);
+
+    this.userService.restorePassword(body)
+      .subscribe(data => {
+        this.isRestoring = false;
+        // @ts-ignore
+        this.toastrService.success( data.responseText );
+        this.router.navigate(['/login']);
+    }, error => {
+        this.isRestoring = false;
+        if ( error.error.responseText )
+          this.showError(error.error.responseText);
+        else
+          this.showError('Ошибка восстановления пароля!');
+    });
+  }
+
   ngOnInit() {
-    this.loginForm = this.formBuilder.group({
+    this.hash = this.route.snapshot.queryParamMap.get('hash');
+    if ( this.hash )
+      this.hashFound = true;
+
+    this.restoreForm = this.formBuilder.group({
       username: ['', Validators.required]
+    });
+    this.passwordForm = this.formBuilder.group({
+      password: ['', Validators.required],
+      rePassword: ['', Validators.required]
     });
   }
 

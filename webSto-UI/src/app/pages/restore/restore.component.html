@@ -25,7 +25,7 @@
           <div class="text-center text-muted mb-4">
             <small>Восстановление пароля</small>
           </div>
-          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <form [formGroup]="restoreForm" (ngSubmit)="onRestoreSubmit()" *ngIf="!hashFound">
 
             <div class="form-group mb-3">
               <div class="input-group input-group-alternative">
@@ -36,7 +36,34 @@
               </div>
             </div>
             <div class="text-center">
-              <button class="btn btn-buro-green" [disabled]="loginForm.invalid || isRestoring" type="submit">
+              <button class="btn btn-buro-green" [disabled]="restoreForm.invalid || isRestoring" type="submit">
+                Восстановить пароль
+                <span *ngIf="isRestoring">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+              </button>
+            </div>
+          </form>
+          <form [formGroup]="passwordForm" (ngSubmit)="onPasswordSubmit()" *ngIf="hashFound">
+
+            <div class="form-group mb-3">
+              <div class="input-group input-group-alternative">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-lock-open"></i></span>
+                </div>
+                <input class="form-control" formControlName="password" placeholder="Пароль" id="password" autocomplete="off" type="password">
+              </div>
+            </div>
+
+            <div class="form-group mb-3">
+              <div class="input-group input-group-alternative">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-lock-open"></i></span>
+                </div>
+                <input class="form-control" formControlName="rePassword" placeholder="Подтверждение пароля" id="re-password" autocomplete="off" type="password">
+              </div>
+            </div>
+
+            <div class="text-center">
+              <button class="btn btn-buro-green" [disabled]="passwordForm.invalid || isRestoring" type="submit">
                 Восстановить пароль
                 <span *ngIf="isRestoring">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
               </button>

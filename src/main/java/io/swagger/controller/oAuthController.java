@@ -188,6 +188,36 @@ public class oAuthController {
 
     }
 
+    @PostMapping("/restore/password")
+    public ResponseEntity restore(@RequestParam("password") String password,
+                                  @RequestParam("rePassword") String rePassword,
+                                  @RequestParam("hash") String hash) {
+
+        if ( hash == null || hash.length() == 0 ||
+                !hashPool.containsKey( hash ) || !hashPool.get( hash ).isValid() )
+            return ResponseEntity.status(400).body( new ApiResponse( "Ссылка недействительна!" ) );
+
+        if ( password == null || password.length() == 0 )
+            return ResponseEntity.status(400).body( new ApiResponse( "Пароль не может быть пустым!" ) );
+        if ( rePassword == null || rePassword.length() == 0 )
+            return ResponseEntity.status(400).body( new ApiResponse( "Подтверждение пароля не может быть пустым!" ) );
+
+        if ( password.length() < 6 )
+            return ResponseEntity.status(400).body( new ApiResponse( "Пароль не может содержать менее 6 символов!" ) );
+        if ( !password.equals( rePassword ) )
+            return ResponseEntity.status(400).body( new ApiResponse( "Пароли не совпадают!" ) );
+
+        PasswordRestoreData passwordRestoreData = hashPool.remove( hash );
+
+        User user = passwordRestoreData.getUser();
+
+        user.setPassword( userPasswordEncoder.encode( password ) );
+        userRepository.save( user );
+
+        return ResponseEntity.ok( new ApiResponse( "Пароль успешно восстановлен!" ) );
+
+    }
+
     @GetMapping("/demo/register")
     public ResponseEntity registerDemo() {
 

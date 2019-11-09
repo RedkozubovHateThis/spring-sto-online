@@ -53,7 +53,7 @@ public class ServerSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/swagger-ui.html",
                 "/oauth/register/**",
                 "/oauth/restore",
-                "/oauth/restore/changePassword",
+                "/oauth/restore/password",
                 "/oauth/demo/register",
                 "/webjars/**");
     }
