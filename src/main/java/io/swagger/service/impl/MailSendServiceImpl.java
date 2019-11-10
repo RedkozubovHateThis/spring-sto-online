@@ -68,17 +68,4 @@ public class MailSendServiceImpl implements MailSendService {
         return mainTemplate.apply(mainTemplateParams);
     }
 
-    private String buildPasswordRestoreContent2(String uuid) {
-
-        String content = "<html>" +
-                "<head></head>" +
-                "</html>";
-
-        String mailText = String.format( "<body>" +
-                "Ссылка на восстановление вашего пароля: <a href=\"%s/restore?hash=%s\">%s</a>. Внимание, ссылка будет действительна 15 минут!" +
-                "</body>", originalDomain, uuid, originalDomain );
-
-        return mailText;
-    }
-
 }
