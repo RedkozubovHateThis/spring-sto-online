@@ -1,0 +1,23 @@
+<button class="btn btn-sm btn-buro-green" (click)="open(content)" [disabled]="isDeleting">
+  Удалить
+</button>
+
+<!-- Modal -->
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">Удаление: {{modalTitle}}</h3>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    Вы действительно хотите удалить: {{modalTitle}}?
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-buro-green" (click)="promptDelete()" [disabled]="isDeleting">
+      Удалить
+      <span *ngIf="isDeleting">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+    </button>
+    <button type="button" class="btn btn-sm btn-buro-green" (click)="modal.dismiss()">Закрыть</button>
+  </div>
+</ng-template>

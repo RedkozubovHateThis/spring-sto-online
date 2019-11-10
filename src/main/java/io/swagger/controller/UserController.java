@@ -7,6 +7,7 @@ import io.swagger.postgres.model.enums.MessageType;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.EventMessageRepository;
 import io.swagger.postgres.repository.UserRepository;
+import io.swagger.response.api.ApiResponse;
 import io.swagger.response.api.EventMessageStatus;
 import io.swagger.service.EventMessageService;
 import io.swagger.service.UserService;
@@ -207,6 +208,26 @@ public class UserController {
         eventMessageRepository.save(eventMessage);
 
         webSocketController.sendEventMessage( eventMessage, targetUser.getId() );
+
+    }
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity deleteUser(@PathVariable("userId") Long userId) {
+
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( currentUser.getId().equals( userId ) )
+            return ResponseEntity.status(400).body( new ApiResponse( "Невозможно удалить активного пользователя!" ) );
+
+        User user = userRepository.findOne( userId );
+
+        if ( user == null )
+            return ResponseEntity.status(400).body( new ApiResponse( "Пользователь не найден!" ) );
+
+        user.setEnabled( false );
+        userRepository.save( user );
+
+        return ResponseEntity.ok( new ApiResponse( "Пользователь успешно удален!" ) );
 
     }
 

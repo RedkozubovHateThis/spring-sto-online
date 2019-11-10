@@ -8,9 +8,10 @@ import {environment} from '../../environments/environment';
 import {ChatMessageResponseService} from './chatMessageResponse.service';
 import {ToastrService} from 'ngx-toastr';
 import {UsersFilter} from '../model/usersFilter';
+import {RestService} from './rest.service';
 
 @Injectable()
-export class UserService implements TransferService<User> {
+export class UserService implements TransferService<User>, RestService<User> {
 
   constructor(private http: HttpClient, private router: Router, private toastrService: ToastrService) { }
   currentUser: User;
@@ -64,6 +65,21 @@ export class UserService implements TransferService<User> {
         return this.currentUser.email;
       else
         return this.currentUser.username;
+    }
+    else
+      return null;
+  }
+
+  getModelUsername(model: User): string {
+    if ( model != null ) {
+      if ( model.fio != null )
+        return model.fio;
+      else if ( model.phone != null )
+        return model.phone;
+      else if ( model.email != null )
+        return model.email;
+      else
+        return model.username;
     }
     else
       return null;
@@ -153,6 +169,12 @@ export class UserService implements TransferService<User> {
 
   createUser(user: User, selectedRole: string) {
     return this.http.post(`${this.getApiUrl()}oauth/register/${selectedRole}`, user);
+  }
+
+  delete(user: User) {
+    const headers = this.getHeaders();
+
+    return this.http.delete(`${this.getApiUrl()}/secured/users/${user.id}`, {headers});
   }
 
   createDemoUser() {

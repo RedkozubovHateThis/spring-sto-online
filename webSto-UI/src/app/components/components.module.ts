@@ -16,6 +16,7 @@ import {PasswordChangeButtonComponent} from './password-change-button/password-c
 import {DpDatePickerModule} from 'ng2-date-picker';
 import {UserFilterComponent} from './user-filter/user-filter.component';
 import {PaginationComponent} from './pagination/pagination.component';
+import {DeleteButtonComponent} from './delete-button/delete-button.component';
 
 @NgModule({
   imports: [
@@ -37,7 +38,8 @@ import {PaginationComponent} from './pagination/pagination.component';
     ReportButtonComponent,
     PasswordChangeButtonComponent,
     UserFilterComponent,
-    PaginationComponent
+    PaginationComponent,
+    DeleteButtonComponent
   ],
   exports: [
     FooterComponent,
@@ -50,7 +52,8 @@ import {PaginationComponent} from './pagination/pagination.component';
     ReportButtonComponent,
     PasswordChangeButtonComponent,
     UserFilterComponent,
-    PaginationComponent
+    PaginationComponent,
+    DeleteButtonComponent
   ]
 })
 export class ComponentsModule { }

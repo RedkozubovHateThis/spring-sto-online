@@ -10,6 +10,7 @@ import io.swagger.postgres.model.UploadFile;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.Where;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +26,7 @@ import java.util.Set;
 @Table(name = "users")
 @Data
 @EqualsAndHashCode(of = "id")
+@Where(clause = "enabled=true")
 public class User implements UserDetails, Serializable {
 
     @Id
