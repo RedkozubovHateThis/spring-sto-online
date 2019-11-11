@@ -56,12 +56,12 @@
                 </span>
               </th>
               <th>
-                <ng-container *ngIf="user.client || user.serviceLeader">
+                <ng-container *ngIf="user.userClient || user.userServiceLeader">
                   {{user.isApproved ? 'Да' : 'Нет'}}
                 </ng-container>
               </th>
               <th>
-                <ng-container *ngIf="user.client">
+                <ng-container *ngIf="user.userClient">
                   {{user.isAutoRegistered ? 'Да' : 'Нет'}}
                 </ng-container>
               </th>

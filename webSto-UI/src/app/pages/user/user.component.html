@@ -1,6 +1,6 @@
 <div class="container-fluid mt--7">
   <div class="row">
-    <div class="col-xl-8 mb-5" [ngClass]="{ 'col-xl-12': model != null && ( model.admin || model.moderator ) }">
+    <div class="col-xl-8 mb-5" [ngClass]="{ 'col-xl-12': model != null && ( model.userAdmin || model.userModerator ) }">
       <div class="card bg-secondary shadow">
         <div class="card-header bg-white border-0">
           <div class="row align-items-center">
@@ -12,7 +12,7 @@
                 Назад
               </button>
               <button class="btn btn-sm btn-buro-green" (click)="navigate( model )"
-                      *ngIf="userService.currentUser != null && model != null && ( userService.currentUser.id == model.id || userService.currentUser.admin )">
+                      *ngIf="userService.currentUser != null && model != null && ( userService.currentUser.id == model.id || userService.currentUser.userAdmin )">
                 Редактировать
               </button>
               <app-delete-button *ngIf="userService.isAdmin() && !userService.isSameUser(model)"
@@ -24,7 +24,7 @@
               ></app-delete-button>
               <app-password-change-button [model]="model" [currentUser]="userService.currentUser"
                                           *ngIf="model != null && userService.currentUser != null
-                                        && ( userService.currentUser.admin || userService.currentUser.id === model.id )"></app-password-change-button>
+                                        && ( userService.currentUser.userAdmin || userService.currentUser.id === model.id )"></app-password-change-button>
             </div>
           </div>
         </div>
@@ -60,7 +60,7 @@
                   </div>
                 </div>
               </div>
-              <div class="row" *ngIf="model.moderator">
+              <div class="row" *ngIf="model.userModerator">
                 <div class="col-lg-6">
                   <div class="form-group">
                     <div class="form-check">
@@ -105,14 +105,21 @@
             <h6 class="heading-small text-muted mb-4">Роли</h6>
             <div class="pl-lg-4" *ngIf="model != null">
               <div class="row">
-                <div class="col-lg-12">
-                  <ul class="list-group list-group-flush" *ngFor="let role of model.roles">
-                    <li class="list-group-item">{{role.nameRus}}</li>
-                  </ul>
+                <div class="col-lg-6">
+                  <label class="form-control-label">Роль</label>
+                  <span class="form-control form-control-alternative" *ngFor="let role of model.roles">
+                    {{role.nameRus}}
+                  </span>
+                </div>
+                <div class="col-lg-6" *ngIf="model.userClient || model.userServiceLeader">
+                  <label class="form-control-label" for="moderator">Модератор</label>
+                  <span class="form-control form-control-alternative" id="moderator">
+                    {{model.moderatorFio}}
+                  </span>
                 </div>
               </div>
             </div>
-            <ng-container *ngIf="model != null && model.serviceLeader">
+            <ng-container *ngIf="model != null && model.userServiceLeader">
               <hr class="my-4" />
               <!-- Shops -->
               <h6 class="heading-small text-muted mb-4">Магазины</h6>
@@ -135,7 +142,7 @@
         </div>
       </div>
     </div>
-    <div class="col-xl-4 mb-5" *ngIf="model != null && ( model.client || model.serviceLeader )">
+    <div class="col-xl-4 mb-5" *ngIf="model != null && ( model.userClient || model.userServiceLeader )">
       <div class="card bg-secondary shadow">
 
         <div class="card-header bg-white border-0">
@@ -151,23 +158,23 @@
           <div class="row">
             <div class="col-lg-12" *ngIf="model != null">
 
-              <div class="form-group" *ngIf="model.client && clientResponse != null">
+              <div class="form-group" *ngIf="model.userClient && clientResponse != null">
                 <label class="form-control-label" for="client-full-name">Имя клиента</label>
                 <span id="client-full-name" class="form-control form-control-alternative">{{clientResponse.fullName}}</span>
               </div>
 
-              <div class="form-group" *ngIf="model.serviceLeader && organizationResponse != null">
+              <div class="form-group" *ngIf="model.userServiceLeader && organizationResponse != null">
                 <label class="form-control-label" for="organization-full-name">Наименование предприятия</label>
                 <span id="organization-full-name" class="form-control form-control-alternative">{{organizationResponse.fullName}}</span>
               </div>
 
-              <div class="form-group" *ngIf="( model.serviceLeader && model.organizationId == null ) ||
-              ( model.client && model.clientId == null )">
+              <div class="form-group" *ngIf="( model.userServiceLeader && model.organizationId == null ) ||
+              ( model.userClient && model.clientId == null )">
                 <span class="form-control form-control-alternative">Необходимо выполнить привязку к системе АвтоДилер</span>
               </div>
 
               <div class="form-group"
-                   *ngIf="userService.isModerator() && model != null && model.id != userService.currentUser.id">
+                   *ngIf="userService.isModeratorOrAdmin() && model != null && model.id != userService.currentUser.id">
                 <button class="btn btn-buro-green" [disabled]="model.clientId == null && model.organizationId == null" (click)="approve( model, true )" *ngIf="!model.isApproved; else disapprove">
                   Подвердить<span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
                 </button>

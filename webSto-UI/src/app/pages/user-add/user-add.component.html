@@ -68,6 +68,13 @@
                            name="password" formControlName="rePassword">
                   </div>
                 </div>
+                <div class="col-lg-6" *ngIf="addForm.controls.selectedRole.value === 'SERVICE_LEADER'">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-inn">ИНН</label>
+                    <input type="text" id="input-inn" class="form-control form-control-alternative" placeholder="ИНН"
+                           name="inn" formControlName="inn">
+                  </div>
+                </div>
               </div>
             </div>
             <hr class="my-4" />
@@ -91,18 +98,33 @@
                 </div>
               </div>
             </div>
+            <hr class="my-4" />
             <!-- Roles -->
             <h6 class="heading-small text-muted mb-4">Роли</h6>
             <div class="pl-lg-4">
               <div class="row">
                 <div class="col-lg-6">
                   <div class="form-group">
+                    <label class="form-control-label" for="role-select">Роль</label>
                     <select id="role-select" class="form-control form-control-alternative" formControlName="selectedRole">
                       <option disabled [value]="null">
                         Выберите роль
                       </option>
                       <option *ngFor="let role of roles" [value]="role.id">
                         {{ role.name }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-lg-6" *ngIf="addForm.controls.selectedRole.value === 'SERVICE_LEADER'">
+                  <div class="form-group">
+                    <label class="form-control-label" for="moderator-select">Модератор</label>
+                    <select id="moderator-select" class="form-control form-control-alternative" formControlName="moderatorId">
+                      <option disabled [value]="null">
+                        Выберите модератора
+                      </option>
+                      <option *ngFor="let moderator of moderators" [value]="moderator.id">
+                        {{ moderator.fio }}
                       </option>
                     </select>
                   </div>

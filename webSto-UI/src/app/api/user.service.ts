@@ -137,13 +137,11 @@ export class UserService implements TransferService<User>, RestService<User> {
 
       const redirectUrl: string = localStorage.getItem('redirectUrl');
 
-      console.log(redirectUrl);
-
       if ( redirectUrl != null && redirectUrl.length > 0 ) {
         this.router.navigate([redirectUrl]);
         localStorage.removeItem('redirectUrl');
       }
-      else if ( this.currentUser.client )
+      else if ( this.currentUser.userClient )
         this.router.navigate(['/documents']);
       else
         this.router.navigate(['/dashboard']);
@@ -159,6 +157,8 @@ export class UserService implements TransferService<User>, RestService<User> {
     this.http.get( this.getApiUrl() + 'secured/users/currentUser', {headers} ).subscribe( data => {
       this.setCurrentUserData( data as User );
       this.currentUserIsLoaded.next( this.currentUser );
+    }, () => {
+      this.logout();
     } );
 
   }
@@ -188,7 +188,7 @@ export class UserService implements TransferService<User>, RestService<User> {
 
     return this.http.put( this.getApiUrl() + `secured/users/${user.id}`, user,{headers} ).subscribe( data => {
 
-      let user: User = data as User;
+      user = data as User;
 
       if ( this.currentUser != null && this.currentUser.id === user.id )
         this.setCurrentUserData( data as User );
@@ -231,6 +231,12 @@ export class UserService implements TransferService<User>, RestService<User> {
     const headers = this.getHeaders();
 
     return this.http.get( `${this.getApiUrl()}secured/users/findReplacementModerators`, {headers} );
+  }
+
+  getModerators() {
+    const headers = this.getHeaders();
+
+    return this.http.get( `${this.getApiUrl()}secured/users/findModerators`, {headers} );
   }
 
   getOne(id: number) {
@@ -276,31 +282,31 @@ export class UserService implements TransferService<User>, RestService<User> {
   }
 
   isNotClient(): boolean {
-    return this.currentUser != null && ( this.currentUser.admin || this.currentUser.serviceLeader || this.currentUser.moderator );
+    return this.currentUser != null && ( this.currentUser.userAdmin || this.currentUser.userServiceLeader || this.currentUser.userModerator );
   }
 
   isClient(): boolean {
-    return this.currentUser != null && this.currentUser.client;
+    return this.currentUser != null && this.currentUser.userClient;
   }
 
   isModerator(): boolean {
-    return this.currentUser != null && this.currentUser.moderator;
+    return this.currentUser != null && this.currentUser.userModerator;
   }
 
   isServiceLeader(): boolean {
-    return this.currentUser != null && this.currentUser.serviceLeader;
+    return this.currentUser != null && this.currentUser.userServiceLeader;
   }
 
   isAdmin(): boolean {
-    return this.currentUser != null && this.currentUser.admin;
+    return this.currentUser != null && this.currentUser.userAdmin;
   }
 
   isModeratorOrAdmin(): boolean {
-    return this.currentUser != null && ( this.currentUser.admin || this.currentUser.moderator );
+    return this.currentUser != null && ( this.currentUser.userAdmin || this.currentUser.userModerator );
   }
 
   isClientOrServiceLeader(): boolean {
-    return this.currentUser != null && ( this.currentUser.client || this.currentUser.serviceLeader );
+    return this.currentUser != null && ( this.currentUser.userClient || this.currentUser.userServiceLeader );
   }
 
   isSameUser(model: User) {

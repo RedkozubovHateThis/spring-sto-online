@@ -38,9 +38,9 @@ export class UserComponent extends ModelTransfer<User, number> implements OnInit
       this.model = data as User;
       this.isLoading = false;
 
-      if ( this.model.client )
+      if ( this.model.userClient )
         this.requestClient();
-      else if ( this.model.serviceLeader )
+      else if ( this.model.userServiceLeader )
         this.requestOrganization();
 
     }, error => {
@@ -80,9 +80,9 @@ export class UserComponent extends ModelTransfer<User, number> implements OnInit
   }
 
   onTransferComplete() {
-    if ( this.model.client )
+    if ( this.model.userClient )
       this.requestClient();
-    else if ( this.model.serviceLeader )
+    else if ( this.model.userServiceLeader )
       this.requestOrganization();
   }
 

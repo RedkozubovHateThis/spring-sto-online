@@ -24,6 +24,7 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
   private clientResponse: ClientResponse;
   private organizationResponse: OrganizationResponse;
   private isADLoading: boolean = false;
+  private replaceModerators: User[];
   private moderators: User[];
   private shops: ShopInterface[] = [];
 
@@ -40,9 +41,9 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
       this.model = data as User;
       this.isLoading = false;
 
-      if ( this.model.client )
+      if ( this.model.userClient )
         this.requestClient();
-      else if ( this.model.serviceLeader )
+      else if ( this.model.userServiceLeader )
         this.requestOrganization();
 
     }, error => {
@@ -143,14 +144,17 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
 
   requestReplacementModerators() {
     this.userService.getReplacementModerators().subscribe( response => {
-      this.moderators = response as User[];
+      this.replaceModerators = response as User[];
+    } );
+    this.userService.getModerators().subscribe( moderators => {
+      this.moderators = moderators as User[];
     } );
   }
 
   onTransferComplete() {
-    if ( this.model.client )
+    if ( this.model.userClient )
       this.requestClient();
-    else if ( this.model.serviceLeader )
+    else if ( this.model.userServiceLeader )
       this.requestOrganization();
 
     this.requestReplacementModerators();

@@ -32,25 +32,33 @@ public class UserServiceImpl implements UserService {
     @Override
     public User setModerator(User user) {
 
-        List<User> moderators = userRepository.findUsersByRoleName("MODERATOR");
-
         User userModerator = null;
 
-        for (User moderator : moderators) {
+        if ( user.getModeratorId() != null ) {
+            userModerator = userRepository.findOne( user.getModeratorId() );
+        }
 
-            if ( userModerator == null )
-                userModerator = moderator;
-            else {
+        if ( userModerator == null ) {
 
-                if ( moderator.getLastUserAcceptDate() == null ) {
+            List<User> moderators = userRepository.findUsersByRoleName("MODERATOR");
+
+            for (User moderator : moderators) {
+
+                if ( userModerator == null )
                     userModerator = moderator;
-                    break;
-                }
-                else if ( userModerator.getLastUserAcceptDate() == null ) {
-                    break;
-                }
-                else if ( moderator.getLastUserAcceptDate().before( userModerator.getLastUserAcceptDate() ) ) {
-                    userModerator = moderator;
+                else {
+
+                    if ( moderator.getLastUserAcceptDate() == null ) {
+                        userModerator = moderator;
+                        break;
+                    }
+                    else if ( userModerator.getLastUserAcceptDate() == null ) {
+                        break;
+                    }
+                    else if ( moderator.getLastUserAcceptDate().before( userModerator.getLastUserAcceptDate() ) ) {
+                        userModerator = moderator;
+                    }
+
                 }
 
             }
@@ -59,7 +67,7 @@ public class UserServiceImpl implements UserService {
 
         if ( userModerator != null ) {
             logger.info( "Got moderator \"{}\" for user \"{}\"", userModerator.getFio(), user.getFio() );
-            user.setModeratorId( userModerator.getId() );
+            user.setModerator( userModerator );
             webSocketController.sendCounterRefreshMessage( userModerator.getId() );
 
             userModerator.setLastUserAcceptDate( new Date() );

@@ -2,6 +2,8 @@ package io.swagger.postgres.model;
 
 import io.swagger.postgres.model.security.User;
 import lombok.Data;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -21,6 +23,7 @@ public class UploadFile {
     private Date uploadDate;
 
     @ManyToOne
+    @NotFound(action = NotFoundAction.IGNORE)
     private User uploadUser;
     @OneToOne(mappedBy = "uploadFile")
     private ChatMessage chatMessage;

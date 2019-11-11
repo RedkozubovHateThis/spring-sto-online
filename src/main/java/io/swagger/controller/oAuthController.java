@@ -125,6 +125,11 @@ public class oAuthController {
             if ( userRepository.isUserExistsInn( user.getInn() ) )
                 return ResponseEntity.status(400).body("Пользователь с таким ИНН уже существует!");
 
+            Organization organization = organizationRepository.findOrganizationByInn( user.getInn() );
+
+            if ( organization != null )
+                user.setOrganizationId( organization.getId() );
+
             userModerator = userService.setModerator(user);
         }
 

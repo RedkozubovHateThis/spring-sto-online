@@ -2,6 +2,8 @@ package io.swagger.postgres.model;
 
 import io.swagger.postgres.model.security.User;
 import lombok.Data;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -15,8 +17,10 @@ public class ChatMessage {
     private Long id;
 
     @ManyToOne
+    @NotFound(action = NotFoundAction.IGNORE)
     private User fromUser;
     @ManyToOne
+    @NotFound(action = NotFoundAction.IGNORE)
     private User toUser;
 
     private Date messageDate;

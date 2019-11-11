@@ -25,11 +25,16 @@ public class UserSpecificationBuilder {
 
                 List<Predicate> predicates = new ArrayList<>();
                 Join<User, UserRole> userRoleJoin = root.join( User_.roles );
+                Join<User, User> moderatorJoin = root.join( User_.moderator );
+
+                predicates.add(
+                        cb.equal( moderatorJoin.get( User_.enabled ), true )
+                );
 
                 if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
                     predicates.add(
                             cb.or(
-                                cb.equal( root.get( User_.moderatorId ), currentUser.getId() ),
+                                cb.equal( moderatorJoin.get( User_.id ), currentUser.getId() ),
                                 cb.equal( root.get( User_.id ), currentUser.getId() )
                             )
                     );

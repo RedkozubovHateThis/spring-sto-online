@@ -128,6 +128,17 @@ public class UserController {
 
         }
 
+        Long moderatorId = user.getCurrentModeratorId();
+        if ( moderatorId != null ) {
+
+            User origModerator = userRepository.findOne( moderatorId );
+            if ( origModerator != null )
+                user.setModerator( origModerator );
+            else
+                user.setModerator( null );
+
+        }
+
         user.setPassword( existingUser.getPassword() );
         user.setAccountExpired( existingUser.isAccountExpired() );
         user.setAccountLocked( existingUser.isAccountLocked() );
@@ -322,6 +333,18 @@ public class UserController {
         if ( !UserHelper.hasRole( currentUser, "MODERATOR" ) ) return ResponseEntity.status(404).build();
 
         return ResponseEntity.ok( userRepository.findUsersByRoleNameExceptId( "MODERATOR", currentUser.getId() ) );
+
+    }
+
+    @GetMapping("/findModerators")
+    public ResponseEntity findModerators() {
+
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( currentUser == null ) return ResponseEntity.status(401).build();
+        if ( !UserHelper.hasRole( currentUser, "ADMIN" ) ) return ResponseEntity.status(404).build();
+
+        return ResponseEntity.ok( userRepository.findUsersByRoleName("MODERATOR") );
 
     }
 
