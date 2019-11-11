@@ -20,6 +20,7 @@ public class UserServiceImpl implements UserService {
 
     private final static Logger logger = LoggerFactory.getLogger(UserService.class);
     private static final String PHONE_REGEXP = "^((\\+7|7|8)+([0-9]){10})$";
+    private static final String EMAIL_REGEXP = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$";
 
     @Autowired
     private EventMessageRepository eventMessageRepository;
@@ -31,25 +32,33 @@ public class UserServiceImpl implements UserService {
     @Override
     public User setModerator(User user) {
 
-        List<User> moderators = userRepository.findUsersByRoleName("MODERATOR");
-
         User userModerator = null;
 
-        for (User moderator : moderators) {
+        if ( user.getModeratorId() != null ) {
+            userModerator = userRepository.findOne( user.getModeratorId() );
+        }
 
-            if ( userModerator == null )
-                userModerator = moderator;
-            else {
+        if ( userModerator == null ) {
 
-                if ( moderator.getLastUserAcceptDate() == null ) {
+            List<User> moderators = userRepository.findUsersByRoleName("MODERATOR");
+
+            for (User moderator : moderators) {
+
+                if ( userModerator == null )
                     userModerator = moderator;
-                    break;
-                }
-                else if ( userModerator.getLastUserAcceptDate() == null ) {
-                    break;
-                }
-                else if ( moderator.getLastUserAcceptDate().before( userModerator.getLastUserAcceptDate() ) ) {
-                    userModerator = moderator;
+                else {
+
+                    if ( moderator.getLastUserAcceptDate() == null ) {
+                        userModerator = moderator;
+                        break;
+                    }
+                    else if ( userModerator.getLastUserAcceptDate() == null ) {
+                        break;
+                    }
+                    else if ( moderator.getLastUserAcceptDate().before( userModerator.getLastUserAcceptDate() ) ) {
+                        userModerator = moderator;
+                    }
+
                 }
 
             }
@@ -58,7 +67,7 @@ public class UserServiceImpl implements UserService {
 
         if ( userModerator != null ) {
             logger.info( "Got moderator \"{}\" for user \"{}\"", userModerator.getFio(), user.getFio() );
-            user.setModeratorId( userModerator.getId() );
+            user.setModerator( userModerator );
             webSocketController.sendCounterRefreshMessage( userModerator.getId() );
 
             userModerator.setLastUserAcceptDate( new Date() );
@@ -124,6 +133,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean isEmailValid(String email) {
+        return email.matches(EMAIL_REGEXP);
+    }
+
+    @Override
     public void processPhone(User user) {
         String originalPhone = user.getPhone();
 
@@ -133,5 +147,17 @@ public class UserServiceImpl implements UserService {
         else if ( originalPhone.charAt(0) == '7' ) {
             user.setPhone( originalPhone.replaceFirst("7", "8") );
         }
+    }
+
+    @Override
+    public String processPhone(String phone) {
+        if ( phone.charAt(0) == '+' ) {
+            return phone.replaceAll("\\+7", "8");
+        }
+        else if ( phone.charAt(0) == '7' ) {
+            return phone.replaceFirst("7", "8");
+        }
+
+        return phone;
     }
 }

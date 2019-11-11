@@ -9,7 +9,10 @@ import io.swagger.postgres.model.EventMessage;
 import io.swagger.postgres.model.UploadFile;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.Where;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +28,7 @@ import java.util.Set;
 @Table(name = "users")
 @Data
 @EqualsAndHashCode(of = "id")
+@Where(clause = "enabled=true")
 public class User implements UserDetails, Serializable {
 
     @Id
@@ -43,7 +47,6 @@ public class User implements UserDetails, Serializable {
     private String inn;
     private Integer clientId;
     private Integer organizationId;
-    private Long moderatorId;
     private Boolean isApproved;
     private Date lastUserAcceptDate;
     private Boolean inVacation;
@@ -81,10 +84,17 @@ public class User implements UserDetails, Serializable {
 
     @JsonIgnore
     @ManyToOne
+    @NotFound(action = NotFoundAction.IGNORE)
     private User replacementModerator;
+    @JsonIgnore
+    @ManyToOne
+    @NotFound(action = NotFoundAction.IGNORE)
+    private User moderator;
 
     @Transient
     private Long replacementModeratorId;
+    @Transient
+    private Long moderatorId;
 
     @JsonIgnore
     @OneToMany(mappedBy = "replacementModerator")
@@ -143,23 +153,23 @@ public class User implements UserDetails, Serializable {
             return null;
     }
 
-    public Boolean isAdmin() {
+    public Boolean isUserAdmin() {
         return UserHelper.hasRole( this, "ADMIN" );
     }
 
-    public Boolean isClient() {
+    public Boolean isUserClient() {
         return UserHelper.hasRole( this, "CLIENT" );
     }
 
-    public Boolean isGuest() {
+    public Boolean isUserGuest() {
         return UserHelper.hasRole( this, "GUEST" );
     }
 
-    public Boolean isServiceLeader() {
+    public Boolean isUserServiceLeader() {
         return UserHelper.hasRole( this, "SERVICE_LEADER" );
     }
 
-    public Boolean isModerator() {
+    public Boolean isUserModerator() {
         return UserHelper.hasRole( this, "MODERATOR" );
     }
 
@@ -187,8 +197,27 @@ public class User implements UserDetails, Serializable {
         return null;
     }
 
+    public String getModeratorFio() {
+        if ( moderator != null )
+            return moderator.getFio();
+
+        return null;
+    }
+
+    public Long getModeratorId() {
+        if ( moderator != null )
+            return moderator.getId();
+
+        return null;
+    }
+
     @JsonIgnore
     public Long getCurrentReplacementModeratorId() {
         return replacementModeratorId;
+    }
+
+    @JsonIgnore
+    public Long getCurrentModeratorId() {
+        return moderatorId;
     }
 }

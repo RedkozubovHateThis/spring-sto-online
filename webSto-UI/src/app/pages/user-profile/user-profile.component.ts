@@ -47,9 +47,9 @@ export class UserProfileComponent implements OnInit {
 
     this.model = this.userService.currentUser;
 
-    if ( this.model.client )
+    if ( this.model.userClient )
       this.requestClient();
-    else if ( this.model.serviceLeader )
+    else if ( this.model.userServiceLeader )
       this.requestOrganization();
 
   }

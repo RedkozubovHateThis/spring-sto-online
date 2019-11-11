@@ -46,21 +46,33 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long>, 
             "AND user.enabled = true")
     User findByUsername(@Param("username") String username);
 
+    @Query("SELECT DISTINCT user FROM User user " +
+            "LEFT JOIN FETCH user.roles AS role " +
+            "WHERE user.phone = :phone " +
+            "AND user.enabled = true")
+    User findByPhone(@Param("phone") String phone);
+
+    @Query("SELECT DISTINCT user FROM User user " +
+            "LEFT JOIN FETCH user.roles AS role " +
+            "WHERE user.email = :email " +
+            "AND user.enabled = true")
+    User findByEmail(@Param("email") String email);
+
     @Query("SELECT u FROM User AS u " +
             "WHERE u.id = :moderatorId " +
-            "OR u.moderatorId = :moderatorId")
+            "OR u.moderator.id = :moderatorId")
     Page<User> findAllByModeratorId(@Param("moderatorId") Long moderatorId, Pageable pageable);
 
     @Query("SELECT COUNT(u.id) FROM User AS u " +
             "WHERE u.id = :moderatorId " +
-            "OR u.moderatorId = :moderatorId")
+            "OR u.moderator.id = :moderatorId")
     Long countAllByModeratorId(@Param("moderatorId") Long moderatorId);
 
     @Query("SELECT COUNT(u.id) FROM User AS u " +
             "INNER JOIN u.roles AS r " +
             "WHERE ( r.name = 'CLIENT' " +
             "OR r.name = 'SERVICE_LEADER' ) " +
-            "AND u.moderatorId = :moderatorId " +
+            "AND u.moderator.id = :moderatorId " +
             "AND u.isApproved = FALSE")
     Long countAllNotApprovedByModeratorId(@Param("moderatorId") Long moderatorId);
 
@@ -95,11 +107,15 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long>, 
     Boolean isUserExistsClientId(@Param("clientId") Integer clientId);
 
     @Query(nativeQuery = true, value = "SELECT DISTINCT u.client_id FROM users AS u " +
-            "WHERE u.moderator_id = :moderatorId AND u.client_id IS NOT NULL")
+            "WHERE u.moderator_id = :moderatorId " +
+            "AND u.client_id IS NOT NULL " +
+            "AND u.enabled = TRUE")
     List<Integer> collectClientIds(@Param("moderatorId") Long moderatorId);
 
     @Query(nativeQuery = true, value = "SELECT DISTINCT u.organization_id FROM users AS u " +
-            "WHERE u.moderator_id = :moderatorId AND u.organization_id IS NOT NULL")
+            "WHERE u.moderator_id = :moderatorId " +
+            "AND u.organization_id IS NOT NULL " +
+            "AND u.enabled = TRUE")
     List<Integer> collectOrganizationIds(@Param("moderatorId") Long moderatorId);
 
     @Query("SELECT u FROM User AS u WHERE u.username <> ?#{principal.username} ORDER BY u.lastName")
@@ -110,9 +126,10 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long>, 
             "INNER JOIN user_role AS ur ON uur.user_role_id = ur.id " +
             "WHERE u.moderator_id = :moderatorId " +
             "AND ur.name = 'SERVICE_LEADER' " +
+            "AND u.enabled = TRUE " +
             "UNION " +
             "SELECT DISTINCT cu.* FROM chat_message AS cm " +
-            "INNER JOIN users AS cu ON cm.from_user_id = cu.id " +
+            "INNER JOIN users AS cu ON cm.from_user_id = cu.id AND cu.enabled = TRUE " +
             "WHERE cm.to_user_id = :userId " +
             "ORDER BY last_name")
     List<User> findAllByModerator(@Param("moderatorId") Long moderatorId,
@@ -123,22 +140,24 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long>, 
             "INNER JOIN user_role AS ur ON uur.user_role_id = ur.id " +
             "WHERE ur.name IN ('SERVICE_LEADER','MODERATOR','ADMIN') " +
             "AND u.username <> :username " +
+            "AND u.enabled = TRUE " +
             "ORDER BY u.last_name")
     List<User> findAllByAdmin(@Param("username") String username);
 
     @Query(nativeQuery = true, value = "SELECT DISTINCT u.* FROM users AS u\n" +
             "WHERE u.id = :moderatorId\n" +
+            "AND u.enabled = TRUE\n" +
             "UNION\n" +
             "SELECT DISTINCT cu.* FROM chat_message AS cm\n" +
-            "INNER JOIN users AS cu ON cm.from_user_id = cu.id\n" +
+            "INNER JOIN users AS cu ON cm.from_user_id = cu.id AND cu.enabled = TRUE\n" +
             "WHERE cm.to_user_id = :userId\n" +
             "UNION\n" +
             "SELECT DISTINCT cu.* FROM chat_message AS cm\n" +
-            "INNER JOIN users AS cu ON cm.to_user_id = cu.id\n" +
+            "INNER JOIN users AS cu ON cm.to_user_id = cu.id AND cu.enabled = TRUE\n" +
             "WHERE cm.from_user_id = :userId\n" +
             "UNION\n" +
             "SELECT DISTINCT rm.* FROM users AS u\n" +
-            "INNER JOIN users AS rm ON rm.id = u.replacement_moderator_id\n" +
+            "INNER JOIN users AS rm ON rm.id = u.replacement_moderator_id AND u.enabled = TRUE\n" +
             "WHERE u.id = :moderatorId\n" +
             "AND u.in_vacation = TRUE\n" +
             "ORDER BY last_name")
@@ -146,25 +165,25 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long>, 
                                  @Param("userId") Long userId);
 
     @Query(nativeQuery = true, value = "SELECT DISTINCT fu.* FROM event_message AS em " +
-            "INNER JOIN users AS fu ON em.send_user_id = fu.id " +
+            "INNER JOIN users AS fu ON em.send_user_id = fu.id AND fu.enabled = TRUE " +
             "WHERE em.message_type = 'DOCUMENT_CHANGE' " +
             "ORDER BY fu.last_name, fu.first_name, fu.middle_name")
     List<User> findEventMessageFromUsersByAdmin();
 
     @Query(nativeQuery = true, value = "SELECT DISTINCT fu.* FROM event_message AS em " +
-            "INNER JOIN users AS fu ON em.send_user_id = fu.id " +
+            "INNER JOIN users AS fu ON em.send_user_id = fu.id AND fu.enabled = TRUE " +
             "AND em.target_user_id = :targetUserId " +
             "ORDER BY fu.last_name, fu.first_name, fu.middle_name")
     List<User> findEventMessageFromUsers(@Param("targetUserId") Long targetUserId);
 
     @Query(nativeQuery = true, value = "SELECT DISTINCT tu.* FROM event_message AS em " +
-            "INNER JOIN users AS tu ON em.target_user_id = tu.id " +
+            "INNER JOIN users AS tu ON em.target_user_id = tu.id AND tu.enabled = TRUE " +
             "WHERE em.message_type = 'DOCUMENT_CHANGE' " +
             "ORDER BY tu.last_name, tu.first_name, tu.middle_name")
     List<User> findEventMessageToUsersByAdmin();
 
     @Query(nativeQuery = true, value = "SELECT DISTINCT tu.* FROM event_message AS em " +
-            "INNER JOIN users AS tu ON em.target_user_id = tu.id " +
+            "INNER JOIN users AS tu ON em.target_user_id = tu.id AND tu.enabled = TRUE " +
             "AND em.target_user_id = :targetUserId " +
             "ORDER BY tu.last_name, tu.first_name, tu.middle_name")
     List<User> findEventMessageToUsers(@Param("targetUserId") Long targetUserId);

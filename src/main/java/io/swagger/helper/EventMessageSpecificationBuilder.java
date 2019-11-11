@@ -27,12 +27,20 @@ public class EventMessageSpecificationBuilder {
                 Join<EventMessage, User> fromUserJoin = root.join( EventMessage_.sendUser );
                 Join<EventMessage, User> toUserJoin = root.join( EventMessage_.targetUser );
 
+                predicates.add(
+                        cb.equal( fromUserJoin.get( User_.enabled ), true )
+                );
+                predicates.add(
+                        cb.equal( toUserJoin.get( User_.enabled ), true )
+                );
+
                 if ( UserHelper.hasRole( currentUser, "ADMIN" ) ) {
                     predicates.add( cb.equal( root.get( EventMessage_.messageType ), MessageType.DOCUMENT_CHANGE ) );
                 }
-                else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) &&
-                        filterPayload.getMessageTypes() != null && filterPayload.getMessageTypes().size() > 0 ) {
-                    predicates.add( root.get( EventMessage_.messageType ).in( filterPayload.getMessageTypes() ) );
+                else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
+                    predicates.add(
+                            cb.equal( toUserJoin.get( User_.id ), currentUser.getId() )
+                    );
                 }
                 else if ( UserHelper.hasRole( currentUser, "CLIENT" ) ||
                         UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
@@ -47,6 +55,9 @@ public class EventMessageSpecificationBuilder {
                     );
                 }
 
+                if ( filterPayload.getMessageTypes() != null && filterPayload.getMessageTypes().size() > 0 ) {
+                    predicates.add( root.get( EventMessage_.messageType ).in( filterPayload.getMessageTypes() ) );
+                }
                 if ( filterPayload.getFromIds() != null && filterPayload.getFromIds().size() > 0 ) {
                     predicates.add( fromUserJoin.get( User_.id ).in( filterPayload.getFromIds() ) );
                 }

@@ -1,5 +1,5 @@
 import {Injectable, Input, Output, EventEmitter} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable, Subject} from 'rxjs';
 import {User} from '../model/postgres/auth/user';
 import {Router} from '@angular/router';
@@ -8,9 +8,10 @@ import {environment} from '../../environments/environment';
 import {ChatMessageResponseService} from './chatMessageResponse.service';
 import {ToastrService} from 'ngx-toastr';
 import {UsersFilter} from '../model/usersFilter';
+import {RestService} from './rest.service';
 
 @Injectable()
-export class UserService implements TransferService<User> {
+export class UserService implements TransferService<User>, RestService<User> {
 
   constructor(private http: HttpClient, private router: Router, private toastrService: ToastrService) { }
   currentUser: User;
@@ -26,6 +27,24 @@ export class UserService implements TransferService<User> {
       'Content-type': 'application/x-www-form-urlencoded'
     };
     return this.http.post(`${this.getApiUrl()}oauth/token`, loginPayload, {headers});
+  }
+
+  restore(restoreData: HttpParams) {
+    const headers = {
+      Authorization: 'Basic ' + btoa('spring-security-oauth2-read-write-client:spring-security-oauth2-read-write-client-password1234'),
+      'Content-type': 'application/x-www-form-urlencoded'
+    };
+
+    return this.http.post(`${this.getApiUrl()}oauth/restore`, restoreData, {headers});
+  }
+
+  restorePassword(restoreData: HttpParams) {
+    const headers = {
+      Authorization: 'Basic ' + btoa('spring-security-oauth2-read-write-client:spring-security-oauth2-read-write-client-password1234'),
+      'Content-type': 'application/x-www-form-urlencoded'
+    };
+
+    return this.http.post(`${this.getApiUrl()}oauth/restore/password`, restoreData, {headers});
   }
 
   logout() {
@@ -46,6 +65,21 @@ export class UserService implements TransferService<User> {
         return this.currentUser.email;
       else
         return this.currentUser.username;
+    }
+    else
+      return null;
+  }
+
+  getModelUsername(model: User): string {
+    if ( model != null ) {
+      if ( model.fio != null )
+        return model.fio;
+      else if ( model.phone != null )
+        return model.phone;
+      else if ( model.email != null )
+        return model.email;
+      else
+        return model.username;
     }
     else
       return null;
@@ -103,13 +137,11 @@ export class UserService implements TransferService<User> {
 
       const redirectUrl: string = localStorage.getItem('redirectUrl');
 
-      console.log(redirectUrl);
-
       if ( redirectUrl != null && redirectUrl.length > 0 ) {
         this.router.navigate([redirectUrl]);
         localStorage.removeItem('redirectUrl');
       }
-      else if ( this.currentUser.client )
+      else if ( this.currentUser.userClient )
         this.router.navigate(['/documents']);
       else
         this.router.navigate(['/dashboard']);
@@ -125,6 +157,8 @@ export class UserService implements TransferService<User> {
     this.http.get( this.getApiUrl() + 'secured/users/currentUser', {headers} ).subscribe( data => {
       this.setCurrentUserData( data as User );
       this.currentUserIsLoaded.next( this.currentUser );
+    }, () => {
+      this.logout();
     } );
 
   }
@@ -135,6 +169,12 @@ export class UserService implements TransferService<User> {
 
   createUser(user: User, selectedRole: string) {
     return this.http.post(`${this.getApiUrl()}oauth/register/${selectedRole}`, user);
+  }
+
+  delete(user: User) {
+    const headers = this.getHeaders();
+
+    return this.http.delete(`${this.getApiUrl()}/secured/users/${user.id}`, {headers});
   }
 
   createDemoUser() {
@@ -148,7 +188,7 @@ export class UserService implements TransferService<User> {
 
     return this.http.put( this.getApiUrl() + `secured/users/${user.id}`, user,{headers} ).subscribe( data => {
 
-      let user: User = data as User;
+      user = data as User;
 
       if ( this.currentUser != null && this.currentUser.id === user.id )
         this.setCurrentUserData( data as User );
@@ -191,6 +231,12 @@ export class UserService implements TransferService<User> {
     const headers = this.getHeaders();
 
     return this.http.get( `${this.getApiUrl()}secured/users/findReplacementModerators`, {headers} );
+  }
+
+  getModerators() {
+    const headers = this.getHeaders();
+
+    return this.http.get( `${this.getApiUrl()}secured/users/findModerators`, {headers} );
   }
 
   getOne(id: number) {
@@ -236,31 +282,31 @@ export class UserService implements TransferService<User> {
   }
 
   isNotClient(): boolean {
-    return this.currentUser != null && ( this.currentUser.admin || this.currentUser.serviceLeader || this.currentUser.moderator );
+    return this.currentUser != null && ( this.currentUser.userAdmin || this.currentUser.userServiceLeader || this.currentUser.userModerator );
   }
 
   isClient(): boolean {
-    return this.currentUser != null && this.currentUser.client;
+    return this.currentUser != null && this.currentUser.userClient;
   }
 
   isModerator(): boolean {
-    return this.currentUser != null && this.currentUser.moderator;
+    return this.currentUser != null && this.currentUser.userModerator;
   }
 
   isServiceLeader(): boolean {
-    return this.currentUser != null && this.currentUser.serviceLeader;
+    return this.currentUser != null && this.currentUser.userServiceLeader;
   }
 
   isAdmin(): boolean {
-    return this.currentUser != null && this.currentUser.admin;
+    return this.currentUser != null && this.currentUser.userAdmin;
   }
 
   isModeratorOrAdmin(): boolean {
-    return this.currentUser != null && ( this.currentUser.admin || this.currentUser.moderator );
+    return this.currentUser != null && ( this.currentUser.userAdmin || this.currentUser.userModerator );
   }
 
   isClientOrServiceLeader(): boolean {
-    return this.currentUser != null && ( this.currentUser.client || this.currentUser.serviceLeader );
+    return this.currentUser != null && ( this.currentUser.userClient || this.currentUser.userServiceLeader );
   }
 
   isSameUser(model: User) {

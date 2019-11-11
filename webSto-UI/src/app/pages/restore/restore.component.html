@@ -23,9 +23,9 @@
 
         <div class="card-body px-lg-5 py-lg-5">
           <div class="text-center text-muted mb-4">
-            <small>Вход</small>
+            <small>Восстановление пароля</small>
           </div>
-          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <form [formGroup]="restoreForm" (ngSubmit)="onRestoreSubmit()" *ngIf="!hashFound">
 
             <div class="form-group mb-3">
               <div class="input-group input-group-alternative">
@@ -33,37 +33,41 @@
                   <span class="input-group-text"><i class="fas fa-user"></i></span>
                 </div>
                 <input class="form-control" formControlName="username" placeholder="Телефон/почта" id="username" autocomplete="off" type="text">
-<!--                <div class="error" *ngIf="loginForm.controls['username'].hasError('required') && loginForm.controls['username'].touched">Логин необходим</div>-->
               </div>
             </div>
-            <div class="form-group">
+            <div class="text-center">
+              <button class="btn btn-buro-green" [disabled]="restoreForm.invalid || isRestoring" type="submit">
+                Восстановить пароль
+                <span *ngIf="isRestoring">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+              </button>
+            </div>
+          </form>
+          <form [formGroup]="passwordForm" (ngSubmit)="onPasswordSubmit()" *ngIf="hashFound">
+
+            <div class="form-group mb-3">
               <div class="input-group input-group-alternative">
                 <div class="input-group-prepend">
                   <span class="input-group-text"><i class="fas fa-lock-open"></i></span>
                 </div>
-                <input type="password" class="form-control" formControlName="password" placeholder="Пароль" id="pwd" autocomplete="off">
-<!--                <div class="error" *ngIf="loginForm.controls['password'].hasError('required') && loginForm.controls['password'].touched">Пароль необходим</div>-->
+                <input class="form-control" formControlName="password" placeholder="Пароль" id="password" autocomplete="off" type="password">
               </div>
             </div>
-            <div class="text-right">
-              <a href="#" class="text-muted" [routerLink]="['/restore']"><small>Забыли пароль?</small></a>
+
+            <div class="form-group mb-3">
+              <div class="input-group input-group-alternative">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-lock-open"></i></span>
+                </div>
+                <input class="form-control" formControlName="rePassword" placeholder="Подтверждение пароля" id="re-password" autocomplete="off" type="password">
+              </div>
             </div>
-<!--            <div class="custom-control custom-control-alternative custom-checkbox">-->
-<!--              <input class="custom-control-input" id=" customCheckLogin" type="checkbox">-->
-<!--              <label class="custom-control-label" for=" customCheckLogin">-->
-<!--                <span class="text-muted">Запомнить меня</span>-->
-<!--              </label>-->
-<!--            </div>-->
+
             <div class="text-center">
-              <button class="btn btn-buro-green" [disabled]="loginForm.invalid || isLoggingIn" type="submit">
-                Вход
-                <span *ngIf="isLoggingIn">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
-              </button>
-              <button type="button" class="btn btn-buro-orange my-4"  routerLinkActive="active" [routerLink]="['/register']">
-                <span class="nav-link-inner--text">Регистрация</span>
+              <button class="btn btn-buro-green" [disabled]="passwordForm.invalid || isRestoring" type="submit">
+                Восстановить пароль
+                <span *ngIf="isRestoring">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
               </button>
             </div>
-<!--          </form>-->
           </form>
         </div>
       </div>

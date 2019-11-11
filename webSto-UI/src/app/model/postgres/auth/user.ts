@@ -16,6 +16,7 @@ export class User {
   clientId: number;
   organizationId: number;
   moderatorId: number;
+  moderatorFio: string;
   isApproved: boolean;
   isAutoRegistered: boolean;
   inVacation: boolean;
@@ -26,10 +27,10 @@ export class User {
   allowSms: boolean;
 
   // TODO: подключить js-data-angular и переделать на computed property
-  admin: boolean;
-  client: boolean;
-  guest: boolean;
-  serviceLeader: boolean;
-  moderator: boolean;
+  userAdmin: boolean;
+  userClient: boolean;
+  userGuest: boolean;
+  userServiceLeader: boolean;
+  userModerator: boolean;
 
 }

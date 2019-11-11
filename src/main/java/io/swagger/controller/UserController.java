@@ -7,6 +7,7 @@ import io.swagger.postgres.model.enums.MessageType;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.EventMessageRepository;
 import io.swagger.postgres.repository.UserRepository;
+import io.swagger.response.api.ApiResponse;
 import io.swagger.response.api.EventMessageStatus;
 import io.swagger.service.EventMessageService;
 import io.swagger.service.UserService;
@@ -92,7 +93,7 @@ public class UserController {
         if ( UserHelper.hasRole( user, "SERVICE_LEADER" ) && user.getModeratorId() != null )
             eventMessageStatus = isOrganizationIdChanged(user, existingUser);
 
-        if ( UserHelper.hasRole( currentUser, "MODERATOR" ) &&
+        if ( ( UserHelper.hasRole( currentUser, "MODERATOR" ) || UserHelper.hasRole( currentUser, "ADMIN" ) ) &&
                 ( UserHelper.hasRole( user, "CLIENT" ) ||
                         UserHelper.hasRole( user, "SERVICE_LEADER" ) ) ) {
 
@@ -124,6 +125,17 @@ public class UserController {
                 user.setReplacementModerator( origReplacementModerator );
             }
             else user.setReplacementModerator( null );
+
+        }
+
+        Long moderatorId = user.getCurrentModeratorId();
+        if ( moderatorId != null ) {
+
+            User origModerator = userRepository.findOne( moderatorId );
+            if ( origModerator != null )
+                user.setModerator( origModerator );
+            else
+                user.setModerator( null );
 
         }
 
@@ -207,6 +219,26 @@ public class UserController {
         eventMessageRepository.save(eventMessage);
 
         webSocketController.sendEventMessage( eventMessage, targetUser.getId() );
+
+    }
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity deleteUser(@PathVariable("userId") Long userId) {
+
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( currentUser.getId().equals( userId ) )
+            return ResponseEntity.status(400).body( new ApiResponse( "Невозможно удалить активного пользователя!" ) );
+
+        User user = userRepository.findOne( userId );
+
+        if ( user == null )
+            return ResponseEntity.status(400).body( new ApiResponse( "Пользователь не найден!" ) );
+
+        user.setEnabled( false );
+        userRepository.save( user );
+
+        return ResponseEntity.ok( new ApiResponse( "Пользователь успешно удален!" ) );
 
     }
 
@@ -301,6 +333,18 @@ public class UserController {
         if ( !UserHelper.hasRole( currentUser, "MODERATOR" ) ) return ResponseEntity.status(404).build();
 
         return ResponseEntity.ok( userRepository.findUsersByRoleNameExceptId( "MODERATOR", currentUser.getId() ) );
+
+    }
+
+    @GetMapping("/findModerators")
+    public ResponseEntity findModerators() {
+
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( currentUser == null ) return ResponseEntity.status(401).build();
+        if ( !UserHelper.hasRole( currentUser, "ADMIN" ) ) return ResponseEntity.status(404).build();
+
+        return ResponseEntity.ok( userRepository.findUsersByRoleName("MODERATOR") );
 
     }
 

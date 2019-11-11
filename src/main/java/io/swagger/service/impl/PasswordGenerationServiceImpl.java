@@ -18,7 +18,7 @@ public class PasswordGenerationServiceImpl implements PasswordGenerationService 
     private static final String LOWER = "abcdefghijklmnopqrstuvwxyz";
     private static final String UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String DIGITS = "0123456789";
-    private static final String SPECIAL = "~!@#$%^&*()_}{[]";
+    private static final String SPECIAL = "!@#$%^&*()_}{[]";
     private static final boolean USE_UPPER = true;
     private static final boolean USE_DIGITS = true;
     private static final boolean USE_SPECIAL = true;

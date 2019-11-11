@@ -4,6 +4,7 @@ import { Location } from '@angular/common';
 import {Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {User} from '../../model/postgres/auth/user';
 
 @Component({
   selector: 'app-user-add',
@@ -25,16 +26,22 @@ export class UserAddComponent implements OnInit {
     lastName: ['', Validators.required],
     middleName: ['', Validators.required],
     username: [''],
+    moderatorId: [null],
     selectedRole: [null, Validators.required]
   });
   private isRegistering: boolean = false;
   private roles = [
     { name: 'Модератор', id: 'MODERATOR' },
-    { name: 'Администратор', id: 'ADMIN' }
+    { name: 'Администратор', id: 'ADMIN' },
+    { name: 'Автосервис', id: 'SERVICE_LEADER' }
   ];
+  private moderators: User[] = [];
 
   ngOnInit() {
     // TODO: добавить проверку на админа
+    this.userService.getModerators().subscribe( moderators => {
+      this.moderators = moderators as User[];
+    } );
   }
 
   onSubmit() {

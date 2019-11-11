@@ -62,6 +62,7 @@ export class RegisterComponent implements OnInit {
     this.userService.createUser(this.addForm.value, this.addForm.controls.selectedRole.value)
       .subscribe( data => {
         this.isRegistering = false;
+        this.toastrService.success('Регистрация успешно завершена!');
         this.router.navigate(['login']);
       }, error => {
         this.isRegistering = false;
