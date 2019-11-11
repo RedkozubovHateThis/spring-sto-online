@@ -25,7 +25,7 @@ public class UserSpecificationBuilder {
 
                 List<Predicate> predicates = new ArrayList<>();
                 Join<User, UserRole> userRoleJoin = root.join( User_.roles );
-                Join<User, User> moderatorJoin = root.join( User_.moderator );
+                Join<User, User> moderatorJoin = root.join( User_.moderator, JoinType.LEFT );
 
                 if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
                     predicates.add(
