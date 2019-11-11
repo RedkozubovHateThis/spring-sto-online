@@ -93,7 +93,7 @@ public class UserController {
         if ( UserHelper.hasRole( user, "SERVICE_LEADER" ) && user.getModeratorId() != null )
             eventMessageStatus = isOrganizationIdChanged(user, existingUser);
 
-        if ( UserHelper.hasRole( currentUser, "MODERATOR" ) &&
+        if ( ( UserHelper.hasRole( currentUser, "MODERATOR" ) || UserHelper.hasRole( currentUser, "ADMIN" ) ) &&
                 ( UserHelper.hasRole( user, "CLIENT" ) ||
                         UserHelper.hasRole( user, "SERVICE_LEADER" ) ) ) {
 
