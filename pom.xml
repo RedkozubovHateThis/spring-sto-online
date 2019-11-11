@@ -6,7 +6,7 @@
 
     <groupId>ru.mokin-redkozubov</groupId>
     <artifactId>sto-online</artifactId>
-    <version>1.0-RC4</version>
+    <version>1.0-RC5</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
