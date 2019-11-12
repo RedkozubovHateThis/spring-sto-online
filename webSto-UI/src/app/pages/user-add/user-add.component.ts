@@ -27,6 +27,8 @@ export class UserAddComponent implements OnInit {
     middleName: ['', Validators.required],
     username: [''],
     moderatorId: [null],
+    serviceWorkPrice: [null],
+    serviceGoodsCost: [null],
     selectedRole: [null, Validators.required]
   });
   private isRegistering: boolean = false;

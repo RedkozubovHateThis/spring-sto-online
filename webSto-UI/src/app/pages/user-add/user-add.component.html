@@ -65,10 +65,28 @@
                   <div class="form-group">
                     <label class="form-control-label" for="input-rePassword">Подтверждение пароля</label>
                     <input type="password" id="input-rePassword" class="form-control form-control-alternative" placeholder="Подтверждение пароля"
-                           name="password" formControlName="rePassword">
+                           name="rePassword" formControlName="rePassword">
                   </div>
                 </div>
-                <div class="col-lg-6" *ngIf="addForm.controls.selectedRole.value === 'SERVICE_LEADER'">
+              </div>
+              <div class="row" *ngIf="addForm.controls.selectedRole.value === 'SERVICE_LEADER'">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-service-work-price">Стоимость работа по н/ч</label>
+                    <input type="number" step="100" min="0" id="input-service-work-price" class="form-control form-control-alternative" placeholder="Стоимость работа по Н/Ч"
+                           name="serviceWorkPrice" formControlName="serviceWorkPrice">
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-service-goods-cost">Наценка на з/ч, %</label>
+                    <input type="number" step="0.1" min="0" id="input-service-goods-cost" class="form-control form-control-alternative" placeholder="Наценка на з/ч, %"
+                           name="serviceGoodsCost" formControlName="serviceGoodsCost">
+                  </div>
+                </div>
+              </div>
+              <div class="row" *ngIf="addForm.controls.selectedRole.value === 'SERVICE_LEADER'">
+                <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="input-inn">ИНН</label>
                     <input type="text" id="input-inn" class="form-control form-control-alternative" placeholder="ИНН"

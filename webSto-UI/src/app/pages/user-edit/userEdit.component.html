@@ -77,6 +77,22 @@
                   </select>
                 </div>
               </div>
+              <div class="row" *ngIf="model.userServiceLeader">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-service-work-price">Стоимость работа по н/ч</label>
+                    <input type="number" step="100" min="0" id="input-service-work-price" class="form-control form-control-alternative" placeholder="Стоимость работа по Н/Ч"
+                           [(ngModel)]="model.serviceWorkPrice" name="serviceWorkPrice">
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-service-goods-cost">Наценка на з/ч, %</label>
+                    <input type="number" step="0.1" min="0" id="input-service-goods-cost" class="form-control form-control-alternative" placeholder="Наценка на з/ч, %"
+                           [(ngModel)]="model.serviceGoodsCost" name="serviceGoodsCost">
+                  </div>
+                </div>
+              </div>
             </div>
             <hr class="my-4" />
             <!-- Address -->

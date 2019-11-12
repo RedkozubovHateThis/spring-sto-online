@@ -81,6 +81,22 @@
                   </ng-template>
                 </div>
               </div>
+              <div class="row" *ngIf="model.userServiceLeader">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="service-work-price">Стоимость работа по н/ч</label>
+                    <span id="service-work-price" class="form-control form-control-alternative">{{model.serviceWorkPrice}}</span>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="service-goods-cost">Наценка на з/ч</label>
+                    <span id="service-goods-cost" class="form-control form-control-alternative">
+                      {{model.serviceGoodsCost}}<ng-container *ngIf="model.serviceGoodsCost != null">%</ng-container>
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
             <hr class="my-4" />
             <!-- Address -->

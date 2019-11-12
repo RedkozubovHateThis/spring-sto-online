@@ -25,6 +25,8 @@ export class User {
   replacementModeratorFio: string;
   partShops: number[];
   allowSms: boolean;
+  serviceWorkPrice: number;
+  serviceGoodsCost: number;
 
   // TODO: подключить js-data-angular и переделать на computed property
   userAdmin: boolean;

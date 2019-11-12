@@ -124,6 +124,9 @@ public class User implements UserDetails, Serializable {
 
     private Boolean allowSms;
 
+    private Double serviceWorkPrice;
+    private Double serviceGoodsCost;
+
     @Override
     public boolean isAccountNonExpired() {
         return !accountExpired;
