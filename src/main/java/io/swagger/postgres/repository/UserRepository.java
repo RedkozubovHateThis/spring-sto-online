@@ -59,9 +59,8 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long>, 
     User findByEmail(@Param("email") String email);
 
     @Query("SELECT u FROM User AS u " +
-            "WHERE u.id = :moderatorId " +
-            "OR u.moderator.id = :moderatorId")
-    Page<User> findAllByModeratorId(@Param("moderatorId") Long moderatorId, Pageable pageable);
+            "WHERE u.moderator.id = :moderatorId")
+    List<User> findAllByModeratorId(@Param("moderatorId") Long moderatorId);
 
     @Query("SELECT COUNT(u.id) FROM User AS u " +
             "WHERE u.id = :moderatorId " +
@@ -132,8 +131,8 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long>, 
             "INNER JOIN users AS cu ON cm.from_user_id = cu.id AND cu.enabled = TRUE " +
             "WHERE cm.to_user_id = :userId " +
             "ORDER BY last_name")
-    List<User> findAllByModerator(@Param("moderatorId") Long moderatorId,
-                                  @Param("userId") Long userId);
+    List<User> findAllOpponentsByModerator(@Param("moderatorId") Long moderatorId,
+                                           @Param("userId") Long userId);
 
     @Query(nativeQuery = true, value = "SELECT DISTINCT u.* FROM users AS u " +
             "INNER JOIN users_user_roles AS uur ON u.id = uur.user_id " +
@@ -142,7 +141,7 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long>, 
             "AND u.username <> :username " +
             "AND u.enabled = TRUE " +
             "ORDER BY u.last_name")
-    List<User> findAllByAdmin(@Param("username") String username);
+    List<User> findAllOpponentsByAdmin(@Param("username") String username);
 
     @Query(nativeQuery = true, value = "SELECT DISTINCT u.* FROM users AS u\n" +
             "WHERE u.id = :moderatorId\n" +
@@ -161,8 +160,8 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long>, 
             "WHERE u.id = :moderatorId\n" +
             "AND u.in_vacation = TRUE\n" +
             "ORDER BY last_name")
-    List<User> findAllModerators(@Param("moderatorId") Long moderatorId,
-                                 @Param("userId") Long userId);
+    List<User> findAllOpponentsModerators(@Param("moderatorId") Long moderatorId,
+                                          @Param("userId") Long userId);
 
     @Query(nativeQuery = true, value = "SELECT DISTINCT fu.* FROM event_message AS em " +
             "INNER JOIN users AS fu ON em.send_user_id = fu.id AND fu.enabled = TRUE " +

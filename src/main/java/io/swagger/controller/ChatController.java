@@ -139,13 +139,13 @@ public class ChatController {
         List<User> opponents = null;
 
         if ( UserHelper.hasRole( currentUser, "ADMIN" ) ) {
-            opponents = userRepository.findAllByAdmin( currentUser.getUsername() );
+            opponents = userRepository.findAllOpponentsByAdmin( currentUser.getUsername() );
         }
         else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
-            opponents = userRepository.findAllByModerator( currentUser.getId(), currentUser.getId() );
+            opponents = userRepository.findAllOpponentsByModerator( currentUser.getId(), currentUser.getId() );
         }
         else if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) && currentUser.getModeratorId() != null )
-            opponents = userRepository.findAllModerators( currentUser.getModeratorId(), currentUser.getId() );
+            opponents = userRepository.findAllOpponentsModerators( currentUser.getModeratorId(), currentUser.getId() );
 
         if ( opponents == null ) return ResponseEntity.status(404).build();
 

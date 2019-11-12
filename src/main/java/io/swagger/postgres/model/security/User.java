@@ -99,6 +99,7 @@ public class User implements UserDetails, Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "replacementModerator")
     @OrderBy("lastName")
+    @Where(clause = "enabled=true")
     private Set<User> replacedBy = new HashSet<>();
 
     @JsonIgnore

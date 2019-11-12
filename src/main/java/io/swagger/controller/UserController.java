@@ -13,19 +13,14 @@ import io.swagger.service.EventMessageService;
 import io.swagger.service.UserService;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequestMapping("/secured/users")
 @RestController
@@ -237,6 +232,19 @@ public class UserController {
 
         user.setEnabled( false );
         userRepository.save( user );
+
+        if ( UserHelper.hasRole( user, "MODERATOR" ) ) {
+
+            List<User> users = userRepository.findAllByModeratorId( user.getId() );
+
+            for (User userWOModerator : users) {
+                userWOModerator.setModerator( null );
+                userService.setModerator( userWOModerator );
+            }
+
+            userRepository.save( users );
+
+        }
 
         return ResponseEntity.ok( new ApiResponse( "Пользователь успешно удален!" ) );
 
