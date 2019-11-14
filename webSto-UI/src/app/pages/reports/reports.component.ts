@@ -19,7 +19,8 @@ export class ReportsComponent implements OnInit {
   private selectedMonth: number;
   private selectedYear: number;
   private reportData: object[];
-  private totalRow: object;
+  private executorsTotalRow: object;
+  private clientsTotalRow: object;
   private reportType: string = 'executors';
   private organizationId: number = null;
   private organizations: OrganizationResponse[] = [];
@@ -133,11 +134,14 @@ export class ReportsComponent implements OnInit {
       this.isLoading = false;
 
     }, error => {
-      this.totalRow = {
+      this.executorsTotalRow = {
         totalByNorm: 0,
         totalByPrice: 0,
         totalSum: 0,
         totalSalary: 0
+      };
+      this.clientsTotalRow = {
+        total: 0
       };
       this.isLoading = false;
       if ( error.status === 403 )
@@ -164,7 +168,7 @@ export class ReportsComponent implements OnInit {
       // @ts-ignore
       totalRow.totalSalary += reportData.salary;
     } );
-    this.totalRow = totalRow;
+    this.executorsTotalRow = totalRow;
   }
 
   private setTotalByClients() {
@@ -175,7 +179,7 @@ export class ReportsComponent implements OnInit {
       // @ts-ignore
       totalRow.total += reportData.total;
     } );
-    this.totalRow = totalRow;
+    this.clientsTotalRow = totalRow;
   }
 
 }

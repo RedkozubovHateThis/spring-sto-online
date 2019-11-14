@@ -15,7 +15,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DocumentComponent } from "../../pages/document/document.component";
 import { UsersComponent } from "../../pages/users/users.component";
 import { UserComponent } from "../../pages/user/user.component";
-import { UserEditComponent } from 'src/app/pages/user-edit/userEdit.component';
+import { UserEditComponent } from 'src/app/pages/user-edit/user-edit.component';
 import { ChatComponent } from '../../pages/chat/chat.component';
 import {AppComponent} from '../../app.component';
 import {FileSelectDirective} from 'ng2-file-upload';

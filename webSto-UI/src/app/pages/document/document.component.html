@@ -3,6 +3,7 @@
     <div class="col mb-5">
       <div class="card shadow">
         <div class="card-header">
+          <app-loading-bar [isLoading]="isLoading || isUpdating"></app-loading-bar>
           <div class="row align-items-center">
             <div class="col-md mb-3">
               Данные заказ-наряда
@@ -151,8 +152,7 @@
                 <div class="col-auto">
 
                   <span>
-                    <span *ngIf="isUpdating"><i class="fas fa-spinner fa-spin"></i></span>
-                    <span *ngIf="!isUpdating">Сумма работ:</span>
+                    <span>Сумма работ:</span>
                     &nbsp;
                   </span>
                   <h2 style="display: inline-block;" *ngIf="model != null">{{model.serviceWork.workSum | number:'.2':'ru'}} р.</h2>
@@ -232,8 +232,7 @@
                 <div class="col-auto">
 
                   <span>
-                    <span *ngIf="isUpdating"><i class="fas fa-spinner fa-spin"></i></span>
-                    <span *ngIf="!isUpdating">Сумма товаров:</span>
+                    <span>Сумма товаров:</span>
                     &nbsp;
                   </span>
                   <h2 style="display: inline-block;" *ngIf="model != null">{{model.serviceGoodsAddon.addonsSum | number:'.2':'ru'}} р.</h2>

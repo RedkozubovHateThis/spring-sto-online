@@ -3,6 +3,7 @@
     <div class="col-xl-9 mb-5 mb-xl-0">
       <div class="card shadow">
         <div class="card-header border-0">
+          <app-loading-bar [isLoading]="isLoading || isDownloading"></app-loading-bar>
           <div class="row">
             <div class="col">
               <h3 class="mb-0">
@@ -11,10 +12,10 @@
             </div>
             <div class="col-auto">
               <button class="btn btn-sm btn-buro-green" (click)="requestReportData()" [disabled]="isLoading">
-                Обновить<span *ngIf="isLoading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+                Обновить
               </button>
               <button class="btn btn-sm btn-buro-green" (click)="requestReportPDF()" [disabled]="isDownloading">
-                Выгрузить в PDF<span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+                Выгрузить в PDF
               </button>
             </div>
           </div>
@@ -22,7 +23,7 @@
         </div>
         <div class="table-responsive">
 
-          <ng-container *ngIf="!isLoading && reportType === 'executors'">
+          <ng-container *ngIf="reportType === 'executors'">
             <table class="table table-flush table-hover">
               <thead class="thead-light">
                 <tr>
@@ -55,17 +56,17 @@
               </ng-container>
               <tr class="font-weight-bold">
                 <td>ИТОГ</td>
-                <td class="text-center">{{totalRow.totalByNorm | number:'.2':'ru'}}</td>
-                <td class="text-center">{{totalRow.totalByPrice | number:'.2':'ru'}}</td>
-                <td class="text-center">{{totalRow.totalSum | number:'.2':'ru'}}</td>
+                <td class="text-center">{{executorsTotalRow.totalByNorm | number:'.2':'ru'}}</td>
+                <td class="text-center">{{executorsTotalRow.totalByPrice | number:'.2':'ru'}}</td>
+                <td class="text-center">{{executorsTotalRow.totalSum | number:'.2':'ru'}}</td>
                 <td></td>
-                <td class="text-center">{{totalRow.totalSalary | number:'.2':'ru'}}</td>
+                <td class="text-center">{{executorsTotalRow.totalSalary | number:'.2':'ru'}}</td>
               </tr>
               </tbody>
             </table>
           </ng-container>
 
-          <ng-container *ngIf="!isLoading && reportType === 'clients'">
+          <ng-container *ngIf="reportType === 'clients'">
             <table class="table table-flush table-hover">
               <thead class="thead-light">
               <tr>
@@ -86,16 +87,10 @@
               </ng-container>
               <tr class="font-weight-bold">
                 <td>ИТОГ</td>
-                <td class="text-center">{{totalRow.total | number:'.2':'ru'}}</td>
+                <td class="text-center">{{clientsTotalRow.total | number:'.2':'ru'}}</td>
               </tr>
               </tbody>
             </table>
-          </ng-container>
-
-          <ng-container *ngIf="isLoading">
-            <div class="text-center">
-              <i class="fas fa-spin fa-spinner"></i> получение данных...
-            </div>
           </ng-container>
 
         </div>

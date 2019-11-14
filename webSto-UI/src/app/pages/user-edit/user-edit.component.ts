@@ -13,8 +13,8 @@ import { Shops } from './../../variables/shops';
 
 @Component({
   selector: 'app-user-edit',
-  templateUrl: './userEdit.component.html',
-  styleUrls: ['./userEdit.component.scss']
+  templateUrl: './user-edit.component.html',
+  styleUrls: ['./user-edit.component.scss']
 })
 export class UserEditComponent extends ModelTransfer<User, number> implements OnInit {
 

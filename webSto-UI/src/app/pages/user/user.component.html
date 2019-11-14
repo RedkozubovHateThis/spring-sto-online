@@ -3,6 +3,7 @@
     <div class="col-xl-8 mb-5" [ngClass]="{ 'col-xl-12': model != null && ( model.userAdmin || model.userModerator ) }">
       <div class="card bg-secondary shadow">
         <div class="card-header bg-white border-0">
+          <app-loading-bar [isLoading]="isLoading"></app-loading-bar>
           <div class="row align-items-center">
             <div class="col-md mb-3">
               <h3 class="mb-0">{{title}}</h3>
@@ -162,6 +163,7 @@
       <div class="card bg-secondary shadow">
 
         <div class="card-header bg-white border-0">
+          <app-loading-bar [isLoading]="isADLoading || userService.isSaving"></app-loading-bar>
           <div class="row align-items-center">
             <div class="col-md">
               <h3 class="mb-0">АвтоДилер</h3>
@@ -192,15 +194,15 @@
               <div class="form-group"
                    *ngIf="userService.isModeratorOrAdmin() && model != null && model.id != userService.currentUser.id">
                 <button class="btn btn-buro-green" [disabled]="model.clientId == null && model.organizationId == null" (click)="approve( model, true )" *ngIf="!model.isApproved; else disapprove">
-                  Подвердить<span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
+                  Подвердить
                 </button>
                 <ng-template #disapprove>
                   <button class="btn btn-buro-green" (click)="approve( model, false )">
-                    Отменить<span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
+                    Отменить
                   </button>
                 </ng-template>
                 <button class="btn btn-danger" (click)="removeLink( model )" [disabled]="model.clientId == null && model.organizationId == null">
-                  Отклонить<span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
+                  Отклонить
                 </button>
               </div>
 

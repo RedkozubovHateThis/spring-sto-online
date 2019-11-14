@@ -3,6 +3,7 @@
     <div class="col-xl-8 mb-5" [ngClass]="{ 'col-xl-12': model != null && ( model.userAdmin || model.userModerator ) }">
       <div class="card bg-secondary shadow">
         <div class="card-header bg-white border-0">
+          <app-loading-bar [isLoading]="isLoading || userService.isSaving"></app-loading-bar>
           <div class="row align-items-center">
             <div class="col-md mb-3">
               <h3 class="mb-0">Данные пользователя: редактирование</h3>
@@ -12,7 +13,7 @@
                 Назад
               </button>
               <button class="btn btn-sm btn-buro-green" [disabled]="userService.isSaving" (click)="userService.saveUser( model, 'Пользователь успешно сохранен!' )">
-                Сохранить<span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
+                Сохранить
               </button>
             </div>
           </div>
@@ -182,6 +183,7 @@
       <div class="card bg-secondary shadow">
 
         <div class="card-header bg-white border-0">
+          <app-loading-bar [isLoading]="isADLoading || userService.isSaving"></app-loading-bar>
           <div class="row align-items-center">
             <div class="col-md mb-3">
               <h3 class="mb-0">АвтоДилер</h3>
@@ -191,17 +193,17 @@
               <button class="btn btn-sm btn-buro-green" *ngIf="model.userClient"
                       [disabled]="model.isApproved || userService.isSaving || clientResponse == null || ( clientResponse.id == model.clientId )"
                       (click)="linkClient(model)">
-                Привязать <span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
+                Привязать
               </button>
 
               <button class="btn btn-sm btn-buro-green" *ngIf="model.userServiceLeader"
                       [disabled]="model.isApproved || userService.isSaving || organizationResponse == null || ( organizationResponse.id == model.organizationId )"
                       (click)="linkOrganization(model)">
-                Привязать <span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
+                Привязать
               </button>
 
               <button class="btn btn-sm btn-danger" (click)="removeLink( model )" [disabled]="model.clientId == null && model.organizationId == null">
-                Удалить<span *ngIf="userService.isSaving">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
+                Удалить
               </button>
 
             </div>
@@ -222,7 +224,7 @@
                   <div class="input-group-append">
                     <button class="btn btn-buro-green" type="button" (click)="findClientByVin()"
                             [disabled]="model.isApproved || vinNumber == null || vinNumber.length == 0 || isADLoading">
-                      Найти<span *ngIf="isADLoading">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
+                      Найти
                     </button>
                   </div>
                 </div>
@@ -238,7 +240,7 @@
                   <div class="input-group-append">
                     <button class="btn btn-buro-green" type="button" (click)="findOrganizationByInn()"
                             [disabled]="model.isApproved || model.inn == null || model.inn.length == 0 || isADLoading">
-                      Найти<span *ngIf="isADLoading">&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
+                      Найти
                     </button>
                   </div>
                 </div>

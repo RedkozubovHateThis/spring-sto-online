@@ -6,7 +6,7 @@ import { DocumentsComponent } from '../../pages/documents/documents.component';
 import { DocumentComponent } from "../../pages/document/document.component";
 import { UsersComponent } from "../../pages/users/users.component";
 import { UserComponent } from 'src/app/pages/user/user.component';
-import { UserEditComponent } from 'src/app/pages/user-edit/userEdit.component';
+import { UserEditComponent } from 'src/app/pages/user-edit/user-edit.component';
 import { ChatComponent } from '../../pages/chat/chat.component';
 import {ReportsComponent} from '../../pages/reports/reports.component';
 import {EventMessagesComponent} from '../../pages/event-messages/event-messages.component';
