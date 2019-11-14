@@ -39,7 +39,7 @@
             <tbody *ngIf="all != null">
             <tr *ngFor="let fbResponse of all.content, let i = index" [attr.data-index]="i">
               <th scope="row" style="cursor: pointer;" (click)="selected = fbResponse">
-                {{( i + 1 ) + ( filter.page * size )}}
+                {{fbResponse.documentNumber}}
                 &nbsp;
                 <i class="far fa-check-circle" *ngIf="selected === fbResponse"></i>
                 <i class="far fa-circle" *ngIf="selected !== fbResponse"></i>
