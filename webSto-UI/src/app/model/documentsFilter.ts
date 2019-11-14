@@ -1,8 +1,8 @@
 import {Params} from '@angular/router';
+import {PageFilter} from './pageFilter';
 
-export class DocumentsFilter {
+export class DocumentsFilter extends PageFilter {
 
-  page: number;
   state: number;
   organization: number;
   vehicle: string;
@@ -14,7 +14,7 @@ export class DocumentsFilter {
   toDate: string;
 
   constructor() {
-    this.page = 0;
+    super();
     this.state = null;
     this.organization = null;
     this.vehicle = null;
@@ -26,12 +26,9 @@ export class DocumentsFilter {
     this.direction = 'desc';
   }
 
-  prepareFilter(queryParams: Params) {
+  setFilterProperties(queryParams: Params) {
     if ( queryParams.sort ) this.sort = queryParams.sort;
     if ( queryParams.direction ) this.direction = queryParams.direction;
-
-    if ( queryParams.page != null ) this.page = parseInt(queryParams.page, 10);
-    else this.page = 0;
 
     if ( queryParams.state ) this.state = parseInt(queryParams.state, 10);
     else this.state = null;

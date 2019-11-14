@@ -28,7 +28,7 @@ export class DocumentsComponent extends Pagination {
   requestData() {
     this.selected = null;
     this.isLoading = true;
-    this.documentResponseService.getAll(this.size, this.offset, this.filter).subscribe(data => {
+    this.documentResponseService.getAll(this.filter).subscribe(data => {
       this.all = data as Pageable<DocumentResponse>;
 
       this.isLoading = false;

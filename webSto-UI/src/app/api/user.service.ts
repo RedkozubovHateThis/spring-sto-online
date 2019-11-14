@@ -208,14 +208,14 @@ export class UserService implements TransferService<User>, RestService<User> {
 
   }
 
-  getAll(size: number, offset: number, filter: UsersFilter) {
+  getAll(filter: UsersFilter) {
     const headers = this.getHeaders();
 
     const params = {
       sort: `${filter.sort},${filter.direction}`,
       page: filter.page.toString(),
-      size: size.toString(),
-      offset: offset.toString(),
+      size: filter.size.toString(),
+      offset: filter.offset.toString(),
       role: filter.role != null ? filter.role : '',
       isApproved: filter.isApproved != null ? filter.isApproved : '',
       isAutoRegistered: filter.isAutoRegistered != null ? filter.isAutoRegistered : '',

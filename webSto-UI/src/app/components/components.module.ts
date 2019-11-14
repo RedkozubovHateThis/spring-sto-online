@@ -17,6 +17,7 @@ import {DpDatePickerModule} from 'ng2-date-picker';
 import {UserFilterComponent} from './user-filter/user-filter.component';
 import {PaginationComponent} from './pagination/pagination.component';
 import {DeleteButtonComponent} from './delete-button/delete-button.component';
+import {LoadingBarComponent} from './loading-bar/loading-bar.component';
 
 @NgModule({
   imports: [
@@ -39,7 +40,8 @@ import {DeleteButtonComponent} from './delete-button/delete-button.component';
     PasswordChangeButtonComponent,
     UserFilterComponent,
     PaginationComponent,
-    DeleteButtonComponent
+    DeleteButtonComponent,
+    LoadingBarComponent
   ],
   exports: [
     FooterComponent,
@@ -53,7 +55,8 @@ import {DeleteButtonComponent} from './delete-button/delete-button.component';
     PasswordChangeButtonComponent,
     UserFilterComponent,
     PaginationComponent,
-    DeleteButtonComponent
+    DeleteButtonComponent,
+    LoadingBarComponent
   ]
 })
 export class ComponentsModule { }

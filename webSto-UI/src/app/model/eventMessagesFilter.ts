@@ -1,8 +1,8 @@
 import {Params} from '@angular/router';
+import {PageFilter} from './pageFilter';
 
-export class EventMessagesFilter {
+export class EventMessagesFilter extends PageFilter {
 
-  page: number;
   messageType: string;
   fromId: number;
   toId: number;
@@ -11,7 +11,7 @@ export class EventMessagesFilter {
   direction: string;
 
   constructor() {
-    this.page = 0;
+    super();
     this.messageType = null;
     this.fromId = null;
     this.toId = null;
@@ -20,12 +20,9 @@ export class EventMessagesFilter {
     this.direction = 'desc';
   }
 
-  prepareFilter(queryParams: Params) {
+  setFilterProperties(queryParams: Params) {
     if ( queryParams.sort ) this.sort = queryParams.sort;
     if ( queryParams.direction ) this.direction = queryParams.direction;
-
-    if ( queryParams.page != null ) this.page = parseInt(queryParams.page, 10);
-    else this.page = 0;
 
     if ( queryParams.messageType ) this.messageType = queryParams.messageType;
     else this.messageType = null;

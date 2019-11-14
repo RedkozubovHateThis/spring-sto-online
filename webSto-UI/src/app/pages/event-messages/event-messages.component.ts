@@ -27,7 +27,7 @@ export class EventMessagesComponent extends Pagination {
 
   requestData() {
     this.isLoading = true;
-    this.eventMessageResponseService.getAll(this.size, this.offset, this.filter).subscribe(data => {
+    this.eventMessageResponseService.getAll(this.filter).subscribe(data => {
       this.all = data as Pageable<EventMessageResponse>;
 
       this.isLoading = false;

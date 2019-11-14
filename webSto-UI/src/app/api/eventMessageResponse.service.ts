@@ -33,8 +33,8 @@ export class EventMessageResponseService {
 
   }
 
-  getAll(size: number, offset: number, filter: EventMessagesFilter) {
-    return this.getMessages(`${filter.sort},${filter.direction}`, filter.page, size, offset, filter.messageType, filter.fromId,
+  getAll(filter: EventMessagesFilter) {
+    return this.getMessages(`${filter.sort},${filter.direction}`, filter.page, filter.size, filter.offset, filter.messageType, filter.fromId,
       filter.toId, filter.documentId);
   }
 

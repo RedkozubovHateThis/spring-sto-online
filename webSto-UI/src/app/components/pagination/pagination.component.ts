@@ -15,9 +15,15 @@ export class PaginationComponent implements OnInit, OnChanges {
   @Input()
   private isLast: boolean;
   @Input()
-  private filter: PageFilterInterface;
+  private page: number;
+  @Input()
+  private size: number;
+  @Input()
+  private disabled: boolean = false;
   @Output()
   private onPageChange: EventEmitter<number> = new EventEmitter();
+  @Output()
+  private onSizeChange: EventEmitter<number> = new EventEmitter();
   private pagesInfo: number[] = [];
 
   constructor() { }
@@ -27,7 +33,7 @@ export class PaginationComponent implements OnInit, OnChanges {
   }
 
   private setPageData() {
-    const pageInfo = this.filter.page + 1;
+    const pageInfo = this.page + 1;
 
     if ( this.totalPages != null ) {
 
@@ -88,8 +94,17 @@ export class PaginationComponent implements OnInit, OnChanges {
   }
 
   private goToPage(page: number, event) {
+    if ( this.disabled ) return;
+
     event.preventDefault();
     this.onPageChange.emit(page);
+  }
+
+  private setSize(size: number, event) {
+    if ( this.disabled ) return;
+
+    event.preventDefault();
+    this.onSizeChange.emit(size);
   }
 
   ngOnChanges(changes: SimpleChanges): void {

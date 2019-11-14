@@ -5,13 +5,12 @@
     <div class="col-xl-9 mb-5">
       <div class="card shadow">
         <div class="card-header border-0">
-
+          <app-loading-bar [isLoading]="isLoading"></app-loading-bar>
           <div class="row">
 
             <div class="col-sm mb-3">
               <h3 class="mb-0">
-                Заказ-наряды&nbsp;
-                <span  *ngIf="isLoading"><i class="fas fa-spin fa-spinner"></i></span>
+                Заказ-наряды
               </h3>
             </div>
             <div class="col-auto">
@@ -23,14 +22,14 @@
           </div>
         </div>
         <div class="table-responsive">
-          <table class="table align-items-center table-flush table-hover">
+          <table class="table align-items-center table-flush table-hover table-sm">
             <thead class="thead-light">
               <tr>
                 <th scope="col">Номер</th>
                 <th scope="col">Дата начала</th>
                 <th scope="col">Дата окончания</th>
                 <th scope="col">Состояние</th>
-                <th scope="col">Клиент</th>
+                <th scope="col" style="max-width: 200px;">Клиент</th>
                 <th scope="col">Автомобиль</th>
                 <th scope="col">Гос. номер</th>
                 <th scope="col">Сумма, руб.</th>
@@ -60,11 +59,15 @@
           </table>
         </div>
         <div class="card-footer py-4 table-responsive">
+          <app-loading-bar [isLoading]="isLoading" [atTop]="true"></app-loading-bar>
           <app-pagination *ngIf="all != null"
                           [totalPages]="all.totalPages"
                           [isFirst]="all.first"
                           [isLast]="all.last"
-                          [filter]="filter"
+                          [page]="filter.page"
+                          [size]="filter.size"
+                          [disabled]="isLoading"
+                          (onSizeChange)="setSize($event)"
                           (onPageChange)="goToPage($event)"></app-pagination>
         </div>
       </div>

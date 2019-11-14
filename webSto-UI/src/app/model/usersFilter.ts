@@ -1,8 +1,8 @@
 import {Params} from '@angular/router';
+import {PageFilter} from './pageFilter';
 
-export class UsersFilter implements PageFilterInterface {
-
-  page: number;
+export class UsersFilter extends PageFilter {
+  
   role: string;
   isApproved: string;
   isAutoRegistered: string;
@@ -13,7 +13,7 @@ export class UsersFilter implements PageFilterInterface {
   direction: string;
 
   constructor() {
-    this.page = 0;
+    super();
     this.role = null;
     this.isApproved = null;
     this.isAutoRegistered = null;
@@ -24,12 +24,9 @@ export class UsersFilter implements PageFilterInterface {
     this.direction = 'asc';
   }
 
-  prepareFilter(queryParams: Params) {
+  setFilterProperties(queryParams: Params) {
     if ( queryParams.sort ) this.sort = queryParams.sort;
     if ( queryParams.direction ) this.direction = queryParams.direction;
-
-    if ( queryParams.page != null ) this.page = parseInt(queryParams.page, 10);
-    else this.page = 0;
 
     if ( queryParams.role ) this.role = queryParams.role;
     else this.role = null;

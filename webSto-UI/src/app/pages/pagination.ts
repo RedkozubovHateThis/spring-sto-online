@@ -9,27 +9,28 @@ export abstract class Pagination implements OnInit {
 
   protected filter: PageFilterInterface;
   protected abstract routeName: string;
-  protected size: number = 10;
-  protected offset: number = -10;
 
   protected constructor(protected route: ActivatedRoute, protected router: Router) { }
 
   ngOnInit() {
     this.queryParamsSub = this.route.queryParams.subscribe( queryParams => {
       this.filter.prepareFilter(queryParams);
-      this.calculatePagination();
+      this.filter.calculatePagination();
       this.requestData();
     } );
   }
 
   abstract requestData();
 
-  calculatePagination() {
-    this.offset = ( this.filter.page * this.size ) - this.size;
-  }
-
   goToPage(page: number) {
     this.filter.page = page;
+    this.router.navigate([this.routeName], { queryParams: this.filter });
+  }
+
+  setSize(size: number) {
+    this.filter.size = size;
+    this.filter.page = 0;
+    this.filter.calculatePagination();
     this.router.navigate([this.routeName], { queryParams: this.filter });
   }
 

@@ -3,21 +3,24 @@
     <div class="col-xl-12 mb-5 mb-xl-0">
       <div class="card shadow">
         <div class="card-header border-0">
+          <app-loading-bar [isLoading]="isLoading"></app-loading-bar>
           <div class="row align-items-center">
             <div class="col-sm mb-3">
               <h3 class="mb-0">
-                Последние 5 заказ-нарядов&nbsp;
-                <span *ngIf="isLoading"><i class="fas fa-spin fa-spinner"></i></span>
+                Последние 5 заказ-нарядов
               </h3>
             </div>
             <div class="col-auto">
+              <button class="btn btn-sm btn-buro-green" (click)="requestData()" [disabled]="isLoading">
+                Обновить
+              </button>
               <a class="btn btn-sm btn-buro-green" [routerLink]="['/documents']">Посмотреть все</a>
             </div>
           </div>
         </div>
         <div class="table-responsive">
           <!-- Projects table -->
-          <table class="table align-items-center table-flush table-hover">
+          <table class="table align-items-center table-flush table-hover table-sm">
             <thead class="thead-light">
               <tr>
                 <th scope="col">Номер</th>
