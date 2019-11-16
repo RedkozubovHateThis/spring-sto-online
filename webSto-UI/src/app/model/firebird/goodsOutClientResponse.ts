@@ -1,10 +1,8 @@
-export class ServiceGoodsAddonResponse {
+export class GoodsOutClientResponse {
 
   id: number;
   number: string;
   fullName: string;
-  totalCost: number;
-  cost: number;
   goodsCount: number;
 
 }

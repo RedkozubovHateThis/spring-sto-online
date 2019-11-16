@@ -2,6 +2,7 @@ import {VehicleResponse} from "./vehicleResponse";
 import {ServiceWorkTotalResponse} from "./serviceWorkTotalResponse";
 import {ServiceGoodsAddonResponse} from "./serviceGoodsAddonResponse";
 import {ServiceGoodsAddonTotalResponse} from "./serviceGoodsAddonTotalResponse";
+import {GoodsOutClientTotalResponse} from './goodsOutClientTotalResponse';
 
 export class DocumentResponse {
 
@@ -20,6 +21,7 @@ export class DocumentResponse {
   organization:string;
   serviceWork: ServiceWorkTotalResponse;
   serviceGoodsAddon: ServiceGoodsAddonTotalResponse;
+  goodsOutClient: GoodsOutClientTotalResponse;
 
 }
 

@@ -24,6 +24,7 @@ public class DocumentResponse {
 
     private ServiceWorkTotalResponse serviceWork;
     private ServiceGoodsAddonTotalResponse serviceGoodsAddon;
+    private GoodsOutClientTotalResponse goodsOutClient;
 
     public DocumentResponse(DocumentServiceDetail document) {
 
@@ -52,6 +53,7 @@ public class DocumentResponse {
 
         serviceWork = new ServiceWorkTotalResponse(documentOut, this);
         serviceGoodsAddon = new ServiceGoodsAddonTotalResponse(documentOut, this);
+        goodsOutClient = new GoodsOutClientTotalResponse(documentOut);
 
         Client client = documentOut.getClient();
         if ( client != null ) this.client = client.getShortName();

@@ -7,6 +7,7 @@ import lombok.Data;
 public class ServiceWorkResponse {
 
     private Integer id;
+    private String number;
     private String name;
     private Double price;
     private Double total;
@@ -19,6 +20,7 @@ public class ServiceWorkResponse {
         if ( serviceWork == null ) return;
 
         id = serviceWork.getId();
+        number = serviceWork.getNumber();
         name = serviceWork.getName();
         total = serviceWork.getServiceWorkTotalCost(true);
         byPrice = serviceWork.isByPrice();

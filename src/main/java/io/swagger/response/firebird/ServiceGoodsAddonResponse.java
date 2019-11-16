@@ -7,6 +7,7 @@ import lombok.Data;
 public class ServiceGoodsAddonResponse {
 
     private Integer id;
+    private String number;
     private String fullName;
     private Double totalCost;
     private Double cost;
@@ -17,6 +18,7 @@ public class ServiceGoodsAddonResponse {
         if ( serviceGoodsAddon == null ) return;
 
         id = serviceGoodsAddon.getId();
+        number = serviceGoodsAddon.getNumber();
         fullName = serviceGoodsAddon.getFullName();
         cost = serviceGoodsAddon.getCost();
         totalCost = serviceGoodsAddon.getServiceGoodsCost(true);
