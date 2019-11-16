@@ -81,6 +81,7 @@ public class ReportServiceImpl implements ReportService {
         DocumentOut documentOut = documentOutHeader.getDocumentOut();
         if ( documentOut == null ) throw new DataNotFoundException();
 
+        fillBarCode(parameters, documentOutHeader);
         fillOrganizationParameters(parameters, documentOut);
         fillOrderParameters(parameters, document, documentOutHeader, true, true);
         fillCustomerParameters(parameters, documentOut, true, true);
@@ -145,6 +146,7 @@ public class ReportServiceImpl implements ReportService {
         DocumentOut documentOut = documentOutHeader.getDocumentOut();
         if ( documentOut == null ) throw new DataNotFoundException();
 
+        fillBarCode(parameters, documentOutHeader);
         fillOrganizationParameters(parameters, documentOut);
         fillOrderParameters(parameters, document, documentOutHeader, true, false);
         fillCustomerParameters(parameters, documentOut, true, false);
@@ -441,6 +443,7 @@ public class ReportServiceImpl implements ReportService {
         DocumentOut documentOut = documentOutHeader.getDocumentOut();
         if ( documentOut == null ) throw new DataNotFoundException();
 
+        fillBarCode(parameters, documentOutHeader);
         fillOrganizationParameters(parameters, documentOut);
         fillOrderParameters(parameters, document, documentOutHeader, true, true);
         fillCustomerParameters(parameters, documentOut, true, true);
@@ -485,6 +488,7 @@ public class ReportServiceImpl implements ReportService {
         Organization organization = documentOut.getOrganization();
         if ( organization == null ) throw new DataNotFoundException();
 
+        fillBarCode(parameters, documentOutHeader);
         Contact organizationContact = documentOut.getOrganizationContact();
 
         parameters.put( "currency", "Российский рубль, 643" );
@@ -544,6 +548,10 @@ public class ReportServiceImpl implements ReportService {
 
         return result;
 
+    }
+
+    private void fillBarCode(Map<String, Object> parameters, DocumentOutHeader documentOutHeader) throws DataNotFoundException {
+        parameters.put("barCode", documentOutHeader.getBarcode());
     }
 
     private void fillOrganizationParameters(Map<String, Object> parameters, DocumentOut documentOut) throws DataNotFoundException {

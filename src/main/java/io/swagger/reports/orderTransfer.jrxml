@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="transfer" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="c991dc0f-ffaf-4371-871b-8bacd10dfc28">
+<!-- Created with Jaspersoft Studio version 6.10.0.final using JasperReports Library version 6.10.0-unknown  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="transfer" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" isFloatColumnFooter="true" uuid="c991dc0f-ffaf-4371-871b-8bacd10dfc28">
 	<parameter name="workData" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
 	<parameter name="organizationName" class="java.lang.String"/>
 	<parameter name="organizationAddress" class="java.lang.String"/>
@@ -13,6 +13,7 @@
 	<parameter name="orderDate" class="java.lang.String"/>
 	<parameter name="subReportFile" class="java.lang.String"/>
 	<parameter name="stamp" class="java.awt.Image"/>
+	<parameter name="barCode" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -693,6 +694,14 @@
 				</textElement>
 				<text><![CDATA[--]]></text>
 			</staticText>
+			<componentElement>
+				<reportElement x="460" y="0" width="60" height="30" uuid="318b9f34-4357-420f-ad07-08578479cfc3">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<jr:EAN8 xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" quietZone="0.0">
+					<jr:codeExpression><![CDATA[$P{barCode}]]></jr:codeExpression>
+				</jr:EAN8>
+			</componentElement>
 		</band>
 	</title>
 	<pageHeader>
@@ -700,7 +709,7 @@
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
 				<reportElement x="0" y="0" width="25" height="65" uuid="7380c268-e89c-40de-94bf-3eeee404ef17"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -711,7 +720,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="25" y="0" width="60" height="65" uuid="3e268afe-6780-4a13-96e8-99ef72fdf0c2"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
@@ -723,7 +732,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="85" y="0" width="151" height="65" uuid="55508681-214d-438f-a305-79f576a4774c"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 					<leftPen lineWidth="0.0"/>
 				</box>
@@ -737,7 +746,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="236" y="0" width="30" height="65" uuid="ae8d4599-1cec-4098-83be-89bed48b949c"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -749,7 +758,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="266" y="0" width="80" height="30" uuid="6726e09f-a01e-46d8-be13-27ffb591c7ba"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -759,7 +768,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="266" y="30" width="25" height="35" uuid="4bbcff8e-20e2-4acb-a917-5dfd1ffa3324"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -769,7 +778,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="291" y="30" width="55" height="35" uuid="6c878b5a-409f-4036-97d5-c294814b628a"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -781,7 +790,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="346" y="0" width="30" height="65" uuid="57d9b4da-fb57-46f2-aa9b-72887951d08e"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -793,7 +802,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="376" y="0" width="36" height="65" uuid="f04dc4d0-a1ec-48e7-b78e-a979dee21a72"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -808,7 +817,7 @@
 				<reportElement x="412" y="0" width="55" height="65" uuid="30d03a4b-e7e0-48b7-bfad-ab3d3b4799b1">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -824,7 +833,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="467" y="0" width="35" height="65" uuid="f55ccf11-ccdc-4076-af1d-12a0d6692aea"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -837,7 +846,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="502" y="0" width="40" height="65" uuid="3771d40b-707e-4f89-a448-19149b83c4ab"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -848,7 +857,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="542" y="0" width="55" height="65" uuid="014c7d00-3176-443b-b022-b4b123c275d6"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -860,7 +869,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="597" y="0" width="58" height="65" uuid="4c9b5486-b71f-4aae-9646-9394f630751e"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -876,7 +885,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="655" y="0" width="90" height="30" uuid="ac3026b0-658f-4066-a101-e267c43cd8d5"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -887,7 +896,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="655" y="30" width="40" height="35" uuid="18cab46b-8490-4153-94ba-4611f3cfccbe"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -898,7 +907,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="695" y="30" width="50" height="35" uuid="3ca970a7-77d4-414f-b1fd-a5d255deae85"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -909,7 +918,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="745" y="0" width="55" height="65" uuid="2618951b-2509-42b8-89c3-b83e9bd8e3e1"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -922,7 +931,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="65" width="25" height="12" uuid="36a3f7eb-69e8-4ab0-9beb-aa87de0b5776"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -932,7 +941,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="25" y="65" width="60" height="12" uuid="7006381d-44e4-4991-b0e6-7bf77d955f82"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
@@ -943,7 +952,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="85" y="65" width="151" height="12" uuid="02525826-c4ad-433c-ad28-e166cc01ea08"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 					<leftPen lineWidth="0.0"/>
 				</box>
@@ -954,7 +963,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="236" y="65" width="30" height="12" uuid="debef083-d7bb-45ab-86db-6bc1c2e4e574"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -964,7 +973,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="266" y="65" width="25" height="12" uuid="60a1e5d3-795f-4477-9347-ed833fcb38e0"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -974,7 +983,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="291" y="65" width="55" height="12" uuid="fcd28028-4a26-4d32-bc75-0da658146852"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -984,7 +993,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="346" y="65" width="30" height="12" uuid="667718e0-559b-4a22-9d0b-7c7b86352cb7"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -994,7 +1003,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="376" y="65" width="36" height="12" uuid="05106f2f-4aed-41db-bda9-10b04d8366f3"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -1004,7 +1013,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="412" y="65" width="55" height="12" uuid="9449b3da-8b9a-4014-a7d6-7be6f071664e"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -1014,7 +1023,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="467" y="65" width="35" height="12" uuid="cce9eaac-1dd3-4227-85f3-1eb4cf2a70c8"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -1024,7 +1033,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="502" y="65" width="40" height="12" uuid="5894554e-610b-4076-8201-6513943f5598"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -1034,7 +1043,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="542" y="65" width="55" height="12" uuid="5335d30e-f3ca-4bed-9f28-6d1abf652b00"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -1044,7 +1053,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="597" y="65" width="58" height="12" uuid="2282ccdc-e13c-42fe-903d-500471d800d2"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -1054,7 +1063,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="655" y="65" width="40" height="12" uuid="f85e6e52-118a-4ee0-92ab-9c9247de467e"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -1064,7 +1073,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="695" y="65" width="50" height="12" uuid="b4f21b79-27c7-451e-bdf8-abeb2e32ab61"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -1074,7 +1083,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="745" y="65" width="55" height="12" uuid="b3231f42-acfd-497c-89b6-b465b117ab28"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">

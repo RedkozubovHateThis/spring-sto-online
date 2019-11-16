@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
+<!-- Created with Jaspersoft Studio version 6.10.0.final using JasperReports Library version 6.10.0-unknown  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="transferSub" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="842" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isSummaryWithPageHeaderAndFooter="true" isFloatColumnFooter="true" uuid="c991dc0f-ffaf-4371-871b-8bacd10dfc28">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -86,7 +86,7 @@
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="25" height="12" uuid="4247ce5f-b188-4630-90c4-f214569b693e"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -96,7 +96,7 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="25" y="0" width="60" height="12" uuid="5562ab48-ad9f-471b-97ca-5b8ee14d2808"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
@@ -107,7 +107,7 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="85" y="0" width="151" height="12" uuid="bf43bc03-db0b-4e59-ab4d-e68f8f361a09"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 					<leftPen lineWidth="0.0"/>
 				</box>
@@ -118,7 +118,7 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="236" y="0" width="30" height="12" uuid="860a863d-e884-4c4d-bfcc-21888650fa38"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -128,7 +128,7 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="266" y="0" width="25" height="12" uuid="ce1347c0-845b-493f-a893-266ba1b9b10e"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -138,7 +138,7 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="291" y="0" width="55" height="12" uuid="2a5cb89e-2caf-4023-88f5-d6b82929dd1e"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -148,7 +148,7 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="346" y="0" width="30" height="12" uuid="1abcce6e-5ae2-42a3-bbb6-61f495468260"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -158,7 +158,7 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="376" y="0" width="36" height="12" uuid="17bdf19a-9822-4f5b-aa2b-ec93e6ea8fbe"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -168,7 +168,7 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="412" y="0" width="55" height="12" uuid="9f5cc48c-aa61-44c9-bb36-870e018f4f6f"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -178,7 +178,7 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="467" y="0" width="35" height="12" uuid="bd7107f7-b4a4-4201-a01b-672928b00b7a"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -188,7 +188,7 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="502" y="0" width="40" height="12" uuid="7cb5f1ee-7331-4738-90e2-0eded345368f"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -198,7 +198,7 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="542" y="0" width="55" height="12" uuid="759b7529-7fd6-4748-8b0c-b5460483aaeb"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -208,7 +208,7 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="597" y="0" width="58" height="12" uuid="5c89b642-3400-4836-9a99-7a562a329d76"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -218,7 +218,7 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="655" y="0" width="40" height="12" uuid="ac04ac63-17d7-4abd-a147-a259972d6405"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -228,7 +228,7 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="695" y="0" width="50" height="12" uuid="cc58f05f-371a-4a44-b6ef-5032bde6eed0"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -238,7 +238,7 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="745" y="0" width="55" height="12" uuid="fae3cfa8-b11d-4372-8fa2-e7948a75baa9"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -275,7 +275,7 @@
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="236" y="0" width="30" height="12" uuid="0138d74e-a46e-49af-843f-096ca055f8a5"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -284,7 +284,7 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="266" y="0" width="25" height="12" uuid="4496ddaa-c3eb-4fd3-b80e-9b4bfbfc7057"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -293,7 +293,7 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="291" y="0" width="55" height="12" uuid="6a7f7704-762c-4acf-95d5-08b934c7f059"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -302,7 +302,7 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="346" y="0" width="30" height="12" uuid="3e75009f-a0c7-4c90-894f-e9b5362e7a04"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -312,7 +312,7 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="376" y="0" width="36" height="12" uuid="794b79c7-f256-49e5-a636-9e692d255e64"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -321,7 +321,7 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="412" y="0" width="55" height="12" uuid="0f933547-747b-4ba1-8cb1-d90dc4a11dc6"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -331,7 +331,7 @@
 			</textField>
 			<staticText>
 				<reportElement stretchType="ElementGroupHeight" x="467" y="0" width="75" height="12" uuid="ed58938e-de6b-45bc-bb6f-90ad1685355d"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -341,7 +341,7 @@
 			</staticText>
 			<staticText>
 				<reportElement stretchType="ElementGroupHeight" x="542" y="0" width="55" height="12" uuid="6f1a78d8-1458-4217-8f5e-5d3f4431f123"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -351,7 +351,7 @@
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="597" y="0" width="58" height="12" uuid="48a2ba7b-5d5d-466a-bc59-4729dc789e6b"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -361,7 +361,7 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="25" height="12" uuid="646fc262-0c8e-4191-a350-092f335b3d3c"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -370,7 +370,7 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="25" y="0" width="60" height="12" uuid="cd1d5aca-5ebf-4484-8ec4-8241c2f6c891"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
@@ -396,7 +396,7 @@
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="25" height="12" uuid="9d5e9f47-dd9d-48a2-bb19-2d5606681246"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -405,7 +405,7 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="25" y="0" width="60" height="12" uuid="48b5ac24-d473-471c-a529-5d389db10094"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
@@ -415,7 +415,7 @@
 			</textField>
 			<staticText>
 				<reportElement stretchType="ElementGroupHeight" x="85" y="0" width="151" height="12" uuid="39377b7d-a31c-4c09-9397-d4b5dcb9a46b"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 					<leftPen lineWidth="0.0"/>
 				</box>
@@ -426,7 +426,7 @@
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="236" y="0" width="30" height="12" uuid="f72eae12-b56a-42f0-9a8d-c5567db38851"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -435,7 +435,7 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="266" y="0" width="25" height="12" uuid="b474e209-81cc-47dc-b3e0-35031131e370"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -444,7 +444,7 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="291" y="0" width="55" height="12" uuid="0a6859a6-6ee5-4ef1-aa8c-25ce30b7b0b0"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -453,7 +453,7 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="346" y="0" width="30" height="12" uuid="1fe498f6-1bd3-4e94-9f06-eefa981f1ffb"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -463,7 +463,7 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="376" y="0" width="36" height="12" uuid="398305c0-27e4-497d-9a98-4255c246811d"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -472,7 +472,7 @@
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="412" y="0" width="55" height="12" uuid="d3274d9e-e088-4fa8-af96-fa6189a20d43"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -482,7 +482,7 @@
 			</textField>
 			<staticText>
 				<reportElement stretchType="ElementGroupHeight" x="467" y="0" width="75" height="12" uuid="50748535-ca00-478a-9be0-10b932ee6919"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -492,7 +492,7 @@
 			</staticText>
 			<staticText>
 				<reportElement stretchType="ElementGroupHeight" x="542" y="0" width="55" height="12" uuid="557524ec-5d78-40c1-80c2-4f9390e1f3db"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -502,7 +502,7 @@
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="597" y="0" width="58" height="12" uuid="ec8abaa6-49e1-469f-b9f1-d33ef1992f39"/>
-				<box padding="1">
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
