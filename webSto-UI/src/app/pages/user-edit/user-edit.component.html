@@ -12,7 +12,9 @@
               <button class="btn btn-sm btn-buro-green" [disabled]="userService.isSaving" (click)="location.back()">
                 Назад
               </button>
-              <button class="btn btn-sm btn-buro-green" [disabled]="userService.isSaving" (click)="userService.saveUser( model, 'Пользователь успешно сохранен!' )">
+              <button class="btn btn-sm btn-buro-green" [disabled]="userService.isSaving"
+                      *ngIf="userService.isAdmin() || userService.isSameUser( model )"
+                      (click)="userService.saveUser( model, 'Пользователь успешно сохранен!' )">
                 Сохранить
               </button>
             </div>
@@ -138,7 +140,7 @@
                     {{role.nameRus}}
                   </span>
                 </div>
-                <div class="col-lg-6" *ngIf="model.userClient || model.userServiceLeader">
+                <div class="col-lg-6" *ngIf="userService.isAdmin() && ( model.userClient || model.userServiceLeader )">
                   <div class="form-group">
                     <label class="form-control-label" for="moderator-select">Модератор</label>
                     <select id="moderator-select" class="form-control form-control-alternative" [(ngModel)]="model.moderatorId" [ngModelOptions]="{standalone: true}">
