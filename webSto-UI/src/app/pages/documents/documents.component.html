@@ -35,8 +35,8 @@
                 <th scope="col">Сумма, руб.</th>
               </tr>
             </thead>
-            <tbody *ngIf="all != null">
-            <tr *ngFor="let fbResponse of all.content, let i = index" [attr.data-index]="i">
+            <tbody *ngIf="documentResponseController.all != null">
+            <tr *ngFor="let fbResponse of documentResponseController.all.content, let i = index" [attr.data-index]="i">
               <th scope="row" style="cursor: pointer;" (click)="selected = fbResponse">
                 {{fbResponse.documentNumber}}
                 &nbsp;
@@ -60,12 +60,12 @@
         </div>
         <div class="card-footer py-4 table-responsive">
           <app-loading-bar [isLoading]="isLoading" [atTop]="true"></app-loading-bar>
-          <app-pagination *ngIf="all != null"
-                          [totalPages]="all.totalPages"
-                          [isFirst]="all.first"
-                          [isLast]="all.last"
-                          [page]="filter.page"
-                          [size]="filter.size"
+          <app-pagination *ngIf="documentResponseController.all != null"
+                          [totalPages]="documentResponseController.all.totalPages"
+                          [isFirst]="documentResponseController.all.first"
+                          [isLast]="documentResponseController.all.last"
+                          [page]="documentResponseController.filter.page"
+                          [size]="documentResponseController.filter.size"
                           [disabled]="isLoading"
                           (onSizeChange)="setSize($event)"
                           (onPageChange)="goToPage($event)"></app-pagination>
@@ -73,7 +73,7 @@
       </div>
     </div>
     <div class="col-xl-3 mb-5">
-      <app-document-filter (onChange)="applyFilter()" [filter]="filter" [document]="selected"></app-document-filter>
+      <app-document-filter (onChange)="applyFilter()" [filter]="documentResponseController.filter" [document]="selected"></app-document-filter>
     </div>
   </div>
 </div>

@@ -29,6 +29,9 @@ import {WebSocketService} from './api/webSocket.service';
 import {ClipboardModule} from 'ngx-clipboard';
 import {ToastrModule} from 'ngx-toastr';
 import {EventMessageResponseService} from './api/eventMessageResponse.service';
+import {DocumentResponseController} from './controller/document-response.controller';
+import {EventMessageController} from './controller/event-message.controller';
+import {UserController} from './controller/user.controller';
 registerLocaleData(localeRu, 'ru');
 
 @NgModule({
@@ -67,6 +70,9 @@ registerLocaleData(localeRu, 'ru');
     ChatMessageResponseService,
     EventMessageResponseService,
     WebSocketService,
+    DocumentResponseController,
+    EventMessageController,
+    UserController,
     {
       provide: HTTP_INTERCEPTORS,
       useFactory: function(userService: UserService, router: Router) {

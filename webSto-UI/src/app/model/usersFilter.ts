@@ -2,7 +2,7 @@ import {Params} from '@angular/router';
 import {PageFilter} from './pageFilter';
 
 export class UsersFilter extends PageFilter {
-  
+
   role: string;
   isApproved: string;
   isAutoRegistered: string;
@@ -29,22 +29,22 @@ export class UsersFilter extends PageFilter {
     if ( queryParams.direction ) this.direction = queryParams.direction;
 
     if ( queryParams.role ) this.role = queryParams.role;
-    else this.role = null;
+    // else this.role = null;
 
     if ( queryParams.isApproved ) this.isApproved = queryParams.isApproved;
-    else this.isApproved = null;
+    // else this.isApproved = null;
 
     if ( queryParams.isAutoRegistered ) this.isAutoRegistered = queryParams.isAutoRegistered;
-    else this.isAutoRegistered = null;
+    // else this.isAutoRegistered = null;
 
     if ( queryParams.phone ) this.phone = queryParams.phone;
-    else this.phone = null;
+    // else this.phone = null;
 
     if ( queryParams.email ) this.email = queryParams.email;
-    else this.email = null;
+    // else this.email = null;
 
     if ( queryParams.fio ) this.fio = queryParams.fio;
-    else this.fio = null;
+    // else this.fio = null;
   }
 
 }

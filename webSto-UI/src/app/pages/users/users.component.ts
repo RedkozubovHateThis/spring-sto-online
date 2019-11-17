@@ -6,6 +6,7 @@ import {Pagination} from "../pagination";
 import {User} from "../../model/postgres/auth/user";
 import {UserService} from "../../api/user.service";
 import {UsersFilter} from '../../model/usersFilter';
+import {UserController} from '../../controller/user.controller';
 
 @Component({
   selector: 'app-users',
@@ -14,19 +15,18 @@ import {UsersFilter} from '../../model/usersFilter';
 })
 export class UsersComponent extends Pagination {
 
-  private all: Pageable<User>;
   private isLoading: boolean = false;
-  protected filter: UsersFilter = new UsersFilter();
   protected routeName = '/users';
 
-  constructor(private userService: UserService, protected route: ActivatedRoute, protected router: Router) {
-    super(route, router);
+  constructor(private userService: UserService, protected route: ActivatedRoute, protected router: Router,
+              protected userController: UserController) {
+    super(route, router, userController);
   }
 
   requestData() {
     this.isLoading = true;
-    this.userService.getAll(this.filter).subscribe( data => {
-      this.all = data as Pageable<User>;
+    this.userService.getAll(this.userController.filter).subscribe( data => {
+      this.userController.all = data as Pageable<User>;
 
       this.isLoading = false;
     }, error => {

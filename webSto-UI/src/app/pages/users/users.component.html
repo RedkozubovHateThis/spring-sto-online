@@ -42,8 +42,8 @@
                 </th>
               </tr>
             </thead>
-            <tbody *ngIf="all != null">
-            <tr *ngFor="let user of all.content, let i = index" [attr.data-index]="i" style="cursor: pointer;" (click)="navigate(user)">
+            <tbody *ngIf="userController.all != null">
+            <tr *ngFor="let user of userController.all.content, let i = index" [attr.data-index]="i" style="cursor: pointer;" (click)="navigate(user)">
               <th>{{user.lastName}}</th>
               <th>{{user.firstName}}</th>
               <th>{{user.middleName}}</th>
@@ -70,12 +70,12 @@
         </div>
         <div class="card-footer py-4 table-responsive">
           <app-loading-bar [isLoading]="isLoading" [atTop]="true"></app-loading-bar>
-          <app-pagination *ngIf="all != null"
-                          [totalPages]="all.totalPages"
-                          [isFirst]="all.first"
-                          [isLast]="all.last"
-                          [page]="filter.page"
-                          [size]="filter.size"
+          <app-pagination *ngIf="userController.all != null"
+                          [totalPages]="userController.all.totalPages"
+                          [isFirst]="userController.all.first"
+                          [isLast]="userController.all.last"
+                          [page]="userController.filter.page"
+                          [size]="userController.filter.size"
                           [disabled]="isLoading"
                           (onSizeChange)="setSize($event)"
                           (onPageChange)="goToPage($event)"></app-pagination>
@@ -83,7 +83,7 @@
       </div>
     </div>
     <div class="col-xl-3">
-      <app-user-filter (onChange)="applyFilter()" [filter]="filter"></app-user-filter>
+      <app-user-filter (onChange)="applyFilter()" [filter]="userController.filter"></app-user-filter>
     </div>
   </div>
 </div>

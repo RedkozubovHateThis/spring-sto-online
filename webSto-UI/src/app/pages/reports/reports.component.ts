@@ -19,8 +19,15 @@ export class ReportsComponent implements OnInit {
   private selectedMonth: number;
   private selectedYear: number;
   private reportData: object[];
-  private executorsTotalRow: object;
-  private clientsTotalRow: object;
+  private executorsTotalRow: object = {
+    totalByNorm: 0,
+    totalByPrice: 0,
+    totalSum: 0,
+    totalSalary: 0
+  };
+  private clientsTotalRow: object = {
+    total: 0
+  };
   private reportType: string = 'executors';
   private organizationId: number = null;
   private organizations: OrganizationResponse[] = [];

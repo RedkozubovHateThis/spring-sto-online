@@ -6,6 +6,7 @@ import {Pageable} from '../../model/pageable';
 import {Pagination} from '../pagination';
 import { DocumentsFilter } from 'src/app/model/documentsFilter';
 import {UserService} from '../../api/user.service';
+import {DocumentResponseController} from '../../controller/document-response.controller';
 
 @Component({
   selector: 'app-tables',
@@ -14,22 +15,20 @@ import {UserService} from '../../api/user.service';
 })
 export class DocumentsComponent extends Pagination {
 
-  private all: Pageable<DocumentResponse>;
   private isLoading: boolean = false;
-  protected filter: DocumentsFilter = new DocumentsFilter();
   private selected: DocumentResponse;
   protected routeName = '/documents';
 
   constructor(private documentResponseService: DocumentResponseService, protected route: ActivatedRoute, protected router: Router,
-              private userService: UserService) {
-    super(route, router);
+              private userService: UserService, protected documentResponseController: DocumentResponseController) {
+    super(route, router, documentResponseController);
   }
 
   requestData() {
     this.selected = null;
     this.isLoading = true;
-    this.documentResponseService.getAll(this.filter).subscribe(data => {
-      this.all = data as Pageable<DocumentResponse>;
+    this.documentResponseService.getAll(this.documentResponseController.filter).subscribe(data => {
+      this.documentResponseController.all = data as Pageable<DocumentResponse>;
 
       this.isLoading = false;
     }, error => {

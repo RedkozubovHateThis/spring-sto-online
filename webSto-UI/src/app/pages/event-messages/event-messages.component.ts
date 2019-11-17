@@ -8,6 +8,7 @@ import { DocumentsFilter } from 'src/app/model/documentsFilter';
 import {EventMessageResponseService} from '../../api/eventMessageResponse.service';
 import {EventMessageResponse} from '../../model/postgres/eventMessageResponse';
 import {EventMessagesFilter} from '../../model/eventMessagesFilter';
+import {EventMessageController} from '../../controller/event-message.controller';
 
 @Component({
   selector: 'app-event-messages',
@@ -16,19 +17,18 @@ import {EventMessagesFilter} from '../../model/eventMessagesFilter';
 })
 export class EventMessagesComponent extends Pagination {
 
-  private all: Pageable<EventMessageResponse>;
   private isLoading: boolean = false;
-  protected filter: EventMessagesFilter = new EventMessagesFilter();
   protected routeName = '/event-messages';
 
-  constructor(private eventMessageResponseService: EventMessageResponseService, protected route: ActivatedRoute, protected router: Router) {
-    super(route, router);
+  constructor(private eventMessageResponseService: EventMessageResponseService, protected route: ActivatedRoute, protected router: Router,
+              protected eventMessageController: EventMessageController) {
+    super(route, router, eventMessageController);
   }
 
   requestData() {
     this.isLoading = true;
-    this.eventMessageResponseService.getAll(this.filter).subscribe(data => {
-      this.all = data as Pageable<EventMessageResponse>;
+    this.eventMessageResponseService.getAll(this.eventMessageController.filter).subscribe(data => {
+      this.eventMessageController.all = data as Pageable<EventMessageResponse>;
 
       this.isLoading = false;
     }, error => {

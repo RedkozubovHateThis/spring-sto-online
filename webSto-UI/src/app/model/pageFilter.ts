@@ -14,11 +14,11 @@ export abstract class PageFilter implements PageFilterInterface {
 
   prepareFilter(queryParams: Params) {
     if ( queryParams.page != null ) this.page = parseInt(queryParams.page, 10);
-    else this.page = 0;
+    // else this.page = 0;
     if ( queryParams.size != null ) this.size = parseInt(queryParams.size, 10);
-    else this.size = 10;
+    // else this.size = 10;
     if ( queryParams.offset != null ) this.offset = parseInt(queryParams.offset, 10);
-    else this.offset = -10;
+    // else this.offset = -10;
 
     this.setFilterProperties(queryParams);
   }

@@ -25,16 +25,16 @@ export class EventMessagesFilter extends PageFilter {
     if ( queryParams.direction ) this.direction = queryParams.direction;
 
     if ( queryParams.messageType ) this.messageType = queryParams.messageType;
-    else this.messageType = null;
+    // else this.messageType = null;
 
     if ( queryParams.fromId ) this.fromId = parseInt(queryParams.fromId, 10);
-    else this.fromId = null;
+    // else this.fromId = null;
 
     if ( queryParams.toId ) this.toId = parseInt(queryParams.toId, 10);
-    else this.toId = null;
+    // else this.toId = null;
 
     if ( queryParams.documentId ) this.documentId = parseInt(queryParams.documentId, 10);
-    else this.documentId = null;
+    // else this.documentId = null;
   }
 
 }

@@ -31,25 +31,25 @@ export class DocumentsFilter extends PageFilter {
     if ( queryParams.direction ) this.direction = queryParams.direction;
 
     if ( queryParams.state ) this.state = parseInt(queryParams.state, 10);
-    else this.state = null;
+    // else this.state = null;
 
     if ( queryParams.organization ) this.organization = parseInt(queryParams.organization, 10);
-    else this.organization = null;
+    // else this.organization = null;
 
     if ( queryParams.client ) this.client = parseInt(queryParams.client, 10);
-    else this.client = null;
+    // else this.client = null;
 
     if ( queryParams.vehicle ) this.vehicle = queryParams.vehicle;
-    else this.vehicle = null;
+    // else this.vehicle = null;
 
     if ( queryParams.vinNumber ) this.vinNumber = queryParams.vinNumber;
-    else this.vinNumber = null;
+    // else this.vinNumber = null;
 
     if ( queryParams.fromDate ) this.fromDate = queryParams.fromDate;
-    else this.fromDate = null;
+    // else this.fromDate = null;
 
     if ( queryParams.toDate ) this.toDate = queryParams.toDate;
-    else this.toDate = null;
+    // else this.toDate = null;
   }
 
 }

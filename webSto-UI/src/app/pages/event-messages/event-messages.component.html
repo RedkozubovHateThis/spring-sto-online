@@ -33,8 +33,8 @@
                 <th scope="col">Доп. информация</th>
               </tr>
             </thead>
-            <tbody *ngIf="all != null">
-            <tr *ngFor="let emResponse of all.content">
+            <tbody *ngIf="eventMessageController.all != null">
+            <tr *ngFor="let emResponse of eventMessageController.all.content">
               <th>{{emResponse.messageDate | date : 'dd.MM.yyyy HH:mm'}}</th>
               <th>{{getMessageType(emResponse.messageType)}}</th>
               <ng-container *ngIf="emResponse.messageType === 'MODERATOR_REPLACEMENT'">
@@ -67,12 +67,12 @@
         </div>
         <div class="card-footer py-4table-responsive">
           <app-loading-bar [isLoading]="isLoading" [atTop]="true"></app-loading-bar>
-          <app-pagination *ngIf="all != null"
-                          [totalPages]="all.totalPages"
-                          [isFirst]="all.first"
-                          [isLast]="all.last"
-                          [page]="filter.page"
-                          [size]="filter.size"
+          <app-pagination *ngIf="eventMessageController.all != null"
+                          [totalPages]="eventMessageController.all.totalPages"
+                          [isFirst]="eventMessageController.all.first"
+                          [isLast]="eventMessageController.all.last"
+                          [page]="eventMessageController.filter.page"
+                          [size]="eventMessageController.filter.size"
                           [disabled]="isLoading"
                           (onSizeChange)="setSize($event)"
                           (onPageChange)="goToPage($event)"></app-pagination>
@@ -80,7 +80,7 @@
       </div>
     </div>
     <div class="col-xl-3 mb-5">
-      <app-event-message-filter (onChange)="applyFilter()" [filter]="filter"></app-event-message-filter>
+      <app-event-message-filter (onChange)="applyFilter()" [filter]="eventMessageController.filter"></app-event-message-filter>
     </div>
   </div>
 </div>

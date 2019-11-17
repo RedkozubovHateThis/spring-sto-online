@@ -5,6 +5,7 @@ import {Pageable} from "../../model/pageable";
 import { Router } from '@angular/router';
 import {ChatMessageResponseService} from '../../api/chatMessageResponse.service';
 import {UserService} from '../../api/user.service';
+import {DocumentResponseController} from '../../controller/document-response.controller';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,10 +14,10 @@ import {UserService} from '../../api/user.service';
 })
 export class DashboardComponent implements OnInit {
 
-  private last5: Pageable<DocumentResponse>;
   private isLoading: boolean = false;
 
-  constructor(private documentResponseService: DocumentResponseService, private router: Router) { }
+  constructor(private documentResponseService: DocumentResponseService, private router: Router,
+              private documentResponseController: DocumentResponseController) { }
 
   ngOnInit() {
     this.requestData();
@@ -25,7 +26,7 @@ export class DashboardComponent implements OnInit {
   private requestData() {
     this.isLoading = true;
     this.documentResponseService.getLast5().subscribe( data => {
-      this.last5 = data as Pageable<DocumentResponse>;
+      this.documentResponseController.last5 = data as Pageable<DocumentResponse>;
       this.isLoading = false;
     }, error => {
       this.isLoading = false;
