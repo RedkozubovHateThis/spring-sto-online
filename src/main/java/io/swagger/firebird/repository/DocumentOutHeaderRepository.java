@@ -15,4 +15,10 @@ public interface DocumentOutHeaderRepository extends JpaRepository<DocumentOutHe
     void updateState(@Param("documentOutHeaderId") Integer documentOutHeaderId,
                      @Param("state") Integer state);
 
+    @Modifying
+    @Transactional
+    @Query(nativeQuery = true, value = "UPDATE DOCUMENT_OUT_HEADER SET USER_ID = :userId WHERE DOCUMENT_OUT_HEADER_ID = :documentOutHeaderId")
+    void updateUserId(@Param("documentOutHeaderId") Integer documentOutHeaderId,
+                      @Param("userId") Integer userId);
+
 }

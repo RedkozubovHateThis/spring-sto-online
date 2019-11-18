@@ -3,11 +3,12 @@ import {DocumentResponse} from "../../model/firebird/documentResponse";
 import {DocumentResponseService} from "../../api/documentResponse.service";
 import { ActivatedRoute, Router } from '@angular/router';
 import {ModelTransfer} from "../model.transfer";
-import {ServiceWorkResponseService} from "../../api/ServiceWorkResponse.service";
+import {ServiceWorkResponseService} from "../../api/serviceWorkResponse.service";
 import {UserService} from "../../api/user.service";
 import {HttpClient} from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import {Location} from '@angular/common';
+import {UserResponse} from '../../model/firebird/userResponse';
 
 @Component({
   selector: 'app-documents',
@@ -17,6 +18,7 @@ import {Location} from '@angular/common';
 export class DocumentComponent extends ModelTransfer<DocumentResponse, number> implements OnInit {
 
   private isLoading: boolean = false;
+  private firebirdUsers: UserResponse[] = [];
   private price: number;
   private isUpdating: boolean = false;
   private states = [
@@ -44,9 +46,18 @@ export class DocumentComponent extends ModelTransfer<DocumentResponse, number> i
     }, error => {
       this.isLoading = false;
     } );
+    this.findFirebirdUsers();
   }
 
-  onTransferComplete() {}
+  onTransferComplete() {
+    this.findFirebirdUsers();
+  }
+
+  findFirebirdUsers() {
+    this.documentResponseService.getFirebirdUsers().subscribe( data => {
+      this.firebirdUsers = data as UserResponse[];
+    } );
+  }
 
   updatePrice(documentResponse, serviceWork, price) {
 
@@ -96,6 +107,23 @@ export class DocumentComponent extends ModelTransfer<DocumentResponse, number> i
       }, () => {
         this.isUpdating = false;
         this.toastrService.error('Ошибка изменения статуса заказ-наряда!', 'Внимание!');
+      } );
+  }
+
+  updateUser(documentResponse, userId) {
+
+    if ( documentResponse == null || userId == null ) return;
+
+    this.isUpdating = true;
+
+    this.serviceWorkResponseService.updateUser(documentResponse.id, documentResponse.documentOutHeaderId, userId)
+      .subscribe( data => {
+          this.model = data as DocumentResponse;
+          this.isUpdating = false;
+          this.toastrService.success('Оформитель заказ-наряда успешно изменен(-а)');
+      }, () => {
+        this.isUpdating = false;
+        this.toastrService.error('Ошибка изменения оформителя заказ-наряда!', 'Внимание!');
       } );
   }
 }

@@ -9,6 +9,7 @@ import io.swagger.postgres.repository.EventMessageRepository;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.response.api.ApiResponse;
 import io.swagger.response.api.EventMessageStatus;
+import io.swagger.response.firebird.UserResponse;
 import io.swagger.service.EventMessageService;
 import io.swagger.service.UserService;
 import lombok.Data;
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +30,9 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private io.swagger.firebird.repository.UserRepository firebirdUserRepository;
 
     @Autowired
     private WebSocketController webSocketController;
@@ -434,6 +439,30 @@ public class UserController {
         else
             return ResponseEntity.status(404).build();
 
+    }
+
+    @GetMapping("/firebird/findAll")
+    public ResponseEntity findFirebirdUsers() {
+
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( !UserHelper.hasRole( currentUser, "ADMIN" ) &&
+                !UserHelper.hasRole( currentUser, "MODERATOR" ) )
+            return ResponseEntity.status(404).build();
+
+        List<io.swagger.firebird.model.User> users = firebirdUserRepository.findAllVisibleUsers();
+        List<UserResponse> responses = new ArrayList<>();
+
+        for (io.swagger.firebird.model.User user : users) {
+
+            try {
+                responses.add( new UserResponse( user ) );
+            }
+            catch(IllegalArgumentException ignored) {}
+
+        }
+
+        return ResponseEntity.ok( responses );
     }
 
     @Data

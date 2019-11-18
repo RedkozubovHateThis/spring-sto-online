@@ -23,7 +23,7 @@ import localeRu from '@angular/common/locales/ru';
 import { ErrorInterceptor } from './variables/error.interceptor';
 import {ClientResponseService} from "./api/clientResponse.service";
 import {OrganizationResponseService} from "./api/organizationResponse.service";
-import {ServiceWorkResponseService} from "./api/ServiceWorkResponse.service";
+import {ServiceWorkResponseService} from "./api/serviceWorkResponse.service";
 import {ChatMessageResponseService} from './api/chatMessageResponse.service';
 import {WebSocketService} from './api/webSocket.service';
 import {ClipboardModule} from 'ngx-clipboard';

@@ -74,6 +74,12 @@ export class DocumentResponseService implements TransferService<DocumentResponse
 
   }
 
+  getFirebirdUsers() {
+    const headers = this.userService.getHeaders();
+
+    return this.http.get( `${this.userService.getApiUrl()}secured/users/firebird/findAll`, {headers} );
+  }
+
   getTransferModel() {
     return this.transferModel;
   }

@@ -100,7 +100,6 @@ export class UserService implements TransferService<User>, RestService<User> {
 
   getApiUrl(): string {
     if ( localStorage.getItem('demoDomain') != null && localStorage.getItem('demoDomain') !== null ) {
-      console.warn('DEMO DOMAIN IS ACTIVE');
       return environment.demoUrl;
     }
     else

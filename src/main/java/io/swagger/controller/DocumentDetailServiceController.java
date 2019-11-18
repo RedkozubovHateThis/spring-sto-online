@@ -186,9 +186,9 @@ public class DocumentDetailServiceController {
     }
 
     @PutMapping("/{documentId}/documentOutHeader/{documentOutHeaderId}/state")
-    public ResponseEntity updateDocumentOutHeader(@PathVariable("documentId") Integer documentId,
-                                                  @PathVariable("documentOutHeaderId") Integer documentOutHeaderId,
-                                                  @RequestParam("state") Integer state) {
+    public ResponseEntity updateDocumentOutHeaderState(@PathVariable("documentId") Integer documentId,
+                                                       @PathVariable("documentOutHeaderId") Integer documentOutHeaderId,
+                                                       @RequestParam("state") Integer state) {
 
         User currentUser = userRepository.findCurrentUser();
         if ( currentUser == null ) return ResponseEntity.status(401).build();
@@ -197,6 +197,23 @@ public class DocumentDetailServiceController {
                 !UserHelper.hasRole( currentUser, "ADMIN" )) return ResponseEntity.status(403).build();
 
         documentOutHeaderRepository.updateState( documentOutHeaderId, state );
+
+        return findOne(documentId);
+
+    }
+
+    @PutMapping("/{documentId}/documentOutHeader/{documentOutHeaderId}/user")
+    public ResponseEntity updateDocumentOutHeaderUser(@PathVariable("documentId") Integer documentId,
+                                                      @PathVariable("documentOutHeaderId") Integer documentOutHeaderId,
+                                                      @RequestParam("userId") Integer userId) {
+
+        User currentUser = userRepository.findCurrentUser();
+        if ( currentUser == null ) return ResponseEntity.status(401).build();
+
+        if ( !UserHelper.hasRole( currentUser, "MODERATOR" ) &&
+                !UserHelper.hasRole( currentUser, "ADMIN" )) return ResponseEntity.status(403).build();
+
+        documentOutHeaderRepository.updateUserId( documentOutHeaderId, userId );
 
         return findOne(documentId);
 

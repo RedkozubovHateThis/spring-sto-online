@@ -47,6 +47,26 @@
                       </div>
                     </div>
                   </div>
+                  <div class="row" *ngIf="userService.isModeratorOrAdmin()">
+                    <div class="col-auto col-lg-5 font-weight-bold">
+                      Оформил(-а):
+                    </div>
+                    <div class="col col-lg-7">
+                      <div class="input-group input-group-sm" *ngIf="model != null">
+                        <select class="form-control form-control-sm" [(ngModel)]="model.userId">
+                          <option *ngFor="let user of firebirdUsers" [ngValue]="user.id">
+                            {{ user.shortName }}
+                          </option>
+                        </select>
+                        <div class="input-group-append">
+                          <button class="btn btn-buro-green" type="button" (click)="updateUser(model, model.userId)"
+                                  [disabled]="isUpdating">
+                            <i class="fas fa-check"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                   <ng-template #staticText>
                     <div class="row">
                       <div class="col-lg-12">

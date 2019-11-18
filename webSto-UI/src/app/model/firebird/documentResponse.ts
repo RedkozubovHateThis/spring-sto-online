@@ -17,6 +17,8 @@ export class DocumentResponse {
   client: string;
   vehicle: VehicleResponse;
   sum: number;
+  userId: number;
+  userFio: string;
   reason:string;
   organization:string;
   serviceWork: ServiceWorkTotalResponse;

@@ -31,6 +31,17 @@ export class ServiceWorkResponseService {
     } );
   }
 
+  updateUser(documentId: number, documentOutHeaderId: number, userId: number) {
+    const headers = this.userService.getHeaders();
+
+    return this.http.put( `${this.userService.getApiUrl()}secured/documents/${documentId}/documentOutHeader/${documentOutHeaderId}/user`, null, {
+      headers,
+      params: {
+        userId: userId.toString()
+      }
+    } );
+  }
+
   updateCost(documentId: number, serviceGoodsAddonId: number, cost: number) {
     const headers = this.userService.getHeaders();
 

@@ -18,6 +18,8 @@ public class DocumentResponse {
     private String client;
     private VehicleResponse vehicle;
     private Double sum = 0.0;
+    private Integer userId;
+    private String userFio;
 
     private String reason;
     private String organization;
@@ -47,6 +49,17 @@ public class DocumentResponse {
         stateRus = documentOutHeader.getState() == 4 ? "Оформлен" : documentOutHeader.getState() == 2 ? "Черновик" : "Неизвестно";
         style = documentOutHeader.getState() == 4 ? "success" : documentOutHeader.getState() == 2 ? "warning" : "info";
         endDate = DateHelper.formatDateTime( documentOutHeader.getDateCreate() );
+
+        User user = documentOutHeader.getUser();
+        if ( user != null ) {
+            Employee employee = user.getEmployee();
+
+            if ( employee != null ) {
+                userId = user.getId();
+                userFio = employee.getShortName();
+            }
+
+        }
 
         DocumentOut documentOut = documentOutHeader.getDocumentOut();
         if ( documentOut == null ) return;
