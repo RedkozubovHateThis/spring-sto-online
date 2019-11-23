@@ -1,5 +1,7 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://31.184.221.170:8181/api/',
-  demoUrl: 'http://31.184.221.170:8282/api/'
+  apiUrl: 'https://service.buromotors.ru:8080/api/',
+  demoUrl: 'https://service.buromotors.ru:8080/demo/',
+  wsUrl: 'https://service.buromotors.ru:8080/ws/',
+  wsdUrl: 'https://service.buromotors.ru:8080/wsd/'
 };

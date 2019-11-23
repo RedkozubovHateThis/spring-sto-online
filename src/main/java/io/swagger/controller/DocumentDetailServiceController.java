@@ -194,7 +194,8 @@ public class DocumentDetailServiceController {
         if ( currentUser == null ) return ResponseEntity.status(401).build();
 
         if ( !UserHelper.hasRole( currentUser, "MODERATOR" ) &&
-                !UserHelper.hasRole( currentUser, "ADMIN" )) return ResponseEntity.status(403).build();
+                !UserHelper.hasRole( currentUser, "ADMIN" ) &&
+                !UserHelper.hasRole( currentUser, "SERVICE_LEADER" )) return ResponseEntity.status(403).build();
 
         documentOutHeaderRepository.updateState( documentOutHeaderId, state );
 
@@ -210,8 +211,7 @@ public class DocumentDetailServiceController {
         User currentUser = userRepository.findCurrentUser();
         if ( currentUser == null ) return ResponseEntity.status(401).build();
 
-        if ( !UserHelper.hasRole( currentUser, "MODERATOR" ) &&
-                !UserHelper.hasRole( currentUser, "ADMIN" )) return ResponseEntity.status(403).build();
+        if ( !UserHelper.hasRole( currentUser, "ADMIN" ) ) return ResponseEntity.status(403).build();
 
         documentOutHeaderRepository.updateUserId( documentOutHeaderId, userId );
 

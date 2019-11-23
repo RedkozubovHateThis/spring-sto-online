@@ -106,6 +106,14 @@ export class UserService implements TransferService<User>, RestService<User> {
       return environment.apiUrl;
   }
 
+  getWsUrl(): string {
+    if ( localStorage.getItem('demoDomain') != null && localStorage.getItem('demoDomain') !== null ) {
+      return environment.wsdUrl;
+    }
+    else
+      return environment.wsUrl;
+  }
+
   isAuthenticated(): boolean {
     const isAuthenticated = localStorage.getItem('isAuthenticated') as unknown;
 

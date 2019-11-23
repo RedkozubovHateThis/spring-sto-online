@@ -4,8 +4,10 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://192.168.0.230:8181/api/',
-  demoUrl: 'http://192.168.0.230:8282/api/'
+  apiUrl: 'https://local.buromotors.ru:8080/api/',
+  demoUrl: 'https://local.buromotors.ru:8080/demo/',
+  wsUrl: 'https://local.buromotors.ru:8080/ws/',
+  wsdUrl: 'https://local.buromotors.ru:8080/wsd/'
 };
 
 /*

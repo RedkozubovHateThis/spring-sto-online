@@ -33,7 +33,9 @@ export class WebSocketService {
         console.log(str);
       },
       webSocketFactory() {
-        return new SockJS(`${me.userService.getApiUrl()}secured/ws/?access_token=${JSON.parse(localStorage.getItem('token')).access_token}`);
+        return new SockJS(
+          `${me.userService.getWsUrl()}?access_token=${JSON.parse(localStorage.getItem('token')).access_token}`
+        );
       },
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
