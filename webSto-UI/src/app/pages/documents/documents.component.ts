@@ -36,6 +36,11 @@ export class DocumentsComponent extends Pagination {
     } );
   }
 
+  select(document: DocumentResponse) {
+    // if ( document.state === 4 )
+      this.selected = document;
+  }
+
   private navigate(documentResponse: DocumentResponse) {
     this.documentResponseService.setTransferModel( documentResponse );
     this.router.navigate(['/documents', documentResponse.id]);

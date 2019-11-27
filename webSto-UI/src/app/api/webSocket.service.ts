@@ -29,9 +29,9 @@ export class WebSocketService {
     if ( token == null ) return;
 
     const client = new Client({
-      debug(str) {
-        console.log(str);
-      },
+      // debug(str) {
+      //       //   console.log(str);
+      //       // },
       webSocketFactory() {
         return new SockJS(
           `${me.userService.getWsUrl()}?access_token=${JSON.parse(localStorage.getItem('token')).access_token}`
@@ -49,8 +49,8 @@ export class WebSocketService {
     };
 
     client.onStompError = function(frame) {
-      console.log('Broker reported error: ' + frame.headers.message);
-      console.log('Additional details: ' + frame.body);
+      console.error('Broker reported error: ' + frame.headers.message);
+      console.error('Additional details: ' + frame.body);
     };
 
     client.activate();

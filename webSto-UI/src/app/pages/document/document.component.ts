@@ -106,7 +106,7 @@ export class DocumentComponent extends ModelTransfer<DocumentResponse, number> i
           this.toastrService.success('Статус заказ-наряда успешно изменен');
       }, () => {
         this.isUpdating = false;
-        this.toastrService.error('Ошибка изменения статуса заказ-наряда!', 'Внимание!');
+        this.toastrService.error('Ошибка изменения статуса заказ-наряда! Возможно, заказ-наряд открыт в системе АвтоДилер.', 'Внимание!');
       } );
   }
 
@@ -123,7 +123,7 @@ export class DocumentComponent extends ModelTransfer<DocumentResponse, number> i
           this.toastrService.success('Оформитель заказ-наряда успешно изменен(-а)');
       }, () => {
         this.isUpdating = false;
-        this.toastrService.error('Ошибка изменения оформителя заказ-наряда!', 'Внимание!');
+        this.toastrService.error('Ошибка изменения оформителя заказ-наряда! Возможно, заказ-наряд открыт в системе АвтоДилер.', 'Внимание!');
       } );
   }
 }

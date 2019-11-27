@@ -6,6 +6,7 @@ export class ServiceGoodsAddonResponse {
   totalCost: number;
   cost: number;
   goodsCount: number;
+  notes: string;
 
 }
 

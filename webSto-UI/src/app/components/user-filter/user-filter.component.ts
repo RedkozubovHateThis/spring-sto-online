@@ -30,7 +30,6 @@ export class UserFilterComponent implements OnInit {
   ngOnInit(): void { }
 
   emitChange() {
-    console.log(this.filter);
     this.onChange.emit();
   }
 

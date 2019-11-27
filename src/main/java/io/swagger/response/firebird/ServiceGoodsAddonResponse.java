@@ -12,6 +12,7 @@ public class ServiceGoodsAddonResponse {
     private Double totalCost;
     private Double cost;
     private Integer goodsCount;
+    private String notes;
 
     public ServiceGoodsAddonResponse(ServiceGoodsAddon serviceGoodsAddon) {
 
@@ -23,6 +24,7 @@ public class ServiceGoodsAddonResponse {
         cost = serviceGoodsAddon.getCost();
         totalCost = serviceGoodsAddon.getServiceGoodsCost(true);
         goodsCount = serviceGoodsAddon.getGoodsCount();
+        notes = serviceGoodsAddon.getNotes();
 
     }
 

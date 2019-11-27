@@ -52,7 +52,7 @@ import java.util.Date;
                 "INNER JOIN ORGANIZATION AS o ON o.ORGANIZATION_ID = do.ORGANIZATION_ID\n" +
                 "INNER JOIN SERVICE_WORK AS sw ON sw.DOCUMENT_OUT_ID = do.DOCUMENT_OUT_ID\n" +
                 "INNER JOIN EXECUTOR AS e ON e.SERVICE_WORK_ID = sw.SERVICE_WORK_ID\n" +
-                "WHERE o.ORGANIZATION_ID = :organizationId AND dsd.DATE_START BETWEEN :startDate AND :endDate\n" +
+                "WHERE doh.STATE = 4 AND o.ORGANIZATION_ID = :organizationId AND dsd.DATE_START BETWEEN :startDate AND :endDate\n" +
                 "GROUP BY e.SHORTNAME, dsd.DOCUMENT_SERVICE_DETAIL_ID, dsd.DATE_START, e.PERCENT_EXEC_WORK\n" +
                 "ORDER BY e.SHORTNAME, dsd.DOCUMENT_SERVICE_DETAIL_ID, dsd.DATE_START", resultSetMapping = "byExecutors"),
         @NamedNativeQuery(name = "DocumentServiceDetail.findClients", query="SELECT c.CLIENT_ID AS CLIENT_ID, c.SHORTNAME AS FULL_NAME, dsd.DOCUMENT_SERVICE_DETAIL_ID AS DSD_ID, dsd.DATE_START AS DATE_START, \n" +
@@ -64,7 +64,7 @@ import java.util.Date;
                 "INNER JOIN SERVICE_WORK AS sw ON sw.DOCUMENT_OUT_ID = do.DOCUMENT_OUT_ID\n" +
                 "INNER JOIN CLIENT AS c ON c.CLIENT_ID = do.CLIENT_ID\n" +
                 "INNER JOIN EXECUTOR AS e ON e.SERVICE_WORK_ID = sw.SERVICE_WORK_ID\n" +
-                "WHERE o.ORGANIZATION_ID = :organizationId AND dsd.DATE_START BETWEEN :startDate AND :endDate\n" +
+                "WHERE doh.STATE = 4 AND o.ORGANIZATION_ID = :organizationId AND dsd.DATE_START BETWEEN :startDate AND :endDate\n" +
                 "GROUP BY c.CLIENT_ID, c.SHORTNAME, dsd.DOCUMENT_SERVICE_DETAIL_ID, dsd.DATE_START\n" +
                 "ORDER BY c.SHORTNAME, dsd.DOCUMENT_SERVICE_DETAIL_ID, dsd.DATE_START", resultSetMapping = "byClients")
 })
