@@ -12,9 +12,9 @@
               <button class="btn btn-sm btn-buro-green" (click)="location.back()">
                 Назад
               </button>
-              <app-report-button *ngIf="userService.currentUser != null"
+              <app-report-button *ngIf="userService.currentUser != null" [disabled]="model != null && model.state !== 4"
                                  [model]="model" [withPrint]="false"></app-report-button>
-              <app-report-button *ngIf="userService.currentUser != null && model != null && model.state === 4"
+              <app-report-button *ngIf="userService.currentUser != null" [printDisabled]="model != null && model.state !== 4"
                                  [model]="model"></app-report-button>
             </div>
           </div>
@@ -270,7 +270,7 @@
                   <tr>
                     <th scope="col" style="width: 125px;">Код товара</th>
                     <th scope="col">Наименование товара</th>
-                    <th scope="col" style="width: 300px;">Примечание</th>
+<!--                    <th scope="col" style="width: 300px;">Примечание</th>-->
                     <th scope="col" style="width: 175px;" *ngIf="userService.isNotClient()">Стоимость товара</th>
                     <th scope="col" style="text-align: right; width: 175px;">
                       Стоимость товара
@@ -288,9 +288,9 @@
                     <th>
                       {{addon.fullName}}
                     </th>
-                    <th class="wrap-column">
-                      {{addon.notes}}
-                    </th>
+<!--                    <th class="wrap-column">-->
+<!--                      {{addon.notes}}-->
+<!--                    </th>-->
                     <th *ngIf="userService.isNotClient()">
                       <div class="input-group input-group-sm">
                         <input type="number" class="form-control" (keyup.enter)="updateCost(model, addon, addon.cost)"

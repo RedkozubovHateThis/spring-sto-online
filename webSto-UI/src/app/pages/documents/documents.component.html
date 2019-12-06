@@ -39,11 +39,9 @@
             <tr *ngFor="let fbResponse of documentResponseController.all.content, let i = index" [attr.data-index]="i">
               <th scope="row" style="cursor: pointer;" (click)="select(fbResponse)">
                 {{fbResponse.documentNumber}}
-<!--                <ng-container *ngIf="fbResponse.state === 4">-->
                   &nbsp;
                   <i class="far fa-check-circle" *ngIf="selected === fbResponse"></i>
                   <i class="far fa-circle" *ngIf="selected !== fbResponse"></i>
-<!--                </ng-container>-->
               </th>
               <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.startDate}}</th>
               <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.endDate}}</th>
@@ -75,7 +73,10 @@
       </div>
     </div>
     <div class="col-xl-3 mb-5">
-      <app-document-filter (onChange)="applyFilter()" [filter]="documentResponseController.filter" [document]="selected"></app-document-filter>
+      <app-document-filter (onChange)="applyFilter()"
+                           [filter]="documentResponseController.filter"
+                           [document]="selected"
+                           (onOrganizationChange)="documentResponseController.emitOrganizationChange()"></app-document-filter>
     </div>
   </div>
 </div>

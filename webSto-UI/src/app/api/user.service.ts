@@ -252,12 +252,6 @@ export class UserService implements TransferService<User>, RestService<User> {
     return this.http.get( `${this.getApiUrl()}secured/users/${id}`, {headers} );
   }
 
-  getUsersCount(notApprovedOnly: boolean) {
-    const headers = this.getHeaders();
-
-    return this.http.get( `${this.getApiUrl()}secured/users/count?notApprovedOnly=${notApprovedOnly}`, {headers} );
-  }
-
   getOpponents() {
     const headers = this.getHeaders();
 

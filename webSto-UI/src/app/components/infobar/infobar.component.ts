@@ -1,11 +1,15 @@
 import {Component, OnInit, ElementRef, Input} from '@angular/core';
-import {DocumentResponseService} from "../../api/documentResponse.service";
 import {UserService} from '../../api/user.service';
 import {User} from '../../model/postgres/auth/user';
 import {Subscription} from 'rxjs';
 import {StompSubscription} from '@stomp/stompjs';
 import {ChatMessageResponse} from '../../model/postgres/chatMessageResponse';
 import {WebSocketService} from '../../api/webSocket.service';
+import {InfobarService} from '../../api/infobar.service';
+import {ClientInfo} from '../../model/info/clientInfo';
+import {ServiceLeaderInfo} from '../../model/info/serviceLeaderInfo';
+import {ModeratorInfo} from '../../model/info/moderatorInfo';
+import {DocumentResponseController} from '../../controller/document-response.controller';
 
 @Component({
   selector: 'app-infobar',
@@ -14,22 +18,17 @@ import {WebSocketService} from '../../api/webSocket.service';
 })
 export class InfobarComponent implements OnInit {
 
-  constructor(private documentResponseService: DocumentResponseService, private userService: UserService,
-              private webSocketService: WebSocketService) {}
+  constructor(private infobarService: InfobarService, private userService: UserService,
+              private webSocketService: WebSocketService, private documentResponseController: DocumentResponseController) {}
 
-  private documentsCount: number = null;
-  private documentsCountLoading: boolean = false;
-  private documents2Count: number = null;
-  private documents2CountLoading: boolean = false;
-  private documents4Count: number = null;
-  private documents4CountLoading: boolean = false;
-  private usersCount: number = null;
-  private usersCountLoading: boolean = false;
-  private usersNotApprovedCount: number = null;
-  private usersNotApprovedCountLoading: boolean = false;
   private currentUser: User;
   private subscription: StompSubscription;
   private onConnect: Subscription;
+
+  private clientInfo: ClientInfo;
+  private serviceLeaderInfo: ServiceLeaderInfo;
+  private moderatorInfo: ModeratorInfo;
+  private isLoading: boolean = false;
 
   ngOnInit(): void {
 
@@ -44,16 +43,18 @@ export class InfobarComponent implements OnInit {
 
     this.currentUser = this.userService.currentUser;
 
-    this.getDocumentsCount();
-    this.getUsersCount();
-    this.getUsersNotApprovedCount();
-    this.getDocumentsCountByState();
+    this.getData();
 
     this.onConnect = this.webSocketService.clientIsConnected.subscribe( client => {
       this.subscribe();
     } );
 
     this.subscribe();
+
+    if ( this.currentUser.userModerator || this.currentUser.userAdmin )
+      this.documentResponseController.organizationChange.subscribe( () => {
+        this.getModeratorData();
+      } );
   }
 
   subscribe() {
@@ -63,63 +64,49 @@ export class InfobarComponent implements OnInit {
     const me = this;
 
     this.subscription = this.webSocketService.client.subscribe('/topic/counters/' + this.userService.currentUser.id, message => {
-      me.getDocumentsCount();
-      me.getUsersCount();
-      me.getUsersNotApprovedCount();
-      me.getDocumentsCountByState();
+      me.getData();
     });
 
   }
 
-  getDocumentsCount() {
-    this.documentsCountLoading = true;
+  private getData() {
+    if ( this.currentUser == null ) return;
 
-    this.documentResponseService.getDocumentsCount().subscribe( result => {
-      this.documentsCount = result as number;
-      this.documentsCountLoading = false;
+    if ( this.currentUser.userClient )
+      this.getClientData();
+    else if ( this.currentUser.userServiceLeader )
+      this.getServiceLeaderData();
+    else if ( this.currentUser.userModerator || this.currentUser.userAdmin )
+      this.getModeratorData();
+  }
+
+  private getClientData() {
+    this.isLoading = true;
+    this.infobarService.getClientInfo().subscribe( data => {
+      this.clientInfo = data as ClientInfo;
+      this.isLoading = false;
     }, () => {
-      this.documentsCountLoading = false;
+      this.isLoading = false;
     } );
   }
 
-  getDocumentsCountByState() {
-    this.documents2CountLoading = true;
-    this.documents4CountLoading = true;
-
-    this.documentResponseService.getDocumentsCountByState(2).subscribe( result => {
-      this.documents2Count = result as number;
-      this.documents2CountLoading = false;
+  private getServiceLeaderData() {
+    this.isLoading = true;
+    this.infobarService.getServiceLeaderInfo().subscribe( data => {
+      this.serviceLeaderInfo = data as ServiceLeaderInfo;
+      this.isLoading = false;
     }, () => {
-      this.documents2CountLoading = false;
-    } );
-
-    this.documentResponseService.getDocumentsCountByState(4).subscribe( result => {
-      this.documents4Count = result as number;
-      this.documents4CountLoading = false;
-    }, () => {
-      this.documents4CountLoading = false;
+      this.isLoading = false;
     } );
   }
 
-  getUsersCount() {
-    this.usersCountLoading = true;
-
-    this.userService.getUsersCount(false).subscribe( result => {
-      this.usersCount = result as number;
-      this.usersCountLoading = false;
+  private getModeratorData() {
+    this.isLoading = true;
+    this.infobarService.getModeratorInfo( this.documentResponseController.filter.organization ).subscribe( data => {
+      this.moderatorInfo = data as ModeratorInfo;
+      this.isLoading = false;
     }, () => {
-      this.usersCountLoading = false;
-    } );
-  }
-
-  getUsersNotApprovedCount() {
-    this.usersNotApprovedCountLoading = true;
-
-    this.userService.getUsersCount(true).subscribe( result => {
-      this.usersNotApprovedCount = result as number;
-      this.usersNotApprovedCountLoading = false;
-    }, () => {
-      this.usersNotApprovedCountLoading = false;
+      this.isLoading = false;
     } );
   }
 

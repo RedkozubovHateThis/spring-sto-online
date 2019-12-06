@@ -290,6 +290,7 @@ public class SchedulerService {
         user.setAccountLocked(false);
         user.setAccountExpired(false);
         user.setCredentialsExpired(false);
+        user.setIsAutoRegistered(true);
 
         UserRole userRole = userRoleRepository.findByName("CLIENT");
         if ( userRole != null ) user.getRoles().add( userRole );

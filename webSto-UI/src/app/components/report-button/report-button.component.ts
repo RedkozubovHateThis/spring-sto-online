@@ -20,6 +20,10 @@ export class ReportButtonComponent implements OnInit {
   private isDownloading: boolean = false;
   @Input()
   private withPrint: boolean = true;
+  @Input()
+  private disabled: boolean = false;
+  @Input()
+  private printDisabled: boolean = false;
 
   @Input()
   private model: DocumentResponse;

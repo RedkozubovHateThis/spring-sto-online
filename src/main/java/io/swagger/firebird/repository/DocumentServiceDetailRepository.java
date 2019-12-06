@@ -25,6 +25,15 @@ public interface DocumentServiceDetailRepository extends PagingAndSortingReposit
             "INNER JOIN dsd.documentOutHeader AS doh " +
             "INNER JOIN doh.documentOut AS do " +
             "INNER JOIN do.client AS c " +
+            "WHERE c.id = :clientId " +
+            "AND doh.state = :state")
+    List<DocumentServiceDetail> findByClientIdAndState(@Param("clientId") Integer clientId,
+                                                       @Param("state") Integer state);
+
+    @Query("SELECT DISTINCT dsd FROM DocumentServiceDetail AS dsd " +
+            "INNER JOIN dsd.documentOutHeader AS doh " +
+            "INNER JOIN doh.documentOut AS do " +
+            "INNER JOIN do.client AS c " +
             "WHERE dsd.id = :documentId AND c.id = :clientId")
     DocumentServiceDetail findOneByClientId(@Param("documentId") Integer documentId,
                                             @Param("clientId") Integer clientId);
@@ -146,5 +155,13 @@ public interface DocumentServiceDetailRepository extends PagingAndSortingReposit
     @Query("SELECT dsd FROM DocumentServiceDetail AS dsd " +
             "WHERE dsd.id IN ( :documentIds )")
     List<DocumentServiceDetail> findByIds(@Param("documentIds") List<Integer> documentIds);
+
+    @Query(nativeQuery = true, value = "SELECT COUNT(DISTINCT dsd.DOCUMENT_SERVICE_DETAIL_ID) FROM DOCUMENT_SERVICE_DETAIL AS dsd\n" +
+            "INNER JOIN DOCUMENT_OUT_HEADER AS doh ON doh.DOCUMENT_OUT_HEADER_ID = dsd.DOCUMENT_OUT_HEADER_ID\n" +
+            "INNER JOIN DOCUMENT_OUT AS do ON do.DOCUMENT_OUT_ID = doh.DOCUMENT_OUT_HEADER_ID\n" +
+            "INNER JOIN ORGANIZATION AS o ON do.ORGANIZATION_ID = o.ORGANIZATION_ID\n" +
+            "WHERE CAST(dsd.DATE_START AS DATE) BETWEEN '05.10.2019' AND '05.11.2020'\n" +
+            "AND o.ORGANIZATION_ID = :organizationId")
+    Integer countDocumentsByOrganizationIdAndDates(@Param("organizationId") Integer organizationId);
 
 }

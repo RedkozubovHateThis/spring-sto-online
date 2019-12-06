@@ -8,9 +8,9 @@ import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component
 import {LoginComponent} from "./pages/login/login.component";
 import {RegisterComponent} from "./pages/register/register.component";
 
-const routes: Routes =[
-  //{ path: 'login', component: LoginComponent },
-  //{ path: 'register', component: RegisterComponent },
+const routes: Routes = [
+  // { path: 'login', component: LoginComponent },
+  // { path: 'register', component: RegisterComponent },
   // { path : '', component : LoginComponent},
   {
     path: '',
@@ -34,9 +34,6 @@ const routes: Routes =[
         loadChildren: './layouts/auth-layout/auth-layout.module#AuthLayoutModule'
       }
     ]
-  }, {
-    path: '**',
-    redirectTo: 'dashboard'
   }
 ];
 

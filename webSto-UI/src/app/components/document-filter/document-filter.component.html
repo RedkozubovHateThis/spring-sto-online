@@ -8,10 +8,10 @@
         </h3>
       </div>
       <div class="col-auto mb-3">
-        <app-report-button [model]="document" [withPrint]="false"
+        <app-report-button [model]="document" [withPrint]="false" [disabled]="document != null && document.state !== 4"
                            *ngIf="userService.currentUser != null">
         </app-report-button>
-        <app-report-button [model]="document"
+        <app-report-button [model]="document" [printDisabled]="document != null && document.state !== 4"
                            *ngIf="userService.currentUser != null">
         </app-report-button>
         <button class="btn btn-sm btn-buro-green" (click)="resetFilters()" *ngIf="filter.state || filter.organization ||
@@ -35,7 +35,7 @@
 
     <div class="form-group" *ngIf="!userService.isServiceLeader()">
       <label class="form-control-label" for="organization-select">Предприятие</label>
-      <select id="organization-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.organization" (change)="emitChange()">
+      <select id="organization-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.organization" (change)="organizationChange()">
         <option [selected]="null === filter.organization" [ngValue]="null">
           Без фильтра
         </option>

@@ -26,6 +26,8 @@ export class DocumentFilterComponent implements OnInit {
   private document: DocumentResponse;
   @Output()
   private onChange: EventEmitter<any> = new EventEmitter();
+  @Output()
+  private onOrganizationChange: EventEmitter<void> = new EventEmitter();
   private states = [
     {
       name: 'Черновик',
@@ -100,6 +102,11 @@ export class DocumentFilterComponent implements OnInit {
 
   emitChange() {
     this.onChange.emit();
+  }
+
+  organizationChange() {
+    this.onOrganizationChange.emit();
+    this.emitChange();
   }
 
   resetFilters() {

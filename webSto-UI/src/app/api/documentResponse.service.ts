@@ -50,22 +50,6 @@ export class DocumentResponseService implements TransferService<DocumentResponse
 
   }
 
-  getDocumentsCount() {
-
-    const headers = this.userService.getHeaders();
-
-    return this.http.get( `${this.userService.getApiUrl()}secured/documents/count`, {headers} );
-
-  }
-
-  getDocumentsCountByState(state: number) {
-
-    const headers = this.userService.getHeaders();
-
-    return this.http.get( `${this.userService.getApiUrl()}secured/documents/count/state?state=${state}`, {headers} );
-
-  }
-
   getDocumentsByEventMessage() {
 
     const headers = this.userService.getHeaders();
