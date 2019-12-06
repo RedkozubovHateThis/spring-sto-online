@@ -20,7 +20,6 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
 
   private isLoading: boolean = false;
 
-  private vinNumber: string;
   private clientResponse: ClientResponse;
   private organizationResponse: OrganizationResponse;
   private isADLoading: boolean = false;
@@ -73,11 +72,11 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
 
   findClientByVin() {
 
-    if ( this.vinNumber == null || this.vinNumber.length == 0 ) return;
+    if ( this.model.vin == null || this.model.vin.length == 0 ) return;
 
     this.isADLoading = true;
 
-    this.clientResponseService.getOneByVin(this.vinNumber).subscribe( data => {
+    this.clientResponseService.getOneByVin(this.model.vin).subscribe( data => {
       this.clientResponse = data as ClientResponse;
       this.isADLoading = false;
     }, () => {
@@ -104,7 +103,6 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
   linkClient(user: User) {
     if ( this.clientResponse == null ) return;
 
-    this.vinNumber = null;
     user.clientId = this.clientResponse.id;
     this.userService.saveUser( user, 'Автомобиль успешно привязан! Ожидайте подтверждения данных модератором!' );
   }

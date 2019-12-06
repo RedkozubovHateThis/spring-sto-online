@@ -28,22 +28,28 @@
           </div>
           <form [formGroup]="addForm" (ngSubmit)="onSubmit()">
             <div class="form-group">
-              <select id="role-select" class="form-control form-control-sm form-control-alternative" formControlName="selectedRole">
-                <option disabled [value]="null">
-                  Выберите роль
-                </option>
-                <option *ngFor="let role of roles" [value]="role.id">
-                  {{ role.name }}
-                </option>
-              </select>
+              <div class="btn-group btn-group-sm btn-block" role="group">
+                <button type="button" class="btn btn-buro-green" style="width: 100%;" (click)="setSelectedRole('CLIENT')" [ngClass]="{active: 'CLIENT' === selectedRole}">Клиент</button>
+                <button type="button" class="btn btn-buro-green" style="width: 100%;" (click)="setSelectedRole('SERVICE_LEADER')" [ngClass]="{active: 'SERVICE_LEADER' === selectedRole}">Автосервис</button>
+              </div>
             </div>
-            <ng-container *ngIf="addForm.controls.selectedRole.value === 'SERVICE_LEADER'">
+            <ng-container *ngIf="selectedRole === 'SERVICE_LEADER'">
               <div class="form-group">
                 <div class="input-group input-group-alternative">
                   <div class="input-group-prepend">
                     <span class="input-group-text"><i class="fas fa-list"></i></span>
                   </div>
                   <input type="text" formControlName="inn" placeholder="ИНН" name="inn" class="form-control" id="inn">
+                </div>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="selectedRole === 'CLIENT'">
+              <div class="form-group">
+                <div class="input-group input-group-alternative">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fas fa-list"></i></span>
+                  </div>
+                  <input type="text" formControlName="vin" placeholder="VIN-номер" name="inn" class="form-control" id="vin">
                 </div>
               </div>
             </ng-container>

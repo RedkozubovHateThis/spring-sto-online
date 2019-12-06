@@ -78,6 +78,23 @@ public class UserController {
         if ( user.getEmail() != null && user.getEmail().length() == 0 )
             user.setEmail(null);
 
+        if ( userRepository.isUserExistsPhoneNotSelf( user.getPhone(), existingUser.getId() ) )
+            return ResponseEntity.status(400).body("Данный телефон уже указан у другого пользователя!");
+        if ( user.getEmail() != null && user.getEmail().length() > 0 &&
+                userRepository.isUserExistsEmailNotSelf( user.getEmail(), existingUser.getId() ) )
+            return ResponseEntity.status(400).body("Данная почта уже указана у другого пользователя!");
+
+        if ( UserHelper.hasRole( user, "CLIENT" ) ) {
+            if ( user.getVin() != null && user.getVin().length() > 0 &&
+                    userRepository.isUserExistsVinNotSelf( user.getVin(), existingUser.getId() ) )
+                return ResponseEntity.status(400).body("Данный VIN-номер уже указан у другого пользователя!");
+        }
+        if ( UserHelper.hasRole( user, "SERVICE_LEADER" ) ) {
+            if ( user.getInn() != null && user.getInn().length() > 0 &&
+                    userRepository.isUserExistsInnNotSelf( user.getInn(), existingUser.getId() ) )
+                return ResponseEntity.status(400).body("Данный ИНН уже указан у другого пользователя!");
+        }
+
         userService.processPhone(user);
 
         User currentUser = userRepository.findCurrentUser();

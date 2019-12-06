@@ -45,6 +45,7 @@ public class User implements UserDetails, Serializable {
     private String phone;
     private String email;
     private String inn;
+    private String vin;
     private Integer clientId;
     private Integer organizationId;
     private Boolean isApproved;

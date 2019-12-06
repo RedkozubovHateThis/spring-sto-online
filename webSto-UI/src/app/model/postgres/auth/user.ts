@@ -21,6 +21,7 @@ export class User {
   isAutoRegistered: boolean;
   inVacation: boolean;
   inn: string;
+  vin: string;
   replacementModeratorId: number;
   replacementModeratorFio: string;
   partShops: number[];

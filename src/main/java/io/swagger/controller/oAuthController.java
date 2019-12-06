@@ -1,6 +1,8 @@
 package io.swagger.controller;
 
+import io.swagger.firebird.model.Client;
 import io.swagger.firebird.model.Organization;
+import io.swagger.firebird.repository.ClientRepository;
 import io.swagger.firebird.repository.OrganizationRepository;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.model.security.UserRole;
@@ -42,6 +44,9 @@ public class oAuthController {
 
     @Autowired
     private OrganizationRepository organizationRepository;
+
+    @Autowired
+    private ClientRepository clientRepository;
 
     @Autowired
     private UserService userService;
@@ -116,8 +121,22 @@ public class oAuthController {
 
         User userModerator = null;
 
-        if ( roleName.equals("CLIENT") )
+        if ( roleName.equals("CLIENT") ) {
+
+            if ( user.getVin() == null || user.getVin().isEmpty() )
+                return ResponseEntity.status(400).body("VIN-номер не может быть пустым!");
+
+            if ( userRepository.isUserExistsVin( user.getVin() ) )
+                return ResponseEntity.status(400).body("Пользователь с таким VIN-номером уже существует!");
+
+            Client client = clientRepository.findClientByVinNumber( user.getVin() );
+
+            if ( client != null )
+                user.setClientId( client.getId() );
+
             userModerator = userService.setModerator(user);
+        }
+
         else if ( roleName.equals("SERVICE_LEADER") ) {
             if ( user.getInn() == null || user.getInn().isEmpty() )
                 return ResponseEntity.status(400).body("ИНН не может быть пустым!");

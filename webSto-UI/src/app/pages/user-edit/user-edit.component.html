@@ -222,10 +222,10 @@
                 <label class="form-control-label" for="vin-number">VIN - номер</label>
                 <div class="input-group mb-3">
                   <input type="text" id="vin-number" class="form-control" placeholder="VIN - номер" [disabled]="model.isApproved"
-                         [(ngModel)]="vinNumber" name="vinNumber">
+                         [(ngModel)]="model.vin" name="vinNumber">
                   <div class="input-group-append">
                     <button class="btn btn-buro-green" type="button" (click)="findClientByVin()"
-                            [disabled]="model.isApproved || vinNumber == null || vinNumber.length == 0 || isADLoading">
+                            [disabled]="model.isApproved || model.vin == null || model.vin.length == 0 || isADLoading">
                       Найти
                     </button>
                   </div>

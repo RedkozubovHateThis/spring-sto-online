@@ -16,6 +16,7 @@ export class RegisterComponent implements OnInit {
 
   private addForm: FormGroup;
   private isRegistering: boolean = false;
+  private selectedRole = 'CLIENT';
   private roles = [
     { name: 'Клиент', id: 'CLIENT' },
     { name: 'Руководитель сервиса', id: 'SERVICE_LEADER' },
@@ -26,6 +27,7 @@ export class RegisterComponent implements OnInit {
     this.addForm = this.formBuilder.group({
       email: [null],
       inn: [''],
+      vin: [''],
       phone: ['', Validators.required],
       password: ['', Validators.required],
       rePassword: ['', Validators.required],
@@ -37,15 +39,14 @@ export class RegisterComponent implements OnInit {
 
   }
 
+  setSelectedRole(role) {
+    this.selectedRole = role;
+  }
+
   onSubmit() {
     localStorage.removeItem('demoDomain');
 
     if ( this.addForm.invalid ) return;
-
-    if ( this.addForm.controls.selectedRole.value == null ) {
-      this.showError( 'Необходимо выбрать роль!' );
-      return;
-    }
 
     if ( this.addForm.controls.password.value.length < 6 || this.addForm.controls.rePassword.value.length < 6 ) {
       this.showError( 'Пароль не может содержать менее 6 символов!' );
@@ -59,7 +60,7 @@ export class RegisterComponent implements OnInit {
 
     this.isRegistering = true;
 
-    this.userService.createUser(this.addForm.value, this.addForm.controls.selectedRole.value)
+    this.userService.createUser(this.addForm.value, this.selectedRole)
       .subscribe( data => {
         this.isRegistering = false;
         this.toastrService.success('Регистрация успешно завершена!');

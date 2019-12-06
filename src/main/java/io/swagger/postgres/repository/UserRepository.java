@@ -112,6 +112,30 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long>, 
     Boolean isUserExistsInn(@Param("inn") String inn);
 
     @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT u.id FROM users AS u " +
+            "WHERE u.vin = :vin )")
+    Boolean isUserExistsVin(@Param("vin") String vin);
+
+    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT u.id FROM users AS u " +
+            "WHERE u.inn = :inn AND u.id <> :userId )")
+    Boolean isUserExistsInnNotSelf(@Param("inn") String inn,
+                                   @Param("userId") Long userId);
+
+    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT u.id FROM users AS u " +
+            "WHERE u.vin = :vin AND u.id <> :userId )")
+    Boolean isUserExistsVinNotSelf(@Param("vin") String vin,
+                                   @Param("userId") Long userId);
+
+    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT u.id FROM users AS u " +
+            "WHERE u.phone = :phone AND u.id <> :userId )")
+    Boolean isUserExistsPhoneNotSelf(@Param("phone") String phone,
+                              @Param("userId") Long userId);
+
+    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT u.id FROM users AS u " +
+            "WHERE u.email = :email AND u.id <> :userId )")
+    Boolean isUserExistsEmailNotSelf(@Param("email") String email,
+                              @Param("userId") Long userId);
+
+    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT u.id FROM users AS u " +
             "WHERE u.client_id = :clientId )")
     Boolean isUserExistsClientId(@Param("clientId") Integer clientId);
 
