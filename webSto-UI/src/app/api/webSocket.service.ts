@@ -75,10 +75,18 @@ export class WebSocketService {
       const chatMessage = JSON.parse( message.body ) as ChatMessageResponse;
 
       let bubble;
-      if ( chatMessage.uploadFileUuid != null )
-        bubble = me.toastrService.success( chatMessage.uploadFileName, `${chatMessage.fromFio} отправил(а) файл:` );
-      else
-        bubble = me.toastrService.success( chatMessage.messageText, `${chatMessage.fromFio} написал(а):` );
+      if ( chatMessage.chatMessageType === 'TEXT' )
+        bubble = me.toastrService.success( chatMessage.messageText, `${chatMessage.fromFio} написал(-а):` );
+      else if ( chatMessage.chatMessageType === 'FILE' )
+        bubble = me.toastrService.success( chatMessage.uploadFileName, `${chatMessage.fromFio} отправил(-а) файл:` );
+      else if ( chatMessage.chatMessageType === 'DOCUMENT' )
+        bubble = me.toastrService.success( chatMessage.documentNumber, `${chatMessage.fromFio} поделился(-лась) ссылкой на заказ-наряд:` );
+      else if ( chatMessage.chatMessageType === 'SERVICE_WORK' )
+        bubble = me.toastrService.success( chatMessage.serviceWorkName, `${chatMessage.fromFio} поделился(-лась) ссылкой на работы:` );
+      else if ( chatMessage.chatMessageType === 'SERVICE_GOODS_ADDON' )
+        bubble = me.toastrService.success( chatMessage.serviceGoodsAddonName, `${chatMessage.fromFio} поделился(-лась) ссылкой на товар:` );
+      else if ( chatMessage.chatMessageType === 'CLIENT_GOODS_OUT' )
+        bubble = me.toastrService.success( chatMessage.clientGoodsOutName, `${chatMessage.fromFio} поделился(-лась) ссылкой на товар клиента:` );
 
       bubble.onTap.subscribe(() => {
         me.opponentId = chatMessage.fromId;

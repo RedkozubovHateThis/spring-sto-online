@@ -121,7 +121,7 @@
 <!--              </div>-->
 <!--            </div>-->
             <div class="text-center">
-              <button class="btn btn-buro-green mt-4" type="submit" [disabled]="addForm.invalid || isRegistering">Зарегистрироваться
+              <button class="btn btn-buro-green mt-4" type="submit" [disabled]="addForm.invalid || selectedRole == null || isRegistering">Зарегистрироваться
                 <span *ngIf="isRegistering">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
               </button>
             </div>

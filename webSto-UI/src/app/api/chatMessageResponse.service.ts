@@ -25,6 +25,20 @@ export class ChatMessageResponseService {
     }, {headers} );
   }
 
+  saveShareMessage(opponent: OpponentResponse, messageText: string, documentId: number, serviceWorkId: number, serviceGoodsAddonId: number,
+                   clientGoodsOutId: number) {
+    const headers = this.userService.getHeaders();
+
+    return this.http.put( `${this.userService.getApiUrl()}secured/chat/share`, {
+      toUserId: opponent.id,
+      messageText,
+      documentId,
+      serviceWorkId,
+      serviceGoodsAddonId,
+      clientGoodsOutId
+    }, {headers} );
+  }
+
   createGreetMessage() {
     const headers = this.userService.getHeaders();
 

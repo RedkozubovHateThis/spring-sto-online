@@ -258,6 +258,16 @@ export class UserService implements TransferService<User>, RestService<User> {
     return this.http.get( `${this.getApiUrl()}secured/chat/opponents`, {headers} );
   }
 
+  getShareOpponents(documentId: number) {
+    const headers = this.getHeaders();
+
+    const params = {
+      documentId: documentId != null ? documentId.toString() : ''
+    };
+
+    return this.http.get( `${this.getApiUrl()}secured/chat/share/opponents`, {headers, params} );
+  }
+
   getEventMessageFromUsers() {
     const headers = this.getHeaders();
 

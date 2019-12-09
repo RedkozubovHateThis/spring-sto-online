@@ -18,6 +18,8 @@ import {UserFilterComponent} from './user-filter/user-filter.component';
 import {PaginationComponent} from './pagination/pagination.component';
 import {DeleteButtonComponent} from './delete-button/delete-button.component';
 import {LoadingBarComponent} from './loading-bar/loading-bar.component';
+import {LinkPreviewComponent} from './link-preview/link-preview.component';
+import {ShareButtonComponent} from './share-button/share-button.component';
 
 @NgModule({
   imports: [
@@ -41,7 +43,9 @@ import {LoadingBarComponent} from './loading-bar/loading-bar.component';
     UserFilterComponent,
     PaginationComponent,
     DeleteButtonComponent,
-    LoadingBarComponent
+    LoadingBarComponent,
+    LinkPreviewComponent,
+    ShareButtonComponent
   ],
   exports: [
     FooterComponent,
@@ -56,7 +60,9 @@ import {LoadingBarComponent} from './loading-bar/loading-bar.component';
     UserFilterComponent,
     PaginationComponent,
     DeleteButtonComponent,
-    LoadingBarComponent
+    LoadingBarComponent,
+    LinkPreviewComponent,
+    ShareButtonComponent
   ]
 })
 export class ComponentsModule { }

@@ -1,5 +1,6 @@
 package io.swagger.postgres.model;
 
+import io.swagger.postgres.model.enums.ChatMessageType;
 import io.swagger.postgres.model.security.User;
 import lombok.Data;
 import org.hibernate.annotations.NotFound;
@@ -29,5 +30,13 @@ public class ChatMessage {
 
     @OneToOne
     private UploadFile uploadFile;
+
+    @Enumerated(EnumType.STRING)
+    private ChatMessageType chatMessageType;
+
+    private Integer documentId;
+    private Integer serviceWorkId;
+    private Integer serviceGoodsAddonId;
+    private Integer clientGoodsOutId;
 
 }

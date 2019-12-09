@@ -190,14 +190,20 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   updateLastMessage(chatMessage: ChatMessageResponse) {
-    const filtered = this.opponents.filter( opponent => {
+    const filtered = this.opponents.find( opponent => {
       return opponent.id === chatMessage.toId || opponent.id === chatMessage.fromId;
     } );
 
-    if ( filtered.length > 0 ) {
-      filtered[0].lastMessageText = chatMessage.messageText;
-      filtered[0].lastMessageFromId = chatMessage.fromId;
-      filtered[0].uploadFileName = chatMessage.uploadFileName;
+    if ( filtered ) {
+      filtered.lastMessageText = chatMessage.messageText;
+      filtered.lastMessageFromId = chatMessage.fromId;
+      filtered.lastMessageType = chatMessage.chatMessageType;
+      filtered.uploadFileName = chatMessage.uploadFileName;
+
+      filtered.lastMessageDocumentNumber = chatMessage.documentNumber;
+      filtered.lastMessageServiceWorkName = chatMessage.serviceWorkName;
+      filtered.lastMessageServiceGoodsAddonName = chatMessage.serviceGoodsAddonName;
+      filtered.lastMessageClientGoodsOutName = chatMessage.clientGoodsOutName;
     }
     else
       this.findOpponents();
@@ -224,6 +230,11 @@ export class ChatComponent implements OnInit, OnDestroy {
       }
     } );
 
+  }
+
+  isShared(message: ChatMessageResponse): boolean {
+    return message.chatMessageType === 'DOCUMENT' || message.chatMessageType === 'SERVICE_WORK' || message.chatMessageType === 'SERVICE_GOODS_ADDON'
+      || message.chatMessageType === 'CLIENT_GOODS_OUT';
   }
 
 }

@@ -9,6 +9,7 @@
   display: inline-block;
   position: relative;
   cursor: pointer;
+  margin-top: 5px;
 }
 .img-container > .overlay,
 .img-container > .download-overlay {
@@ -18,12 +19,12 @@
   width: 100%;
   height: 100%;
   border-radius: 10px;
-  color: #60B61C;
-  background: rgba(96, 182, 28, 0.1);
+  color: #F79716;
+  background: rgba(247, 151, 22, 0.1);
 }
 .img-container > .overlay {
   display: none;
-  border: 2px solid #60B61C;
+  border: 2px solid rgba(247, 151, 22, 0.25);
 }
 .img-container > .download-overlay,
 .img-container:hover > .overlay {

@@ -31,14 +31,24 @@
                     <ng-template #opponentReply>
                       <span>Собеседник: </span>
                     </ng-template>
-                    <span *ngIf="opponent.uploadFileName == null; else opponentFileName" class="text-muted">
+                    <span *ngIf="opponent.lastMessageType == 'TEXT'" class="text-muted">
                       {{opponent.lastMessageText}}
                     </span>
-                    <ng-template #opponentFileName>
-                      <span class="text-muted">
-                        {{opponent.uploadFileName}}
-                      </span>
-                    </ng-template>
+                    <span *ngIf="opponent.lastMessageType == 'FILE'" class="text-muted">
+                      {{opponent.uploadFileName}}
+                    </span>
+                    <span *ngIf="opponent.lastMessageType == 'DOCUMENT'" class="text-muted">
+                      Документ "{{opponent.lastMessageDocumentNumber}}"
+                    </span>
+                    <span *ngIf="opponent.lastMessageType == 'SERVICE_WORK'" class="text-muted">
+                      Работы "{{opponent.lastMessageServiceWorkName}}"
+                    </span>
+                    <span *ngIf="opponent.lastMessageType == 'SERVICE_GOODS_ADDON'" class="text-muted">
+                      Товар "{{opponent.lastMessageServiceGoodsAddonName}}"
+                    </span>
+                    <span *ngIf="opponent.lastMessageType == 'CLIENT_GOODS_OUT'" class="text-muted">
+                      Товар клиента "{{opponent.lastMessageClientGoodsOutName}}"
+                    </span>
                   </div>
                 </div>
               </div>
@@ -46,7 +56,7 @@
 
             <div class="col-lg-8">
               <div class="chat-block">
-                <div class="chat-messages" id="scrollable">
+                <div class="chat-messages" [ngClass]="{active: selectedOpponent != null}" id="scrollable">
                   <div *ngFor="let message of messages">
                     <div class="message right" [ngClass]="{'right': message.fromId === userService.currentUser.id}">
                       <div class="message-header">
@@ -61,8 +71,13 @@
                         {{message.messageDate | date : 'dd.MM.yy HH:mm'}}
                       </div>
                       <div class="message-body">
-                        {{message.messageText}}
-                        <app-img-preview [message]="message" (onImageLoad)="scrollDown()"></app-img-preview>
+                        <div class="message-text" *ngIf="message.messageText != null && message.messageText.length > 0">
+                          {{message.messageText}}
+                        </div>
+                        <app-img-preview *ngIf="message.chatMessageType === 'FILE'"
+                                         [message]="message"
+                                         (onImageLoad)="scrollDown()"></app-img-preview>
+                        <app-link-preview [message]="message" *ngIf="isShared(message)"></app-link-preview>
                       </div>
                     </div>
                   </div>
@@ -74,7 +89,7 @@
                         </div>
                         <div class="message-body">
                           <div class="progress" style="margin-bottom: 0;">
-                            <div class="progress-bar bg-buro-green" role="progressbar"
+                            <div class="progress-bar bg-buro-orange" role="progressbar"
                                  [ngStyle]="{ 'width': item.progress + '%' }"></div>
                           </div>
                         </div>

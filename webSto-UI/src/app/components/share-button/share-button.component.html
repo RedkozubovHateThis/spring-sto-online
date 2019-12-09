@@ -1,0 +1,56 @@
+<button class="btn btn-sm btn-buro-green" [disabled]="isSharing"
+        [ngbTooltip]="'Поделиться...'" (click)="open(content, null)" *ngIf="!isLink">
+  <span>
+    <i class="fas fa-share"></i>
+    <span *ngIf="isSharing">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+  </span>
+</button>
+<a href="#" style="color: #60B61C;" [ngbTooltip]="'Поделиться...'" (click)="open(content, $event)" *ngIf="isLink">
+  <span>
+    &nbsp;
+    <i class="fas fa-share"></i>
+    <span *ngIf="isSharing">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+  </span>
+</a>
+
+<!-- Modal -->
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">Поделиться ссылкой на заказ-наряд {{document.documentNumber}}</h3>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <label class="form-control-label" for="select-opponent">Пользователь</label>
+      <select  id="select-opponent" class="form-control form-control-sm" [(ngModel)]="selectedOpponent" [disabled]="isSharing">
+        <option *ngFor="let opponent of opponents" [ngValue]="opponent">
+          {{ opponent.fio }}
+        </option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-control-label" for="input-message-text">Комментарий</label>
+      <input type="text" id="input-message-text" class="form-control form-control-alternative"
+             placeholder="Комментарий (не обязательно к заполнению)" [(ngModel)]="messageText" name="messageText">
+    </div>
+
+    <div class="form-group" *ngIf="serviceWork != null">
+      Указаны работы: {{serviceWork.name}}
+    </div>
+    <div class="form-group" *ngIf="serviceGoodsAddon != null">
+      Указан товар: {{serviceGoodsAddon.fullName}}
+    </div>
+    <div class="form-group" *ngIf="clientGoodsOut != null">
+      Указан товар клиента: {{clientGoodsOut.fullName}}
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-buro-green" [disabled]="selectedOpponent == null || isSharing" (click)="share()">
+      Поделиться
+      <span *ngIf="isSharing">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+    </button>
+    <button type="button" class="btn btn-sm btn-buro-green" (click)="modal.dismiss()">Закрыть</button>
+  </div>
+</ng-template>

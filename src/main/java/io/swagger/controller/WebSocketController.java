@@ -1,5 +1,9 @@
 package io.swagger.controller;
 
+import io.swagger.firebird.model.DocumentServiceDetail;
+import io.swagger.firebird.model.GoodsOutClient;
+import io.swagger.firebird.model.ServiceGoodsAddon;
+import io.swagger.firebird.model.ServiceWork;
 import io.swagger.postgres.model.ChatMessage;
 import io.swagger.postgres.model.EventMessage;
 import io.swagger.response.ChatMessageResponse;
@@ -22,6 +26,29 @@ public class WebSocketController {
 
         try {
             ChatMessageResponse chatMessageResponse = new ChatMessageResponse(chatMessage);
+            template.convertAndSend( String.format( "/topic/message/%s", chatMessageResponse.getToId() ), chatMessageResponse );
+        }
+        catch ( IllegalArgumentException iae ) {
+            logger.error( "Chat message sending error: {}", iae.getMessage() );
+        }
+
+    }
+
+    public void sendChatMessage(ChatMessage chatMessage, DocumentServiceDetail document, ServiceWork serviceWork,
+                                ServiceGoodsAddon serviceGoodsAddon, GoodsOutClient goodsOutClient) {
+
+        try {
+
+            ChatMessageResponse chatMessageResponse;
+
+            switch ( chatMessage.getChatMessageType() ) {
+                case DOCUMENT: chatMessageResponse = new ChatMessageResponse( chatMessage, document ); break;
+                case SERVICE_WORK: chatMessageResponse = new ChatMessageResponse( chatMessage, document, serviceWork); break;
+                case SERVICE_GOODS_ADDON: chatMessageResponse = new ChatMessageResponse( chatMessage, document, serviceGoodsAddon); break;
+                case CLIENT_GOODS_OUT: chatMessageResponse = new ChatMessageResponse( chatMessage, document, goodsOutClient); break;
+                default: return;
+            }
+
             template.convertAndSend( String.format( "/topic/message/%s", chatMessageResponse.getToId() ), chatMessageResponse );
         }
         catch ( IllegalArgumentException iae ) {
