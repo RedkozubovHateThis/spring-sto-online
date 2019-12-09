@@ -55,6 +55,7 @@ public class ServerSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/oauth/restore",
                 "/oauth/restore/password",
                 "/oauth/demo/register",
+                "/open/report/compiled",
                 "/webjars/**");
     }
 

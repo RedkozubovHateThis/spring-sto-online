@@ -9,19 +9,23 @@ import { LoginComponent } from '../../pages/login/login.component';
 import { RegisterComponent } from '../../pages/register/register.component';
 import {DemoComponent} from '../../pages/demo/demo.component';
 import {RestoreComponent} from '../../pages/restore/restore.component';
+import {ReportOpenComponent} from '../../pages/report-open/report-open.component';
+import {PdfViewerModule} from 'ng2-pdf-viewer';
 @NgModule({
   imports: [
     CommonModule,
     RouterModule.forChild(AuthLayoutRoutes),
     FormsModule,
     NgbModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    PdfViewerModule
   ],
   declarations: [
     LoginComponent,
     RegisterComponent,
     DemoComponent,
-    RestoreComponent
+    RestoreComponent,
+    ReportOpenComponent
   ]
 })
 export class AuthLayoutModule { }

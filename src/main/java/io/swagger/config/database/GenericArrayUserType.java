@@ -4,6 +4,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
+import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.sql.*;
@@ -50,14 +51,15 @@ public class GenericArrayUserType<T extends Serializable> implements UserType {
 
     @Override
     public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner) throws HibernateException, SQLException {
-        if (rs.wasNull()) {
+        Array array = rs.getArray(names[0]);
+        if (rs.wasNull() && StringUtils.isEmpty(array)) {
             return null;
         }
         if (rs.getArray(names[0]) == null) {
             return new Integer[0];
         }
 
-        Array array = rs.getArray(names[0]);
+//        Array array = rs.getArray(names[0]);
         @SuppressWarnings("unchecked")
         T javaArray = (T) array.getArray();
         return javaArray;

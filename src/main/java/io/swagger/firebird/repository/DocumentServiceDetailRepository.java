@@ -160,7 +160,7 @@ public interface DocumentServiceDetailRepository extends PagingAndSortingReposit
             "INNER JOIN DOCUMENT_OUT_HEADER AS doh ON doh.DOCUMENT_OUT_HEADER_ID = dsd.DOCUMENT_OUT_HEADER_ID\n" +
             "INNER JOIN DOCUMENT_OUT AS do ON do.DOCUMENT_OUT_ID = doh.DOCUMENT_OUT_HEADER_ID\n" +
             "INNER JOIN ORGANIZATION AS o ON do.ORGANIZATION_ID = o.ORGANIZATION_ID\n" +
-            "WHERE CAST(dsd.DATE_START AS DATE) BETWEEN '05.10.2019' AND '05.11.2020'\n" +
+            "WHERE CAST(dsd.DATE_START AS DATE) BETWEEN '01.09.2019' AND '01.10.2020'\n" +
             "AND o.ORGANIZATION_ID = :organizationId")
     Integer countDocumentsByOrganizationIdAndDates(@Param("organizationId") Integer organizationId);
 

@@ -47,6 +47,17 @@ export class UserService implements TransferService<User>, RestService<User> {
     return this.http.post(`${this.getApiUrl()}oauth/restore/password`, restoreData, {headers});
   }
 
+  requestOpenReport(uuid: string) {
+    const headers = {
+      Authorization: 'Basic ' + btoa('spring-security-oauth2-read-write-client:spring-security-oauth2-read-write-client-password1234'),
+      'Content-type': 'application/x-www-form-urlencoded'
+    };
+    const params = {
+      uuid
+    };
+    return this.http.get(`${this.getApiUrl()}open/report/compiled`, {headers, params, responseType: 'blob'});
+  }
+
   logout() {
     localStorage.setItem('isAuthenticated', 'false');
     this.currentUser = null;

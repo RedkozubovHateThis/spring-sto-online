@@ -7,12 +7,16 @@ import io.swagger.firebird.repository.ClientRepository;
 import io.swagger.firebird.repository.ContactRepository;
 import io.swagger.firebird.repository.DocumentServiceDetailRepository;
 import io.swagger.helper.UserHelper;
+import io.swagger.postgres.model.CompiledReport;
 import io.swagger.postgres.model.DocumentUserState;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.model.security.UserRole;
+import io.swagger.postgres.repository.CompiledReportRepository;
 import io.swagger.postgres.repository.DocumentUserStateRepository;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.postgres.repository.UserRoleRepository;
+import io.swagger.response.exception.DataNotFoundException;
+import net.sf.jasperreports.engine.JRException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +25,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Date;
@@ -52,12 +59,21 @@ public class SchedulerService {
     private PasswordGenerationService passwordGenerationService;
     @Autowired
     private PasswordEncoder userPasswordEncoder;
+    @Autowired
+    private ReportService reportService;
+    @Autowired
+    private CompiledReportRepository compiledReportRepository;
 
     @Value("${domain.url}")
     private String domainUrl;
 
     @Value("${domain.demo}")
     private Boolean demoDomain;
+
+    @Value("${compiled.catalog}")
+    private String compiledReportCatalog;
+    @Value("${compiled.withPrint}")
+    private Boolean compiledWithPrint;
 
     @Scheduled(fixedRate = 600000)
 //    @Scheduled(fixedRate = 10000)
@@ -117,21 +133,27 @@ public class SchedulerService {
 
                     if ( !contains( documentUserState.getDocuments(), documentId ) ) {
                         logger.info(" [ SCHEDULER ] Found new document: {}", documentId );
-                        String fio = user.getFio();
-                        String smsText;
-
-                        if ( fio == null ) {
-                            smsText = String.format("По вашему автомобилю добавлен новый заказ-наряд. " +
-                                    "Просмотр доступен по адресу: %s/documents/%s", domainUrl, documentId);
-                        }
-                        else {
-                            smsText = String.format("Уважаемый(-ая) %s, по вашему автомобилю добавлен новый заказ-наряд. " +
-                                    "Просмотр доступен по адресу: %s/documents/%s", fio, domainUrl, documentId);
-                        }
-                        logger.info(" [ SCHEDULER ] Prepared sms text: \"{}\"", smsText );
 
                         if ( user.getPhone() != null && user.getAllowSms() ) {
-                            smsService.sendSmsAsync( user.getPhone(), smsText );
+                            String fio = user.getFio();
+                            String smsText;
+                            String uuid = compileReport( documentId );
+
+                            if ( uuid != null ) {
+
+                                if ( fio == null ) {
+                                    smsText = String.format("По вашему автомобилю добавлен новый заказ-наряд. " +
+                                            "Просмотр доступен по адресу: %s/report/?uuid=%s", domainUrl, uuid);
+                                }
+                                else {
+                                    smsText = String.format("Уважаемый(-ая) %s, по вашему автомобилю добавлен новый заказ-наряд. " +
+                                            "Просмотр доступен по адресу: %s/report/?uuid=%s", fio, domainUrl, uuid);
+                                }
+                                logger.info(" [ SCHEDULER ] Prepared sms text: \"{}\"", smsText );
+
+                                smsService.sendSmsAsync( user.getPhone(), smsText );
+
+                            }
                         }
                         else
                             logger.warn("User nas not phone set!");
@@ -212,13 +234,21 @@ public class SchedulerService {
                         documentUserState.setUser( user );
                         logger.info(" [ SCHEDULER ] User successfully registered: {}", password );
 
-                        String smsText = String.format("По вашему автомобилю добавлен новый заказ-наряд. " +
-                                "Логин для входа в систему: ваш телефон, пароль: %s. " +
-                                "Просмотр доступен по адресу: %s/documents/%s", password, domainUrl, documentId);
-                        logger.info(" [ SCHEDULER ] Prepared sms text: \"{}\"", smsText );
-//
                         if ( user.getPhone() != null && user.getAllowSms() ) {
-                            smsService.sendSmsAsync( user.getPhone(), smsText );
+
+                            String uuid = compileReport( documentId );
+
+                            if ( uuid != null ) {
+
+                                String smsText = String.format("По вашему автомобилю добавлен новый заказ-наряд. " +
+                                        "Логин для входа в систему: ваш телефон, пароль: %s. " +
+                                        "Просмотр доступен по адресу: %s/report/?uuid=%s", password, domainUrl, uuid);
+                                logger.info(" [ SCHEDULER ] Prepared sms text: \"{}\"", smsText );
+
+                                smsService.sendSmsAsync( user.getPhone(), smsText );
+
+                            }
+
                         }
                     }
 
@@ -309,6 +339,37 @@ public class SchedulerService {
         }
 
         return result;
+    }
+
+    private String compileReport(Integer documentId) {
+        try {
+            byte[] reportSource = reportService.getOrderReport( documentId, compiledWithPrint );
+            String uuid = UUID.randomUUID().toString();
+
+            File reportFile = new File( String.format( "%s%s", compiledReportCatalog, uuid ) );
+
+            FileOutputStream fos = new FileOutputStream( reportFile );
+            fos.write( reportSource );
+            fos.flush();
+            fos.close();
+
+            CompiledReport compiledReport = new CompiledReport();
+            compiledReport.setFileName("Заказ-наряд.pdf");
+            compiledReport.setCompileDate( new Date() );
+            compiledReport.setUuid( uuid );
+
+            compiledReportRepository.save( compiledReport );
+
+            return uuid;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JRException e) {
+            e.printStackTrace();
+        } catch (DataNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
 }
