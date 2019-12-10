@@ -30,6 +30,7 @@ public class InfoBarController {
     private final double SUBSCRIPTION_COST = 16000.0;
     private final double BALANCE = 18765.00;
     private final int TOTAL_DOCUMENTS = 80;
+    private final int COMPLETE_DOCUMENTS = 25;
 
     @Autowired
     private UserRepository userRepository;
@@ -72,10 +73,10 @@ public class InfoBarController {
             return ResponseEntity.notFound().build();
 
         Date subscriptionEndDate = new Date( System.currentTimeMillis() + ( 1000L * 60L * 60L * 24L * 30L ) );
-        Integer documentCount = documentsRepository.countDocumentsByOrganizationIdAndDates( currentUser.getOrganizationId() );
+//        Integer documentCount = documentsRepository.countDocumentsByOrganizationIdAndDates( currentUser.getOrganizationId() );
 
         ServiceLeaderInfo serviceLeaderInfo = new ServiceLeaderInfo();
-        serviceLeaderInfo.setDocumentsRemains( TOTAL_DOCUMENTS - documentCount );
+        serviceLeaderInfo.setDocumentsRemains( TOTAL_DOCUMENTS - COMPLETE_DOCUMENTS );
         serviceLeaderInfo.setTotalDocuments( TOTAL_DOCUMENTS );
         serviceLeaderInfo.setSubscribeName( SUBSCRIPTION_NAME );
         serviceLeaderInfo.setSubscribeEndDate( subscriptionEndDate );
@@ -107,8 +108,8 @@ public class InfoBarController {
 
             if ( serviceLeader != null && serviceLeader.getIsApproved() ) {
 
-                Integer documentCount = documentsRepository.countDocumentsByOrganizationIdAndDates( serviceLeader.getOrganizationId() );
-                moderatorInfo.setDocumentsRemainsAll( TOTAL_DOCUMENTS - documentCount );
+//                Integer documentCount = documentsRepository.countDocumentsByOrganizationIdAndDates( serviceLeader.getOrganizationId() );
+                moderatorInfo.setDocumentsRemainsAll( TOTAL_DOCUMENTS - COMPLETE_DOCUMENTS );
                 moderatorInfo.setTotalDocumentsAll( TOTAL_DOCUMENTS );
                 moderatorInfo.setBalanceAll( BALANCE );
                 moderatorInfo.setBalanceValid( BALANCE - SUBSCRIPTION_COST > 0 );
@@ -129,10 +130,10 @@ public class InfoBarController {
                 if ( serviceLeader.getOrganizationId() == null || !serviceLeader.getIsApproved() )
                     continue;
 
-                Integer documentCount = documentsRepository.countDocumentsByOrganizationIdAndDates( serviceLeader.getOrganizationId() );
+//                Integer documentCount = documentsRepository.countDocumentsByOrganizationIdAndDates( serviceLeader.getOrganizationId() );
 
                 totalDocumentsAll += TOTAL_DOCUMENTS;
-                documentsRemainsAll += TOTAL_DOCUMENTS - documentCount;
+                documentsRemainsAll += TOTAL_DOCUMENTS - COMPLETE_DOCUMENTS;
                 balanceAll += BALANCE;
 
             }
