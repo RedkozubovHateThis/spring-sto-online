@@ -1,0 +1,36 @@
+<div class="container-fluid mt--7">
+  <div class="row">
+    <div class="col-xl-12 mb-5 mb-xl-0">
+      <div class="card shadow">
+        <div class="card-header border-0">
+          <app-loading-bar [isLoading]="isLoading"></app-loading-bar>
+          Пополнение баланса
+        </div>
+        <div class="card-body">
+
+          <div>
+
+            <div class="col-lg-4">
+
+              <label class="form-control-label">Сумма, руб.</label>
+              <div class="input-group input-group-sm">
+                <input class="form-control" type="number" min="0" step=".10" (keyup.enter)="sendRequest()"
+                       placeholder="сумма, руб" [(ngModel)]="amount">
+                <div class="input-group-append">
+                  <button class="btn btn-buro-green" [disabled]="amount == null || amount <= 0"
+                          (click)="sendRequest()">Пополнить</button>
+                </div>
+              </div>
+
+            </div>
+            <div class="col-lg-8">
+
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

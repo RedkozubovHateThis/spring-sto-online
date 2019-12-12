@@ -33,6 +33,7 @@ import {DocumentResponseController} from './controller/document-response.control
 import {EventMessageController} from './controller/event-message.controller';
 import {UserController} from './controller/user.controller';
 import {InfobarService} from './api/infobar.service';
+import {PaymentService} from './api/payment.service';
 registerLocaleData(localeRu, 'ru');
 
 @NgModule({
@@ -75,6 +76,7 @@ registerLocaleData(localeRu, 'ru');
     EventMessageController,
     UserController,
     InfobarService,
+    PaymentService,
     {
       provide: HTTP_INTERCEPTORS,
       useFactory: function(userService: UserService, router: Router) {

@@ -11,6 +11,7 @@ import { ChatComponent } from '../../pages/chat/chat.component';
 import {ReportsComponent} from '../../pages/reports/reports.component';
 import {EventMessagesComponent} from '../../pages/event-messages/event-messages.component';
 import {UserAddComponent} from '../../pages/user-add/user-add.component';
+import {BalanceComponent} from '../../pages/balance/balance.component';
 
 export const AdminLayoutRoutes: Routes = [
   { path: 'dashboard',      component: DashboardComponent },
@@ -23,5 +24,6 @@ export const AdminLayoutRoutes: Routes = [
   { path: 'users/:id/edit', component: UserEditComponent },
   { path: 'documents/:id',  component: DocumentComponent },
   { path: 'reports',        component: ReportsComponent },
-  { path: 'event-messages', component: EventMessagesComponent }
+  { path: 'event-messages', component: EventMessagesComponent },
+  { path: 'balance',        component: BalanceComponent }
 ];
