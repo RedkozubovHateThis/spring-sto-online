@@ -154,7 +154,7 @@
                 <div class="col">
                   <h5 class="card-title text-uppercase text-muted mb-0">Продление тарифа возможно</h5>
                 </div>
-                <div class="col-auto" *ngIf="serviceLeaderInfo != null">
+                <div class="col-auto" *ngIf="serviceLeaderInfo != null && serviceLeaderInfo.balanceValid != null">
                   <span class="h4 font-weight-bold mb-0">{{serviceLeaderInfo.balanceValid ? 'Да' : 'Нет'}}</span>
                 </div>
               </div>

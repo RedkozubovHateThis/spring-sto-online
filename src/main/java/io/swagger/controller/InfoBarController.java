@@ -105,12 +105,12 @@ public class InfoBarController {
                 serviceLeaderInfo.setTotalDocuments( subscription.getDocumentsCount() );
                 serviceLeaderInfo.setSubscribeName( subscription.getName() );
                 serviceLeaderInfo.setSubscribeEndDate( subscription.getEndDate() );
-                serviceLeaderInfo.setBalance( currentUser.getBalance() );
-
                 serviceLeaderInfo.setBalanceValid(
                         subscription.getIsRenewable() && currentUser.getBalance() - subscription.getRenewalCost() > 0
                 );
             }
+
+            serviceLeaderInfo.setBalance( currentUser.getBalance() );
 
 //        }
 
@@ -149,13 +149,18 @@ public class InfoBarController {
                                     subscription.getStartDate(), subscription.getEndDate() );
                     moderatorInfo.setDocumentsRemainsAll( subscription.getDocumentsCount() - documentCount );
                     moderatorInfo.setTotalDocumentsAll( subscription.getDocumentsCount() );
-                    moderatorInfo.setBalanceAll( serviceLeader.getBalance() );
                     moderatorInfo.setBalanceValid(
                             subscription.getIsRenewable() && serviceLeader.getBalance() - subscription.getRenewalCost() > 0
                     );
-                    moderatorInfo.setTotalDraftAll( documentsRepository.countByOrganizationIdAndState( serviceLeader.getOrganizationId(), 2 ) );
 
                 }
+                else {
+                    moderatorInfo.setDocumentsRemainsAll( 0 );
+                    moderatorInfo.setTotalDocumentsAll( 0 );
+                }
+
+                moderatorInfo.setTotalDraftAll( documentsRepository.countByOrganizationIdAndState( serviceLeader.getOrganizationId(), 2 ) );
+                moderatorInfo.setBalanceAll( serviceLeader.getBalance() );
 
             }
 
@@ -172,6 +177,8 @@ public class InfoBarController {
                 if ( serviceLeader.getOrganizationId() == null || !serviceLeader.getIsApproved() )
                     continue;
 
+                balanceAll += serviceLeader.getBalance();
+
                 Subscription subscription = serviceLeader.getCurrentSubscription();
 
                 if ( subscription == null )
@@ -183,8 +190,6 @@ public class InfoBarController {
 
                 totalDocumentsAll += subscription.getDocumentsCount();
                 documentsRemainsAll += subscription.getDocumentsCount() - documentCount;
-                balanceAll += serviceLeader.getBalance();
-
             }
 
             moderatorInfo.setDocumentsRemainsAll( documentsRemainsAll );
