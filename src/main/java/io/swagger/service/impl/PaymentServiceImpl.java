@@ -1,10 +1,12 @@
 package io.swagger.service.impl;
 
+import io.swagger.controller.WebSocketController;
 import io.swagger.postgres.model.enums.PaymentState;
 import io.swagger.postgres.model.enums.PaymentType;
 import io.swagger.postgres.model.payment.PaymentRecord;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.PaymentRecordRepository;
+import io.swagger.postgres.repository.UserRepository;
 import io.swagger.response.exception.PaymentException;
 import io.swagger.response.payment.PaymentResponse;
 import io.swagger.response.payment.request.ExtendedResponse;
@@ -33,6 +35,10 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Autowired
     private PaymentRecordRepository paymentRecordRepository;
+    @Autowired
+    private WebSocketController webSocketController;
+    @Autowired
+    private UserRepository userRepository;
 
     @Value("${sb.api.username}")
     private String sbUsername;
@@ -132,9 +138,17 @@ public class PaymentServiceImpl implements PaymentService {
         if ( paymentRecord.isProcessed() )
             throw new PaymentException("Запрос на оплату уже обработан!");
 
-        ExtendedResponse extendedResponse = sendOrderStatusExtendedRequest( orderId );
+        return updateRequestExtended( paymentRecord );
+    }
+
+    @Override
+    public PaymentResponse updateRequestExtended(PaymentRecord paymentRecord) throws PaymentException {
+        ExtendedResponse extendedResponse = sendOrderStatusExtendedRequest( paymentRecord.getOrderId() );
 
         paymentRecord.updateRecord( extendedResponse );
+
+        if ( extendedResponse.getActionCode().equals(0) )
+            updateUserBalance( paymentRecord );
 
         paymentRecordRepository.save( paymentRecord );
 
@@ -167,6 +181,26 @@ public class PaymentServiceImpl implements PaymentService {
         }
         else
             throw new PaymentException("Ошибка обработки запроса на оплату на стороне банка!");
+    }
+
+    private void updateUserBalance(PaymentRecord paymentRecord) throws PaymentException {
+        User paymentUser = paymentRecord.getUser();
+
+        if ( paymentUser == null )
+            throw new PaymentException("Не найден пользователь, совершивший платеж!");
+
+        if ( paymentRecord.getDepositedAmount() == null )
+            throw new PaymentException("Банк не прислал оплаченную сумму!");
+
+        Double oldBalance = paymentUser.getBalance();
+        Double depositedAmount = paymentRecord.getDepositedAmount().doubleValue() / 100.0;
+
+        paymentUser.setBalance( oldBalance + depositedAmount );
+
+        userRepository.save( paymentUser );
+
+        webSocketController.sendCounterRefreshMessage( paymentUser.getId() );
+
     }
 
     private String generateDepositOrderNumber() {

@@ -90,4 +90,8 @@ public class PaymentRecord {
         return !paymentState.equals( PaymentState.CREATED ) && !paymentState.equals( PaymentState.APPROVED );
     }
 
+    public Boolean isNeedsProcessing() {
+        return orderId != null && paymentState.equals( PaymentState.APPROVED );
+    }
+
 }

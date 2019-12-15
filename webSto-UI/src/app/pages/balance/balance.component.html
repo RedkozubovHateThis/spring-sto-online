@@ -1,36 +1,123 @@
 <div class="container-fluid mt--7">
   <div class="row">
-    <div class="col-xl-12 mb-5 mb-xl-0">
+    <div class="col-xl-3 mb-5">
       <div class="card shadow">
-        <div class="card-header border-0">
-          <app-loading-bar [isLoading]="isLoading"></app-loading-bar>
-          Пополнение баланса
+        <div class="card-header">
+          <app-loading-bar [isLoading]="isProcessing"></app-loading-bar>
+          <h3 class="mb-0">
+            Пополнение баланса
+          </h3>
         </div>
         <div class="card-body">
 
-          <div>
-
-            <div class="col-lg-4">
-
+          <div class="row form-group">
+            <div class="col">
               <label class="form-control-label">Сумма, руб.</label>
-              <div class="input-group input-group-sm">
-                <input class="form-control" type="number" min="0" step=".10" (keyup.enter)="sendRequest()"
-                       placeholder="сумма, руб" [(ngModel)]="amount">
-                <div class="input-group-append">
-                  <button class="btn btn-buro-green" [disabled]="amount == null || amount <= 0"
-                          (click)="sendRequest()">Пополнить</button>
-                </div>
+              <input class="form-control form-control-sm form-control-alternative" type="number" min="0" step=".10"
+                     (keyup.enter)="sendRequest()" placeholder="сумма, руб." [(ngModel)]="amount">
+            </div>
+          </div>
+
+          <div class="row justify-content-end">
+            <div class="col-auto">
+              <button class="btn btn-buro-green btn-sm" [disabled]="amount == null || amount <= 0"
+                      (click)="sendRequest()">Пополнить</button>
+            </div>
+          </div>
+
+          <div class="row mt-3" *ngIf="paymentStatus === 'SUCCESS'">
+            <div class="h4 col">
+              <div class="alert alert-success text-center" role="alert">
+                Платеж успешно произведен!
               </div>
-
             </div>
-            <div class="col-lg-8">
+          </div>
 
+          <div class="row mt-3" *ngIf="paymentStatus === 'FAIL'">
+            <div class="h4 col">
+              <div class="alert alert-danger text-center" role="alert">
+                При проведении платежа возникла ошибка!
+              </div>
             </div>
-
           </div>
 
         </div>
       </div>
     </div>
-  </div>
+
+    <div class="col-xl-9 mb-5">
+      <div class="card shadow">
+        <div class="card-header border-0">
+          <app-loading-bar [isLoading]="isLoading"></app-loading-bar>
+          <div class="row">
+
+            <div class="col-sm mb-3">
+              <h3 class="mb-0">
+                Запросы на оплату
+              </h3>
+            </div>
+            <div class="col-auto">
+              <input class="form-control form-control-alternative form-control-sm" id="from-date-picker" [mode]="'day'"
+                     placeholder="выберите дату - от"
+                     (ngModelChange)="setFromDate($event)" [(ngModel)]="fromDate" [dpDayPicker]="datePickerConfig" theme="dp-material" />
+            </div>
+            <div class="col-auto">
+              <input class="form-control form-control-alternative form-control-sm" id="to-date-picker" [mode]="'day'"
+                     placeholder="выберите дату - до"
+                     (ngModelChange)="setToDate($event)" [(ngModel)]="toDate" [dpDayPicker]="datePickerConfig" theme="dp-material" />
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-sm btn-buro-green" (click)="requestData()" [disabled]="isLoading">
+                Обновить
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+          <div class="table-responsive">
+            <table class="table align-items-center table-flush table-hover table-sm">
+              <thead class="thead-light">
+              <tr>
+                <th scope="col">Номер запроса</th>
+                <th scope="col">Тип запроса</th>
+                <th scope="col">Сумма</th>
+                <th scope="col">Дата создания</th>
+                <th scope="col">Дата обработки</th>
+                <th scope="col">Статус</th>
+                <th scope="col">Ошибка</th>
+              </tr>
+              </thead>
+              <tbody *ngIf="paymentResponses != null">
+              <tr *ngFor="let paymentResponse of paymentResponses">
+                <th>
+                  {{paymentResponse.orderNumber}}
+                </th>
+                <th>
+                  {{getTypeRus(paymentResponse.paymentType)}}
+                </th>
+                <th>
+                  {{paymentResponse.amount | number : '.2' : 'ru'}} р.
+                </th>
+                <th>
+                  {{paymentResponse.createDate | date : 'dd.MM.yyyy HH:mm:ss'}}
+                </th>
+                <th>
+                  {{paymentResponse.registerDate | date : 'dd.MM.yyyy HH:mm:ss'}}
+                </th>
+                <th>
+                  {{getStateRus(paymentResponse.paymentState)}}
+                </th>
+                <th>
+                  {{paymentResponse.actionCodeDescription}}
+                </th>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+
+          </div>
+
+        </div>
+      </div>
 </div>

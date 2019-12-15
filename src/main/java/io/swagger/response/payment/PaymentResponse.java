@@ -12,22 +12,30 @@ public class PaymentResponse {
 
     private String orderId;
     private String orderNumber;
-    private Integer amount;
+    private Double amount;
     private PaymentType paymentType;
     private String errorMessage;
     private PaymentState paymentState;
     private Date createDate;
     private Date registerDate;
+    private String actionCodeDescription;
 
     public PaymentResponse(PaymentRecord paymentRecord) {
+
+        if ( paymentRecord.getPaymentState().equals( PaymentState.DEPOSITED ) &&
+                paymentRecord.getDepositedAmount() != null )
+            this.amount = paymentRecord.getDepositedAmount().doubleValue() / 100.0;
+        else
+            this.amount = paymentRecord.getAmount().doubleValue() / 100.0;
+
         this.orderId = paymentRecord.getOrderId();
         this.orderNumber = paymentRecord.getOrderNumber();
-        this.amount = paymentRecord.getAmount();
         this.paymentType = paymentRecord.getPaymentType();
         this.errorMessage = paymentRecord.getErrorMessage();
         this.paymentState = paymentRecord.getPaymentState();
         this.createDate = paymentRecord.getCreateDate();
         this.registerDate = paymentRecord.getRegisterDate();
+        this.actionCodeDescription = paymentRecord.getActionCodeDescription();
     }
 
 }

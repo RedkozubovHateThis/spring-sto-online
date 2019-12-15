@@ -26,4 +26,12 @@ export class PaymentService {
       {}, {headers});
   }
 
+  getAll(fromDate: string, toDate: string): Observable<PaymentResponse[]> {
+    const headers = this.userService.getHeaders();
+
+    return this.http.get<PaymentResponse[]>(
+      `${this.userService.getApiUrl()}secured/payment/findAll?fromDate=${fromDate}&toDate=${toDate}`, {headers}
+    );
+  }
+
 }

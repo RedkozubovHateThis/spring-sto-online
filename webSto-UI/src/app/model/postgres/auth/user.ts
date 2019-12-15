@@ -24,10 +24,12 @@ export class User {
   vin: string;
   replacementModeratorId: number;
   replacementModeratorFio: string;
+  currentSubscriptionId: number;
   partShops: number[];
   allowSms: boolean;
   serviceWorkPrice: number;
   serviceGoodsCost: number;
+  balance: number;
 
   // TODO: подключить js-data-angular и переделать на computed property
   userAdmin: boolean;

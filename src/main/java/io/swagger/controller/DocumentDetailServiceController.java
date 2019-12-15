@@ -199,6 +199,8 @@ public class DocumentDetailServiceController {
 
         documentOutHeaderRepository.updateState( documentOutHeaderId, state );
 
+        webSocketController.sendCounterRefreshMessage( currentUser.getId() );
+
         return findOne(documentId);
 
     }

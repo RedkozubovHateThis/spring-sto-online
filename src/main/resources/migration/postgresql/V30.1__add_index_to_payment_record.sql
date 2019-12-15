@@ -1,0 +1,1 @@
+CREATE INDEX payment_record_user_id_idx ON payment_record (user_id);

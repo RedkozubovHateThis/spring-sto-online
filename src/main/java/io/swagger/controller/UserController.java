@@ -4,8 +4,10 @@ import io.swagger.helper.UserHelper;
 import io.swagger.helper.UserSpecificationBuilder;
 import io.swagger.postgres.model.EventMessage;
 import io.swagger.postgres.model.enums.MessageType;
+import io.swagger.postgres.model.payment.Subscription;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.EventMessageRepository;
+import io.swagger.postgres.repository.SubscriptionRepository;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.response.api.ApiResponse;
 import io.swagger.response.api.EventMessageStatus;
@@ -48,6 +50,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private SubscriptionRepository subscriptionRepository;
 
     @GetMapping("/currentUser")
     public ResponseEntity getCurrentUser() {
@@ -155,12 +160,23 @@ public class UserController {
                 user.setModerator( null );
 
         }
+        Long currentSubscriptionId = user.getCurrentCurrentSubscriptionId();
+        if ( currentSubscriptionId != null ) {
+
+            Subscription origCurrentSubscription = subscriptionRepository.findOne( currentSubscriptionId );
+            if ( origCurrentSubscription != null )
+                user.setCurrentSubscription( origCurrentSubscription );
+            else
+                user.setCurrentSubscription( null );
+
+        }
 
         user.setPassword( existingUser.getPassword() );
         user.setAccountExpired( existingUser.isAccountExpired() );
         user.setAccountLocked( existingUser.isAccountLocked() );
         user.setCredentialsExpired( existingUser.isCredentialsExpired() );
         user.setDocumentUserState( existingUser.getDocumentUserState() );
+        user.setBalance( existingUser.getBalance() );
         userRepository.save( user );
 
         if ( user.getModeratorId() != null )

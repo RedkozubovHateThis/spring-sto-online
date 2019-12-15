@@ -7,5 +7,6 @@ export class PaymentResponse {
   paymentState: string;
   createDate: Date;
   registerDate: Date;
+  actionCodeDescription: string;
 }
 
