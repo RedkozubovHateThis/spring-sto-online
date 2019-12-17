@@ -81,6 +81,11 @@ public class ReportServiceImpl implements ReportService {
         DocumentOut documentOut = documentOutHeader.getDocumentOut();
         if ( documentOut == null ) throw new DataNotFoundException();
 
+        if ( documentOutHeader.getState() != null && documentOutHeader.getState().equals(4) )
+            parameters.put("orderType", "ДОГОВОР");
+        else
+            parameters.put("orderType", "ПРЕДВАРИТЕЛЬНЫЙ");
+
         fillBarCode(parameters, documentOutHeader);
         fillOrganizationParameters(parameters, documentOut);
         fillOrderParameters(parameters, document, documentOutHeader, true, true);
