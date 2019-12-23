@@ -59,6 +59,9 @@ public class ChatController {
         if ( UserHelper.hasRole(currentUser, "CLIENT") )
             return ResponseEntity.status(400).body("У вас нет прав отправлять сообщения!");
 
+        if ( UserHelper.hasRole(currentUser, "SERVICE_LEADER") && currentUser.getIsCurrentSubscriptionEmpty() )
+            return ResponseEntity.status(400).body("У вас нет прав отправлять сообщения!");
+
         if ( payload.getUploadFileId() == null &&
                 ( payload.getMessageText() == null || payload.getMessageText().isEmpty() ) )
             return ResponseEntity.status(400).body("Сообщение не может быть пустым!");
@@ -105,6 +108,9 @@ public class ChatController {
         if ( currentUser == null ) return ResponseEntity.status(401).build();
 
         if ( UserHelper.hasRole(currentUser, "CLIENT") )
+            return ResponseEntity.status(400).body("У вас нет прав отправлять сообщения!");
+
+        if ( UserHelper.hasRole(currentUser, "SERVICE_LEADER") && currentUser.getIsCurrentSubscriptionEmpty() )
             return ResponseEntity.status(400).body("У вас нет прав отправлять сообщения!");
 
         if ( payload.getDocumentId() == null )
@@ -165,6 +171,12 @@ public class ChatController {
 
         User currentUser = userRepository.findCurrentUser();
         if ( currentUser == null ) return ResponseEntity.status(401).build();
+
+        if ( UserHelper.hasRole(currentUser, "CLIENT") )
+            return ResponseEntity.status(404).build();
+
+        if ( UserHelper.hasRole(currentUser, "SERVICE_LEADER") && currentUser.getIsCurrentSubscriptionEmpty() )
+            return ResponseEntity.status(404).build();
 
         List<ChatMessage> chatMessages = chatMessageRepository.findMessagesByUsers( currentUser.getId(), toUserId );
 
@@ -252,7 +264,8 @@ public class ChatController {
         else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
             opponents = userRepository.findAllOpponentsByModerator( currentUser.getId(), currentUser.getId() );
         }
-        else if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) && currentUser.getModeratorId() != null )
+        else if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" )
+                && currentUser.getModeratorId() != null && !currentUser.getIsCurrentSubscriptionEmpty() )
             opponents = userRepository.findAllOpponentsModerators( currentUser.getModeratorId(), currentUser.getId() );
 
         if ( opponents == null ) return ResponseEntity.status(404).build();

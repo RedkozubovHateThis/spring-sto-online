@@ -13,7 +13,6 @@ import io.swagger.firebird.model.DocumentServiceDetail;
 import io.swagger.firebird.repository.DocumentServiceDetailRepository;
 import io.swagger.service.EventMessageService;
 import lombok.Data;
-import org.hibernate.TransactionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -65,7 +64,8 @@ public class DocumentDetailServiceController {
             return ResponseEntity.status(404).build();
 
         else if ( UserHelper.hasRole(currentUser, "SERVICE_LEADER") &&
-                ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ) )
+                ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ||
+                        currentUser.getIsCurrentSubscriptionEmpty() ) )
             return ResponseEntity.status(404).build();
 
         Specification<DocumentServiceDetail> specification;
@@ -126,10 +126,13 @@ public class DocumentDetailServiceController {
 
         if ( UserHelper.hasRole( currentUser, "CLIENT" ) ) {
             if ( currentUser.getClientId() == null || !currentUser.getIsApproved() ) return ResponseEntity.status(403).build();
+
             result = documentsRepository.findOneByClientId( id, currentUser.getClientId() );
         }
         else if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
-            if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ) return ResponseEntity.status(403).build();
+            if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ||
+                    currentUser.getIsCurrentSubscriptionEmpty() ) return ResponseEntity.status(403).build();
+
             result = documentsRepository.findOneByOrganizationId( id, currentUser.getOrganizationId() );
         }
         else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {

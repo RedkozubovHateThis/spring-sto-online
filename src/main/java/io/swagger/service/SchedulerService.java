@@ -74,12 +74,14 @@ public class SchedulerService {
     private String compiledReportCatalog;
     @Value("${compiled.withPrint}")
     private Boolean compiledWithPrint;
+    @Value("${scheduler.disabled}")
+    private Boolean isSchedulerDisabled;
 
     @Scheduled(fixedRate = 600000)
 //    @Scheduled(fixedRate = 10000)
     public void scheduleFixedRateTask() {
 
-        if ( demoDomain ) return;
+        if ( isSchedulerDisabled ) return;
 
         logger.info(" [ SCHEDULER ] Starting schedule...");
 

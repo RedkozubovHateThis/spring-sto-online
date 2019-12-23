@@ -19,12 +19,17 @@ export class PaymentService {
 
   subscribeToUserLoaded() {
 
-    this.userService.currentUserIsLoaded.subscribe( currentUser => {
+    this.subscription = this.userService.currentUserIsLoaded.subscribe( currentUser => {
 
       if ( currentUser.userServiceLeader ) {
         this.requestCurrentSubscription();
       }
 
+    } );
+
+    this.userService.currentUserIsLoggedOut.subscribe( () => {
+      if ( this.subscription != null )
+        this.subscription.unsubscribe();
     } );
   }
 

@@ -47,7 +47,8 @@
 
     <div class="form-group" *ngIf="userService.isNotClient()">
       <label class="form-control-label" for="client-select">Клиент</label>
-      <select id="client-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.client" (change)="emitChange()">
+      <select id="client-select" class="form-control form-control-sm form-control-alternative"
+              [disabled]="disabled" [(ngModel)]="filter.client" (change)="emitChange()">
         <option [selected]="null === filter.client" [ngValue]="null">
           Без фильтра
         </option>
@@ -60,11 +61,11 @@
     <div class="form-group" *ngIf="userService.isNotClient()">
       <label class="form-control-label" for="client-select-ahead">Клиент (поиск)</label>
       <div class="input-group input-group-sm">
-        <input id="client-select-ahead" type="text" class="form-control form-control-sm"
+        <input id="client-select-ahead" type="text" class="form-control form-control-sm" [disabled]="disabled"
                (selectItem)="setClient($event)" [(ngModel)]="selectedClient" [ngbTypeahead]="search"
                [resultTemplate]="rt" [inputFormatter]="formatter"/>
         <div class="input-group-append">
-          <button class="btn btn-buro-green" type="button" (click)="setClient(null)">
+          <button class="btn btn-buro-green" type="button" (click)="setClient(null)" [disabled]="disabled">
             <i class="fas fa-times"></i>
           </button>
         </div>
@@ -78,9 +79,9 @@
       <label class="form-control-label" for="model-input">Марка/модель автомобиля</label>
       <div class="input-group input-group-sm">
         <input id="model-input" class="form-control" placeholder="Марка/модель автомобиля"
-               [(ngModel)]="filter.vehicle" (keyup.enter)="emitChange()">
+               [disabled]="disabled" [(ngModel)]="filter.vehicle" (keyup.enter)="emitChange()">
         <div class="input-group-append">
-          <button class="btn btn-buro-green" type="button" (click)="emitChange()">
+          <button class="btn btn-buro-green" type="button" (click)="emitChange()" [disabled]="disabled">
             <i class="fas fa-search"></i>
           </button>
         </div>
@@ -91,9 +92,9 @@
       <label class="form-control-label" for="vin-input">Рег. номер</label>
       <div class="input-group input-group-sm">
         <input id="vin-input" class="form-control" placeholder="Рег. номер"
-               [(ngModel)]="filter.vinNumber" (keyup.enter)="emitChange()">
+               [disabled]="disabled" [(ngModel)]="filter.vinNumber" (keyup.enter)="emitChange()">
         <div class="input-group-append">
-          <button class="btn btn-buro-green" type="button" (click)="emitChange()">
+          <button class="btn btn-buro-green" type="button" (click)="emitChange()" [disabled]="disabled">
             <i class="fas fa-search"></i>
           </button>
         </div>
@@ -106,7 +107,7 @@
           <label class="form-control-label" for="from-date-picker">Дата начала ремонта - от</label>
           <div>
             <input class="form-control form-control-alternative form-control-sm" id="from-date-picker" [mode]="'day'"
-                   placeholder="выберите дату - от"
+                   placeholder="выберите дату - от" [disabled]="disabled"
                    (ngModelChange)="setFromDate($event)" [(ngModel)]="fromDate" [dpDayPicker]="datePickerConfig" theme="dp-material" />
           </div>
         </div>
@@ -114,7 +115,7 @@
           <label class="form-control-label" for="to-date-picker">Дата начала ремонта - до</label>
           <div>
             <input class="form-control form-control-alternative form-control-sm" id="to-date-picker" [mode]="'day'"
-                   placeholder="выберите дату - до"
+                   placeholder="выберите дату - до" [disabled]="disabled"
                    (ngModelChange)="setToDate($event)" [(ngModel)]="toDate" [dpDayPicker]="datePickerConfig" theme="dp-material" />
           </div>
         </div>
@@ -137,7 +138,8 @@
 
     <div class="form-group">
       <label class="form-control-label" for="sort-select">Сортировать по:</label>
-      <select id="sort-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.sort" (change)="emitChange()">
+      <select id="sort-select" class="form-control form-control-sm form-control-alternative"
+              [disabled]="disabled" [(ngModel)]="filter.sort" (change)="emitChange()">
         <option [selected]="'dateStart' === filter.sort" [ngValue]="'dateStart'">
           Дата начала
         </option>
@@ -149,7 +151,8 @@
 
     <div class="form-group">
       <label class="form-control-label" for="direction-select">Порядок сортировки:</label>
-      <select id="direction-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.direction" (change)="emitChange()">
+      <select id="direction-select" class="form-control form-control-sm form-control-alternative"
+              [disabled]="disabled" [(ngModel)]="filter.direction" (change)="emitChange()">
         <option [selected]="'asc' === filter.direction" [ngValue]="'asc'">
           По возрастанию
         </option>

@@ -11,10 +11,12 @@
               </h3>
             </div>
             <div class="col-auto">
-              <button class="btn btn-sm btn-buro-green" (click)="requestReportData()" [disabled]="isLoading">
+              <button class="btn btn-sm btn-buro-green" (click)="requestReportData()"
+                      [disabled]="isLoading || userService.isServiceLeaderWithEmptySubscription()">
                 Обновить
               </button>
-              <button class="btn btn-sm btn-buro-green" (click)="requestReportPDF()" [disabled]="isDownloading">
+              <button class="btn btn-sm btn-buro-green" (click)="requestReportPDF()"
+                      [disabled]="isDownloading || userService.isServiceLeaderWithEmptySubscription()">
                 Выгрузить в PDF
               </button>
             </div>
@@ -35,34 +37,45 @@
                   <th class="text-center">ЗП</th>
                 </tr>
               </thead>
-              <tbody>
-              <ng-container *ngFor="let data of reportData">
-                <tr class="font-weight-bold">
-                  <td>{{data.fullName}}</td>
-                  <td class="text-center">{{data.totalByNorm | number:'.2':'ru'}}</td>
-                  <td class="text-center">{{data.totalByPrice | number:'.2':'ru'}}</td>
-                  <td class="text-center">{{data.totalSum | number:'.2':'ru'}}</td>
-                  <td class="text-center">{{data.percent}}%</td>
-                  <td class="text-center">{{data.salary | number:'.2':'ru'}}</td>
+              <ng-container *ngIf="userService.isServiceLeaderWithEmptySubscription(); else executorsBlock">
+                <tbody>
+                <tr>
+                  <th colspan="6" class="text-muted text-center">
+                    Для просмотра отчетов необходимо оформить тариф. Список тарифов доступен в соответсвующем пункте меню.
+                  </th>
                 </tr>
-                <tr *ngFor="let documents of data.executorDocumentResponses, let i = index" [attr.data-index]="i">
-                  <td>&ensp;№ {{i + 1}} от {{documents.documentDate | date : 'dd.MM.yy'}}</td>
-                  <td class="text-center">{{documents.totalByNorm | number:'.2':'ru'}}</td>
-                  <td class="text-center">{{documents.totalByPrice | number:'.2':'ru'}}</td>
-                  <td class="text-center">{{documents.totalSum | number:'.2':'ru'}}</td>
-                  <td class="text-center">{{documents.percent}}%</td>
-                  <td class="text-center">{{documents.salary | number:'.2':'ru'}}</td>
-                </tr>
+                </tbody>
               </ng-container>
-              <tr class="font-weight-bold">
-                <td>ИТОГ</td>
-                <td class="text-center">{{executorsTotalRow.totalByNorm | number:'.2':'ru'}}</td>
-                <td class="text-center">{{executorsTotalRow.totalByPrice | number:'.2':'ru'}}</td>
-                <td class="text-center">{{executorsTotalRow.totalSum | number:'.2':'ru'}}</td>
-                <td></td>
-                <td class="text-center">{{executorsTotalRow.totalSalary | number:'.2':'ru'}}</td>
-              </tr>
-              </tbody>
+              <ng-template #executorsBlock>
+                <tbody>
+                <ng-container *ngFor="let data of reportData">
+                  <tr class="font-weight-bold">
+                    <td>{{data.fullName}}</td>
+                    <td class="text-center">{{data.totalByNorm | number:'.2':'ru'}}</td>
+                    <td class="text-center">{{data.totalByPrice | number:'.2':'ru'}}</td>
+                    <td class="text-center">{{data.totalSum | number:'.2':'ru'}}</td>
+                    <td class="text-center">{{data.percent}}%</td>
+                    <td class="text-center">{{data.salary | number:'.2':'ru'}}</td>
+                  </tr>
+                  <tr *ngFor="let documents of data.executorDocumentResponses, let i = index" [attr.data-index]="i">
+                    <td>&ensp;№ {{i + 1}} от {{documents.documentDate | date : 'dd.MM.yy'}}</td>
+                    <td class="text-center">{{documents.totalByNorm | number:'.2':'ru'}}</td>
+                    <td class="text-center">{{documents.totalByPrice | number:'.2':'ru'}}</td>
+                    <td class="text-center">{{documents.totalSum | number:'.2':'ru'}}</td>
+                    <td class="text-center">{{documents.percent}}%</td>
+                    <td class="text-center">{{documents.salary | number:'.2':'ru'}}</td>
+                  </tr>
+                </ng-container>
+                <tr class="font-weight-bold">
+                  <td>ИТОГ</td>
+                  <td class="text-center">{{executorsTotalRow.totalByNorm | number:'.2':'ru'}}</td>
+                  <td class="text-center">{{executorsTotalRow.totalByPrice | number:'.2':'ru'}}</td>
+                  <td class="text-center">{{executorsTotalRow.totalSum | number:'.2':'ru'}}</td>
+                  <td></td>
+                  <td class="text-center">{{executorsTotalRow.totalSalary | number:'.2':'ru'}}</td>
+                </tr>
+                </tbody>
+              </ng-template>
             </table>
           </ng-container>
 
@@ -74,22 +87,33 @@
                 <th class="text-center">Сумма / Итого</th>
               </tr>
               </thead>
-              <tbody>
-              <ng-container *ngFor="let data of reportData">
-                <tr class="font-weight-bold">
-                  <td>{{data.fullName}}</td>
-                  <td class="text-center">{{data.total | number:'.2':'ru'}}</td>
+              <ng-container *ngIf="userService.isServiceLeaderWithEmptySubscription(); else clientsBlock">
+                <tbody>
+                <tr>
+                  <th colspan="8" class="text-muted text-center">
+                    Для просмотра отчетов необходимо оформить тариф. Список тарифов доступен в соответсвующем пункте меню.
+                  </th>
                 </tr>
-                <tr *ngFor="let documents of data.clientDocumentResponses, let i = index" [attr.data-index]="i">
-                  <td>&ensp;№ {{i + 1}} от {{documents.documentDate | date : 'dd.MM.yy'}}</td>
-                  <td class="text-center">{{documents.total | number:'.2':'ru'}}</td>
-                </tr>
+                </tbody>
               </ng-container>
-              <tr class="font-weight-bold">
-                <td>ИТОГ</td>
-                <td class="text-center">{{clientsTotalRow.total | number:'.2':'ru'}}</td>
-              </tr>
-              </tbody>
+              <ng-template #clientsBlock>
+                <tbody>
+                <ng-container *ngFor="let data of reportData">
+                  <tr class="font-weight-bold">
+                    <td>{{data.fullName}}</td>
+                    <td class="text-center">{{data.total | number:'.2':'ru'}}</td>
+                  </tr>
+                  <tr *ngFor="let documents of data.clientDocumentResponses, let i = index" [attr.data-index]="i">
+                    <td>&ensp;№ {{i + 1}} от {{documents.documentDate | date : 'dd.MM.yy'}}</td>
+                    <td class="text-center">{{documents.total | number:'.2':'ru'}}</td>
+                  </tr>
+                </ng-container>
+                <tr class="font-weight-bold">
+                  <td>ИТОГ</td>
+                  <td class="text-center">{{clientsTotalRow.total | number:'.2':'ru'}}</td>
+                </tr>
+                </tbody>
+              </ng-template>
             </table>
           </ng-container>
 
@@ -104,7 +128,9 @@
 
           <div class="form-group">
             <label class="form-control-label" for="state-select">Тип отчета</label>
-            <select id="state-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="reportType" (change)="requestReportData()">
+            <select id="state-select" class="form-control form-control-sm form-control-alternative"
+                    [disabled]="userService.isServiceLeaderWithEmptySubscription()"
+                    [(ngModel)]="reportType" (change)="requestReportData()">
               <option [selected]="reportType === 'executors'" [ngValue]="'executors'">
                 Выручка по слесарям
               </option>
@@ -116,7 +142,9 @@
 
           <div class="form-group" *ngIf="!userService.isServiceLeader()">
             <label class="form-control-label" for="organization-select">Предприятие</label>
-            <select id="organization-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="organizationId" (change)="requestReportData()">
+            <select id="organization-select" class="form-control form-control-sm form-control-alternative"
+                    [disabled]="userService.isServiceLeaderWithEmptySubscription()"
+                    [(ngModel)]="organizationId" (change)="requestReportData()">
               <option [selected]="true" disabled [ngValue]="null">
                 Выберите организацию
               </option>
@@ -128,7 +156,9 @@
 
           <div class="form-group">
             <label class="form-control-label" for="month-select">Месяц</label>
-            <select id="month-select" class="form-control form-control-sm form-control-alternative" (change)="requestReportData()" [(ngModel)]="selectedMonth">
+            <select id="month-select" class="form-control form-control-sm form-control-alternative"
+                    [disabled]="userService.isServiceLeaderWithEmptySubscription()"
+                    (change)="requestReportData()" [(ngModel)]="selectedMonth">
               <option [selected]="month.id === selectedMonth" *ngFor="let month of months" [ngValue]="month.id">
                 {{month.name}}
               </option>
@@ -139,9 +169,11 @@
             <label class="form-control-label" for="input-year">Год</label>
             <div class="input-group input-group-sm">
               <input type="number" id="input-year" class="form-control" placeholder="Введите год..."
+                     [disabled]="userService.isServiceLeaderWithEmptySubscription()"
                      [(ngModel)]="selectedYear" (keyup.enter)="requestReportData()">
               <div class="input-group-append">
-                <button class="btn btn-buro-green" type="button" (click)="requestReportData()">
+                <button class="btn btn-buro-green" type="button"
+                        [disabled]="userService.isServiceLeaderWithEmptySubscription()" (click)="requestReportData()">
                   <i class="fas fa-search"></i>
                 </button>
               </div>

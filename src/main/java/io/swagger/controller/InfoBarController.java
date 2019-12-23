@@ -80,20 +80,19 @@ public class InfoBarController {
 
         ServiceLeaderInfo serviceLeaderInfo = new ServiceLeaderInfo();
 
-        //TODO: перед продакшеном раскоммитить
-//        if ( demoDomain ) {
-//            Date subscriptionEndDate = new Date( System.currentTimeMillis() + ( 1000L * 60L * 60L * 24L * 30L ) );
-//
-//            serviceLeaderInfo.setDocumentsRemains( TOTAL_DOCUMENTS - COMPLETE_DOCUMENTS );
-//            serviceLeaderInfo.setTotalDocuments( TOTAL_DOCUMENTS );
-//            serviceLeaderInfo.setSubscribeName( SUBSCRIPTION_NAME );
-//
-//            serviceLeaderInfo.setSubscribeEndDate( subscriptionEndDate );
-//
-//            serviceLeaderInfo.setBalance( BALANCE );
-//            serviceLeaderInfo.setBalanceValid( true );
-//        }
-//        else {
+        if ( demoDomain ) {
+            Date subscriptionEndDate = new Date( System.currentTimeMillis() + ( 1000L * 60L * 60L * 24L * 30L ) );
+
+            serviceLeaderInfo.setDocumentsRemains( TOTAL_DOCUMENTS - COMPLETE_DOCUMENTS );
+            serviceLeaderInfo.setTotalDocuments( TOTAL_DOCUMENTS );
+            serviceLeaderInfo.setSubscribeName( SUBSCRIPTION_NAME );
+
+            serviceLeaderInfo.setSubscribeEndDate( subscriptionEndDate );
+
+            serviceLeaderInfo.setBalance( BALANCE );
+            serviceLeaderInfo.setBalanceValid( true );
+        }
+        else {
 
             Subscription subscription = currentUser.getCurrentSubscription();
 
@@ -123,7 +122,7 @@ public class InfoBarController {
 
             serviceLeaderInfo.setBalance( currentUser.getBalance() );
 
-//        }
+        }
 
         serviceLeaderInfo.setModeratorFio( currentUser.getModeratorFio() );
 

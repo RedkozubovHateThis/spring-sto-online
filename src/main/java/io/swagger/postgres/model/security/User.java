@@ -249,4 +249,12 @@ public class User implements UserDetails, Serializable {
         if ( balance == null ) return 0.0;
         return balance;
     }
+
+    public Boolean getIsCurrentSubscriptionEmpty() {
+        return currentSubscription == null;
+    }
+
+    public Boolean getIsCurrentSubscriptionExpired() {
+        return currentSubscription != null && currentSubscription.getEndDate().before( new Date() );
+    }
 }

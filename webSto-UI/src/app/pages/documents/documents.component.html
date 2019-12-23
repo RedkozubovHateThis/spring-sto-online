@@ -14,7 +14,8 @@
               </h3>
             </div>
             <div class="col-auto">
-              <button class="btn btn-sm btn-buro-green" (click)="requestData()" [disabled]="isLoading">
+              <button class="btn btn-sm btn-buro-green" (click)="requestData()"
+                      [disabled]="isLoading || userService.isServiceLeaderWithEmptySubscription()">
                 Обновить
               </button>
             </div>
@@ -35,27 +36,38 @@
                 <th scope="col">Сумма, руб.</th>
               </tr>
             </thead>
-            <tbody *ngIf="documentResponseController.all != null">
-            <tr *ngFor="let fbResponse of documentResponseController.all.content, let i = index" [attr.data-index]="i">
-              <th scope="row" style="cursor: pointer;" (click)="select(fbResponse)">
-                {{fbResponse.documentNumber}}
+            <ng-container *ngIf="userService.isServiceLeaderWithEmptySubscription(); else documentsBlock">
+              <tbody>
+              <tr>
+                <th colspan="8" class="text-muted text-center">
+                  Для просмотра заказ-нарядов необходимо оформить тариф. Список тарифов доступен в соответсвующем пункте меню.
+                </th>
+              </tr>
+              </tbody>
+            </ng-container>
+            <ng-template #documentsBlock>
+              <tbody *ngIf="documentResponseController.all != null">
+              <tr *ngFor="let fbResponse of documentResponseController.all.content, let i = index" [attr.data-index]="i">
+                <th scope="row" style="cursor: pointer;" (click)="select(fbResponse)">
+                  {{fbResponse.documentNumber}}
                   &nbsp;
                   <i class="far fa-check-circle" *ngIf="selected === fbResponse"></i>
                   <i class="far fa-circle" *ngIf="selected !== fbResponse"></i>
-              </th>
-              <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.startDate}}</th>
-              <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.endDate}}</th>
-              <th style="cursor: pointer;" (click)="navigate(fbResponse)">
+                </th>
+                <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.startDate}}</th>
+                <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.endDate}}</th>
+                <th style="cursor: pointer;" (click)="navigate(fbResponse)">
                   <span class="badge badge-dot">
                     <i class="bg-{{fbResponse.style}}"></i>{{fbResponse.stateRus}}
                   </span>
-              </th>
-              <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.client}}</th>
-              <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.vehicle.name}}</th>
-              <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.vehicle.regNumber}}</th>
-              <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.sum | number:'.2':'ru'}}</th>
-            </tr>
-            </tbody>
+                </th>
+                <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.client}}</th>
+                <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.vehicle.name}}</th>
+                <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.vehicle.regNumber}}</th>
+                <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.sum | number:'.2':'ru'}}</th>
+              </tr>
+              </tbody>
+            </ng-template>
           </table>
         </div>
         <div class="card-footer py-4 table-responsive">
@@ -76,6 +88,7 @@
       <app-document-filter (onChange)="applyFilter()"
                            [filter]="documentResponseController.filter"
                            [document]="selected"
+                           [disabled]="userService.isServiceLeaderWithEmptySubscription()"
                            (onOrganizationChange)="documentResponseController.emitOrganizationChange()"></app-document-filter>
     </div>
   </div>

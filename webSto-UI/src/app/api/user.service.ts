@@ -20,6 +20,8 @@ export class UserService implements TransferService<User>, RestService<User> {
 
   @Output()
   public currentUserIsLoaded: Subject<User> = new Subject<User>();
+  @Output()
+  public currentUserIsLoggedOut: Subject<void> = new Subject<void>();
 
   login(loginPayload) {
     const headers = {
@@ -63,6 +65,7 @@ export class UserService implements TransferService<User>, RestService<User> {
     this.currentUser = null;
     localStorage.setItem( 'token', null );
     localStorage.removeItem( 'demoDomain' );
+    this.currentUserIsLoggedOut.next();
     this.router.navigate(['/login']);
   }
 
@@ -317,6 +320,14 @@ export class UserService implements TransferService<User>, RestService<User> {
 
   isServiceLeader(): boolean {
     return this.currentUser != null && this.currentUser.userServiceLeader;
+  }
+
+  isServiceLeaderWithEmptySubscription(): boolean {
+    return this.currentUser != null && this.currentUser.userServiceLeader && this.currentUser.isCurrentSubscriptionEmpty;
+  }
+
+  isServiceLeaderWithExpiredSubscription(): boolean {
+    return this.currentUser != null && this.currentUser.userServiceLeader && this.currentUser.isCurrentSubscriptionExpired;
   }
 
   isAdmin(): boolean {

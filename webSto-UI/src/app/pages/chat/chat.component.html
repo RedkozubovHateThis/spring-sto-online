@@ -14,11 +14,15 @@
 
             <div class="col-lg-4 mb-3">
               <div class="opponents-list">
+                <div class="opponent disabled text-muted" *ngIf="userService.isServiceLeaderWithEmptySubscription()">
+                  Для возможности переписки в чате необходимо оформить тариф. Список тарифов доступен в соответсвующем пункте меню.
+                </div>
                 <div class="opponent" *ngFor="let opponent of opponents"
                      [ngClass]="{
                      'active': selectedOpponent != null && selectedOpponent.id === opponent.id,
                      'delimeter': opponents.indexOf(opponent) < opponents.length - 1,
-                     'text-muted': opponent.inVacation
+                     'text-muted': opponent.inVacation || userService.isServiceLeaderWithEmptySubscription(),
+                     'disabled': userService.isServiceLeaderWithEmptySubscription()
                      }"
                      (click)="selectOpponent(opponent)">
                   {{opponent.fio}}

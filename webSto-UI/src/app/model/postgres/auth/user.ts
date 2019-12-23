@@ -30,6 +30,8 @@ export class User {
   serviceWorkPrice: number;
   serviceGoodsCost: number;
   balance: number;
+  isCurrentSubscriptionExpired: boolean;
+  isCurrentSubscriptionEmpty: boolean;
 
   // TODO: подключить js-data-angular и переделать на computed property
   userAdmin: boolean;

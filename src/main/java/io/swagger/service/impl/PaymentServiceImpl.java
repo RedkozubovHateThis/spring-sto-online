@@ -193,7 +193,7 @@ public class PaymentServiceImpl implements PaymentService {
         subscriptionRepository.save( subscription );
         user.setCurrentSubscription( subscription );
 
-        generatePaymentRecord( subscriptionType, user, subscription, now );
+        generatePaymentRecord( user, subscription, now );
 
         webSocketController.sendCounterRefreshMessage( user.getId() );
 
@@ -225,10 +225,10 @@ public class PaymentServiceImpl implements PaymentService {
             throw new PaymentException("Текущий тариф не найден/истек!");
     }
 
-    private void generatePaymentRecord(SubscriptionType subscriptionType, User user, Subscription subscription, Date now) throws PaymentException {
+    private void generatePaymentRecord(User user, Subscription subscription, Date now) throws PaymentException {
         PaymentRecord paymentRecord = new PaymentRecord();
         paymentRecord.setPaymentState( PaymentState.DEPOSITED );
-        paymentRecord.setAmount( subscriptionType.getCost().intValue() * 100 );
+        paymentRecord.setAmount( subscription.getType().getCost().intValue() * 100 );
         paymentRecord.setCreateDate( now );
         paymentRecord.setRegisterDate( now );
         paymentRecord.setOrderNumber( generatePurchaseOrderNumber( user ) );

@@ -91,7 +91,8 @@ public class ReportController {
 
         if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
 
-            if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() )
+            if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ||
+                    currentUser.getIsCurrentSubscriptionEmpty() )
                 return ResponseEntity.status(404).build();
 
             responses = reportService.getExecutorResponses(currentUser.getOrganizationId(), startDate, endDate);
@@ -127,7 +128,8 @@ public class ReportController {
 
             if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
 
-                if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() )
+                if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ||
+                        currentUser.getIsCurrentSubscriptionEmpty() )
                     return ResponseEntity.status(404).build();
 
                 response = reportService.getExecutorsReport(currentUser.getOrganizationId(), startDate, endDate);
@@ -169,7 +171,8 @@ public class ReportController {
 
         if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
 
-            if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() )
+            if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ||
+                    currentUser.getIsCurrentSubscriptionEmpty() )
                 return ResponseEntity.status(404).build();
 
             responses = reportService.getClientsResponses(currentUser.getOrganizationId(), startDate, endDate);
@@ -205,7 +208,8 @@ public class ReportController {
 
             if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
 
-                if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() )
+                if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ||
+                        currentUser.getIsCurrentSubscriptionEmpty() )
                     return ResponseEntity.status(404).build();
 
                 response = reportService.getClientsReport(currentUser.getOrganizationId(), startDate, endDate);
