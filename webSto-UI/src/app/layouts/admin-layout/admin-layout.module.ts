@@ -26,6 +26,7 @@ import {EventMessagesComponent} from '../../pages/event-messages/event-messages.
 import {UserAddComponent} from '../../pages/user-add/user-add.component';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import {BalanceComponent} from '../../pages/balance/balance.component';
+import {SubscriptionComponent} from '../../pages/subscription/subscription.component';
 
 @NgModule({
   imports: [
@@ -55,7 +56,8 @@ import {BalanceComponent} from '../../pages/balance/balance.component';
     ReportsComponent,
     EventMessagesComponent,
     UserAddComponent,
-    BalanceComponent
+    BalanceComponent,
+    SubscriptionComponent
   ]
 })
 

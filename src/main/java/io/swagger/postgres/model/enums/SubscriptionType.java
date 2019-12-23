@@ -2,9 +2,9 @@ package io.swagger.postgres.model.enums;
 
 public enum SubscriptionType {
     FREE("Пробный", true, 0.0, 0.0, 5, 15),
-    ECONOMIC("Эконом", false, 7500.0, 250.0, 30, 15),
-    STANDARD("Стандарт", false, 11500.0, 230.0, 50, 15),
-    PROF("Проф", false, 16000.0, 200.0, 80, 15);
+    ECONOMIC("Эконом", false, 7500.0, 250.0, 30, 30),
+    STANDARD("Стандарт", false, 11500.0, 230.0, 50, 30),
+    PROF("Проф", false, 16000.0, 200.0, 80, 30);
 
     private final String name;
     private final Boolean isFree;

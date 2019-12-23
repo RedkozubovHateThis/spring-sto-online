@@ -1,11 +1,15 @@
 package io.swagger.controller;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.helper.UserHelper;
+import io.swagger.postgres.model.enums.SubscriptionType;
 import io.swagger.postgres.model.payment.PaymentRecord;
+import io.swagger.postgres.model.payment.Subscription;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.PaymentRecordRepository;
+import io.swagger.postgres.repository.SubscriptionRepository;
 import io.swagger.postgres.repository.UserRepository;
+import io.swagger.response.payment.SubscriptionResponse;
+import io.swagger.response.payment.SubscriptionTypeResponse;
 import io.swagger.response.api.ApiResponse;
 import io.swagger.response.exception.PaymentException;
 import io.swagger.response.payment.PaymentResponse;
@@ -17,6 +21,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +38,8 @@ public class PaymentController {
     private PaymentRecordRepository paymentRecordRepository;
     @Autowired
     private PaymentService paymentService;
+    @Autowired
+    private SubscriptionRepository subscriptionRepository;
 
     @PutMapping("/registerRequest")
     public ResponseEntity registerRequest(@RequestParam("amount") Integer amount) {
@@ -97,6 +104,116 @@ public class PaymentController {
         } ).collect( Collectors.toList() );
 
         return ResponseEntity.ok( paymentResponses );
+
+    }
+
+    @GetMapping("/subscriptions/findAll")
+    public ResponseEntity findAllSubscriptions() {
+
+        User currentUser = userRepository.findCurrentUser();
+        if ( !UserHelper.hasRole(currentUser, "SERVICE_LEADER") )
+            return ResponseEntity.status(404).build();
+
+        List<SubscriptionTypeResponse> subscriptionTypeResponses = new ArrayList<>();
+
+        for ( SubscriptionType type : SubscriptionType.values() ) {
+            SubscriptionTypeResponse subscriptionTypeResponse = new SubscriptionTypeResponse( type );
+
+            if ( type.getFree() ) {
+                subscriptionTypeResponse.setIsInactive(
+                        subscriptionRepository.isFreeIsFormed( currentUser.getId() )
+                );
+            }
+
+            subscriptionTypeResponses.add( subscriptionTypeResponse );
+        }
+
+        return ResponseEntity.ok(subscriptionTypeResponses);
+
+    }
+
+    @GetMapping("/subscriptions/currentSubscription")
+    public ResponseEntity findCurrentSubscription() {
+
+        User currentUser = userRepository.findCurrentUser();
+        if ( !UserHelper.hasRole(currentUser, "SERVICE_LEADER") )
+            return ResponseEntity.status(404).build();
+
+        Subscription subscription = currentUser.getCurrentSubscription();
+
+        if ( subscription == null )
+            return ResponseEntity.status(404).build();
+
+        if ( subscription.getEndDate().before( new Date() ) ) {
+            //Подписка истекла, оформляем новую
+
+            try {
+
+                SubscriptionType subscriptionType;
+
+                if ( subscription.getRenewalType() != null )
+                    subscriptionType = subscription.getRenewalType();
+                else
+                    subscriptionType = subscription.getType();
+
+                subscription = paymentService.buySubscription( subscriptionType, currentUser );
+
+                return ResponseEntity.ok( new SubscriptionResponse( subscription ) );
+            }
+            catch ( PaymentException pe ) {
+                logger.warn( "Got payment exception during buying: {}", pe.getMessage() );
+            }
+            catch ( Exception e ) {
+                logger.error( "Got exception during buying: {}", e.getMessage() );
+                e.printStackTrace();
+            }
+        }
+
+        return ResponseEntity.ok( new SubscriptionResponse( subscription ) );
+
+    }
+
+    @PutMapping("/subscriptions/buy")
+    public ResponseEntity buySubscription(@RequestParam("subscriptionType") SubscriptionType subscriptionType) {
+
+        User currentUser = userRepository.findCurrentUser();
+        if ( !UserHelper.hasRole(currentUser, "SERVICE_LEADER") )
+            return ResponseEntity.status(404).build();
+
+        try {
+            Subscription subscription = paymentService.buySubscription( subscriptionType, currentUser );
+
+            return ResponseEntity.ok( new SubscriptionResponse( subscription ) );
+        }
+        catch ( PaymentException pe ) {
+            return ResponseEntity.status(500).body( new ApiResponse( pe.getMessage() ) );
+        }
+        catch ( Exception e ) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body( new ApiResponse("Ошибка оформления тарифа! Попробуйте повторить покупку позже.") );
+        }
+
+    }
+
+    @PutMapping("/subscriptions/updateRenewal")
+    public ResponseEntity updateRenewalSubscription(@RequestParam("subscriptionType") SubscriptionType subscriptionType) {
+
+        User currentUser = userRepository.findCurrentUser();
+        if ( !UserHelper.hasRole(currentUser, "SERVICE_LEADER") )
+            return ResponseEntity.status(404).build();
+
+        try {
+            paymentService.updateRenewalSubscription( subscriptionType, currentUser );
+
+            return ResponseEntity.ok().build();
+        }
+        catch ( PaymentException pe ) {
+            return ResponseEntity.status(500).body( new ApiResponse( pe.getMessage() ) );
+        }
+        catch ( Exception e ) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body( new ApiResponse("Ошибка продления тарифа! Попробуйте повторить позже.") );
+        }
 
     }
 }

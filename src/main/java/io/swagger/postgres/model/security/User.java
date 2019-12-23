@@ -101,8 +101,8 @@ public class User implements UserDetails, Serializable {
     private Subscription currentSubscription;
     @JsonIgnore
     @OrderBy("startDate desc")
-    @OneToMany(mappedBy = "asPreviousUser")
-    private Set<Subscription> previousSubscriptions = new HashSet<>();
+    @OneToMany(mappedBy = "user")
+    private Set<Subscription> allSubscriptions = new HashSet<>();
 
     @Transient
     private Long replacementModeratorId;

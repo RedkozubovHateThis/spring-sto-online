@@ -3,15 +3,17 @@ package io.swagger.service.impl;
 import io.swagger.controller.WebSocketController;
 import io.swagger.postgres.model.enums.PaymentState;
 import io.swagger.postgres.model.enums.PaymentType;
+import io.swagger.postgres.model.enums.SubscriptionType;
 import io.swagger.postgres.model.payment.PaymentRecord;
+import io.swagger.postgres.model.payment.Subscription;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.PaymentRecordRepository;
+import io.swagger.postgres.repository.SubscriptionRepository;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.response.exception.PaymentException;
 import io.swagger.response.payment.PaymentResponse;
 import io.swagger.response.payment.request.ExtendedResponse;
 import io.swagger.response.payment.request.RegisterResponse;
-import io.swagger.response.payment.request.embed.Attribute;
 import io.swagger.service.PaymentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +25,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
+import java.util.GregorianCalendar;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -39,6 +42,8 @@ public class PaymentServiceImpl implements PaymentService {
     private WebSocketController webSocketController;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private SubscriptionRepository subscriptionRepository;
 
     @Value("${sb.api.username}")
     private String sbUsername;
@@ -62,7 +67,7 @@ public class PaymentServiceImpl implements PaymentService {
             paymentRecord.setPaymentState( PaymentState.CREATED );
             paymentRecord.setAmount( amount );
             paymentRecord.setCreateDate( new Date() );
-            paymentRecord.setOrderNumber( generateDepositOrderNumber() );
+            paymentRecord.setOrderNumber( generateDepositOrderNumber( user ) );
             paymentRecord.setUser( user );
             paymentRecord.setPaymentType( PaymentType.DEPOSIT );
 
@@ -155,6 +160,96 @@ public class PaymentServiceImpl implements PaymentService {
         return new PaymentResponse( paymentRecord );
     }
 
+    @Override
+    public Subscription buySubscription(SubscriptionType subscriptionType, User user) throws PaymentException {
+
+        if ( !subscriptionType.getFree() && user.getBalance() < subscriptionType.getCost() )
+            throw new PaymentException("Недостаточно средств для оформления тарифа!");
+
+        Date now = new Date();
+
+        Subscription subscription = new Subscription( subscriptionType );
+
+        Subscription currentSubscription = user.getCurrentSubscription();
+
+        if ( currentSubscription != null && currentSubscription.getEndDate().after( now ) ) {
+            throw new PaymentException("Текущий тариф еще активен!");
+        }
+        else if ( currentSubscription != null && currentSubscription.getEndDate().before( now ) ) {
+            subscription.setStartDate( currentSubscription.getEndDate() );
+            subscription.setEndDate(
+                    generateEndDate(
+                            currentSubscription.getEndDate(), subscriptionType.getDurationDays()
+                    )
+            );
+        }
+        else {
+            subscription.setStartDate( now );
+            subscription.setEndDate( generateEndDate( now, subscriptionType.getDurationDays() ) );
+        }
+
+        subscription.setUser( user );
+
+        subscriptionRepository.save( subscription );
+        user.setCurrentSubscription( subscription );
+
+        generatePaymentRecord( subscriptionType, user, subscription, now );
+
+        webSocketController.sendCounterRefreshMessage( user.getId() );
+
+        return subscription;
+
+    }
+
+    @Override
+    public void updateRenewalSubscription(SubscriptionType subscriptionType, User user) throws PaymentException {
+
+        if ( !subscriptionType.getFree() && user.getBalance() < subscriptionType.getCost() )
+            throw new PaymentException("Недостаточно средств для продления тарифа!");
+
+        Subscription currentSubscription = user.getCurrentSubscription();
+
+        Date now = new Date();
+
+        if ( currentSubscription != null && currentSubscription.getEndDate().after( now ) ) {
+
+            if ( currentSubscription.getRenewalType() != null &&
+                    currentSubscription.getRenewalType().equals( subscriptionType ) )
+                currentSubscription.setRenewalType( null );
+            else
+                currentSubscription.setRenewalType( subscriptionType );
+
+            subscriptionRepository.save( currentSubscription );
+        }
+        else
+            throw new PaymentException("Текущий тариф не найден/истек!");
+    }
+
+    private void generatePaymentRecord(SubscriptionType subscriptionType, User user, Subscription subscription, Date now) throws PaymentException {
+        PaymentRecord paymentRecord = new PaymentRecord();
+        paymentRecord.setPaymentState( PaymentState.DEPOSITED );
+        paymentRecord.setAmount( subscriptionType.getCost().intValue() * 100 );
+        paymentRecord.setCreateDate( now );
+        paymentRecord.setRegisterDate( now );
+        paymentRecord.setOrderNumber( generatePurchaseOrderNumber( user ) );
+        paymentRecord.setUser( user );
+        paymentRecord.setPaymentType( PaymentType.PURCHASE );
+        paymentRecord.setSubscription( subscription );
+
+        paymentRecordRepository.save( paymentRecord );
+
+        updateUserBalance( paymentRecord );
+    }
+
+    private Date generateEndDate(Date startDate, Integer durationDays) {
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.setTime( startDate );
+
+        calendar.add( Calendar.DAY_OF_MONTH, durationDays );
+
+        return calendar.getTime();
+    }
+
     private ExtendedResponse sendOrderStatusExtendedRequest(String orderId) throws PaymentException {
 
         HttpHeaders headers = new HttpHeaders();
@@ -189,13 +284,20 @@ public class PaymentServiceImpl implements PaymentService {
         if ( paymentUser == null )
             throw new PaymentException("Не найден пользователь, совершивший платеж!");
 
-        if ( paymentRecord.getDepositedAmount() == null )
+        if ( paymentRecord.getPaymentType().equals( PaymentType.DEPOSIT ) && paymentRecord.getDepositedAmount() == null )
             throw new PaymentException("Банк не прислал оплаченную сумму!");
 
         Double oldBalance = paymentUser.getBalance();
-        Double depositedAmount = paymentRecord.getDepositedAmount().doubleValue() / 100.0;
 
-        paymentUser.setBalance( oldBalance + depositedAmount );
+        switch ( paymentRecord.getPaymentType() ) {
+            case DEPOSIT:
+                Double depositedAmount = paymentRecord.getDepositedAmount().doubleValue() / 100.0;
+                paymentUser.setBalance( oldBalance + depositedAmount );
+                break;
+            case PURCHASE:
+                Double amount = paymentRecord.getAmount().doubleValue() / 100.0;
+                paymentUser.setBalance( oldBalance - amount );
+        }
 
         userRepository.save( paymentUser );
 
@@ -203,12 +305,16 @@ public class PaymentServiceImpl implements PaymentService {
 
     }
 
-    private String generateDepositOrderNumber() {
-        return "deposit_test_" + ( paymentRecordRepository.count() + 1 );
+    private String generateDepositOrderNumber(User user) {
+        return String.format("D : %s.%s",
+                user.getId(),
+                paymentRecordRepository.countByUserIdAndPaymentType( user.getId(), PaymentType.DEPOSIT.toString() ) + 1);
     }
 
-    private String generatePurchaseOrderNumber() {
-        return "purchase_test_" + ( paymentRecordRepository.count() + 1 );
+    private String generatePurchaseOrderNumber(User user) {
+        return String.format("P : %s.%s",
+                user.getId(),
+                paymentRecordRepository.countByUserIdAndPaymentType( user.getId(), PaymentType.PURCHASE.toString() ) + 1);
     }
 
 }

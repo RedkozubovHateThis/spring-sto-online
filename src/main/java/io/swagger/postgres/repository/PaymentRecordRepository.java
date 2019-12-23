@@ -22,4 +22,9 @@ public interface PaymentRecordRepository extends JpaRepository<PaymentRecord, Lo
                                         @Param("fromDate") Date fromDate,
                                         @Param("toDate") Date toDate);
 
+    @Query(nativeQuery = true, value = "SELECT COUNT( DISTINCT pr.id ) FROM payment_record AS pr WHERE " +
+            "pr.user_id = :userId AND pr.payment_type = :paymentType")
+    Long countByUserIdAndPaymentType(@Param("userId") Long userId,
+                                     @Param("paymentType") String paymentType);
+
 }

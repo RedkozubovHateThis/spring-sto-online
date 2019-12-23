@@ -126,6 +126,10 @@
            *ngIf="userService.isServiceLeader()">
           <i class="fas fa-ruble-sign text-buro-green"></i> Баланс
         </a>
+        <a routerLinkActive="active" [routerLink]="['/subscription']" class="nav-link"
+           *ngIf="userService.isServiceLeader()">
+          <i class="fas fa-book text-buro-green"></i> Тарифы
+        </a>
       </ul>
     </div>
   </div>

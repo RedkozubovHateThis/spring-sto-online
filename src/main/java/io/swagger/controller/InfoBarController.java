@@ -7,6 +7,7 @@ import io.swagger.firebird.repository.ModelDetailRepository;
 import io.swagger.firebird.repository.ModelRepository;
 import io.swagger.firebird.repository.OrganizationRepository;
 import io.swagger.helper.UserHelper;
+import io.swagger.postgres.model.enums.SubscriptionType;
 import io.swagger.postgres.model.payment.Subscription;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.UserRepository;
@@ -79,6 +80,7 @@ public class InfoBarController {
 
         ServiceLeaderInfo serviceLeaderInfo = new ServiceLeaderInfo();
 
+        //TODO: перед продакшеном раскоммитить
 //        if ( demoDomain ) {
 //            Date subscriptionEndDate = new Date( System.currentTimeMillis() + ( 1000L * 60L * 60L * 24L * 30L ) );
 //
@@ -105,9 +107,18 @@ public class InfoBarController {
                 serviceLeaderInfo.setTotalDocuments( subscription.getDocumentsCount() );
                 serviceLeaderInfo.setSubscribeName( subscription.getName() );
                 serviceLeaderInfo.setSubscribeEndDate( subscription.getEndDate() );
-                serviceLeaderInfo.setBalanceValid(
-                        subscription.getIsRenewable() && currentUser.getBalance() - subscription.getRenewalCost() > 0
-                );
+
+                SubscriptionType renewalType = subscription.getRenewalType();
+
+                if ( renewalType == null )
+                    serviceLeaderInfo.setBalanceValid(
+                            subscription.getIsRenewable() && currentUser.getBalance() - subscription.getRenewalCost() > 0
+                    );
+                else
+                    serviceLeaderInfo.setBalanceValid(
+                            currentUser.getBalance() - renewalType.getCost() > 0
+                    );
+
             }
 
             serviceLeaderInfo.setBalance( currentUser.getBalance() );
@@ -149,9 +160,17 @@ public class InfoBarController {
                                     subscription.getStartDate(), subscription.getEndDate() );
                     moderatorInfo.setDocumentsRemainsAll( subscription.getDocumentsCount() - documentCount );
                     moderatorInfo.setTotalDocumentsAll( subscription.getDocumentsCount() );
-                    moderatorInfo.setBalanceValid(
-                            subscription.getIsRenewable() && serviceLeader.getBalance() - subscription.getRenewalCost() > 0
-                    );
+
+                    SubscriptionType renewalType = subscription.getRenewalType();
+
+                    if ( renewalType == null )
+                        moderatorInfo.setBalanceValid(
+                                subscription.getIsRenewable() && serviceLeader.getBalance() - subscription.getRenewalCost() > 0
+                        );
+                    else
+                        moderatorInfo.setBalanceValid(
+                                serviceLeader.getBalance() - renewalType.getCost() > 0
+                        );
 
                 }
                 else {

@@ -1,5 +1,6 @@
 package io.swagger.postgres.model.payment;
 
+import io.swagger.postgres.model.enums.SubscriptionType;
 import io.swagger.postgres.model.security.User;
 import lombok.Data;
 import org.hibernate.annotations.NotFound;
@@ -7,15 +8,24 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @Data
-public class Subscription {
+public class Subscription implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private SubscriptionType type;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private SubscriptionType renewalType;
 
     @Column(nullable = false)
     private String name;
@@ -37,9 +47,24 @@ public class Subscription {
 
     @OneToOne(mappedBy = "currentSubscription")
     @NotFound(action = NotFoundAction.IGNORE)
-    private User user;
+    private User asCurrentUser;
 
     @ManyToOne
     @NotFound(action = NotFoundAction.IGNORE)
-    private User asPreviousUser;
+    private User user;
+
+    @OneToOne(mappedBy = "subscription")
+    @NotFound(action = NotFoundAction.IGNORE)
+    private PaymentRecord paymentRecord;
+
+    public Subscription() {}
+
+    public Subscription(SubscriptionType subscriptionType) {
+        this.name = subscriptionType.getName();
+        this.type = subscriptionType;
+        this.isRenewable = !subscriptionType.getFree();
+        this.renewalCost = subscriptionType.getCost();
+        this.documentCost = subscriptionType.getDocumentCost();
+        this.documentsCount = subscriptionType.getDocumentsCount();
+    }
 }

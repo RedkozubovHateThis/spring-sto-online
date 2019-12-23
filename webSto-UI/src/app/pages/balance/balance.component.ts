@@ -6,7 +6,7 @@ import {PaymentResponse} from '../../model/payment/paymentResponse';
 import * as moment from 'moment';
 
 @Component({
-  selector: 'app-payment',
+  selector: 'app-balance',
   templateUrl: './balance.component.html',
   styleUrls: ['./balance.component.scss']
 })

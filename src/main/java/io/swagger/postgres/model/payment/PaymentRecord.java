@@ -7,6 +7,8 @@ import io.swagger.response.payment.request.ExtendedResponse;
 import io.swagger.response.payment.request.embed.CardAuthInfo;
 import io.swagger.response.payment.request.embed.PaymentAmountInfo;
 import lombok.Data;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -57,6 +59,12 @@ public class PaymentRecord {
     @ManyToOne
     private User user;
 
+    @OneToOne
+    @NotFound(action = NotFoundAction.IGNORE)
+    private Subscription subscription;
+
+    private Integer documentId;
+
     public void updateRecord(ExtendedResponse extendedResponse) {
 
         PaymentAmountInfo paymentAmountInfo = extendedResponse.getPaymentAmountInfo();
@@ -83,15 +91,15 @@ public class PaymentRecord {
     }
 
     public Boolean isPreProcessed() {
-        return orderId != null && !paymentState.equals( PaymentState.CREATED );
+        return paymentType.equals( PaymentType.DEPOSIT ) && orderId != null && !paymentState.equals( PaymentState.CREATED );
     }
 
     public Boolean isProcessed() {
-        return !paymentState.equals( PaymentState.CREATED ) && !paymentState.equals( PaymentState.APPROVED );
+        return paymentType.equals( PaymentType.DEPOSIT ) && !paymentState.equals( PaymentState.CREATED ) && !paymentState.equals( PaymentState.APPROVED );
     }
 
     public Boolean isNeedsProcessing() {
-        return orderId != null && paymentState.equals( PaymentState.APPROVED );
+        return paymentType.equals( PaymentType.DEPOSIT ) && orderId != null && paymentState.equals( PaymentState.APPROVED );
     }
 
 }

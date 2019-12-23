@@ -12,6 +12,7 @@ import {ReportsComponent} from '../../pages/reports/reports.component';
 import {EventMessagesComponent} from '../../pages/event-messages/event-messages.component';
 import {UserAddComponent} from '../../pages/user-add/user-add.component';
 import {BalanceComponent} from '../../pages/balance/balance.component';
+import {SubscriptionComponent} from '../../pages/subscription/subscription.component';
 
 export const AdminLayoutRoutes: Routes = [
   { path: 'dashboard',      component: DashboardComponent },
@@ -25,5 +26,6 @@ export const AdminLayoutRoutes: Routes = [
   { path: 'documents/:id',  component: DocumentComponent },
   { path: 'reports',        component: ReportsComponent },
   { path: 'event-messages', component: EventMessagesComponent },
-  { path: 'balance',        component: BalanceComponent }
+  { path: 'balance',        component: BalanceComponent },
+  { path: 'subscription',   component: SubscriptionComponent }
 ];

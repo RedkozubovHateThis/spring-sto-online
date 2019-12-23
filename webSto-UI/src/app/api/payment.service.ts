@@ -3,13 +3,41 @@ import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import { UserService } from './user.service';
 import {RegisterResponse} from '../model/payment/registerResponse';
 import {environment} from '../../environments/environment';
-import {Observable} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import {PaymentResponse} from '../model/payment/paymentResponse';
+import { SubscriptionTypeResponse } from '../model/payment/subscriptionTypeResponse';
+import {SubscriptionResponse} from '../model/payment/subscriptionResponse';
 
 @Injectable()
 export class PaymentService {
 
+  currentSubscription: SubscriptionResponse;
+  isSubscriptionLoading: boolean = false;
+  private subscription: Subscription;
+
   constructor(private http: HttpClient, private userService: UserService) { }
+
+  subscribeToUserLoaded() {
+
+    this.userService.currentUserIsLoaded.subscribe( currentUser => {
+
+      if ( currentUser.userServiceLeader ) {
+        this.requestCurrentSubscription();
+      }
+
+    } );
+  }
+
+  requestCurrentSubscription() {
+    this.isSubscriptionLoading = true;
+
+    this.getCurrentSubscription().subscribe( subscription => {
+      this.currentSubscription = subscription;
+      this.isSubscriptionLoading = false;
+    }, () => {
+      this.isSubscriptionLoading = false;
+    } );
+  }
 
   sendRegisterRequest(amount: number): Observable<RegisterResponse> {
     const headers = this.userService.getHeaders();
@@ -31,6 +59,44 @@ export class PaymentService {
 
     return this.http.get<PaymentResponse[]>(
       `${this.userService.getApiUrl()}secured/payment/findAll?fromDate=${fromDate}&toDate=${toDate}`, {headers}
+    );
+  }
+
+  getAllSubscriptions(): Observable<SubscriptionTypeResponse[]> {
+    const headers = this.userService.getHeaders();
+
+    return this.http.get<SubscriptionTypeResponse[]>(
+      `${this.userService.getApiUrl()}secured/payment/subscriptions/findAll`, {headers}
+    );
+  }
+
+  getCurrentSubscription(): Observable<SubscriptionResponse> {
+    const headers = this.userService.getHeaders();
+
+    return this.http.get<SubscriptionResponse>(
+      `${this.userService.getApiUrl()}secured/payment/subscriptions/currentSubscription`, {headers}
+    );
+  }
+
+  buySubscription(subscriptionType: string): Observable<SubscriptionResponse> {
+    const headers = this.userService.getHeaders();
+    const params = {
+      subscriptionType
+    };
+
+    return this.http.put<SubscriptionResponse>(
+      `${this.userService.getApiUrl()}secured/payment/subscriptions/buy`, {}, {headers, params}
+    );
+  }
+
+  updateRenewalSubscription(subscriptionType: string): Observable<void> {
+    const headers = this.userService.getHeaders();
+    const params = {
+      subscriptionType
+    };
+
+    return this.http.put<void>(
+      `${this.userService.getApiUrl()}secured/payment/subscriptions/updateRenewal`, {}, {headers, params}
     );
   }
 
