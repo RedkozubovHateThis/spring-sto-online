@@ -14,12 +14,12 @@ export class DocumentResponseService implements TransferService<DocumentResponse
 
   getLast5() {
     return this.getDocumentResponse('dateStart,desc', 0, 5, -5, null, null, null,
-      null, null, null, null);
+      null, null, null, null, 'PAID');
   }
 
   getAll(filter: DocumentsFilter) {
     return this.getDocumentResponse(`${filter.sort},${filter.direction}`, filter.page, filter.size, filter.offset, filter.state, filter.organization,
-      filter.vehicle, filter.client, filter.vinNumber, filter.fromDate, filter.toDate);
+      filter.vehicle, filter.client, filter.vinNumber, filter.fromDate, filter.toDate, null);
   }
 
   getOne(id) {
@@ -29,7 +29,7 @@ export class DocumentResponseService implements TransferService<DocumentResponse
   }
 
   getDocumentResponse(sort: string, page: number, size: number, offset: number, state: number, organization: number, vehicle: string,
-                      client: number, vinNumber: string, fromDate: string, toDate: string) {
+                      client: number, vinNumber: string, fromDate: string, toDate: string, paymentState: string) {
 
     const headers = this.userService.getHeaders();
     const params = {
@@ -44,6 +44,7 @@ export class DocumentResponseService implements TransferService<DocumentResponse
       vinNumber: vinNumber != null ? vinNumber : '',
       fromDate: fromDate != null ? fromDate : '',
       toDate: toDate != null ? toDate : '',
+      paymentState: paymentState != null ? paymentState : ''
     };
 
     return this.http.get( `${this.userService.getApiUrl()}secured/documents/findAll`, {headers, params} );

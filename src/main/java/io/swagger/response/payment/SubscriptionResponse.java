@@ -10,6 +10,7 @@ import java.util.Date;
 @Data
 public class SubscriptionResponse {
 
+    private Long id;
     private String name;
     private SubscriptionType type;
     private SubscriptionType renewalType;
@@ -19,8 +20,10 @@ public class SubscriptionResponse {
     private Double renewalCost;
     private Double documentCost;
     private Integer documentsCount;
+    private Integer documentsRemains;
 
-    public SubscriptionResponse(Subscription subscription) {
+    public SubscriptionResponse(Subscription subscription, Integer documentsRemains) {
+        this.id = subscription.getId();
         this.name = subscription.getName();
         this.type = subscription.getType();
         this.renewalType = subscription.getRenewalType();
@@ -30,6 +33,7 @@ public class SubscriptionResponse {
         this.renewalCost = subscription.getRenewalCost();
         this.documentCost = subscription.getDocumentCost();
         this.documentsCount = subscription.getDocumentsCount();
+        this.documentsRemains = documentsRemains;
     }
 
 }

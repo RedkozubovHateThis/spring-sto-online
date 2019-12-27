@@ -230,6 +230,13 @@ public class User implements UserDetails, Serializable {
         return null;
     }
 
+    public Long getCurrentSubscriptionId() {
+        if ( currentSubscription != null )
+            return currentSubscription.getId();
+
+        return null;
+    }
+
     @JsonIgnore
     public Long getCurrentReplacementModeratorId() {
         return replacementModeratorId;

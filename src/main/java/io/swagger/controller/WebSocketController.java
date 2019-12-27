@@ -57,6 +57,7 @@ public class WebSocketController {
 
     }
 
+    //TODO: добавить авторассылку админам и модерам по параметрам
     public void sendCounterRefreshMessage(Long userId) {
 
         try {

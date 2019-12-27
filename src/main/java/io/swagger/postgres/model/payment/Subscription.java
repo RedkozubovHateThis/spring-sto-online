@@ -10,6 +10,8 @@ import org.hibernate.annotations.Where;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
@@ -57,6 +59,9 @@ public class Subscription implements Serializable {
     @NotFound(action = NotFoundAction.IGNORE)
     private PaymentRecord paymentRecord;
 
+    @OneToMany(mappedBy = "subscription")
+    private Set<SubscriptionAddon> addons = new HashSet<>();
+
     public Subscription() {}
 
     public Subscription(SubscriptionType subscriptionType) {
@@ -66,5 +71,9 @@ public class Subscription implements Serializable {
         this.renewalCost = subscriptionType.getCost();
         this.documentCost = subscriptionType.getDocumentCost();
         this.documentsCount = subscriptionType.getDocumentsCount();
+    }
+
+    public void applyAddon(SubscriptionAddon addon) {
+        this.documentsCount += addon.getDocumentsCount();
     }
 }

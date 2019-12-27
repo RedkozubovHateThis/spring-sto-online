@@ -22,6 +22,8 @@ export class ShareButtonComponent implements OnInit {
   @Input()
   private document: DocumentResponse;
   @Input()
+  private disabled: boolean;
+  @Input()
   private serviceWork: ServiceWorkResponse;
   @Input()
   private serviceGoodsAddon: ServiceGoodsAddonResponse;
@@ -47,6 +49,8 @@ export class ShareButtonComponent implements OnInit {
   open(content, event) {
     if ( event != null )
       event.preventDefault();
+
+    if ( this.disabled ) return;
 
     if ( !this.isSharing )
       this.modalService.open(content, {windowClass : 'lg'});

@@ -47,25 +47,51 @@
             </ng-container>
             <ng-template #documentsBlock>
               <tbody *ngIf="documentResponseController.all != null">
-              <tr *ngFor="let fbResponse of documentResponseController.all.content, let i = index" [attr.data-index]="i">
-                <th scope="row" style="cursor: pointer;" (click)="select(fbResponse)">
-                  {{fbResponse.documentNumber}}
-                  &nbsp;
-                  <i class="far fa-check-circle" *ngIf="selected === fbResponse"></i>
-                  <i class="far fa-circle" *ngIf="selected !== fbResponse"></i>
-                </th>
-                <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.startDate}}</th>
-                <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.endDate}}</th>
-                <th style="cursor: pointer;" (click)="navigate(fbResponse)">
+              <ng-container *ngFor="let fbResponse of documentResponseController.all.content, let i = index" [attr.data-index]="i">
+
+                <ng-container *ngIf="fbResponse.isInactive; else activeRow">
+                  <tr class="text-muted" [ngbTooltip]="'Заказ-наряд выходит за рамки доступных заказ-нарядов по тарифу'">
+                    <th scope="row">
+                      {{fbResponse.documentNumber}}
+                    </th>
+                    <th>{{fbResponse.startDate}}</th>
+                    <th>{{fbResponse.endDate}}</th>
+                    <th>
+                      <span class="badge badge-dot">
+                        <i class="bg-{{fbResponse.style}}"></i>{{fbResponse.stateRus}}
+                      </span>
+                    </th>
+                    <th>{{fbResponse.client}}</th>
+                    <th>{{fbResponse.vehicle.name}}</th>
+                    <th>{{fbResponse.vehicle.regNumber}}</th>
+                    <th>{{fbResponse.sum | number:'.2':'ru'}}</th>
+                  </tr>
+                </ng-container>
+
+                <ng-template #activeRow>
+                  <tr>
+                    <th scope="row" style="cursor: pointer;" (click)="select(fbResponse)">
+                      {{fbResponse.documentNumber}}
+                      &nbsp;
+                      <i class="far fa-check-circle" *ngIf="selected === fbResponse"></i>
+                      <i class="far fa-circle" *ngIf="selected !== fbResponse"></i>
+                    </th>
+                    <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.startDate}}</th>
+                    <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.endDate}}</th>
+                    <th style="cursor: pointer;" (click)="navigate(fbResponse)">
                   <span class="badge badge-dot">
                     <i class="bg-{{fbResponse.style}}"></i>{{fbResponse.stateRus}}
                   </span>
-                </th>
-                <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.client}}</th>
-                <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.vehicle.name}}</th>
-                <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.vehicle.regNumber}}</th>
-                <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.sum | number:'.2':'ru'}}</th>
-              </tr>
+                    </th>
+                    <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.client}}</th>
+                    <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.vehicle.name}}</th>
+                    <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.vehicle.regNumber}}</th>
+                    <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.sum | number:'.2':'ru'}}</th>
+                  </tr>
+
+                </ng-template>
+
+              </ng-container>
               </tbody>
             </ng-template>
           </table>

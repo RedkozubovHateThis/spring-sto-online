@@ -50,6 +50,15 @@ public interface DocumentServiceDetailRepository extends PagingAndSortingReposit
             "INNER JOIN dsd.documentOutHeader AS doh " +
             "INNER JOIN doh.documentOut AS do " +
             "INNER JOIN do.organization AS o " +
+            "WHERE dsd.id = :documentId AND o.id = :organizationId AND dsd.dateStart <= :beforeDate")
+    DocumentServiceDetail findOneByOrganizationIdAndBeforeDate(@Param("documentId") Integer documentId,
+                                                               @Param("organizationId") Integer organizationId,
+                                                               @Param("beforeDate") Date beforeDate);
+
+    @Query("SELECT DISTINCT dsd FROM DocumentServiceDetail AS dsd " +
+            "INNER JOIN dsd.documentOutHeader AS doh " +
+            "INNER JOIN doh.documentOut AS do " +
+            "INNER JOIN do.organization AS o " +
             "WHERE dsd.id = :documentId AND o.id IN ( :organizationIds )")
     DocumentServiceDetail findOneByOrganizationIds(@Param("documentId") Integer documentId,
                                                    @Param("organizationIds") List<Integer> organizationIds);
@@ -161,10 +170,21 @@ public interface DocumentServiceDetailRepository extends PagingAndSortingReposit
             "INNER JOIN DOCUMENT_OUT AS do ON do.DOCUMENT_OUT_ID = doh.DOCUMENT_OUT_ID\n" +
             "INNER JOIN ORGANIZATION AS o ON do.ORGANIZATION_ID = o.ORGANIZATION_ID\n" +
             "WHERE CAST(dsd.DATE_START AS DATE) BETWEEN :fromDate AND :toDate\n" +
-            "AND o.ORGANIZATION_ID = :organizationId\n" +
-            "AND doh.STATE = 4")
+            "AND o.ORGANIZATION_ID = :organizationId")
     Integer countDocumentsByOrganizationIdAndDates(@Param("organizationId") Integer organizationId,
                                                    @Param("fromDate") Date fromDate,
                                                    @Param("toDate") Date toDate);
+
+    @Query(nativeQuery = true, value = "SELECT FIRST :paidDocumentsCount DISTINCT dsd.DOCUMENT_SERVICE_DETAIL_ID FROM DOCUMENT_SERVICE_DETAIL AS dsd\n" +
+            "INNER JOIN DOCUMENT_OUT_HEADER AS doh ON doh.DOCUMENT_OUT_HEADER_ID = dsd.DOCUMENT_OUT_HEADER_ID\n" +
+            "INNER JOIN DOCUMENT_OUT AS do ON do.DOCUMENT_OUT_ID = doh.DOCUMENT_OUT_ID\n" +
+            "INNER JOIN ORGANIZATION AS o ON do.ORGANIZATION_ID = o.ORGANIZATION_ID\n" +
+            "WHERE CAST(dsd.DATE_START AS DATE) BETWEEN :fromDate AND :toDate\n" +
+            "AND o.ORGANIZATION_ID = :organizationId\n" +
+            "ORDER BY dsd.DATE_START")
+    List<Integer> collectPaidDocumentsByOrganizationIdAndDates(@Param("paidDocumentsCount") Integer paidDocumentsCount,
+                                                               @Param("organizationId") Integer organizationId,
+                                                               @Param("fromDate") Date fromDate,
+                                                               @Param("toDate") Date toDate);
 
 }

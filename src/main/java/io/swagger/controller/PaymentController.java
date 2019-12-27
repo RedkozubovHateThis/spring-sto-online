@@ -1,5 +1,6 @@
 package io.swagger.controller;
 
+import io.swagger.firebird.repository.DocumentServiceDetailRepository;
 import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.enums.SubscriptionType;
 import io.swagger.postgres.model.payment.PaymentRecord;
@@ -40,6 +41,8 @@ public class PaymentController {
     private PaymentService paymentService;
     @Autowired
     private SubscriptionRepository subscriptionRepository;
+    @Autowired
+    private DocumentServiceDetailRepository documentsRepository;
 
     @PutMapping("/registerRequest")
     public ResponseEntity registerRequest(@RequestParam("amount") Integer amount) {
@@ -107,8 +110,8 @@ public class PaymentController {
 
     }
 
-    @GetMapping("/subscriptions/findAll")
-    public ResponseEntity findAllSubscriptions() {
+    @GetMapping("/subscriptions/types/findAll")
+    public ResponseEntity findAllSubscriptionTypes() {
 
         User currentUser = userRepository.findCurrentUser();
         if ( !UserHelper.hasRole(currentUser, "SERVICE_LEADER") )
@@ -132,6 +135,26 @@ public class PaymentController {
 
     }
 
+    @GetMapping("/subscriptions/findAll")
+    public ResponseEntity findAllSubscriptions() {
+
+        User currentUser = userRepository.findCurrentUser();
+        if ( !UserHelper.hasRole(currentUser, "SERVICE_LEADER") ||
+                currentUser.getOrganizationId() == null || !currentUser.getIsApproved() )
+            return ResponseEntity.status(404).build();
+
+        List<Subscription> subscriptions = subscriptionRepository.findAllByUserId( currentUser.getId() );
+
+        List<SubscriptionResponse> responses = subscriptions.stream().map( subscription -> {
+            return new SubscriptionResponse(
+                    subscription, countDocumentsRemains( currentUser, subscription )
+            );
+        } ).collect( Collectors.toList() );
+
+        return ResponseEntity.ok(responses);
+
+    }
+
     @GetMapping("/subscriptions/currentSubscription")
     public ResponseEntity findCurrentSubscription() {
 
@@ -144,32 +167,37 @@ public class PaymentController {
         if ( subscription == null )
             return ResponseEntity.status(404).build();
 
-        if ( subscription.getEndDate().before( new Date() ) ) {
-            //Подписка истекла, оформляем новую
+        //TODO: подумать, нужно это или нет, добавить шедулер
+//        if ( subscription.getEndDate().before( new Date() ) ) {
+//            //Подписка истекла, оформляем новую
+//
+//            try {
+//
+//                SubscriptionType subscriptionType;
+//
+//                if ( subscription.getRenewalType() != null )
+//                    subscriptionType = subscription.getRenewalType();
+//                else
+//                    subscriptionType = subscription.getType();
+//
+//                subscription = paymentService.buySubscription( subscriptionType, currentUser );
+//
+//                return ResponseEntity.ok( new SubscriptionResponse(
+//                        subscription, countDocumentsRemains( currentUser, subscription )
+//                ) );
+//            }
+//            catch ( PaymentException ignored ) {
+////                logger.warn( "Got payment exception for user \"{}\" [ {} ] during buying: {}", currentUser.getFio(), currentUser.getId(), pe.getMessage() );
+//            }
+//            catch ( Exception e ) {
+//                logger.error( "Got exception for user \"{}\" [ {} ] during buying: {}", currentUser.getFio(), currentUser.getId(), e.getMessage() );
+//                e.printStackTrace();
+//            }
+//        }
 
-            try {
-
-                SubscriptionType subscriptionType;
-
-                if ( subscription.getRenewalType() != null )
-                    subscriptionType = subscription.getRenewalType();
-                else
-                    subscriptionType = subscription.getType();
-
-                subscription = paymentService.buySubscription( subscriptionType, currentUser );
-
-                return ResponseEntity.ok( new SubscriptionResponse( subscription ) );
-            }
-            catch ( PaymentException pe ) {
-                logger.warn( "Got payment exception during buying: {}", pe.getMessage() );
-            }
-            catch ( Exception e ) {
-                logger.error( "Got exception during buying: {}", e.getMessage() );
-                e.printStackTrace();
-            }
-        }
-
-        return ResponseEntity.ok( new SubscriptionResponse( subscription ) );
+        return ResponseEntity.ok( new SubscriptionResponse(
+                subscription, countDocumentsRemains( currentUser, subscription)
+        ) );
 
     }
 
@@ -183,7 +211,9 @@ public class PaymentController {
         try {
             Subscription subscription = paymentService.buySubscription( subscriptionType, currentUser );
 
-            return ResponseEntity.ok( new SubscriptionResponse( subscription ) );
+            return ResponseEntity.ok( new SubscriptionResponse(
+                    subscription, countDocumentsRemains( currentUser, subscription)
+            ) );
         }
         catch ( PaymentException pe ) {
             return ResponseEntity.status(500).body( new ApiResponse( pe.getMessage() ) );
@@ -191,6 +221,29 @@ public class PaymentController {
         catch ( Exception e ) {
             e.printStackTrace();
             return ResponseEntity.status(500).body( new ApiResponse("Ошибка оформления тарифа! Попробуйте повторить покупку позже.") );
+        }
+
+    }
+
+    @PutMapping("/subscriptions/addon/buy")
+    public ResponseEntity buySubscriptionAddon(@RequestParam("subscriptionId") Long subscriptionId,
+                                               @RequestParam("documentsCount") Integer documentsCount) {
+
+        User currentUser = userRepository.findCurrentUser();
+        if ( !UserHelper.hasRole(currentUser, "SERVICE_LEADER") )
+            return ResponseEntity.status(404).build();
+
+        try {
+            paymentService.buySubscriptionAddon( subscriptionId, documentsCount, currentUser );
+
+            return ResponseEntity.ok().build();
+        }
+        catch ( PaymentException pe ) {
+            return ResponseEntity.status(500).body( new ApiResponse( pe.getMessage() ) );
+        }
+        catch ( Exception e ) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body( new ApiResponse("Ошибка дополнения тарифа! Попробуйте повторить покупку позже.") );
         }
 
     }
@@ -215,5 +268,18 @@ public class PaymentController {
             return ResponseEntity.status(500).body( new ApiResponse("Ошибка продления тарифа! Попробуйте повторить позже.") );
         }
 
+    }
+
+    private Integer countDocumentsRemains(User user, Subscription subscription) {
+        if ( !UserHelper.hasRole(user, "SERVICE_LEADER") || !user.getIsApproved() ||
+                user.getOrganizationId() == null || subscription == null ) return null;
+
+        Integer count = documentsRepository.countDocumentsByOrganizationIdAndDates(
+                user.getOrganizationId(),
+                subscription.getStartDate(),
+                subscription.getEndDate()
+        );
+
+        return Math.max( subscription.getDocumentsCount() - count, 0 );
     }
 }

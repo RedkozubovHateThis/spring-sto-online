@@ -6,11 +6,13 @@ import io.swagger.firebird.repository.ServiceGoodsAddonRepository;
 import io.swagger.firebird.repository.ServiceWorkRepository;
 import io.swagger.helper.DocumentSpecificationBuilder;
 import io.swagger.helper.UserHelper;
+import io.swagger.postgres.model.payment.Subscription;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.response.firebird.DocumentResponse;
 import io.swagger.firebird.model.DocumentServiceDetail;
 import io.swagger.firebird.repository.DocumentServiceDetailRepository;
+import io.swagger.service.DocumentServiceDetailService;
 import io.swagger.service.EventMessageService;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,6 +54,9 @@ public class DocumentDetailServiceController {
     @Autowired
     private EventMessageService eventMessageService;
 
+    @Autowired
+    private DocumentServiceDetailService documentsService;
+
     @GetMapping("/findAll")
     public ResponseEntity findAll(Pageable pageable, FilterPayload filterPayload) {
 
@@ -58,6 +64,8 @@ public class DocumentDetailServiceController {
         if ( currentUser == null ) return ResponseEntity.status(401).build();
 
         webSocketController.sendCounterRefreshMessage( currentUser.getId() );
+
+        List<Integer> paidDocumentsIds = new ArrayList<>();
 
         if ( UserHelper.hasRole(currentUser, "CLIENT") &&
                 ( currentUser.getClientId() == null || !currentUser.getIsApproved() ) )
@@ -79,14 +87,46 @@ public class DocumentDetailServiceController {
 
             specification = DocumentSpecificationBuilder.buildSpecificationList(clientIds, organizationIds, currentUser, filterPayload);
         }
+        else if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
+
+            paidDocumentsIds =
+                    documentsService.collectPaidDocumentIds( filterPayload.getFromDate(), filterPayload.getToDate() );
+
+            if ( paidDocumentsIds == null || paidDocumentsIds.size() == 0 )
+                return ResponseEntity.status(404).build();
+
+            specification = DocumentSpecificationBuilder.buildSpecificationList(paidDocumentsIds, currentUser, filterPayload);
+        }
         else
             specification = DocumentSpecificationBuilder.buildSpecificationList(currentUser, filterPayload);
 
         Page<DocumentServiceDetail> result = documentsRepository.findAll(specification, pageable);
 
         List<DocumentServiceDetail> resultList = result.getContent();
-        List<DocumentResponse> responseList = resultList.stream()
-                .map(DocumentResponse::new).collect( Collectors.toList() );
+
+        List<DocumentResponse> responseList;
+        if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
+
+            responseList = new ArrayList<>();
+            Date firstSubscriptionDate = documentsService.getFirstSubscriptionDate();
+
+            for (DocumentServiceDetail documentServiceDetail : resultList) {
+
+                boolean notInPaidDocuments = !paidDocumentsIds.contains( documentServiceDetail.getId() );
+                boolean afterFirstSubscription =
+                        firstSubscriptionDate != null && firstSubscriptionDate.before( documentServiceDetail.getDateStart() );
+
+                responseList.add(
+                        new DocumentResponse(
+                                documentServiceDetail, notInPaidDocuments && afterFirstSubscription
+                        )
+                );
+            }
+        }
+        else {
+            responseList = resultList.stream()
+                    .map(DocumentResponse::new).collect( Collectors.toList() );
+        }
 
         Page<DocumentResponse> responsePage = new PageImpl<>(responseList, pageable, result.getTotalElements());
 
@@ -132,6 +172,10 @@ public class DocumentDetailServiceController {
         else if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
             if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ||
                     currentUser.getIsCurrentSubscriptionEmpty() ) return ResponseEntity.status(403).build();
+
+            List<Integer> paidDocumentsIds = documentsService.collectPaidDocumentIds( null, null );
+
+            if ( !paidDocumentsIds.contains( id ) ) return ResponseEntity.status(403).build();
 
             result = documentsRepository.findOneByOrganizationId( id, currentUser.getOrganizationId() );
         }
@@ -264,7 +308,13 @@ public class DocumentDetailServiceController {
         @DateTimeFormat(pattern = "dd.MM.yyyy")
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
         private Date toDate;
+        private DocumentPaymentState paymentState;
 
+    }
+
+    public static enum DocumentPaymentState {
+        PAID,
+        NOT_PAID
     }
 
 }

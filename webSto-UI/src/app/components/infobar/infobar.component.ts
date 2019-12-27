@@ -30,6 +30,8 @@ export class InfobarComponent implements OnInit {
   private moderatorInfo: ModeratorInfo;
   private isLoading: boolean = false;
 
+  private readonly daysRemainsWarn = 1000 * 60 * 60 * 24 * 3;
+
   ngOnInit(): void {
 
     if ( this.userService.currentUser == null ) {
@@ -108,6 +110,16 @@ export class InfobarComponent implements OnInit {
     }, () => {
       this.isLoading = false;
     } );
+  }
+
+  private isLessThen3DaysRemains(endDate: any): boolean {
+    const now: number = new Date().getTime();
+    return endDate != null && endDate > now && now - endDate <= this.daysRemainsWarn;
+  }
+
+  private isExpired(endDate: any): boolean {
+    const now: number = new Date().getTime();
+    return endDate != null && endDate < now;
   }
 
 }

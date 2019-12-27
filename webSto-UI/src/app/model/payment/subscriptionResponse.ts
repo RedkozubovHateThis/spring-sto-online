@@ -1,4 +1,5 @@
 export class SubscriptionResponse {
+  id: number;
   name: string;
   type: string;
   renewalType: string;
@@ -8,5 +9,6 @@ export class SubscriptionResponse {
   renewalCost: number;
   documentCost: number;
   documentsCount: number;
+  documentsRemains: number;
 }
 

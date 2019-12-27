@@ -150,6 +150,7 @@ export class ReportsComponent implements OnInit {
       this.clientsTotalRow = {
         total: 0
       };
+      this.reportData = [];
       this.isLoading = false;
       if ( error.status === 403 )
         this.toastrService.error('Отчеты недоступны!', 'Внимание!');

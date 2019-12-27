@@ -2,6 +2,7 @@ package io.swagger.helper;
 
 import io.swagger.controller.DocumentDetailServiceController;
 import io.swagger.firebird.model.*;
+import io.swagger.postgres.model.payment.Subscription;
 import io.swagger.postgres.model.security.User;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -13,10 +14,20 @@ public class DocumentSpecificationBuilder {
 
     public static Specification<DocumentServiceDetail> buildSpecificationList(User currentUser,
                                                                               DocumentDetailServiceController.FilterPayload filterPayload) {
-        return buildSpecificationList( new ArrayList<>(), new ArrayList<>(), currentUser, filterPayload );
+        return buildSpecificationList( new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), currentUser, filterPayload );
     }
 
     public static Specification<DocumentServiceDetail> buildSpecificationList(List<Integer> clientIds, List<Integer> organizationIds, User currentUser,
+                                                                              DocumentDetailServiceController.FilterPayload filterPayload) {
+        return buildSpecificationList( clientIds, organizationIds, new ArrayList<>(), currentUser, filterPayload );
+    }
+
+    public static Specification<DocumentServiceDetail> buildSpecificationList(List<Integer> paidDocumentIds, User currentUser,
+                                                                              DocumentDetailServiceController.FilterPayload filterPayload) {
+        return buildSpecificationList( new ArrayList<>(), new ArrayList<>(), paidDocumentIds, currentUser, filterPayload );
+    }
+
+    public static Specification<DocumentServiceDetail> buildSpecificationList(List<Integer> clientIds, List<Integer> organizationIds, List<Integer> paidDocumentIds, User currentUser,
                                                                               DocumentDetailServiceController.FilterPayload filterPayload) {
 
         return new Specification<DocumentServiceDetail>() {
@@ -57,6 +68,26 @@ public class DocumentSpecificationBuilder {
                 }
                 else if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
                     predicates.add( cb.equal( orgJoin.get( Organization_.id ), currentUser.getOrganizationId() ) );
+
+                    if ( currentUser.getIsCurrentSubscriptionExpired() ) {
+                        Subscription subscription = currentUser.getCurrentSubscription();
+
+                        predicates.add(
+                                cb.lessThanOrEqualTo(
+                                        root.get( DocumentServiceDetail_.dateStart ), subscription.getEndDate()
+                                )
+                        );
+                    }
+
+                    if ( filterPayload.getPaymentState() != null ) {
+                        switch ( filterPayload.getPaymentState() ) {
+                            case PAID:
+                                predicates.add( root.get( DocumentServiceDetail_.id ).in( paidDocumentIds ) );
+                                break;
+                            case NOT_PAID:
+                                predicates.add( root.get( DocumentServiceDetail_.id ).in( paidDocumentIds ).not() );
+                        }
+                    }
                 }
 
                 if ( filterPayload.getStates() != null && filterPayload.getStates().size() > 0 ) {

@@ -39,7 +39,13 @@
                   <h5 class="card-title text-uppercase text-muted mb-0">Остаток оплаченных заказ-нарядов</h5>
                 </div>
                 <div class="col-auto" *ngIf="serviceLeaderInfo != null">
-                  <span class="h4 font-weight-bold mb-0">{{serviceLeaderInfo.documentsRemains}}</span>
+                  <span class="h4 font-weight-bold mb-0"
+                        [ngClass]="{
+                        'text-warning': serviceLeaderInfo.documentsRemains > 0 && serviceLeaderInfo.documentsRemains <= 3,
+                        'text-danger': serviceLeaderInfo.documentsRemains === 0
+                        }">
+                    {{serviceLeaderInfo.documentsRemains}}
+                  </span>
                 </div>
               </div>
               <div class="row mb-1">
@@ -101,7 +107,13 @@
                   <h5 class="card-title text-uppercase text-muted mb-0">Окончание оплаченного периода</h5>
                 </div>
                 <div class="col-auto" *ngIf="serviceLeaderInfo != null">
-                  <span class="h4 font-weight-bold mb-0">{{serviceLeaderInfo.subscribeEndDate | date : 'dd.MM.yyyy'}}</span>
+                  <span class="h4 font-weight-bold mb-0"
+                        [ngClass]="{
+                        'text-warning': isLessThen3DaysRemains( serviceLeaderInfo.subscribeEndDate ),
+                        'text-danger': isExpired( serviceLeaderInfo.subscribeEndDate )
+                        }">
+                    {{serviceLeaderInfo.subscribeEndDate | date : 'dd.MM.yyyy'}}
+                  </span>
                 </div>
               </div>
             </div>
@@ -112,7 +124,11 @@
                   <h5 class="card-title text-uppercase text-muted mb-0">Остаток оплаченных заказ-нарядов</h5>
                 </div>
                 <div class="col-auto" *ngIf="moderatorInfo != null">
-                  <span class="h4 font-weight-bold mb-0">{{moderatorInfo.documentsRemainsAll}}</span>
+                  <span class="h4 font-weight-bold mb-0"
+                        [ngClass]="{
+                        'text-warning': moderatorInfo.documentsRemainsAll > 0 && moderatorInfo.documentsRemainsAll <= 3,
+                        'text-danger': moderatorInfo.documentsRemainsAll === 0
+                        }">{{moderatorInfo.documentsRemainsAll}}</span>
                 </div>
               </div>
               <div class="row mb-1">
@@ -155,7 +171,9 @@
                   <h5 class="card-title text-uppercase text-muted mb-0">Продление тарифа возможно</h5>
                 </div>
                 <div class="col-auto" *ngIf="serviceLeaderInfo != null && serviceLeaderInfo.balanceValid != null">
-                  <span class="h4 font-weight-bold mb-0">{{serviceLeaderInfo.balanceValid ? 'Да' : 'Нет'}}</span>
+                  <span class="h4 font-weight-bold mb-0" [ngClass]="{'text-danger': !serviceLeaderInfo.balanceValid}">
+                    {{serviceLeaderInfo.balanceValid ? 'Да' : 'Нет'}}
+                  </span>
                 </div>
               </div>
             </div>
@@ -174,7 +192,9 @@
                   <h5 class="card-title text-uppercase text-muted mb-0">Продление тарифа возможно</h5>
                 </div>
                 <div class="col-auto">
-                  <span class="h4 font-weight-bold mb-0">{{moderatorInfo.balanceValid ? 'Да' : 'Нет'}}</span>
+                  <span class="h4 font-weight-bold mb-0" [ngClass]="{'text-danger': !moderatorInfo.balanceValid}">
+                    {{moderatorInfo.balanceValid ? 'Да' : 'Нет'}}
+                  </span>
                 </div>
               </div>
             </div>

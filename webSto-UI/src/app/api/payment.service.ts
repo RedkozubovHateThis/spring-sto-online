@@ -67,10 +67,18 @@ export class PaymentService {
     );
   }
 
-  getAllSubscriptions(): Observable<SubscriptionTypeResponse[]> {
+  getAllSubscriptionTypes(): Observable<SubscriptionTypeResponse[]> {
     const headers = this.userService.getHeaders();
 
     return this.http.get<SubscriptionTypeResponse[]>(
+      `${this.userService.getApiUrl()}secured/payment/subscriptions/types/findAll`, {headers}
+    );
+  }
+
+  getAllSubscriptions(): Observable<SubscriptionResponse[]> {
+    const headers = this.userService.getHeaders();
+
+    return this.http.get<SubscriptionResponse[]>(
       `${this.userService.getApiUrl()}secured/payment/subscriptions/findAll`, {headers}
     );
   }
@@ -91,6 +99,18 @@ export class PaymentService {
 
     return this.http.put<SubscriptionResponse>(
       `${this.userService.getApiUrl()}secured/payment/subscriptions/buy`, {}, {headers, params}
+    );
+  }
+
+  buySubscriptionAddon(subscriptionId: number, documentsCount: number): Observable<void> {
+    const headers = this.userService.getHeaders();
+    const params = {
+      subscriptionId: subscriptionId != null ? subscriptionId.toString() : '',
+      documentsCount: documentsCount != null ? documentsCount.toString() : ''
+    };
+
+    return this.http.put<void>(
+      `${this.userService.getApiUrl()}secured/payment/subscriptions/addon/buy`, {}, {headers, params}
     );
   }
 

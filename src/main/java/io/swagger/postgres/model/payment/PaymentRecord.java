@@ -64,6 +64,10 @@ public class PaymentRecord implements Serializable {
     @NotFound(action = NotFoundAction.IGNORE)
     private Subscription subscription;
 
+    @OneToOne
+    @NotFound(action = NotFoundAction.IGNORE)
+    private SubscriptionAddon subscriptionAddon;
+
     private Integer documentId;
 
     public void updateRecord(ExtendedResponse extendedResponse) {

@@ -15,20 +15,42 @@ import {SubscriptionResponse} from '../../model/payment/subscriptionResponse';
 })
 export class SubscriptionComponent implements OnInit {
 
+  private isTypesLoading: boolean = false;
   private isLoading: boolean = false;
-  private subscriptions: SubscriptionTypeResponse[] = [];
+  private subscriptionTypes: SubscriptionTypeResponse[] = [];
+  private subscriptions: SubscriptionResponse[] = [];
+  private selectedSubscription: SubscriptionResponse;
+  private documentsCount: number = null;
+  private cost: number;
+  private showAddon: boolean = false;
 
   constructor(private userService: UserService, private paymentService: PaymentService, private toastrService: ToastrService) { }
 
   ngOnInit() {
+    this.requestAllSubscriptionTypes();
     this.requestAllSubscriptions();
+  }
+
+  requestAllSubscriptionTypes() {
+    this.isTypesLoading = true;
+
+    this.paymentService.getAllSubscriptionTypes().subscribe(subscriptionTypes => {
+      this.subscriptionTypes = subscriptionTypes;
+      this.isTypesLoading = false;
+    }, () => {
+      this.isTypesLoading = false;
+    } );
   }
 
   requestAllSubscriptions() {
     this.isLoading = true;
 
-    this.paymentService.getAllSubscriptions().subscribe( subscriptions => {
+    this.paymentService.getAllSubscriptions().subscribe(subscriptions => {
       this.subscriptions = subscriptions;
+
+      if ( this.subscriptions.length > 0 )
+        this.selectedSubscription = this.subscriptions[ this.subscriptions.length - 1 ];
+
       this.isLoading = false;
     }, () => {
       this.isLoading = false;
@@ -42,7 +64,7 @@ export class SubscriptionComponent implements OnInit {
       this.paymentService.isSubscriptionLoading = false;
 
       this.toastrService.success(`Тариф "${subscription.name}" успешно оформлен!`);
-      this.requestAllSubscriptions();
+      this.requestAllSubscriptionTypes();
       this.userService.getCurrentUser();
     }, error => {
       this.paymentService.isSubscriptionLoading = false;
@@ -51,6 +73,28 @@ export class SubscriptionComponent implements OnInit {
         this.toastrService.error( error.error.responseText, 'Внимание!' );
       else
         this.toastrService.error( 'Ошибка оформления тарифа!', 'Внимание!' );
+    } );
+  }
+
+  buySubscriptionAddon() {
+    if ( this.selectedSubscription == null || this.documentsCount == null || this.documentsCount === 0 ||
+      this.userService.currentUser.balance < this.cost ) return;
+
+    this.isLoading = true;
+
+    this.paymentService.buySubscriptionAddon( this.selectedSubscription.id, this.documentsCount ).subscribe( () => {
+      this.isLoading = false;
+
+      this.toastrService.success('Тариф успешно дополнен!');
+      this.requestAllSubscriptions();
+      this.userService.getCurrentUser();
+    }, error => {
+      this.isLoading = false;
+
+      if ( error.error.responseText )
+        this.toastrService.error( error.error.responseText, 'Внимание!' );
+      else
+        this.toastrService.error( 'Ошибка дополнения тарифа!', 'Внимание!' );
     } );
   }
 
@@ -85,6 +129,26 @@ export class SubscriptionComponent implements OnInit {
 
       return this.paymentService.currentSubscription.endDate < now;
     }
+  }
+
+  calculateCost() {
+
+    if ( this.documentsCount == null ) {
+      this.cost = null;
+      return;
+    }
+
+    if ( this.documentsCount < 0 ) this.documentsCount = 0;
+    if ( !Number.isInteger(this.documentsCount) ) this.documentsCount = Math.floor( this.documentsCount );
+
+    if ( this.selectedSubscription == null )
+      this.cost = null;
+    else
+      this.cost = this.documentsCount * this.selectedSubscription.documentCost;
+  }
+
+  toggleAddon() {
+    this.showAddon = true;
   }
 
 }

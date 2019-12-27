@@ -1,17 +1,25 @@
-<button class="btn btn-sm btn-buro-green" [disabled]="isSharing"
+<button class="btn btn-sm btn-buro-green" [disabled]="isSharing || disabled"
         [ngbTooltip]="'Поделиться...'" (click)="open(content, null)" *ngIf="!isLink">
   <span>
     <i class="fas fa-share"></i>
     <span *ngIf="isSharing">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
   </span>
 </button>
-<a href="#" style="color: #60B61C;" [ngbTooltip]="'Поделиться...'" (click)="open(content, $event)" *ngIf="isLink">
+<ng-container *ngIf="isLink">
+  <a href="#" style="color: #60B61C;" [ngbTooltip]="'Поделиться...'" (click)="open(content, $event)" *ngIf="!disabled">
   <span>
     &nbsp;
     <i class="fas fa-share"></i>
     <span *ngIf="isSharing">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
   </span>
-</a>
+  </a>
+  <a style="color: #dddddd;" *ngIf="disabled">
+  <span>
+    &nbsp;
+    <i class="fas fa-share"></i>
+  </span>
+  </a>
+</ng-container>
 
 <!-- Modal -->
 <ng-template #content let-modal>

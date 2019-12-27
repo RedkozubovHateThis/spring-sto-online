@@ -6,8 +6,10 @@ import io.swagger.postgres.model.enums.PaymentType;
 import io.swagger.postgres.model.enums.SubscriptionType;
 import io.swagger.postgres.model.payment.PaymentRecord;
 import io.swagger.postgres.model.payment.Subscription;
+import io.swagger.postgres.model.payment.SubscriptionAddon;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.PaymentRecordRepository;
+import io.swagger.postgres.repository.SubscriptionAddonRepository;
 import io.swagger.postgres.repository.SubscriptionRepository;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.response.exception.PaymentException;
@@ -44,6 +46,8 @@ public class PaymentServiceImpl implements PaymentService {
     private UserRepository userRepository;
     @Autowired
     private SubscriptionRepository subscriptionRepository;
+    @Autowired
+    private SubscriptionAddonRepository subscriptionAddonRepository;
 
     @Value("${sb.api.username}")
     private String sbUsername;
@@ -176,15 +180,15 @@ public class PaymentServiceImpl implements PaymentService {
             throw new PaymentException("Текущий тариф еще активен!");
         }
         else if ( currentSubscription != null && currentSubscription.getEndDate().before( now ) ) {
-            subscription.setStartDate( currentSubscription.getEndDate() );
+            subscription.setStartDate(
+                    generateStartDate( currentSubscription.getEndDate(), true )
+            );
             subscription.setEndDate(
-                    generateEndDate(
-                            currentSubscription.getEndDate(), subscriptionType.getDurationDays()
-                    )
+                    generateEndDate( currentSubscription.getEndDate(), subscriptionType.getDurationDays() )
             );
         }
         else {
-            subscription.setStartDate( now );
+            subscription.setStartDate( generateStartDate( now, false ) );
             subscription.setEndDate( generateEndDate( now, subscriptionType.getDurationDays() ) );
         }
 
@@ -198,6 +202,38 @@ public class PaymentServiceImpl implements PaymentService {
         webSocketController.sendCounterRefreshMessage( user.getId() );
 
         return subscription;
+
+    }
+
+    @Override
+    public void buySubscriptionAddon(Long subscriptionId, Integer documentsCount, User user) throws PaymentException {
+
+        Subscription subscription = subscriptionRepository.findOne( subscriptionId );
+
+        if ( subscription == null )
+            throw new PaymentException("Выбранный тариф не найден!");
+
+        Double cost = subscription.getDocumentCost() * documentsCount.doubleValue();
+
+        if ( user.getBalance() < cost )
+            throw new PaymentException("Недостаточно средств для дополнения тарифа!");
+
+        Date now = new Date();
+
+        SubscriptionAddon subscriptionAddon = new SubscriptionAddon();
+        subscriptionAddon.setCost( cost );
+        subscriptionAddon.setDate( now );
+        subscriptionAddon.setDocumentsCount( documentsCount );
+        subscriptionAddon.setSubscription( subscription );
+
+        subscriptionAddonRepository.save( subscriptionAddon );
+
+        subscription.applyAddon( subscriptionAddon );
+        subscriptionRepository.save( subscription );
+
+        generateAddonPaymentRecord( user, subscriptionAddon, now );
+
+        webSocketController.sendCounterRefreshMessage( user.getId() );
 
     }
 
@@ -241,11 +277,46 @@ public class PaymentServiceImpl implements PaymentService {
         updateUserBalance( paymentRecord );
     }
 
+    private void generateAddonPaymentRecord(User user, SubscriptionAddon subscriptionAddon, Date now) throws PaymentException {
+        PaymentRecord paymentRecord = new PaymentRecord();
+        paymentRecord.setPaymentState( PaymentState.DEPOSITED );
+        paymentRecord.setAmount( subscriptionAddon.getCost().intValue() * 100 );
+        paymentRecord.setCreateDate( now );
+        paymentRecord.setRegisterDate( now );
+        paymentRecord.setOrderNumber( generatePurchaseOrderNumber( user ) );
+        paymentRecord.setUser( user );
+        paymentRecord.setPaymentType( PaymentType.PURCHASE );
+        paymentRecord.setSubscriptionAddon( subscriptionAddon );
+
+        paymentRecordRepository.save( paymentRecord );
+
+        updateUserBalance( paymentRecord );
+    }
+
+    private Date generateStartDate(Date startDate, Boolean toNextDay) {
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.setTime( startDate );
+        calendar.set( Calendar.HOUR_OF_DAY, 0 );
+        calendar.set( Calendar.MINUTE, 0 );
+        calendar.set( Calendar.SECOND, 0 );
+        calendar.set( Calendar.MILLISECOND, 0 );
+
+        if ( toNextDay )
+            calendar.add( Calendar.DAY_OF_MONTH, 1 );
+
+        return calendar.getTime();
+    }
+
     private Date generateEndDate(Date startDate, Integer durationDays) {
         Calendar calendar = GregorianCalendar.getInstance();
         calendar.setTime( startDate );
 
         calendar.add( Calendar.DAY_OF_MONTH, durationDays );
+
+        calendar.set( Calendar.HOUR_OF_DAY, 23 );
+        calendar.set( Calendar.MINUTE, 59 );
+        calendar.set( Calendar.SECOND, 59 );
+        calendar.set( Calendar.MILLISECOND, 999 );
 
         return calendar.getTime();
     }

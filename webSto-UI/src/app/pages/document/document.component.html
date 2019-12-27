@@ -16,7 +16,8 @@
                                  [model]="model" [withPrint]="false"></app-report-button>
               <app-report-button *ngIf="userService.currentUser != null" [printDisabled]="model != null && model.state !== 4"
                                  [model]="model"></app-report-button>
-              <app-share-button *ngIf="model != null && userService.isNotClient()" [document]="model"></app-share-button>
+              <app-share-button *ngIf="model != null && userService.isNotClient()" [document]="model"
+                                [disabled]="userService.isServiceLeaderWithExpiredSubscription()"></app-share-button>
             </div>
           </div>
         </div>
@@ -209,6 +210,7 @@
                     <th>
                       {{work.name}}
                       <app-share-button *ngIf="model != null && userService.isNotClient()" [isLink]="true"
+                                        [disabled]="userService.isServiceLeaderWithExpiredSubscription()"
                                         [document]="model" [serviceWork]="work"></app-share-button>
                     </th>
                     <th *ngIf="userService.isNotClient()">
@@ -291,6 +293,7 @@
                     <th>
                       {{addon.fullName}}
                       <app-share-button *ngIf="model != null && userService.isNotClient()" [isLink]="true"
+                                        [disabled]="userService.isServiceLeaderWithExpiredSubscription()"
                                         [document]="model" [serviceGoodsAddon]="addon"></app-share-button>
                     </th>
 <!--                    <th class="wrap-column">-->
@@ -350,6 +353,7 @@
                     <th>
                       {{addon.fullName}}
                       <app-share-button *ngIf="model != null && userService.isNotClient()" [isLink]="true"
+                                        [disabled]="userService.isServiceLeaderWithExpiredSubscription()"
                                         [document]="model" [clientGoodsOut]="addon"></app-share-button>
                     </th>
                     <th style="text-align: right;">

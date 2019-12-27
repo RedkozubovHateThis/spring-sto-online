@@ -105,12 +105,13 @@
                   <div class="row">
                     <div class="col">
                       <input class="form-control form-control-sm form-control-alternative" [(ngModel)]="chatMessage"
-                             [disabled]="selectedOpponent == null"
+                             [disabled]="selectedOpponent == null || userService.isServiceLeaderWithExpiredSubscription()"
                              placeholder="Введите текст сообщения" (keyup.enter)="sendMessage(null)" />
                     </div>
                     <div class="col-auto">
                       <button class="btn btn-default btn-sm btn-buro-green"
-                              [disabled]="selectedOpponent == null" (click)="showUpload()">
+                              [disabled]="selectedOpponent == null || userService.isServiceLeaderWithExpiredSubscription()"
+                              (click)="showUpload()">
                         <i class="fas fa-paperclip"></i>
                       </button>
                     </div>

@@ -102,7 +102,7 @@ public class InfoBarController {
                         documentsRepository.countDocumentsByOrganizationIdAndDates( currentUser.getOrganizationId(),
                                 subscription.getStartDate(), subscription.getEndDate() );
 
-                serviceLeaderInfo.setDocumentsRemains( subscription.getDocumentsCount() - documentsCount );
+                serviceLeaderInfo.setDocumentsRemains( Math.max( subscription.getDocumentsCount() - documentsCount, 0 ) );
                 serviceLeaderInfo.setTotalDocuments( subscription.getDocumentsCount() );
                 serviceLeaderInfo.setSubscribeName( subscription.getName() );
                 serviceLeaderInfo.setSubscribeEndDate( subscription.getEndDate() );
@@ -157,7 +157,7 @@ public class InfoBarController {
                     Integer documentCount =
                             documentsRepository.countDocumentsByOrganizationIdAndDates( serviceLeader.getOrganizationId(),
                                     subscription.getStartDate(), subscription.getEndDate() );
-                    moderatorInfo.setDocumentsRemainsAll( subscription.getDocumentsCount() - documentCount );
+                    moderatorInfo.setDocumentsRemainsAll( Math.max( subscription.getDocumentsCount() - documentCount, 0 ) );
                     moderatorInfo.setTotalDocumentsAll( subscription.getDocumentsCount() );
 
                     SubscriptionType renewalType = subscription.getRenewalType();
@@ -210,7 +210,7 @@ public class InfoBarController {
                 documentsRemainsAll += subscription.getDocumentsCount() - documentCount;
             }
 
-            moderatorInfo.setDocumentsRemainsAll( documentsRemainsAll );
+            moderatorInfo.setDocumentsRemainsAll( Math.max( documentsRemainsAll, 0 ) );
             moderatorInfo.setTotalDocumentsAll( totalDocumentsAll );
             moderatorInfo.setBalanceAll( balanceAll );
             moderatorInfo.setTotalDraftAll( documentsRepository.countByState( 2 ) );
