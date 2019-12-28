@@ -148,8 +148,9 @@ public class InfoBarController {
 
             User serviceLeader = userRepository.findUserByOrganizationId( organizationId );
 
-            if ( serviceLeader != null && serviceLeader.getIsApproved() ) {
+            if ( serviceLeader != null && serviceLeader.getOrganizationId() != null && serviceLeader.getIsApproved() ) {
 
+                moderatorInfo.setByService(true);
                 Subscription subscription = serviceLeader.getCurrentSubscription();
 
                 if ( subscription != null ) {

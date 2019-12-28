@@ -5,6 +5,7 @@ export class ModeratorInfo {
   documentsRemainsAll: number;
   totalDocumentsAll: number;
 
+  byService: boolean;
   balanceAll: number;
   balanceValid: boolean;
 
