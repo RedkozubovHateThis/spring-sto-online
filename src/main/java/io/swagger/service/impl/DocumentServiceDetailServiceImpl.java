@@ -32,7 +32,7 @@ public class DocumentServiceDetailServiceImpl implements DocumentServiceDetailSe
         if ( currentUser == null ) return null;
 
         if ( !UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) return null;
-        if ( currentUser.getIsCurrentSubscriptionEmpty() ||
+        if ( currentUser.getIsAccessRestricted() ||
                 currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ) return null;
 
         List<Subscription> subscriptions;
@@ -55,11 +55,15 @@ public class DocumentServiceDetailServiceImpl implements DocumentServiceDetailSe
 
             paidDocumentIds.addAll( documentsRepository.collectPaidDocumentsByOrganizationIdAndDates(
                     subscription.getDocumentsCount(), currentUser.getOrganizationId(),
-                    subscription.getStartDate(), subscription.getEndDate(),
-                    getFirstSubscriptionDate(currentUser)
+                    subscription.getStartDate(), subscription.getEndDate()
             ) );
 
         }
+
+        paidDocumentIds.addAll( documentsRepository.collectPaidDocumentsByOrganizationIdAndBefore(
+                currentUser.getOrganizationId(),
+                getFirstSubscriptionDate(currentUser)
+        ) );
 
         return paidDocumentIds;
     }

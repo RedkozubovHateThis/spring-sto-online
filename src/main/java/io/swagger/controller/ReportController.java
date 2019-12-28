@@ -93,7 +93,7 @@ public class ReportController {
         if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
 
             if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ||
-                    currentUser.getIsCurrentSubscriptionEmpty() )
+                    currentUser.getIsAccessRestricted() )
                 return ResponseEntity.status(404).build();
 
             if ( currentUser.getIsCurrentSubscriptionExpired() ) {
@@ -143,7 +143,7 @@ public class ReportController {
             if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
 
                 if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ||
-                        currentUser.getIsCurrentSubscriptionEmpty() )
+                        currentUser.getIsAccessRestricted() )
                     return ResponseEntity.status(404).build();
 
                 if ( currentUser.getIsCurrentSubscriptionExpired() ) {
@@ -199,7 +199,7 @@ public class ReportController {
         if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
 
             if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ||
-                    currentUser.getIsCurrentSubscriptionEmpty() )
+                    currentUser.getIsAccessRestricted() )
                 return ResponseEntity.status(404).build();
 
             if ( currentUser.getIsCurrentSubscriptionExpired() ) {
@@ -249,7 +249,7 @@ public class ReportController {
             if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
 
                 if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ||
-                        currentUser.getIsCurrentSubscriptionEmpty() )
+                        currentUser.getIsAccessRestricted() )
                     return ResponseEntity.status(404).build();
 
                 if ( currentUser.getIsCurrentSubscriptionExpired() ) {

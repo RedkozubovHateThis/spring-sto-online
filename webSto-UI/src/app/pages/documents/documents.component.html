@@ -15,7 +15,7 @@
             </div>
             <div class="col-auto">
               <button class="btn btn-sm btn-buro-green" (click)="requestData()"
-                      [disabled]="isLoading || userService.isServiceLeaderWithEmptySubscription()">
+                      [disabled]="isLoading || userService.isServiceLeaderWithRestrictedAccess()">
                 Обновить
               </button>
             </div>
@@ -36,11 +36,16 @@
                 <th scope="col">Сумма, руб.</th>
               </tr>
             </thead>
-            <ng-container *ngIf="userService.isServiceLeaderWithEmptySubscription(); else documentsBlock">
+            <ng-container *ngIf="userService.isServiceLeaderWithRestrictedAccess(); else documentsBlock">
               <tbody>
               <tr>
                 <th colspan="8" class="text-muted text-center">
-                  Для просмотра заказ-нарядов необходимо оформить тариф. Список тарифов доступен в соответсвующем пункте меню.
+                  <span *ngIf="userService.isServiceLeaderWithEmptySubscription()">
+                    Для просмотра заказ-нарядов необходимо оформить тариф. Список тарифов доступен в соответсвующем пункте меню.
+                  </span>
+                  <span *ngIf="userService.isServiceLeaderWithInvalidBalance()">
+                    Для просмотра заказ-нарядов необходимо пополнить баланс.
+                  </span>
                 </th>
               </tr>
               </tbody>
@@ -114,7 +119,7 @@
       <app-document-filter (onChange)="applyFilter()"
                            [filter]="documentResponseController.filter"
                            [document]="selected"
-                           [disabled]="userService.isServiceLeaderWithEmptySubscription()"
+                           [disabled]="userService.isServiceLeaderWithRestrictedAccess()"
                            (onOrganizationChange)="documentResponseController.emitOrganizationChange()"></app-document-filter>
     </div>
   </div>

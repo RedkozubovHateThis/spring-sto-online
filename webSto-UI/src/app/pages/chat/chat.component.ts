@@ -125,7 +125,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   selectOpponent(opponent) {
-    if ( this.userService.isServiceLeaderWithEmptySubscription() ) return;
+    if ( this.userService.isServiceLeaderWithRestrictedAccess() ) return;
     this.selectedOpponent = opponent;
     this.findMessages();
   }

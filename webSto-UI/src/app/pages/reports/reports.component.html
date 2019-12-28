@@ -12,11 +12,11 @@
             </div>
             <div class="col-auto">
               <button class="btn btn-sm btn-buro-green" (click)="requestReportData()"
-                      [disabled]="isLoading || userService.isServiceLeaderWithEmptySubscription()">
+                      [disabled]="isLoading || userService.isServiceLeaderWithRestrictedAccess()">
                 Обновить
               </button>
               <button class="btn btn-sm btn-buro-green" (click)="requestReportPDF()"
-                      [disabled]="isDownloading || userService.isServiceLeaderWithEmptySubscription()">
+                      [disabled]="isDownloading || userService.isServiceLeaderWithRestrictedAccess()">
                 Выгрузить в PDF
               </button>
             </div>
@@ -37,11 +37,16 @@
                   <th class="text-center">ЗП</th>
                 </tr>
               </thead>
-              <ng-container *ngIf="userService.isServiceLeaderWithEmptySubscription(); else executorsBlock">
+              <ng-container *ngIf="userService.isServiceLeaderWithRestrictedAccess(); else executorsBlock">
                 <tbody>
                 <tr>
                   <th colspan="6" class="text-muted text-center">
-                    Для просмотра отчетов необходимо оформить тариф. Список тарифов доступен в соответсвующем пункте меню.
+                    <span *ngIf="userService.isServiceLeaderWithEmptySubscription()">
+                      Для просмотра отчетов необходимо оформить тариф. Список тарифов доступен в соответсвующем пункте меню.
+                    </span>
+                    <span *ngIf="userService.isServiceLeaderWithInvalidBalance()">
+                      Для просмотра отчетов необходимо пополнить баланс.
+                    </span>
                   </th>
                 </tr>
                 </tbody>
@@ -87,11 +92,16 @@
                 <th class="text-center">Сумма / Итого</th>
               </tr>
               </thead>
-              <ng-container *ngIf="userService.isServiceLeaderWithEmptySubscription(); else clientsBlock">
+              <ng-container *ngIf="userService.isServiceLeaderWithRestrictedAccess(); else clientsBlock">
                 <tbody>
                 <tr>
                   <th colspan="8" class="text-muted text-center">
-                    Для просмотра отчетов необходимо оформить тариф. Список тарифов доступен в соответсвующем пункте меню.
+                    <span *ngIf="userService.isServiceLeaderWithEmptySubscription()">
+                      Для просмотра отчетов необходимо оформить тариф. Список тарифов доступен в соответсвующем пункте меню.
+                    </span>
+                    <span *ngIf="userService.isServiceLeaderWithInvalidBalance()">
+                      Для просмотра отчетов необходимо пополнить баланс.
+                    </span>
                   </th>
                 </tr>
                 </tbody>
@@ -129,7 +139,7 @@
           <div class="form-group">
             <label class="form-control-label" for="state-select">Тип отчета</label>
             <select id="state-select" class="form-control form-control-sm form-control-alternative"
-                    [disabled]="userService.isServiceLeaderWithEmptySubscription()"
+                    [disabled]="userService.isServiceLeaderWithRestrictedAccess()"
                     [(ngModel)]="reportType" (change)="requestReportData()">
               <option [selected]="reportType === 'executors'" [ngValue]="'executors'">
                 Выручка по слесарям
@@ -143,7 +153,7 @@
           <div class="form-group" *ngIf="!userService.isServiceLeader()">
             <label class="form-control-label" for="organization-select">Предприятие</label>
             <select id="organization-select" class="form-control form-control-sm form-control-alternative"
-                    [disabled]="userService.isServiceLeaderWithEmptySubscription()"
+                    [disabled]="userService.isServiceLeaderWithRestrictedAccess()"
                     [(ngModel)]="organizationId" (change)="requestReportData()">
               <option [selected]="true" disabled [ngValue]="null">
                 Выберите организацию
@@ -157,7 +167,7 @@
           <div class="form-group">
             <label class="form-control-label" for="month-select">Месяц</label>
             <select id="month-select" class="form-control form-control-sm form-control-alternative"
-                    [disabled]="userService.isServiceLeaderWithEmptySubscription()"
+                    [disabled]="userService.isServiceLeaderWithRestrictedAccess()"
                     (change)="requestReportData()" [(ngModel)]="selectedMonth">
               <option [selected]="month.id === selectedMonth" *ngFor="let month of months" [ngValue]="month.id">
                 {{month.name}}
@@ -169,11 +179,11 @@
             <label class="form-control-label" for="input-year">Год</label>
             <div class="input-group input-group-sm">
               <input type="number" id="input-year" class="form-control" placeholder="Введите год..."
-                     [disabled]="userService.isServiceLeaderWithEmptySubscription()"
+                     [disabled]="userService.isServiceLeaderWithRestrictedAccess()"
                      [(ngModel)]="selectedYear" (keyup.enter)="requestReportData()">
               <div class="input-group-append">
                 <button class="btn btn-buro-green" type="button"
-                        [disabled]="userService.isServiceLeaderWithEmptySubscription()" (click)="requestReportData()">
+                        [disabled]="userService.isServiceLeaderWithRestrictedAccess()" (click)="requestReportData()">
                   <i class="fas fa-search"></i>
                 </button>
               </div>

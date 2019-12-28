@@ -265,6 +265,12 @@ public class User implements UserDetails, Serializable {
     public Boolean getIsCurrentSubscriptionEmpty() {
         return currentSubscription == null;
     }
+    public Boolean getIsBalanceInvalid() {
+        return balance != null && balance < 0;
+    }
+    public Boolean getIsAccessRestricted() {
+        return getIsCurrentSubscriptionEmpty() || getIsBalanceInvalid();
+    }
 
     public Boolean getIsCurrentSubscriptionExpired() {
         return currentSubscription != null && currentSubscription.getEndDate().before( new Date() );

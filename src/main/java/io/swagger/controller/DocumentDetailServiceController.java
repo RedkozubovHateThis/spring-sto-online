@@ -73,7 +73,7 @@ public class DocumentDetailServiceController {
 
         else if ( UserHelper.hasRole(currentUser, "SERVICE_LEADER") &&
                 ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ||
-                        currentUser.getIsCurrentSubscriptionEmpty() ) )
+                        currentUser.getIsAccessRestricted() ) )
             return ResponseEntity.status(404).build();
 
         Specification<DocumentServiceDetail> specification;
@@ -171,7 +171,7 @@ public class DocumentDetailServiceController {
         }
         else if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
             if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ||
-                    currentUser.getIsCurrentSubscriptionEmpty() ) return ResponseEntity.status(403).build();
+                    currentUser.getIsAccessRestricted() ) return ResponseEntity.status(403).build();
 
             List<Integer> paidDocumentsIds = documentsService.collectPaidDocumentIds( null, null );
 

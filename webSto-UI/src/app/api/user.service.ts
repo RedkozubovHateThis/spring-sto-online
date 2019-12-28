@@ -326,6 +326,15 @@ export class UserService implements TransferService<User>, RestService<User> {
     return this.currentUser != null && this.currentUser.userServiceLeader && this.currentUser.isCurrentSubscriptionEmpty;
   }
 
+  isServiceLeaderWithInvalidBalance(): boolean {
+    return this.currentUser != null && this.currentUser.userServiceLeader && this.currentUser.isBalanceInvalid;
+  }
+
+  isServiceLeaderWithRestrictedAccess(): boolean {
+    return this.currentUser != null && this.currentUser.userServiceLeader &&
+      ( this.currentUser.isCurrentSubscriptionEmpty || this.currentUser.isBalanceInvalid );
+  }
+
   isServiceLeaderWithExpiredSubscription(): boolean {
     return this.currentUser != null && this.currentUser.userServiceLeader && this.currentUser.isCurrentSubscriptionExpired;
   }

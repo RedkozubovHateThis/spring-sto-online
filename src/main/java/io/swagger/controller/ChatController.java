@@ -59,7 +59,7 @@ public class ChatController {
         if ( UserHelper.hasRole(currentUser, "CLIENT") )
             return ResponseEntity.status(400).body("У вас нет прав отправлять сообщения!");
 
-        if ( UserHelper.hasRole(currentUser, "SERVICE_LEADER") && currentUser.getIsCurrentSubscriptionEmpty() )
+        if ( UserHelper.hasRole(currentUser, "SERVICE_LEADER") && currentUser.getIsAccessRestricted() )
             return ResponseEntity.status(400).body("У вас нет прав отправлять сообщения!");
 
         if ( payload.getUploadFileId() == null &&
@@ -110,7 +110,7 @@ public class ChatController {
         if ( UserHelper.hasRole(currentUser, "CLIENT") )
             return ResponseEntity.status(400).body("У вас нет прав отправлять сообщения!");
 
-        if ( UserHelper.hasRole(currentUser, "SERVICE_LEADER") && currentUser.getIsCurrentSubscriptionEmpty() )
+        if ( UserHelper.hasRole(currentUser, "SERVICE_LEADER") && currentUser.getIsAccessRestricted() )
             return ResponseEntity.status(400).body("У вас нет прав отправлять сообщения!");
 
         if ( payload.getDocumentId() == null )
@@ -175,7 +175,7 @@ public class ChatController {
         if ( UserHelper.hasRole(currentUser, "CLIENT") )
             return ResponseEntity.status(404).build();
 
-        if ( UserHelper.hasRole(currentUser, "SERVICE_LEADER") && currentUser.getIsCurrentSubscriptionEmpty() )
+        if ( UserHelper.hasRole(currentUser, "SERVICE_LEADER") && currentUser.getIsAccessRestricted() )
             return ResponseEntity.status(404).build();
 
         List<ChatMessage> chatMessages = chatMessageRepository.findMessagesByUsers( currentUser.getId(), toUserId );
@@ -265,7 +265,7 @@ public class ChatController {
             opponents = userRepository.findAllOpponentsByModerator( currentUser.getId(), currentUser.getId() );
         }
         else if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" )
-                && currentUser.getModeratorId() != null && !currentUser.getIsCurrentSubscriptionEmpty() )
+                && currentUser.getModeratorId() != null && !currentUser.getIsAccessRestricted() )
             opponents = userRepository.findAllOpponentsModerators( currentUser.getModeratorId(), currentUser.getId() );
 
         if ( opponents == null ) return ResponseEntity.status(404).build();

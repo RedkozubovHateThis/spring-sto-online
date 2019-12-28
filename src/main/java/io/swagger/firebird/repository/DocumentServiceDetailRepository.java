@@ -179,17 +179,22 @@ public interface DocumentServiceDetailRepository extends PagingAndSortingReposit
             "INNER JOIN DOCUMENT_OUT_HEADER AS doh ON doh.DOCUMENT_OUT_HEADER_ID = dsd.DOCUMENT_OUT_HEADER_ID\n" +
             "INNER JOIN DOCUMENT_OUT AS do ON do.DOCUMENT_OUT_ID = doh.DOCUMENT_OUT_ID\n" +
             "INNER JOIN ORGANIZATION AS o ON do.ORGANIZATION_ID = o.ORGANIZATION_ID\n" +
-            "WHERE (\n" +
-            "   CAST(dsd.DATE_START AS DATE) BETWEEN :fromDate AND :toDate\n" +
-            "OR\n" +
-            "   CAST(dsd.DATE_START AS DATE) <= :firstSubscriptionDate\n" +
-            ")\n" +
+            "WHERE CAST(dsd.DATE_START AS DATE) BETWEEN :fromDate AND :toDate\n" +
             "AND o.ORGANIZATION_ID = :organizationId\n" +
             "ORDER BY dsd.DATE_START")
     List<Integer> collectPaidDocumentsByOrganizationIdAndDates(@Param("paidDocumentsCount") Integer paidDocumentsCount,
                                                                @Param("organizationId") Integer organizationId,
                                                                @Param("fromDate") Date fromDate,
-                                                               @Param("toDate") Date toDate,
-                                                               @Param("firstSubscriptionDate") Date firstSubscriptionDate);
+                                                               @Param("toDate") Date toDate);
+
+    @Query(nativeQuery = true, value = "SELECT DISTINCT dsd.DOCUMENT_SERVICE_DETAIL_ID FROM DOCUMENT_SERVICE_DETAIL AS dsd\n" +
+            "INNER JOIN DOCUMENT_OUT_HEADER AS doh ON doh.DOCUMENT_OUT_HEADER_ID = dsd.DOCUMENT_OUT_HEADER_ID\n" +
+            "INNER JOIN DOCUMENT_OUT AS do ON do.DOCUMENT_OUT_ID = doh.DOCUMENT_OUT_ID\n" +
+            "INNER JOIN ORGANIZATION AS o ON do.ORGANIZATION_ID = o.ORGANIZATION_ID\n" +
+            "WHERE CAST(dsd.DATE_START AS DATE) <= :date\n" +
+            "AND o.ORGANIZATION_ID = :organizationId\n" +
+            "ORDER BY dsd.DATE_START")
+    List<Integer> collectPaidDocumentsByOrganizationIdAndBefore(@Param("organizationId") Integer organizationId,
+                                                                @Param("date") Date date);
 
 }

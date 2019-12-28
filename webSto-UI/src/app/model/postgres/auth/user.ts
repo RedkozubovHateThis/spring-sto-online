@@ -32,6 +32,8 @@ export class User {
   balance: number;
   isCurrentSubscriptionExpired: boolean;
   isCurrentSubscriptionEmpty: boolean;
+  isBalanceInvalid: boolean;
+  isAccessRestricted: boolean;
   subscriptionType: string;
 
   // TODO: подключить js-data-angular и переделать на computed property
