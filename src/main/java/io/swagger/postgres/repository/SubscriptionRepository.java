@@ -51,4 +51,7 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
     @Query(nativeQuery = true, value = "SELECT min(s.start_date) FROM subscription AS s " +
             "WHERE s.user_id = :userId")
     Date findFirstSubscriptionDateByUserId(@Param("userId") Long userId);
+
+    @Query(nativeQuery = true, value = "SELECT s.* FROM subscription AS s WHERE end_date < now()")
+    List<Subscription> findExpiredSubscriptions();
 }

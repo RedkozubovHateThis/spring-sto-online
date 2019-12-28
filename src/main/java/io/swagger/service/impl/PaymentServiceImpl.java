@@ -240,8 +240,8 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public void updateRenewalSubscription(SubscriptionType subscriptionType, User user) throws PaymentException {
 
-        if ( !subscriptionType.getFree() && user.getBalance() < subscriptionType.getCost() )
-            throw new PaymentException("Недостаточно средств для продления тарифа!");
+//        if ( !subscriptionType.getFree() && user.getBalance() < subscriptionType.getCost() )
+//            throw new PaymentException("Недостаточно средств для продления тарифа!");
 
         Subscription currentSubscription = user.getCurrentSubscription();
 
@@ -256,6 +256,8 @@ public class PaymentServiceImpl implements PaymentService {
                 currentSubscription.setRenewalType( subscriptionType );
 
             subscriptionRepository.save( currentSubscription );
+
+            webSocketController.sendCounterRefreshMessage( user.getId() );
         }
         else
             throw new PaymentException("Текущий тариф не найден/истек!");

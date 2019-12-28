@@ -1,5 +1,6 @@
 package io.swagger.service;
 
+import io.swagger.controller.WebSocketController;
 import io.swagger.firebird.model.Client;
 import io.swagger.firebird.model.Contact;
 import io.swagger.firebird.model.DocumentServiceDetail;
@@ -9,13 +10,13 @@ import io.swagger.firebird.repository.DocumentServiceDetailRepository;
 import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.CompiledReport;
 import io.swagger.postgres.model.DocumentUserState;
+import io.swagger.postgres.model.enums.SubscriptionType;
+import io.swagger.postgres.model.payment.Subscription;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.model.security.UserRole;
-import io.swagger.postgres.repository.CompiledReportRepository;
-import io.swagger.postgres.repository.DocumentUserStateRepository;
-import io.swagger.postgres.repository.UserRepository;
-import io.swagger.postgres.repository.UserRoleRepository;
+import io.swagger.postgres.repository.*;
 import io.swagger.response.exception.DataNotFoundException;
+import io.swagger.response.exception.PaymentException;
 import net.sf.jasperreports.engine.JRException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +64,10 @@ public class SchedulerService {
     private ReportService reportService;
     @Autowired
     private CompiledReportRepository compiledReportRepository;
+    @Autowired
+    private PaymentService paymentService;
+    @Autowired
+    private WebSocketController webSocketController;
 
     @Value("${domain.url}")
     private String domainUrl;
@@ -78,7 +83,6 @@ public class SchedulerService {
     private Boolean isSchedulerDisabled;
 
     @Scheduled(fixedRate = 600000)
-//    @Scheduled(fixedRate = 10000)
     public void scheduleFixedRateTask() {
 
         if ( isSchedulerDisabled ) return;
@@ -101,6 +105,50 @@ public class SchedulerService {
 
         for ( Client client : clients ) {
             processClient(client);
+        }
+    }
+
+    @Scheduled(cron = "0 15 0 * * *")
+    public void scheduleSubscriptions() {
+
+        if ( isSchedulerDisabled ) return;
+
+        List<User> serviceLeaders = userRepository.findUsersByRoleName("SERVICE_LEADER");
+
+        Date now = new Date();
+
+        for (User serviceLeader : serviceLeaders) {
+
+            Subscription currentSubscription = serviceLeader.getCurrentSubscription();
+
+            if ( currentSubscription == null || currentSubscription.getEndDate().after( now ) ) continue;
+
+            logger.info(" [ SUBSCRIPTION SCHEDULER ] ------------------ ");
+            logger.info(" [ SUBSCRIPTION SCHEDULER ] Processing user \"{}\"...", serviceLeader.getFio() );
+
+            SubscriptionType renewalType;
+
+            if ( currentSubscription.getRenewalType() != null )
+                renewalType = currentSubscription.getRenewalType();
+            else
+                renewalType = currentSubscription.getType();
+
+            try {
+                Subscription subscription = paymentService.buySubscription( renewalType, serviceLeader );
+
+                logger.info( " [ SUBSCRIPTION SCHEDULER ] Successfully bought new subscription \"{}\" for user \"{}\"...",
+                        subscription.getType().name(), serviceLeader.getFio() );
+
+                webSocketController.sendCounterRefreshMessage( serviceLeader.getId() );
+            }
+            catch ( PaymentException ignored ) {
+                logger.error( ignored.getMessage() );
+            }
+            catch ( Exception e ) {
+                logger.error( "Got exception for user \"{}\" [ {} ] during buying: {}", serviceLeader.getFio(), serviceLeader.getId(), e.getMessage() );
+                e.printStackTrace();
+            }
+
         }
     }
 

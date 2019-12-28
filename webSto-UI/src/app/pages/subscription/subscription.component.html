@@ -4,9 +4,20 @@
       <div class="card shadow">
         <div class="card-header">
           <app-loading-bar [isLoading]="paymentService.isSubscriptionLoading || isLoading"></app-loading-bar>
-          <h3 class="mb-0">
-            Тариф
-          </h3>
+          <div class="row">
+
+            <div class="col">
+              <h3 class="mb-0">
+                Тариф
+              </h3>
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-sm btn-buro-green" (click)="requestAllSubscriptions()" [disabled]="isLoading">
+                Обновить
+              </button>
+            </div>
+
+          </div>
         </div>
         <div class="card-body">
 
@@ -196,7 +207,7 @@
                   </ng-container>
                   <ng-template #updateBlock>
                     <button class="btn btn-buro-green btn-block" (click)="updateRenewalSubscription(subscriptionType)"
-                            [disabled]="subscriptionType.isInactive || userService.currentUser.balance < subscriptionType.cost ||
+                            [disabled]="subscriptionType.isInactive ||
                             paymentService.currentSubscription.type === subscriptionType.type">
                       <ng-container *ngIf="paymentService.currentSubscription.type === subscriptionType.type; else actionsBlock">
                         Текущий

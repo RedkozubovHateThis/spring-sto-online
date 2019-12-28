@@ -48,8 +48,12 @@ export class SubscriptionComponent implements OnInit {
     this.paymentService.getAllSubscriptions().subscribe(subscriptions => {
       this.subscriptions = subscriptions;
 
-      if ( this.subscriptions.length > 0 )
-        this.selectedSubscription = this.subscriptions[ this.subscriptions.length - 1 ];
+      if ( this.subscriptions.length > 0 ) {
+        if ( this.selectedSubscription != null )
+          this.selectedSubscription = this.subscriptions.find( subscription => subscription.id === this.selectedSubscription.id );
+        else
+          this.selectedSubscription = this.subscriptions[ this.subscriptions.length - 1 ];
+      }
 
       this.isLoading = false;
     }, () => {
@@ -65,6 +69,7 @@ export class SubscriptionComponent implements OnInit {
 
       this.toastrService.success(`Тариф "${subscription.name}" успешно оформлен!`);
       this.requestAllSubscriptionTypes();
+      this.requestAllSubscriptions();
       this.userService.getCurrentUser();
     }, error => {
       this.paymentService.isSubscriptionLoading = false;

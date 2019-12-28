@@ -114,7 +114,7 @@ export class InfobarComponent implements OnInit {
 
   private isLessThen3DaysRemains(endDate: any): boolean {
     const now: number = new Date().getTime();
-    return endDate != null && endDate > now && now - endDate <= this.daysRemainsWarn;
+    return endDate != null && endDate > now && endDate - now <= this.daysRemainsWarn;
   }
 
   private isExpired(endDate: any): boolean {

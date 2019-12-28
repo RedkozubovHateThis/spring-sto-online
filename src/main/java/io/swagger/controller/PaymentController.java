@@ -167,34 +167,6 @@ public class PaymentController {
         if ( subscription == null )
             return ResponseEntity.status(404).build();
 
-        //TODO: подумать, нужно это или нет, добавить шедулер
-//        if ( subscription.getEndDate().before( new Date() ) ) {
-//            //Подписка истекла, оформляем новую
-//
-//            try {
-//
-//                SubscriptionType subscriptionType;
-//
-//                if ( subscription.getRenewalType() != null )
-//                    subscriptionType = subscription.getRenewalType();
-//                else
-//                    subscriptionType = subscription.getType();
-//
-//                subscription = paymentService.buySubscription( subscriptionType, currentUser );
-//
-//                return ResponseEntity.ok( new SubscriptionResponse(
-//                        subscription, countDocumentsRemains( currentUser, subscription )
-//                ) );
-//            }
-//            catch ( PaymentException ignored ) {
-////                logger.warn( "Got payment exception for user \"{}\" [ {} ] during buying: {}", currentUser.getFio(), currentUser.getId(), pe.getMessage() );
-//            }
-//            catch ( Exception e ) {
-//                logger.error( "Got exception for user \"{}\" [ {} ] during buying: {}", currentUser.getFio(), currentUser.getId(), e.getMessage() );
-//                e.printStackTrace();
-//            }
-//        }
-
         return ResponseEntity.ok( new SubscriptionResponse(
                 subscription, countDocumentsRemains( currentUser, subscription)
         ) );
