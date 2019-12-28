@@ -17,6 +17,10 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
             "WHERE s.type = 'FREE' AND s.user_id = :userId )")
     Boolean isFreeIsFormed(@Param("userId") Long userId);
 
+    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT DISTINCT s.id FROM subscription AS s " +
+            "WHERE s.user_id = :userId )")
+    Boolean isAnyIsFormed(@Param("userId") Long userId);
+
     @Query(nativeQuery = true, value = "SELECT s.* FROM subscription AS s " +
             "WHERE s.user_id = :userId " +
             "ORDER BY s.start_date")

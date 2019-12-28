@@ -13,7 +13,6 @@ public class SubscriptionResponse {
     private Long id;
     private String name;
     private SubscriptionType type;
-    private SubscriptionType renewalType;
     private Date startDate;
     private Date endDate;
     private Boolean isRenewable;
@@ -26,7 +25,6 @@ public class SubscriptionResponse {
         this.id = subscription.getId();
         this.name = subscription.getName();
         this.type = subscription.getType();
-        this.renewalType = subscription.getRenewalType();
         this.startDate = subscription.getStartDate();
         this.endDate = subscription.getEndDate();
         this.isRenewable = subscription.getIsRenewable();

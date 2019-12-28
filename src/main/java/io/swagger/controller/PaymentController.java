@@ -123,9 +123,8 @@ public class PaymentController {
             SubscriptionTypeResponse subscriptionTypeResponse = new SubscriptionTypeResponse( type );
 
             if ( type.getFree() ) {
-                subscriptionTypeResponse.setIsInactive(
-                        subscriptionRepository.isFreeIsFormed( currentUser.getId() )
-                );
+                Boolean isAnyFormed = subscriptionRepository.isAnyIsFormed( currentUser.getId() );
+                if ( isAnyFormed ) continue;
             }
 
             subscriptionTypeResponses.add( subscriptionTypeResponse );
@@ -237,7 +236,7 @@ public class PaymentController {
         }
         catch ( Exception e ) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body( new ApiResponse("Ошибка продления тарифа! Попробуйте повторить позже.") );
+            return ResponseEntity.status(500).body( new ApiResponse("Ошибка установки тарифа по умолчанию! Попробуйте повторить позже.") );
         }
 
     }

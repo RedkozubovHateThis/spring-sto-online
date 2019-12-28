@@ -126,10 +126,15 @@ public class SchedulerService {
             logger.info(" [ SUBSCRIPTION SCHEDULER ] ------------------ ");
             logger.info(" [ SUBSCRIPTION SCHEDULER ] Processing user \"{}\"...", serviceLeader.getFio() );
 
+            if ( !currentSubscription.getIsRenewable() ) {
+                logger.warn(" [ SUBSCRIPTION SCHEDULER ] Can not renew free subscription...");
+                continue;
+            }
+
             SubscriptionType renewalType;
 
-            if ( currentSubscription.getRenewalType() != null )
-                renewalType = currentSubscription.getRenewalType();
+            if ( serviceLeader.getSubscriptionType() != null )
+                renewalType = serviceLeader.getSubscriptionType();
             else
                 renewalType = currentSubscription.getType();
 
@@ -141,9 +146,7 @@ public class SchedulerService {
 
                 webSocketController.sendCounterRefreshMessage( serviceLeader.getId() );
             }
-            catch ( PaymentException ignored ) {
-                logger.error( ignored.getMessage() );
-            }
+            catch ( PaymentException ignored ) {}
             catch ( Exception e ) {
                 logger.error( "Got exception for user \"{}\" [ {} ] during buying: {}", serviceLeader.getFio(), serviceLeader.getId(), e.getMessage() );
                 e.printStackTrace();

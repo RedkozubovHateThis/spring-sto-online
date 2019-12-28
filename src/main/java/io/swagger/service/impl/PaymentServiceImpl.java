@@ -197,6 +197,9 @@ public class PaymentServiceImpl implements PaymentService {
         subscriptionRepository.save( subscription );
         user.setCurrentSubscription( subscription );
 
+        if ( !subscription.getType().getFree() )
+            user.setSubscriptionType( subscription.getType() );
+
         generatePaymentRecord( user, subscription, now );
 
         webSocketController.sendCounterRefreshMessage( user.getId() );
@@ -249,13 +252,13 @@ public class PaymentServiceImpl implements PaymentService {
 
         if ( currentSubscription != null && currentSubscription.getEndDate().after( now ) ) {
 
-            if ( currentSubscription.getRenewalType() != null &&
-                    currentSubscription.getRenewalType().equals( subscriptionType ) )
-                currentSubscription.setRenewalType( null );
+            if ( user.getSubscriptionType() != null &&
+                    user.getSubscriptionType().equals( subscriptionType ) )
+                user.setSubscriptionType( null );
             else
-                currentSubscription.setRenewalType( subscriptionType );
+                user.setSubscriptionType( subscriptionType );
 
-            subscriptionRepository.save( currentSubscription );
+            userRepository.save( user );
 
             webSocketController.sendCounterRefreshMessage( user.getId() );
         }

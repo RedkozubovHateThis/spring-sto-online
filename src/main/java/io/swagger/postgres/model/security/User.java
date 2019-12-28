@@ -7,6 +7,7 @@ import io.swagger.postgres.model.ChatMessage;
 import io.swagger.postgres.model.DocumentUserState;
 import io.swagger.postgres.model.EventMessage;
 import io.swagger.postgres.model.UploadFile;
+import io.swagger.postgres.model.enums.SubscriptionType;
 import io.swagger.postgres.model.payment.Subscription;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -142,6 +143,10 @@ public class User implements UserDetails, Serializable {
 
     private Double serviceWorkPrice;
     private Double serviceGoodsCost;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private SubscriptionType subscriptionType;
 
     @Override
     public boolean isAccountNonExpired() {

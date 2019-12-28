@@ -107,7 +107,7 @@ public class InfoBarController {
                 serviceLeaderInfo.setSubscribeName( subscription.getName() );
                 serviceLeaderInfo.setSubscribeEndDate( subscription.getEndDate() );
 
-                SubscriptionType renewalType = subscription.getRenewalType();
+                SubscriptionType renewalType = currentUser.getSubscriptionType();
 
                 if ( renewalType == null )
                     serviceLeaderInfo.setBalanceValid(
@@ -160,7 +160,7 @@ public class InfoBarController {
                     moderatorInfo.setDocumentsRemainsAll( Math.max( subscription.getDocumentsCount() - documentCount, 0 ) );
                     moderatorInfo.setTotalDocumentsAll( subscription.getDocumentsCount() );
 
-                    SubscriptionType renewalType = subscription.getRenewalType();
+                    SubscriptionType renewalType = currentUser.getSubscriptionType();
 
                     if ( renewalType == null )
                         moderatorInfo.setBalanceValid(

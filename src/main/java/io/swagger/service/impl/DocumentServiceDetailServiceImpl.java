@@ -55,7 +55,8 @@ public class DocumentServiceDetailServiceImpl implements DocumentServiceDetailSe
 
             paidDocumentIds.addAll( documentsRepository.collectPaidDocumentsByOrganizationIdAndDates(
                     subscription.getDocumentsCount(), currentUser.getOrganizationId(),
-                    subscription.getStartDate(), subscription.getEndDate()
+                    subscription.getStartDate(), subscription.getEndDate(),
+                    getFirstSubscriptionDate(currentUser)
             ) );
 
         }
@@ -64,15 +65,10 @@ public class DocumentServiceDetailServiceImpl implements DocumentServiceDetailSe
     }
 
     @Override
-    public Date getFirstSubscriptionDate() {
-        User currentUser = userRepository.findCurrentUser();
-        if ( currentUser == null ) return null;
+    public Date getFirstSubscriptionDate(User user) {
+        if ( user == null ) return null;
 
-        if ( !UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) return null;
-        if ( currentUser.getIsCurrentSubscriptionEmpty() ||
-                currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ) return null;
-
-        return subscriptionRepository.findFirstSubscriptionDateByUserId( currentUser.getId() );
+        return subscriptionRepository.findFirstSubscriptionDateByUserId( user.getId() );
     }
 
 }

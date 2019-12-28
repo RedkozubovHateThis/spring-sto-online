@@ -26,10 +26,6 @@ public class Subscription implements Serializable {
     private SubscriptionType type;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private SubscriptionType renewalType;
-
-    @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)

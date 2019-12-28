@@ -93,6 +93,10 @@ export class SubscriptionComponent implements OnInit {
       this.toastrService.success('Тариф успешно дополнен!');
       this.requestAllSubscriptions();
       this.userService.getCurrentUser();
+
+      this.showAddon = false;
+      this.documentsCount = null;
+      this.cost = null;
     }, error => {
       this.isLoading = false;
 
@@ -106,23 +110,24 @@ export class SubscriptionComponent implements OnInit {
   updateRenewalSubscription(subscription: SubscriptionTypeResponse) {
     this.paymentService.isSubscriptionLoading = true;
 
-    const isSame = this.paymentService.currentSubscription.renewalType === subscription.type;
+    const isSame = this.userService.currentUser.subscriptionType === subscription.type;
 
     this.paymentService.updateRenewalSubscription( subscription.type ).subscribe( () => {
       this.paymentService.isSubscriptionLoading = false;
 
       if ( isSame )
-        this.toastrService.success(`Тариф "${subscription.name}" успешно отменен от продления!`);
+        this.toastrService.success(`Тариф "${subscription.name}" успешно отменен как тариф по умолчанию!`);
       else
-        this.toastrService.success(`Тариф "${subscription.name}" успешно оформлен на продление!`);
+        this.toastrService.success(`Тариф "${subscription.name}" успешно установлен как тариф по умолчанию!`);
       this.paymentService.requestCurrentSubscription();
+      this.userService.getCurrentUser();
     }, error => {
       this.paymentService.isSubscriptionLoading = false;
 
       if ( error.error.responseText )
         this.toastrService.error( error.error.responseText, 'Внимание!' );
       else
-        this.toastrService.error( 'Ошибка продления тарифа!', 'Внимание!' );
+        this.toastrService.error( 'Ошибка установки тарифа по умолчанию!', 'Внимание!' );
     } );
   }
 

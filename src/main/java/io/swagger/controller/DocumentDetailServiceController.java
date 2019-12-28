@@ -108,7 +108,7 @@ public class DocumentDetailServiceController {
         if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
 
             responseList = new ArrayList<>();
-            Date firstSubscriptionDate = documentsService.getFirstSubscriptionDate();
+            Date firstSubscriptionDate = documentsService.getFirstSubscriptionDate(currentUser);
 
             for (DocumentServiceDetail documentServiceDetail : resultList) {
 
