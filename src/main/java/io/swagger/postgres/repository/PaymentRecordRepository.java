@@ -27,4 +27,17 @@ public interface PaymentRecordRepository extends JpaRepository<PaymentRecord, Lo
     Long countByUserIdAndPaymentType(@Param("userId") Long userId,
                                      @Param("paymentType") String paymentType);
 
+    @Query(nativeQuery = true, value = "SELECT pr.* FROM payment_record AS pr " +
+            "WHERE pr.expiration_date IS NOT NULL " +
+            "AND pr.expiration_date <= now() " +
+            "AND pr.is_expired IS NOT NULL " +
+            "AND pr.is_expired = FALSE")
+    List<PaymentRecord> findAllExpiringPromisedRecords();
+
+    @Query(nativeQuery = true, value = "SELECT pr.* FROM payment_record AS pr " +
+            "WHERE pr.payment_type = 'PROMISED' " +
+            "AND pr.user_id = :userId " +
+            "ORDER BY pr.create_date DESC " +
+            "LIMIT 1")
+    PaymentRecord findLastPromisedRecordByUserId(@Param("userId") Long userId);
 }

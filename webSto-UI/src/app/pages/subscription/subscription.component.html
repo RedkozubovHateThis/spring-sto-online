@@ -110,7 +110,7 @@
               </div>
             </div>
 
-            <button class="btn btn-buro-green btn-block" *ngIf="!showAddon && selectedSubscription.type != 'FREE'"
+            <button class="btn btn-sm btn-buro-green btn-block" *ngIf="!showAddon && selectedSubscription.type != 'FREE'"
                     (click)="toggleAddon()">
               Дополнить тариф
             </button>
@@ -118,6 +118,12 @@
             <ng-container *ngIf="showAddon && selectedSubscription.type != 'FREE'">
 
               <hr class="my-4" />
+
+              <div class="row form-group">
+                <div class="col">
+                  <h3 class="mb-0">Дополнение тарифа</h3>
+                </div>
+              </div>
 
               <div class="form-group">
                 <label class="form-control-label" for="documents-count-input">Количество заказ-нарядов</label>
@@ -135,11 +141,22 @@
                 </div>
               </div>
 
-              <button class="btn btn-buro-green btn-block" (click)="buySubscriptionAddon()"
-                      [disabled]="selectedSubscription == null || documentsCount == null || documentsCount == 0 ||
+              <div class="row form-group justify-content-end">
+                <div class="col-auto">
+                  <button class="btn btn-sm btn-buro-green btn-block" (click)="buySubscriptionAddon()"
+                          [disabled]="selectedSubscription == null || documentsCount == null || documentsCount == 0 ||
                       cost == null || cost === 0 || userService.currentUser.balance < cost || isLoading">
-                Дополнить
-              </button>
+                    Дополнить
+                  </button>
+                </div>
+              </div>
+
+              <div class="row form-group">
+                <div class="col text-justify">
+                  <div class="mb-1">Дополнение позволит увеличить количество доступных заказ-нарядов у выбранного тарифа.</div>
+                  <div>Стоимость заказ-наряда указана в описании тарифа.</div>
+                </div>
+              </div>
 
             </ng-container>
 
@@ -167,7 +184,7 @@
           </ng-container>
           <ng-template #renewalBlock>
             <div class="form-group text-center">
-              <div>Выберите доступный тариф для установки по умолчанию.</div>
+              <div class="mb-1">Выберите доступный тариф для установки по умолчанию.</div>
               <div>Для успешного продления, баланс на вашем счету должен полностью покрывать стоимость тарифа.</div>
             </div>
           </ng-template>

@@ -18,12 +18,92 @@
             </div>
           </div>
 
-          <div class="row justify-content-end">
+          <div class="row form-group justify-content-end">
             <div class="col-auto">
               <button class="btn btn-buro-green btn-sm" [disabled]="amount == null || amount <= 0"
-                      (click)="sendRequest()">Пополнить</button>
+                      (click)="sendRequest()">Оплатить картой</button>
             </div>
           </div>
+
+          <div class="row form-group">
+            <div class="col mb-2">
+              <div class="payment-logo">
+                <img src="assets/img/payment/Visa-Inc.-logo.svg" alt="Visa Inc."/>
+              </div>
+            </div>
+            <div class="col mb-2">
+              <div class="payment-logo">
+                <img src="assets/img/payment/Mastercard-logo.svg" alt="Mastercard Worldwide"/>
+              </div>
+            </div>
+            <div class="col mb-2">
+              <div class="payment-logo">
+                <img src="assets/img/payment/mir-logo.svg" alt="МИР"/>
+              </div>
+            </div>
+            <div class="col mb-2">
+              <div class="payment-logo">
+                <img src="assets/img/payment/JCB-logo.svg" alt="JCB"/>
+              </div>
+            </div>
+          </div>
+
+          <div class="row form-group" *ngIf="!isPromised">
+            <div class="col">
+              <button class="btn btn-buro-green btn-sm btn-block"
+                      (click)="togglePromised()">Обещанный платеж</button>
+            </div>
+          </div>
+
+          <ng-container *ngIf="isPromised">
+
+            <hr class="my-4" />
+
+            <div class="row form-group">
+              <div class="col">
+                <h3 class="mb-0">Обещанный платеж</h3>
+              </div>
+            </div>
+
+            <ng-container *ngIf="promisedStatus != null && !promisedStatus.isAvailable">
+              <div class="row form-group">
+                <div class="col text-justify">
+                  <div class="font-weight-bold mb-1">Внимание!</div>
+                  <div>Вы уже оформили обещанный платеж!</div>
+                  <div>Следующее оформление будет доступно {{promisedStatus.availableDate | date : 'dd.MM.yyyy'}}.</div>
+                </div>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="promisedStatus != null && promisedStatus.isAvailable">
+
+              <div class="row form-group">
+                <div class="col">
+                  <label class="form-control-label">Сумма, руб.</label>
+                  <input class="form-control form-control-sm form-control-alternative" type="number" min="0" step=".10"
+                         (keyup.enter)="sendPromisedRequest()" placeholder="сумма обещанного платежа, руб." [(ngModel)]="promisedAmount">
+                </div>
+              </div>
+
+              <div class="row form-group justify-content-end">
+                <div class="col-auto">
+                  <button class="btn btn-buro-green btn-sm" [disabled]="promisedAmount == null || promisedAmount <= 0"
+                          (click)="sendPromisedRequest()">Запросить</button>
+                </div>
+              </div>
+
+              <div class="row form-group">
+                <div class="col text-justify">
+                  <div class="mb-1">Обещанный платеж выдается на <span class="font-weight-bold">7</span> календарных дней. По истечению этого срока, выданные средства будут списаны с вашего баланса.</div>
+                  <div class="mb-1">Обещанный платеж возможно получить один раз в течение <span class="font-weight-bold">30</span> календарных дней.</div>
+                  <div class="font-weight-bold mb-1">Внимание!</div>
+                  <div>Если, после списания средств, ваш баланс будет ниже нуля, вам будут недоступны основные функции сервиса (чат, заказ-наряды, отчеты)!</div>
+                </div>
+              </div>
+
+            </ng-container>
+
+          </ng-container>
 
           <div class="row mt-3" *ngIf="paymentStatus === 'SUCCESS'">
             <div class="h4 col">
@@ -120,4 +200,19 @@
 
         </div>
       </div>
+
+  <div class="row">
+    <div class="col mb-5">
+      <div class="card shadow">
+        <div class="card-body text-justify">
+          <p>
+            Для оплаты (ввода реквизитов Вашей карты) Вы будете перенаправлены на платёжный шлюз ПАО СБЕРБАНК. Соединение с платёжным шлюзом и передача информации осуществляется в защищённом режиме с использованием протокола шифрования SSL. В случае если Ваш банк поддерживает технологию безопасного проведения интернет-платежей Verified By Visa, MasterCard SecureCode, MIR Accept, J-Secure для проведения платежа также может потребоваться ввод специального пароля.
+          </p>
+          <p>
+            Настоящий сайт поддерживает 256-битное шифрование. Конфиденциальность сообщаемой персональной информации обеспечивается ПАО СБЕРБАНК. Введённая информация не будет предоставлена третьим лицам за исключением случаев, предусмотренных законодательством РФ. Проведение платежей по банковским картам осуществляется в строгом соответствии с требованиями платёжных систем МИР, Visa Int., MasterCard Europe Sprl, JCB.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

@@ -1,6 +1,7 @@
 package io.swagger.controller;
 
 import io.swagger.firebird.repository.DocumentServiceDetailRepository;
+import io.swagger.helper.DateHelper;
 import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.enums.SubscriptionType;
 import io.swagger.postgres.model.payment.PaymentRecord;
@@ -9,6 +10,7 @@ import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.PaymentRecordRepository;
 import io.swagger.postgres.repository.SubscriptionRepository;
 import io.swagger.postgres.repository.UserRepository;
+import io.swagger.response.payment.PromisedAvailableResponse;
 import io.swagger.response.payment.SubscriptionResponse;
 import io.swagger.response.payment.SubscriptionTypeResponse;
 import io.swagger.response.api.ApiResponse;
@@ -59,6 +61,52 @@ public class PaymentController {
         }
         catch ( Exception e ) {
             return ResponseEntity.status(500).body( new ApiResponse("Ошибка формирования запроса на оплату! Попробуйте повторить запрос позже.") );
+        }
+    }
+
+    @PutMapping("/registerRequest/promised")
+    public ResponseEntity registerPromisedRequest(@RequestParam("amount") Integer amount) {
+
+        User currentUser = userRepository.findCurrentUser();
+        if ( !UserHelper.hasRole(currentUser, "SERVICE_LEADER") )
+            return ResponseEntity.status(403).body( new ApiResponse("Пополнение баланса доступно только для Автосервиса!") );
+
+        try {
+
+            PromisedAvailableResponse response = paymentService.isPromisedAvailable( currentUser );
+
+            if ( !response.getIsAvailable() ) {
+                String message = String.format("Оформление обещанного платежа будет доступно только после %s",
+                        DateHelper.formatDate( response.getAvailableDate() ) );
+                return ResponseEntity.status(400).body( new ApiResponse(message) );
+            }
+
+            paymentService.registerPromisedPayment(amount, currentUser);
+
+            return ResponseEntity.ok().build();
+        }
+        catch ( PaymentException pe ) {
+            return ResponseEntity.status(500).body( new ApiResponse( pe.getMessage() ) );
+        }
+        catch ( Exception e ) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body( new ApiResponse("Ошибка формирования запроса на оплату! Попробуйте повторить запрос позже.") );
+        }
+    }
+
+    @GetMapping("/registerRequest/promised/isAvailable")
+    public ResponseEntity registerPromisedRequest() {
+
+        User currentUser = userRepository.findCurrentUser();
+        if ( !UserHelper.hasRole(currentUser, "SERVICE_LEADER") )
+            return ResponseEntity.status(403).body( new ApiResponse("Запрос статуса обещанного платежа доступен только для Автосервиса!") );
+
+        try {
+            return ResponseEntity.ok( paymentService.isPromisedAvailable(currentUser) );
+        }
+        catch ( Exception e ) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body( new ApiResponse("Ошибка запроса статуса обещанного платежа! Попробуйте повторить запрос позже.") );
         }
     }
 

@@ -66,8 +66,6 @@ public class SchedulerService {
     private CompiledReportRepository compiledReportRepository;
     @Autowired
     private PaymentService paymentService;
-    @Autowired
-    private WebSocketController webSocketController;
 
     @Value("${domain.url}")
     private String domainUrl;
@@ -143,8 +141,6 @@ public class SchedulerService {
 
                 logger.info( " [ SUBSCRIPTION SCHEDULER ] Successfully bought new subscription \"{}\" for user \"{}\"...",
                         subscription.getType().name(), serviceLeader.getFio() );
-
-                webSocketController.sendCounterRefreshMessage( serviceLeader.getId() );
             }
             catch ( PaymentException ignored ) {}
             catch ( Exception e ) {
@@ -153,6 +149,8 @@ public class SchedulerService {
             }
 
         }
+
+        paymentService.processPromisedPayments();
     }
 
     private void processUser(User user) {

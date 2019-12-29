@@ -4,6 +4,8 @@ import {PaymentService} from '../../api/payment.service';
 import {ToastrService} from 'ngx-toastr';
 import {PaymentResponse} from '../../model/payment/paymentResponse';
 import * as moment from 'moment';
+import {UserService} from '../../api/user.service';
+import {PromisedAvailableResponse} from '../../model/payment/promisedAvailableResponse';
 
 @Component({
   selector: 'app-balance',
@@ -14,9 +16,12 @@ export class BalanceComponent implements OnInit {
 
   private isLoading: boolean = false;
   private isProcessing: boolean = false;
+  private isPromised: boolean = false;
   private amount: number = null;
+  private promisedAmount: number = null;
   private paymentStatus: string = 'REGISTER';
   private paymentResponses: PaymentResponse[] = [];
+  private promisedStatus: PromisedAvailableResponse;
 
   private datePickerConfig = {
     locale: 'ru',
@@ -39,10 +44,12 @@ export class BalanceComponent implements OnInit {
 
   private types = [
     {id: 'DEPOSIT', value: 'Внесение'},
-    {id: 'PURCHASE', value: 'Списание'}
+    {id: 'PURCHASE', value: 'Списание'},
+    {id: 'PROMISED', value: 'Обещанный платеж'}
   ];
 
-  constructor(private paymentService: PaymentService, private activatedRoute: ActivatedRoute, private toastrService: ToastrService) { }
+  constructor(private paymentService: PaymentService, private activatedRoute: ActivatedRoute, private toastrService: ToastrService,
+              private userService: UserService) { }
 
   ngOnInit() {
     const paymentStatus = this.activatedRoute.snapshot.queryParamMap.get('paymentStatus');
@@ -52,6 +59,8 @@ export class BalanceComponent implements OnInit {
       this.processStatus(paymentStatus, orderId);
     else
       this.requestData();
+
+    this.getPromisedStatus();
   }
 
   requestData() {
@@ -61,6 +70,21 @@ export class BalanceComponent implements OnInit {
         this.paymentResponses = paymentResponses;
         this.isLoading = false;
       } );
+  }
+
+  getPromisedStatus() {
+    this.isProcessing = true;
+    this.paymentService.getPromisedStatus().subscribe( promisedStatus => {
+      this.promisedStatus = promisedStatus;
+      this.isProcessing = false;
+    }, error => {
+      if ( error.error.responseText )
+        this.toastrService.error(error.error.responseText, 'Внимание!');
+      else
+        this.toastrService.error('Ошибка запроса статуса обещанного платежа!', 'Внимание!');
+
+      this.isProcessing = false;
+    } );
   }
 
   setFromDate(e) {
@@ -87,6 +111,27 @@ export class BalanceComponent implements OnInit {
         this.toastrService.error('Ошибка регистрации запроса на оплату!', 'Внимание!');
 
       this.isProcessing = false;
+    } );
+  }
+
+  sendPromisedRequest() {
+    if ( this.promisedAmount == null || this.promisedAmount <= 0 ) return;
+
+    this.isProcessing = true;
+    this.paymentService.sendRegisterPromisedRequest( this.promisedAmount * 100 ).subscribe(response => {
+      this.isProcessing = false;
+      this.userService.getCurrentUser();
+      this.requestData();
+      this.paymentStatus = 'SUCCESS';
+      this.isPromised = false;
+      this.promisedAmount = null;
+    }, error => {
+      this.isProcessing = false;
+
+      if ( error.error.responseText )
+        this.toastrService.error(error.error.responseText, 'Внимание!');
+      else
+        this.toastrService.error('Ошибка регистрации запроса на оплату!', 'Внимание!');
     } );
   }
 
@@ -130,6 +175,10 @@ export class BalanceComponent implements OnInit {
       return filtered.value;
 
     return paymentType;
+  }
+
+  togglePromised() {
+    this.isPromised = true;
   }
 
 }

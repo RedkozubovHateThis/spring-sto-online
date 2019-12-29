@@ -14,6 +14,7 @@ import io.swagger.postgres.repository.SubscriptionRepository;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.response.exception.PaymentException;
 import io.swagger.response.payment.PaymentResponse;
+import io.swagger.response.payment.PromisedAvailableResponse;
 import io.swagger.response.payment.request.ExtendedResponse;
 import io.swagger.response.payment.request.RegisterResponse;
 import io.swagger.service.PaymentService;
@@ -30,6 +31,8 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -65,30 +68,102 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public synchronized RegisterResponse registerPayment(Integer amount, User user) throws PaymentException {
 
-        try {
+        PaymentRecord paymentRecord = new PaymentRecord();
+        paymentRecord.setPaymentState( PaymentState.CREATED );
+        paymentRecord.setAmount( amount );
+        paymentRecord.setCreateDate( new Date() );
+        paymentRecord.setOrderNumber( generateDepositOrderNumber( user ) );
+        paymentRecord.setUser( user );
+        paymentRecord.setPaymentType( PaymentType.DEPOSIT );
 
-            PaymentRecord paymentRecord = new PaymentRecord();
-            paymentRecord.setPaymentState( PaymentState.CREATED );
-            paymentRecord.setAmount( amount );
-            paymentRecord.setCreateDate( new Date() );
-            paymentRecord.setOrderNumber( generateDepositOrderNumber( user ) );
-            paymentRecord.setUser( user );
-            paymentRecord.setPaymentType( PaymentType.DEPOSIT );
+        paymentRecordRepository.save( paymentRecord );
 
-            paymentRecordRepository.save( paymentRecord );
+        RegisterResponse registerResponse = sendRegisterRequest( amount, paymentRecord.getOrderNumber() );
 
-            RegisterResponse registerResponse = sendRegisterRequest( amount, paymentRecord.getOrderNumber() );
+        updateRequest( paymentRecord, registerResponse.getOrderId() );
 
-            updateRequest( paymentRecord, registerResponse.getOrderId() );
+        return registerResponse;
 
-            return registerResponse;
+    }
+
+    @Override
+    public void registerPromisedPayment(Integer amount, User user) throws PaymentException {
+
+        Date now = new Date();
+
+        PaymentRecord paymentRecord = new PaymentRecord();
+        paymentRecord.setPaymentState( PaymentState.DEPOSITED );
+        paymentRecord.setAmount( amount );
+        paymentRecord.setCreateDate( now );
+        paymentRecord.setRegisterDate( now );
+        paymentRecord.setOrderNumber( generatePromisedOrderNumber( user ) );
+        paymentRecord.setUser( user );
+        paymentRecord.setPaymentType( PaymentType.PROMISED );
+        paymentRecord.setIsExpired( false );
+        paymentRecord.setExpirationDate( generateEndDate( now, 7, false ) );
+
+        paymentRecordRepository.save( paymentRecord );
+
+        updateUserBalance( paymentRecord );
+
+    }
+
+    @Override
+    public PromisedAvailableResponse isPromisedAvailable(User user) {
+        PaymentRecord promisedRecord = paymentRecordRepository.findLastPromisedRecordByUserId( user.getId() );
+        PromisedAvailableResponse response = new PromisedAvailableResponse();
+
+        if ( promisedRecord == null ) {
+            response.setIsAvailable(true);
+            return response;
+        }
+        else {
+
+            Date now = new Date();
+            Long difference = daysDifferent( promisedRecord.getCreateDate(), now );
+
+            if ( difference <= 30 ) {
+                response.setIsAvailable( false );
+                response.setAvailableDate( generateEndDate( promisedRecord.getCreateDate(), 30, true ) );
+                return response;
+            }
+            else {
+                response.setIsAvailable( true );
+                return response;
+            }
 
         }
-        catch(Exception e) {
-            logger.error("Error during registering request, reason: {}", e .getMessage());
-            e.printStackTrace();
+    }
 
-            return null;
+    private Long daysDifferent(Date date1, Date date2) {
+        long millis1 = date1.getTime();
+        long millis2 = date2.getTime();
+
+        long difference = millis2 - millis1;
+
+        return TimeUnit.DAYS.convert(difference, TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public void processPromisedPayments() {
+
+        List<PaymentRecord> expiringRecords = paymentRecordRepository.findAllExpiringPromisedRecords();
+
+        for (PaymentRecord expiringRecord : expiringRecords) {
+
+            logger.info( " [ PROMISED SCHEDULER ] Processing promised record \"{}\"...", expiringRecord.getOrderNumber() );
+
+            expiringRecord.setIsExpired( true );
+            paymentRecordRepository.save( expiringRecord );
+
+            try {
+                generatePaymentRecord( expiringRecord.getUser(), null, expiringRecord, new Date() );
+            }
+            catch ( PaymentException ignored ) {}
+            catch ( Exception e ) {
+                logger.error( "Got exception for promised record \"{}\" during updating user balance: {}", expiringRecord.getOrderNumber(), e.getMessage() );
+                e.printStackTrace();
+            }
         }
 
     }
@@ -184,12 +259,12 @@ public class PaymentServiceImpl implements PaymentService {
                     generateStartDate( currentSubscription.getEndDate(), true )
             );
             subscription.setEndDate(
-                    generateEndDate( currentSubscription.getEndDate(), subscriptionType.getDurationDays() )
+                    generateEndDate( currentSubscription.getEndDate(), subscriptionType.getDurationDays(), false )
             );
         }
         else {
             subscription.setStartDate( generateStartDate( now, false ) );
-            subscription.setEndDate( generateEndDate( now, subscriptionType.getDurationDays() ) );
+            subscription.setEndDate( generateEndDate( now, subscriptionType.getDurationDays(), false ) );
         }
 
         subscription.setUser( user );
@@ -200,9 +275,7 @@ public class PaymentServiceImpl implements PaymentService {
         if ( !subscription.getType().getFree() )
             user.setSubscriptionType( subscription.getType() );
 
-        generatePaymentRecord( user, subscription, now );
-
-        webSocketController.sendCounterRefreshMessage( user.getId() );
+        generatePaymentRecord( user, subscription, null, now );
 
         return subscription;
 
@@ -266,16 +339,23 @@ public class PaymentServiceImpl implements PaymentService {
             throw new PaymentException("Текущий тариф не найден/истек!");
     }
 
-    private void generatePaymentRecord(User user, Subscription subscription, Date now) throws PaymentException {
+    private void generatePaymentRecord(User user, Subscription subscription, PaymentRecord expiringRecord, Date now) throws PaymentException {
         PaymentRecord paymentRecord = new PaymentRecord();
         paymentRecord.setPaymentState( PaymentState.DEPOSITED );
-        paymentRecord.setAmount( subscription.getType().getCost().intValue() * 100 );
         paymentRecord.setCreateDate( now );
         paymentRecord.setRegisterDate( now );
         paymentRecord.setOrderNumber( generatePurchaseOrderNumber( user ) );
         paymentRecord.setUser( user );
         paymentRecord.setPaymentType( PaymentType.PURCHASE );
-        paymentRecord.setSubscription( subscription );
+
+        if ( subscription != null ) {
+            paymentRecord.setAmount( subscription.getType().getCost().intValue() * 100 );
+            paymentRecord.setSubscription( subscription );
+        }
+        else if ( expiringRecord != null ) {
+            paymentRecord.setAmount( expiringRecord.getAmount() );
+            paymentRecord.setPromisedRecord( expiringRecord );
+        }
 
         paymentRecordRepository.save( paymentRecord );
 
@@ -312,16 +392,24 @@ public class PaymentServiceImpl implements PaymentService {
         return calendar.getTime();
     }
 
-    private Date generateEndDate(Date startDate, Integer durationDays) {
+    private Date generateEndDate(Date startDate, Integer durationDays, Boolean atDayStart) {
         Calendar calendar = GregorianCalendar.getInstance();
         calendar.setTime( startDate );
 
         calendar.add( Calendar.DAY_OF_MONTH, durationDays );
 
-        calendar.set( Calendar.HOUR_OF_DAY, 23 );
-        calendar.set( Calendar.MINUTE, 59 );
-        calendar.set( Calendar.SECOND, 59 );
-        calendar.set( Calendar.MILLISECOND, 999 );
+        if ( atDayStart ) {
+            calendar.set( Calendar.HOUR_OF_DAY, 0 );
+            calendar.set( Calendar.MINUTE, 0 );
+            calendar.set( Calendar.SECOND, 0 );
+            calendar.set( Calendar.MILLISECOND, 0 );
+        }
+        else {
+            calendar.set( Calendar.HOUR_OF_DAY, 23 );
+            calendar.set( Calendar.MINUTE, 59 );
+            calendar.set( Calendar.SECOND, 59 );
+            calendar.set( Calendar.MILLISECOND, 999 );
+        }
 
         return calendar.getTime();
     }
@@ -366,13 +454,20 @@ public class PaymentServiceImpl implements PaymentService {
         Double oldBalance = paymentUser.getBalance();
 
         switch ( paymentRecord.getPaymentType() ) {
-            case DEPOSIT:
+            case PROMISED: {
+                Double amount = paymentRecord.getAmount().doubleValue() / 100.0;
+                paymentUser.setBalance( oldBalance + amount );
+                break;
+            }
+            case DEPOSIT: {
                 Double depositedAmount = paymentRecord.getDepositedAmount().doubleValue() / 100.0;
                 paymentUser.setBalance( oldBalance + depositedAmount );
                 break;
-            case PURCHASE:
+            }
+            case PURCHASE: {
                 Double amount = paymentRecord.getAmount().doubleValue() / 100.0;
                 paymentUser.setBalance( oldBalance - amount );
+            }
         }
 
         userRepository.save( paymentUser );
@@ -382,13 +477,19 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     private String generateDepositOrderNumber(User user) {
-        return String.format("D : %s.%s",
+        return String.format("D: %s.%s",
                 user.getId(),
                 paymentRecordRepository.countByUserIdAndPaymentType( user.getId(), PaymentType.DEPOSIT.toString() ) + 1);
     }
 
+    private String generatePromisedOrderNumber(User user) {
+        return String.format("DP: %s.%s",
+                user.getId(),
+                paymentRecordRepository.countByUserIdAndPaymentType( user.getId(), PaymentType.PROMISED.toString() ) + 1);
+    }
+
     private String generatePurchaseOrderNumber(User user) {
-        return String.format("P : %s.%s",
+        return String.format("P: %s.%s",
                 user.getId(),
                 paymentRecordRepository.countByUserIdAndPaymentType( user.getId(), PaymentType.PURCHASE.toString() ) + 1);
     }

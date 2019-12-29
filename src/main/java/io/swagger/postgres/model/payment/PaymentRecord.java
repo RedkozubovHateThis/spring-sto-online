@@ -52,6 +52,8 @@ public class PaymentRecord implements Serializable {
     @Column(nullable = false)
     private Date createDate;
     private Date registerDate;
+    private Date expirationDate;
+    private Boolean isExpired;
 
     private String ipAddress;
 
@@ -67,6 +69,14 @@ public class PaymentRecord implements Serializable {
     @OneToOne
     @NotFound(action = NotFoundAction.IGNORE)
     private SubscriptionAddon subscriptionAddon;
+
+    @OneToOne
+    @NotFound(action = NotFoundAction.IGNORE)
+    private PaymentRecord promisedRecord;
+
+    @OneToOne(mappedBy = "promisedRecord")
+    @NotFound(action = NotFoundAction.IGNORE)
+    private PaymentRecord paymentRecord;
 
     public void updateRecord(ExtendedResponse extendedResponse) {
 

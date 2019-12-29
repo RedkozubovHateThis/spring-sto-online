@@ -7,6 +7,7 @@ import {Observable, Subscription} from 'rxjs';
 import {PaymentResponse} from '../model/payment/paymentResponse';
 import { SubscriptionTypeResponse } from '../model/payment/subscriptionTypeResponse';
 import {SubscriptionResponse} from '../model/payment/subscriptionResponse';
+import {PromisedAvailableResponse} from '../model/payment/promisedAvailableResponse';
 
 @Injectable()
 export class PaymentService {
@@ -49,6 +50,22 @@ export class PaymentService {
 
     return this.http.put<RegisterResponse>(
       `${this.userService.getApiUrl()}secured/payment/registerRequest?amount=${amount}`, {}, {headers}
+      );
+  }
+
+  sendRegisterPromisedRequest(amount: number): Observable<RegisterResponse> {
+    const headers = this.userService.getHeaders();
+
+    return this.http.put<RegisterResponse>(
+      `${this.userService.getApiUrl()}secured/payment/registerRequest/promised?amount=${amount}`, {}, {headers}
+      );
+  }
+
+  getPromisedStatus(): Observable<PromisedAvailableResponse> {
+    const headers = this.userService.getHeaders();
+
+    return this.http.get<PromisedAvailableResponse>(
+      `${this.userService.getApiUrl()}secured/payment/registerRequest/promised/isAvailable`, {headers}
       );
   }
 

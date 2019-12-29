@@ -2,5 +2,6 @@ package io.swagger.postgres.model.enums;
 
 public enum PaymentType {
     DEPOSIT,
-    PURCHASE
+    PURCHASE,
+    PROMISED
 }
