@@ -14,13 +14,13 @@
             <div class="col">
               <label class="form-control-label">Сумма, руб.</label>
               <input class="form-control form-control-sm form-control-alternative" type="number" min="0" step=".10"
-                     (keyup.enter)="sendRequest()" placeholder="сумма, руб." [(ngModel)]="amount">
+                     (keyup.enter)="sendRequest()" placeholder="сумма, руб." [(ngModel)]="amount" [disabled]="userService.isDemoDomain()">
             </div>
           </div>
 
           <div class="row form-group justify-content-end">
             <div class="col-auto">
-              <button class="btn btn-buro-green btn-sm" [disabled]="amount == null || amount <= 0"
+              <button class="btn btn-buro-green btn-sm" [disabled]="amount == null || amount <= 0 || userService.isDemoDomain()"
                       (click)="sendRequest()">Оплатить картой</button>
             </div>
           </div>
@@ -50,7 +50,7 @@
 
           <div class="row form-group" *ngIf="!isPromised">
             <div class="col">
-              <button class="btn btn-buro-green btn-sm btn-block"
+              <button class="btn btn-buro-green btn-sm btn-block" [disabled]="userService.isDemoDomain()"
                       (click)="togglePromised()">Обещанный платеж</button>
             </div>
           </div>
@@ -118,6 +118,13 @@
               <div class="alert alert-danger text-center" role="alert">
                 При проведении платежа возникла ошибка!
               </div>
+            </div>
+          </div>
+
+          <div class="row form-group" *ngIf="userService.isDemoDomain()">
+            <div class="col text-justify">
+              <div class="font-weight-bold mb-1">Внимание!</div>
+              <div class="">Пополнение баланса и обещанный платеж недоступны в демонстрационном режиме.</div>
             </div>
           </div>
 

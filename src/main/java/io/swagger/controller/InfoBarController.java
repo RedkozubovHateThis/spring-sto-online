@@ -29,12 +29,6 @@ import java.util.List;
 @RequestMapping("/secured/infoBar")
 public class InfoBarController {
 
-    private final String SUBSCRIPTION_NAME = "Проф";
-    private final double SUBSCRIPTION_COST = 16000.0;
-    private final double BALANCE = 18765.00;
-    private final int TOTAL_DOCUMENTS = 80;
-    private final int COMPLETE_DOCUMENTS = 25;
-
     @Autowired
     private UserRepository userRepository;
 
@@ -80,49 +74,33 @@ public class InfoBarController {
 
         ServiceLeaderInfo serviceLeaderInfo = new ServiceLeaderInfo();
 
-        if ( demoDomain ) {
-            Date subscriptionEndDate = new Date( System.currentTimeMillis() + ( 1000L * 60L * 60L * 24L * 30L ) );
+        Subscription subscription = currentUser.getCurrentSubscription();
 
-            serviceLeaderInfo.setDocumentsRemains( TOTAL_DOCUMENTS - COMPLETE_DOCUMENTS );
-            serviceLeaderInfo.setTotalDocuments( TOTAL_DOCUMENTS );
-            serviceLeaderInfo.setSubscribeName( SUBSCRIPTION_NAME );
+        if ( subscription != null ) {
 
-            serviceLeaderInfo.setSubscribeEndDate( subscriptionEndDate );
+            Integer documentsCount =
+                    documentsRepository.countDocumentsByOrganizationIdAndDates( currentUser.getOrganizationId(),
+                            subscription.getStartDate(), subscription.getEndDate() );
 
-            serviceLeaderInfo.setBalance( BALANCE );
-            serviceLeaderInfo.setBalanceValid( true );
-        }
-        else {
+            serviceLeaderInfo.setDocumentsRemains( Math.max( subscription.getDocumentsCount() - documentsCount, 0 ) );
+            serviceLeaderInfo.setTotalDocuments( subscription.getDocumentsCount() );
+            serviceLeaderInfo.setSubscribeName( subscription.getName() );
+            serviceLeaderInfo.setSubscribeEndDate( subscription.getEndDate() );
 
-            Subscription subscription = currentUser.getCurrentSubscription();
+            SubscriptionType renewalType = currentUser.getSubscriptionType();
 
-            if ( subscription != null ) {
-
-                Integer documentsCount =
-                        documentsRepository.countDocumentsByOrganizationIdAndDates( currentUser.getOrganizationId(),
-                                subscription.getStartDate(), subscription.getEndDate() );
-
-                serviceLeaderInfo.setDocumentsRemains( Math.max( subscription.getDocumentsCount() - documentsCount, 0 ) );
-                serviceLeaderInfo.setTotalDocuments( subscription.getDocumentsCount() );
-                serviceLeaderInfo.setSubscribeName( subscription.getName() );
-                serviceLeaderInfo.setSubscribeEndDate( subscription.getEndDate() );
-
-                SubscriptionType renewalType = currentUser.getSubscriptionType();
-
-                if ( renewalType == null )
-                    serviceLeaderInfo.setBalanceValid(
-                            subscription.getIsRenewable() && currentUser.getBalance() - subscription.getRenewalCost() > 0
-                    );
-                else
-                    serviceLeaderInfo.setBalanceValid(
-                            currentUser.getBalance() - renewalType.getCost() > 0
-                    );
-
-            }
-
-            serviceLeaderInfo.setBalance( currentUser.getBalance() );
+            if ( renewalType == null )
+                serviceLeaderInfo.setBalanceValid(
+                        subscription.getIsRenewable() && currentUser.getBalance() - subscription.getRenewalCost() > 0
+                );
+            else
+                serviceLeaderInfo.setBalanceValid(
+                        currentUser.getBalance() - renewalType.getCost() > 0
+                );
 
         }
+
+        serviceLeaderInfo.setBalance( currentUser.getBalance() );
 
         serviceLeaderInfo.setModeratorFio( currentUser.getModeratorFio() );
 

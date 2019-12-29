@@ -112,6 +112,10 @@ export class UserService implements TransferService<User>, RestService<User> {
     }
   }
 
+  isDemoDomain(): boolean {
+    return localStorage.getItem('demoDomain') != null && localStorage.getItem('demoDomain') !== null
+  }
+
   getApiUrl(): string {
     if ( localStorage.getItem('demoDomain') != null && localStorage.getItem('demoDomain') !== null ) {
       return environment.demoUrl;
