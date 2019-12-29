@@ -172,6 +172,7 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
       this.requestOrganization();
 
     this.requestReplacementModerators();
+    this.requestAllSubscriptionTypes();
   }
 
   private removeLink(user: User) {
