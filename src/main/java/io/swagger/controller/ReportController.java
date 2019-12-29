@@ -41,7 +41,8 @@ public class ReportController {
                                            @PathVariable("reportType") ReportType reportType) {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.hasRole(currentUser, "ADMIN") && !UserHelper.hasRole(currentUser, "MODERATOR") ) {
+        if ( !UserHelper.hasRole(currentUser, "ADMIN") && !UserHelper.hasRole(currentUser, "MODERATOR")
+                && !UserHelper.hasRole(currentUser, "SERVICE_LEADER") ) {
 
             if ( !reportType.equals( ReportType.ORDER ) && !reportType.equals( ReportType.ORDER_ACT )
                     && !reportType.equals( ReportType.ORDER_TRANSFER ) )

@@ -166,6 +166,7 @@
 	<parameter name="stamp" class="java.awt.Image"/>
 	<parameter name="employeeFio" class="java.lang.String"/>
 	<parameter name="barCode" class="java.lang.String"/>
+	<parameter name="orderType" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -223,7 +224,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="Times New Roman" size="8.8" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA["ДОГОВОР ЗАКАЗ-НАРЯД НА РАБОТЫ № " + $P{orderNum}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$P{orderType} + " ЗАКАЗ-НАРЯД НА РАБОТЫ № " + $P{orderNum}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="396" y="1" width="84" height="16" uuid="7768bc65-0038-4850-9342-817282812e22">
