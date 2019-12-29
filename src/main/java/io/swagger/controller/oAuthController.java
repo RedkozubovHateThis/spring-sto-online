@@ -262,6 +262,7 @@ public class oAuthController {
         user.setAllowSms(false);
         user.setIsAutoRegistered(false);
         user.setPassword( userPasswordEncoder.encode( user.getPassword() ) );
+        user.setBalance(25000.0);
 
         UserRole clientRole = userRoleRepository.findByName("SERVICE_LEADER");
 

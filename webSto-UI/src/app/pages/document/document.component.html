@@ -1,6 +1,6 @@
 <div class="container-fluid mt--7">
   <div class="row">
-    <div class="col mb-5">
+    <div class="col">
       <div class="card shadow">
         <div class="card-header">
           <app-loading-bar [isLoading]="isLoading || isUpdating"></app-loading-bar>
@@ -16,7 +16,9 @@
                                  [model]="model" [withPrint]="false"></app-report-button>
               <app-report-button *ngIf="userService.currentUser != null" [printDisabled]="model != null && model.state !== 4"
                                  [model]="model"></app-report-button>
-              <app-share-button *ngIf="model != null && userService.isNotClient()" [document]="model"></app-share-button>
+              <app-share-button *ngIf="model != null && userService.isNotClient()" [document]="model"
+                                [disabled]="userService.isServiceLeaderWithExpiredSubscription() ||
+                                paymentService.isServiceLeaderWithExpiredSubscription()"></app-share-button>
             </div>
           </div>
         </div>
@@ -209,6 +211,8 @@
                     <th>
                       {{work.name}}
                       <app-share-button *ngIf="model != null && userService.isNotClient()" [isLink]="true"
+                                        [disabled]="userService.isServiceLeaderWithExpiredSubscription() ||
+                                        paymentService.isServiceLeaderWithExpiredSubscription()"
                                         [document]="model" [serviceWork]="work"></app-share-button>
                     </th>
                     <th *ngIf="userService.isNotClient()">
@@ -291,6 +295,8 @@
                     <th>
                       {{addon.fullName}}
                       <app-share-button *ngIf="model != null && userService.isNotClient()" [isLink]="true"
+                                        [disabled]="userService.isServiceLeaderWithExpiredSubscription() ||
+                                        paymentService.isServiceLeaderWithExpiredSubscription()"
                                         [document]="model" [serviceGoodsAddon]="addon"></app-share-button>
                     </th>
 <!--                    <th class="wrap-column">-->
@@ -350,6 +356,8 @@
                     <th>
                       {{addon.fullName}}
                       <app-share-button *ngIf="model != null && userService.isNotClient()" [isLink]="true"
+                                        [disabled]="userService.isServiceLeaderWithExpiredSubscription() ||
+                                        paymentService.isServiceLeaderWithExpiredSubscription()"
                                         [document]="model" [clientGoodsOut]="addon"></app-share-button>
                     </th>
                     <th style="text-align: right;">

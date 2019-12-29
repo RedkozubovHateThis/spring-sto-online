@@ -11,6 +11,7 @@ public class ModeratorInfo {
     private Integer documentsRemainsAll;
     private Integer totalDocumentsAll;
 
+    private Boolean byService;
     private Double balanceAll;
     private Boolean balanceValid;
 

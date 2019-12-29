@@ -16,7 +16,7 @@ export class DashboardComponent implements OnInit {
 
   private isLoading: boolean = false;
 
-  constructor(private documentResponseService: DocumentResponseService, private router: Router,
+  constructor(private documentResponseService: DocumentResponseService, private router: Router, private userService: UserService,
               private documentResponseController: DocumentResponseController) { }
 
   ngOnInit() {

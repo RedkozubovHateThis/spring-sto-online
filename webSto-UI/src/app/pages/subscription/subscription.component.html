@@ -1,0 +1,280 @@
+<div class="container-fluid mt--7">
+  <div class="row">
+    <div class="col-xl-3 mb-5 mb-xl-0">
+      <div class="card shadow">
+        <div class="card-header">
+          <app-loading-bar [isLoading]="paymentService.isSubscriptionLoading || isLoading"></app-loading-bar>
+          <div class="row">
+
+            <div class="col">
+              <h3 class="mb-0">
+                Тариф
+              </h3>
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-sm btn-buro-green" (click)="requestAllSubscriptions()" [disabled]="isLoading">
+                Обновить
+              </button>
+            </div>
+
+          </div>
+        </div>
+        <div class="card-body">
+
+          <div class="form-group" *ngIf="userService.isServiceLeader()">
+            <select class="form-control form-control-sm form-control-alternative" [(ngModel)]="selectedSubscription"
+                    [disabled]="isLoading || subscriptions.length === 0">
+              <option [selected]="selectedSubscription != null && subscription.id === selectedSubscription.id"
+                      *ngFor="let subscription of subscriptions" [ngValue]="subscription">
+                {{subscription.name}}:&nbsp;
+                {{ subscription.startDate | date : 'dd.MM.yyyy' }} - {{ subscription.endDate | date : 'dd.MM.yyyy' }}
+                <ng-container *ngIf="userService.currentUser != null && userService.currentUser.currentSubscriptionId === subscription.id">
+                  &nbsp;(текущий)
+                </ng-container>
+              </option>
+            </select>
+          </div>
+
+          <ng-container *ngIf="selectedSubscription != null && userService.isServiceLeader()">
+
+            <div class="row form-group">
+              <div class="col">
+                Наименование
+              </div>
+              <div class="col-auto h3 mb-0">
+                {{selectedSubscription.name}}
+              </div>
+            </div>
+
+            <div class="row form-group">
+              <div class="col">
+                Дата оформления
+              </div>
+              <div class="col-auto h3 mb-0">
+                {{selectedSubscription.startDate | date : 'dd.MM.yy'}}
+              </div>
+            </div>
+
+            <div class="row form-group">
+              <div class="col">
+                Дата завершения
+              </div>
+              <div class="col-auto h3 mb-0">
+                {{selectedSubscription.endDate | date : 'dd.MM.yy'}}
+              </div>
+            </div>
+
+<!--            <div class="row form-group">-->
+<!--              <div class="col">-->
+<!--                Воможность продления-->
+<!--              </div>-->
+<!--              <div class="col-auto h3 mb-0">-->
+<!--                {{selectedSubscription.isRenewable ? 'Да' : 'Нет'}}-->
+<!--              </div>-->
+<!--            </div>-->
+
+            <div class="row form-group">
+              <div class="col">
+                Стоимость продления, руб.
+              </div>
+              <div class="col-auto h3 mb-0">
+                <span *ngIf="selectedSubscription.type === 'FREE'">н/д</span>
+                <span *ngIf="selectedSubscription.type !== 'FREE'">{{selectedSubscription.renewalCost | number : '.2' : 'ru'}}</span>
+              </div>
+            </div>
+
+            <div class="row form-group">
+              <div class="col">
+                Количество доступных заказ-нарядов
+              </div>
+              <div class="col-auto h3 mb-0">
+                {{selectedSubscription.documentsCount}}
+              </div>
+            </div>
+
+            <div class="row form-group">
+              <div class="col">
+                Остаток оплаченных заказ-нарядов
+              </div>
+              <div class="col-auto h3 mb-0">
+                {{selectedSubscription.documentsRemains}}
+              </div>
+            </div>
+
+            <div class="row form-group">
+              <div class="col">
+                Стоимость заказ-наряда, руб.
+              </div>
+              <div class="col-auto h3 mb-0">
+                <span *ngIf="selectedSubscription.type === 'FREE'">н/д</span>
+                <span *ngIf="selectedSubscription.type !== 'FREE'">{{selectedSubscription.documentCost}}</span>
+              </div>
+            </div>
+
+            <div class="row form-group" *ngIf="selectedSubscription.isClosedEarly">
+              <div class="col text-muted text-center">
+                Тариф был завершен досрочно.
+              </div>
+            </div>
+
+<!--            <button class="btn btn-sm btn-buro-green btn-block" *ngIf="!showAddon && selectedSubscription.type != 'FREE'"-->
+<!--                    (click)="toggleAddon()">-->
+<!--              Дополнить тариф-->
+<!--            </button>-->
+
+            <ng-container *ngIf="showAddon && selectedSubscription.type != 'FREE'">
+
+              <hr class="my-4" />
+
+              <div class="row form-group">
+                <div class="col">
+                  <h3 class="mb-0">Дополнение тарифа</h3>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-control-label" for="documents-count-input">Количество заказ-нарядов</label>
+                <input id="documents-count-input" class="form-control form-control-alternative form-control-sm"
+                       type="number" min="0" step="1"
+                       [(ngModel)]="documentsCount" (ngModelChange)="calculateCost()">
+              </div>
+
+              <div class="row form-group">
+                <div class="col">
+                  Стоимость:
+                </div>
+                <div class="col-auto h3 mb-0" *ngIf="cost != null && cost > 0">
+                  {{cost | number : '.2' : 'ru'}} руб.
+                </div>
+              </div>
+
+              <div class="row form-group justify-content-end">
+                <div class="col-auto">
+                  <button class="btn btn-sm btn-buro-green btn-block" (click)="buySubscriptionAddon()"
+                          [disabled]="selectedSubscription == null || documentsCount == null || documentsCount == 0 ||
+                      cost == null || cost === 0 || userService.currentUser.balance < cost || isLoading">
+                    Дополнить
+                  </button>
+                </div>
+              </div>
+
+              <div class="row form-group">
+                <div class="col text-justify">
+                  <div class="mb-1">Дополнение позволит увеличить количество доступных заказ-нарядов у выбранного тарифа.</div>
+                  <div>Стоимость заказ-наряда указана в описании тарифа.</div>
+                </div>
+              </div>
+
+            </ng-container>
+
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-9">
+      <div class="card shadow">
+        <div class="card-header">
+          <app-loading-bar [isLoading]="isTypesLoading"></app-loading-bar>
+
+          <h3 class="mb-0">
+<!--            Доступные тарифы - {{isBuyAvailable() ? 'покупка' : 'выбор по умолчанию'}}-->
+            Доступные тарифы
+          </h3>
+
+        </div>
+        <div class="card-body">
+
+<!--          <ng-container *ngIf="isBuyAvailable(); else renewalBlock">-->
+          <ng-container *ngIf="true; else renewalBlock">
+            <div class="form-group text-center">
+              <div class="mb-1">Выберите доступный тариф для покупки.</div>
+              <div>Для успешного продления, баланс на вашем счету должен полностью покрывать стоимость тарифа.</div>
+            </div>
+          </ng-container>
+          <ng-template #renewalBlock>
+            <div class="form-group text-center">
+              <div class="mb-1">Выберите доступный тариф для установки по умолчанию.</div>
+              <div>Для успешного продления, баланс на вашем счету должен полностью покрывать стоимость тарифа.</div>
+            </div>
+          </ng-template>
+
+          <div class="row" *ngIf="userService.isServiceLeader()">
+            <div class="col" *ngFor="let subscriptionType of subscriptionTypes">
+              <div class="card mb-2" style="min-width: 230px;">
+                <div class="card-header">
+                  <h3 class="mb-0">
+                    {{subscriptionType.name}}
+                  </h3>
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row form-group">
+                    <div class="col">
+                      Стоимость, руб.
+                    </div>
+                    <div class="col-auto h3 mb-0">
+                      <span *ngIf="subscriptionType.isFree">Бесплатно</span>
+                      <span *ngIf="!subscriptionType.isFree">{{subscriptionType.cost | number : '.2' : 'ru'}}</span>
+                    </div>
+                  </div>
+
+                  <div class="row form-group">
+                    <div class="col">
+                      Количество доступных заказ-нарядов
+                    </div>
+                    <div class="col-auto h3 mb-0">
+                      {{subscriptionType.documentsCount}}
+                    </div>
+                  </div>
+
+                  <div class="row form-group">
+                    <div class="col">
+                      Стоимость заказ-наряда, руб.
+                    </div>
+                    <div class="col-auto h3 mb-0">
+                      <span *ngIf="subscriptionType.isFree">н/д</span>
+                      <span *ngIf="!subscriptionType.isFree">{{subscriptionType.documentCost}}</span>
+                    </div>
+                  </div>
+
+                  <div class="row form-group">
+                    <div class="col">
+                      Длительность, дней
+                    </div>
+                    <div class="col-auto h3 mb-0">
+                      {{subscriptionType.durationDays}}
+                    </div>
+                  </div>
+
+<!--                  <ng-container *ngIf="isBuyAvailable(); else updateBlock">-->
+                  <ng-container *ngIf="true; else updateBlock">
+                    <button class="btn btn-buro-green btn-block" (click)="buySubscription(subscriptionType.type)"
+                            [disabled]="subscriptionType.isInactive || userService.currentUser.balance < subscriptionType.cost">
+                      Купить
+                    </button>
+                  </ng-container>
+                  <ng-template #updateBlock>
+                    <button class="btn btn-buro-green btn-block" (click)="updateRenewalSubscription(subscriptionType)"
+                            [disabled]="subscriptionType.isInactive ||
+                            userService.currentUser.subscriptionType === subscriptionType.type">
+                      <span *ngIf="userService.currentUser.subscriptionType === subscriptionType.type">Выбран</span>
+                      <span *ngIf="userService.currentUser.subscriptionType !== subscriptionType.type">
+                        Выбрать
+                      </span>
+                    </button>
+                  </ng-template>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>

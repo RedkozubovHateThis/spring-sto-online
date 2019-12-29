@@ -7,12 +7,15 @@ import io.swagger.firebird.repository.ModelDetailRepository;
 import io.swagger.firebird.repository.ModelRepository;
 import io.swagger.firebird.repository.OrganizationRepository;
 import io.swagger.helper.UserHelper;
+import io.swagger.postgres.model.enums.SubscriptionType;
+import io.swagger.postgres.model.payment.Subscription;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.response.info.ClientInfo;
 import io.swagger.response.info.ModeratorInfo;
 import io.swagger.response.info.ServiceLeaderInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,12 +29,6 @@ import java.util.List;
 @RequestMapping("/secured/infoBar")
 public class InfoBarController {
 
-    private final String SUBSCRIPTION_NAME = "Проф";
-    private final double SUBSCRIPTION_COST = 16000.0;
-    private final double BALANCE = 18765.00;
-    private final int TOTAL_DOCUMENTS = 80;
-    private final int COMPLETE_DOCUMENTS = 25;
-
     @Autowired
     private UserRepository userRepository;
 
@@ -43,6 +40,9 @@ public class InfoBarController {
 
     @Autowired
     private OrganizationRepository organizationRepository;
+
+    @Value("${domain.demo}")
+    private Boolean demoDomain;
 
     @GetMapping("/client")
     public ResponseEntity getClientInfo() {
@@ -72,16 +72,36 @@ public class InfoBarController {
                 currentUser.getOrganizationId() == null || !currentUser.getIsApproved() )
             return ResponseEntity.notFound().build();
 
-        Date subscriptionEndDate = new Date( System.currentTimeMillis() + ( 1000L * 60L * 60L * 24L * 30L ) );
-//        Integer documentCount = documentsRepository.countDocumentsByOrganizationIdAndDates( currentUser.getOrganizationId() );
-
         ServiceLeaderInfo serviceLeaderInfo = new ServiceLeaderInfo();
-        serviceLeaderInfo.setDocumentsRemains( TOTAL_DOCUMENTS - COMPLETE_DOCUMENTS );
-        serviceLeaderInfo.setTotalDocuments( TOTAL_DOCUMENTS );
-        serviceLeaderInfo.setSubscribeName( SUBSCRIPTION_NAME );
-        serviceLeaderInfo.setSubscribeEndDate( subscriptionEndDate );
-        serviceLeaderInfo.setBalance( BALANCE );
-        serviceLeaderInfo.setBalanceValid( BALANCE - SUBSCRIPTION_COST > 0 );
+
+        Subscription subscription = currentUser.getCurrentSubscription();
+
+        if ( subscription != null ) {
+
+            Integer documentsCount =
+                    documentsRepository.countDocumentsByOrganizationIdAndDates( currentUser.getOrganizationId(),
+                            subscription.getStartDate(), subscription.getEndDate() );
+
+            serviceLeaderInfo.setDocumentsRemains( Math.max( subscription.getDocumentsCount() - documentsCount, 0 ) );
+            serviceLeaderInfo.setTotalDocuments( subscription.getDocumentsCount() );
+            serviceLeaderInfo.setSubscribeName( subscription.getName() );
+            serviceLeaderInfo.setSubscribeEndDate( subscription.getEndDate() );
+
+            SubscriptionType renewalType = currentUser.getSubscriptionType();
+
+            if ( renewalType == null )
+                serviceLeaderInfo.setBalanceValid(
+                        subscription.getIsRenewable() && currentUser.getBalance() - subscription.getRenewalCost() > 0
+                );
+            else
+                serviceLeaderInfo.setBalanceValid(
+                        currentUser.getBalance() - renewalType.getCost() > 0
+                );
+
+        }
+
+        serviceLeaderInfo.setBalance( currentUser.getBalance() );
+
         serviceLeaderInfo.setModeratorFio( currentUser.getModeratorFio() );
 
         Organization organization = organizationRepository.findOne( currentUser.getOrganizationId() );
@@ -106,14 +126,38 @@ public class InfoBarController {
 
             User serviceLeader = userRepository.findUserByOrganizationId( organizationId );
 
-            if ( serviceLeader != null && serviceLeader.getIsApproved() ) {
+            if ( serviceLeader != null && serviceLeader.getOrganizationId() != null && serviceLeader.getIsApproved() ) {
 
-//                Integer documentCount = documentsRepository.countDocumentsByOrganizationIdAndDates( serviceLeader.getOrganizationId() );
-                moderatorInfo.setDocumentsRemainsAll( TOTAL_DOCUMENTS - COMPLETE_DOCUMENTS );
-                moderatorInfo.setTotalDocumentsAll( TOTAL_DOCUMENTS );
-                moderatorInfo.setBalanceAll( BALANCE );
-                moderatorInfo.setBalanceValid( BALANCE - SUBSCRIPTION_COST > 0 );
+                moderatorInfo.setByService(true);
+                Subscription subscription = serviceLeader.getCurrentSubscription();
+
+                if ( subscription != null ) {
+
+                    Integer documentCount =
+                            documentsRepository.countDocumentsByOrganizationIdAndDates( serviceLeader.getOrganizationId(),
+                                    subscription.getStartDate(), subscription.getEndDate() );
+                    moderatorInfo.setDocumentsRemainsAll( Math.max( subscription.getDocumentsCount() - documentCount, 0 ) );
+                    moderatorInfo.setTotalDocumentsAll( subscription.getDocumentsCount() );
+
+                    SubscriptionType renewalType = currentUser.getSubscriptionType();
+
+                    if ( renewalType == null )
+                        moderatorInfo.setBalanceValid(
+                                subscription.getIsRenewable() && serviceLeader.getBalance() - subscription.getRenewalCost() > 0
+                        );
+                    else
+                        moderatorInfo.setBalanceValid(
+                                serviceLeader.getBalance() - renewalType.getCost() > 0
+                        );
+
+                }
+                else {
+                    moderatorInfo.setDocumentsRemainsAll( 0 );
+                    moderatorInfo.setTotalDocumentsAll( 0 );
+                }
+
                 moderatorInfo.setTotalDraftAll( documentsRepository.countByOrganizationIdAndState( serviceLeader.getOrganizationId(), 2 ) );
+                moderatorInfo.setBalanceAll( serviceLeader.getBalance() );
 
             }
 
@@ -130,15 +174,22 @@ public class InfoBarController {
                 if ( serviceLeader.getOrganizationId() == null || !serviceLeader.getIsApproved() )
                     continue;
 
-//                Integer documentCount = documentsRepository.countDocumentsByOrganizationIdAndDates( serviceLeader.getOrganizationId() );
+                balanceAll += serviceLeader.getBalance();
 
-                totalDocumentsAll += TOTAL_DOCUMENTS;
-                documentsRemainsAll += TOTAL_DOCUMENTS - COMPLETE_DOCUMENTS;
-                balanceAll += BALANCE;
+                Subscription subscription = serviceLeader.getCurrentSubscription();
 
+                if ( subscription == null )
+                    continue;
+
+                Integer documentCount =
+                        documentsRepository.countDocumentsByOrganizationIdAndDates( serviceLeader.getOrganizationId(),
+                                subscription.getStartDate(), subscription.getEndDate() );
+
+                totalDocumentsAll += subscription.getDocumentsCount();
+                documentsRemainsAll += subscription.getDocumentsCount() - documentCount;
             }
 
-            moderatorInfo.setDocumentsRemainsAll( documentsRemainsAll );
+            moderatorInfo.setDocumentsRemainsAll( Math.max( documentsRemainsAll, 0 ) );
             moderatorInfo.setTotalDocumentsAll( totalDocumentsAll );
             moderatorInfo.setBalanceAll( balanceAll );
             moderatorInfo.setTotalDraftAll( documentsRepository.countByState( 2 ) );

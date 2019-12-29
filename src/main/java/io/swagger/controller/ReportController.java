@@ -1,6 +1,7 @@
 package io.swagger.controller;
 
 import io.swagger.helper.UserHelper;
+import io.swagger.postgres.model.payment.Subscription;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.response.exception.DataNotFoundException;
@@ -92,10 +93,24 @@ public class ReportController {
 
         if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
 
-            if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() )
+            if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ||
+                    currentUser.getIsAccessRestricted() )
                 return ResponseEntity.status(404).build();
 
-            responses = reportService.getExecutorResponses(currentUser.getOrganizationId(), startDate, endDate);
+            if ( currentUser.getIsCurrentSubscriptionExpired() ) {
+
+                Subscription subscription = currentUser.getCurrentSubscription();
+
+                if ( startDate.after( subscription.getEndDate() ) )
+                    return ResponseEntity.status(404).build();
+                else if ( endDate.before( subscription.getEndDate() ) )
+                    responses = reportService.getExecutorResponses(currentUser.getOrganizationId(), startDate, endDate);
+                else
+                    responses = reportService.getExecutorResponses(currentUser.getOrganizationId(), startDate, subscription.getEndDate());
+
+            }
+            else
+                responses = reportService.getExecutorResponses(currentUser.getOrganizationId(), startDate, endDate);
         }
         else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ||
                 UserHelper.hasRole( currentUser, "ADMIN" ) ) {
@@ -128,10 +143,24 @@ public class ReportController {
 
             if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
 
-                if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() )
+                if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ||
+                        currentUser.getIsAccessRestricted() )
                     return ResponseEntity.status(404).build();
 
-                response = reportService.getExecutorsReport(currentUser.getOrganizationId(), startDate, endDate);
+                if ( currentUser.getIsCurrentSubscriptionExpired() ) {
+
+                    Subscription subscription = currentUser.getCurrentSubscription();
+
+                    if ( startDate.after( subscription.getEndDate() ) )
+                        return ResponseEntity.status(404).build();
+                    else if ( endDate.before( subscription.getEndDate() ) )
+                        response = reportService.getExecutorsReport(currentUser.getOrganizationId(), startDate, endDate);
+                    else
+                        response = reportService.getExecutorsReport(currentUser.getOrganizationId(), startDate, subscription.getEndDate());
+
+                }
+                else
+                    response = reportService.getExecutorsReport(currentUser.getOrganizationId(), startDate, endDate);
             }
             else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ||
                     UserHelper.hasRole( currentUser, "ADMIN" ) ) {
@@ -170,10 +199,24 @@ public class ReportController {
 
         if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
 
-            if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() )
+            if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ||
+                    currentUser.getIsAccessRestricted() )
                 return ResponseEntity.status(404).build();
 
-            responses = reportService.getClientsResponses(currentUser.getOrganizationId(), startDate, endDate);
+            if ( currentUser.getIsCurrentSubscriptionExpired() ) {
+
+                Subscription subscription = currentUser.getCurrentSubscription();
+
+                if ( startDate.after( subscription.getEndDate() ) )
+                    return ResponseEntity.status(404).build();
+                else if ( endDate.before( subscription.getEndDate() ) )
+                    responses = reportService.getClientsResponses(currentUser.getOrganizationId(), startDate, endDate);
+                else
+                    responses = reportService.getClientsResponses(currentUser.getOrganizationId(), startDate, subscription.getEndDate());
+
+            }
+            else
+                responses = reportService.getClientsResponses(currentUser.getOrganizationId(), startDate, endDate);
         }
         else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ||
                 UserHelper.hasRole( currentUser, "ADMIN" ) ) {
@@ -206,10 +249,24 @@ public class ReportController {
 
             if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
 
-                if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() )
+                if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ||
+                        currentUser.getIsAccessRestricted() )
                     return ResponseEntity.status(404).build();
 
-                response = reportService.getClientsReport(currentUser.getOrganizationId(), startDate, endDate);
+                if ( currentUser.getIsCurrentSubscriptionExpired() ) {
+
+                    Subscription subscription = currentUser.getCurrentSubscription();
+
+                    if ( startDate.after( subscription.getEndDate() ) )
+                        return ResponseEntity.status(404).build();
+                    else if ( endDate.before( subscription.getEndDate() ) )
+                        response = reportService.getClientsReport(currentUser.getOrganizationId(), startDate, endDate);
+                    else
+                        response = reportService.getClientsReport(currentUser.getOrganizationId(), startDate, subscription.getEndDate());
+
+                }
+                else
+                    response = reportService.getClientsReport(currentUser.getOrganizationId(), startDate, endDate);
             }
             else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ||
                     UserHelper.hasRole( currentUser, "ADMIN" ) ) {

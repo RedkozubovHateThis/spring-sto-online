@@ -21,12 +21,23 @@
   padding: 3px 0 3px 6px;
   min-height: 45px;
 }
+.opponents-list > .opponent.disabled:first-child {
+  border-top: 1px solid #dddddd;
+}
+.opponents-list > .opponent.disabled {
+  border-left: 1px solid #dddddd;
+  border-right: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
+}
 .opponents-list > .opponent.active {
   //border-left: 2px solid #60B61C;
   background: rgba(96, 182, 28, 0.1);
 }
 .opponents-list > .opponent.delimeter {
   //border-bottom: 1px solid #cccccc;
+}
+.opponents-list > .opponent.disabled {
+  cursor: default;
 }
 .chat-block {
   height: 50vh;

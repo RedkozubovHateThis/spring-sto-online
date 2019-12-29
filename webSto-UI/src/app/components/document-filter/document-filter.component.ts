@@ -24,6 +24,8 @@ export class DocumentFilterComponent implements OnInit {
   private filter: DocumentsFilter;
   @Input()
   private document: DocumentResponse;
+  @Input()
+  private disabled: boolean;
   @Output()
   private onChange: EventEmitter<any> = new EventEmitter();
   @Output()

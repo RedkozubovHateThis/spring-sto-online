@@ -24,6 +24,7 @@ export class DocumentResponse {
   serviceWork: ServiceWorkTotalResponse;
   serviceGoodsAddon: ServiceGoodsAddonTotalResponse;
   goodsOutClient: GoodsOutClientTotalResponse;
+  isInactive: boolean;
 
 }
 

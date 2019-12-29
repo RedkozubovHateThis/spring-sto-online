@@ -14,11 +14,20 @@
 
             <div class="col-lg-4 mb-3">
               <div class="opponents-list">
+                <div class="opponent disabled text-muted" *ngIf="userService.isServiceLeaderWithRestrictedAccess()">
+                  <span *ngIf="userService.isServiceLeaderWithEmptySubscription()">
+                    Для возможности переписки в чате необходимо оформить тариф. Список тарифов доступен в соответсвующем пункте меню.
+                  </span>
+                  <span *ngIf="userService.isServiceLeaderWithInvalidBalance()">
+                    Для возможности переписки в чате необходимо пополнить баланс.
+                  </span>
+                </div>
                 <div class="opponent" *ngFor="let opponent of opponents"
                      [ngClass]="{
                      'active': selectedOpponent != null && selectedOpponent.id === opponent.id,
                      'delimeter': opponents.indexOf(opponent) < opponents.length - 1,
-                     'text-muted': opponent.inVacation
+                     'text-muted': opponent.inVacation || userService.isServiceLeaderWithRestrictedAccess(),
+                     'disabled': userService.isServiceLeaderWithRestrictedAccess()
                      }"
                      (click)="selectOpponent(opponent)">
                   {{opponent.fio}}
@@ -101,12 +110,17 @@
                   <div class="row">
                     <div class="col">
                       <input class="form-control form-control-sm form-control-alternative" [(ngModel)]="chatMessage"
-                             [disabled]="selectedOpponent == null"
+                             [disabled]="selectedOpponent == null ||
+                             userService.isServiceLeaderWithExpiredSubscription() ||
+                             paymentService.isServiceLeaderWithExpiredSubscription()"
                              placeholder="Введите текст сообщения" (keyup.enter)="sendMessage(null)" />
                     </div>
                     <div class="col-auto">
                       <button class="btn btn-default btn-sm btn-buro-green"
-                              [disabled]="selectedOpponent == null" (click)="showUpload()">
+                              [disabled]="selectedOpponent == null ||
+                              userService.isServiceLeaderWithExpiredSubscription() ||
+                              paymentService.isServiceLeaderWithExpiredSubscription()"
+                              (click)="showUpload()">
                         <i class="fas fa-paperclip"></i>
                       </button>
                     </div>

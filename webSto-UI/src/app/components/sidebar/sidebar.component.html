@@ -122,6 +122,14 @@
         <a routerLinkActive="active" [routerLink]="['/event-messages']" class="nav-link">
           <i class="fas fa-bell text-buro-green"></i> Уведомления
         </a>
+        <a routerLinkActive="active" [routerLink]="['/balance']" class="nav-link"
+           *ngIf="userService.isServiceLeader()">
+          <i class="fas fa-ruble-sign text-buro-green"></i> Баланс
+        </a>
+        <a routerLinkActive="active" [routerLink]="['/subscription']" class="nav-link"
+           *ngIf="userService.isServiceLeader()">
+          <i class="fas fa-book text-buro-green"></i> Тарифы
+        </a>
       </ul>
     </div>
   </div>

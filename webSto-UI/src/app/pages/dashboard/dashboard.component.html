@@ -11,7 +11,8 @@
               </h3>
             </div>
             <div class="col-auto">
-              <button class="btn btn-sm btn-buro-green" (click)="requestData()" [disabled]="isLoading">
+              <button class="btn btn-sm btn-buro-green" (click)="requestData()"
+                      [disabled]="isLoading || userService.isServiceLeaderWithRestrictedAccess()">
                 Обновить
               </button>
               <a class="btn btn-sm btn-buro-green" [routerLink]="['/documents']">Посмотреть все</a>
@@ -33,7 +34,22 @@
                 <th scope="col">Сумма, руб.</th>
               </tr>
             </thead>
-            <tbody *ngIf="documentResponseController.last5 != null">
+            <ng-container *ngIf="userService.isServiceLeaderWithRestrictedAccess(); else documentsBlock">
+              <tbody>
+              <tr>
+                <th colspan="8" class="text-muted text-center">
+                  <span *ngIf="userService.isServiceLeaderWithEmptySubscription()">
+                    Для просмотра заказ-нарядов необходимо оформить тариф. Список тарифов доступен в соответсвующем пункте меню.
+                  </span>
+                  <span *ngIf="userService.isServiceLeaderWithInvalidBalance()">
+                    Для просмотра заказ-нарядов необходимо пополнить баланс.
+                  </span>
+                </th>
+              </tr>
+              </tbody>
+            </ng-container>
+            <ng-template #documentsBlock>
+              <tbody *ngIf="documentResponseController.last5 != null">
               <tr *ngFor="let fbResponse of documentResponseController.last5.content, let i = index" [attr.data-index]="i" style="cursor: pointer;" (click)="navigate(fbResponse)">
                 <th>{{fbResponse.documentNumber}}</th>
                 <th>{{fbResponse.startDate}}</th>
@@ -48,7 +64,8 @@
                 <th>{{fbResponse.vehicle.regNumber}}</th>
                 <th>{{fbResponse.sum | number:'.2':'ru'}}</th>
               </tr>
-            </tbody>
+              </tbody>
+            </ng-template>
           </table>
         </div>
       </div>

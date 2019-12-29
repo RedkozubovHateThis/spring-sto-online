@@ -7,6 +7,8 @@ import io.swagger.postgres.model.ChatMessage;
 import io.swagger.postgres.model.DocumentUserState;
 import io.swagger.postgres.model.EventMessage;
 import io.swagger.postgres.model.UploadFile;
+import io.swagger.postgres.model.enums.SubscriptionType;
+import io.swagger.postgres.model.payment.Subscription;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.NotFound;
@@ -63,6 +65,8 @@ public class User implements UserDetails, Serializable {
 
     private boolean enabled;
 
+    private Double balance;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_role_id", referencedColumnName = "id"))
     @OrderBy("name")
@@ -92,10 +96,21 @@ public class User implements UserDetails, Serializable {
     @NotFound(action = NotFoundAction.IGNORE)
     private User moderator;
 
+    @JsonIgnore
+    @OneToOne
+    @NotFound(action = NotFoundAction.IGNORE)
+    private Subscription currentSubscription;
+    @JsonIgnore
+    @OrderBy("startDate desc")
+    @OneToMany(mappedBy = "user")
+    private Set<Subscription> allSubscriptions = new HashSet<>();
+
     @Transient
     private Long replacementModeratorId;
     @Transient
     private Long moderatorId;
+    @Transient
+    private Long currentSubscriptionId;
 
     @JsonIgnore
     @OneToMany(mappedBy = "replacementModerator")
@@ -128,6 +143,10 @@ public class User implements UserDetails, Serializable {
 
     private Double serviceWorkPrice;
     private Double serviceGoodsCost;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private SubscriptionType subscriptionType;
 
     @Override
     public boolean isAccountNonExpired() {
@@ -216,6 +235,13 @@ public class User implements UserDetails, Serializable {
         return null;
     }
 
+    public Long getCurrentSubscriptionId() {
+        if ( currentSubscription != null )
+            return currentSubscription.getId();
+
+        return null;
+    }
+
     @JsonIgnore
     public Long getCurrentReplacementModeratorId() {
         return replacementModeratorId;
@@ -224,5 +250,29 @@ public class User implements UserDetails, Serializable {
     @JsonIgnore
     public Long getCurrentModeratorId() {
         return moderatorId;
+    }
+
+    @JsonIgnore
+    public Long getCurrentCurrentSubscriptionId() {
+        return currentSubscriptionId;
+    }
+
+    public Double getBalance() {
+        if ( balance == null ) return 0.0;
+        return balance;
+    }
+
+    public Boolean getIsCurrentSubscriptionEmpty() {
+        return currentSubscription == null;
+    }
+    public Boolean getIsBalanceInvalid() {
+        return balance != null && balance < 0;
+    }
+    public Boolean getIsAccessRestricted() {
+        return getIsCurrentSubscriptionEmpty() || getIsBalanceInvalid();
+    }
+
+    public Boolean getIsCurrentSubscriptionExpired() {
+        return currentSubscription != null && currentSubscription.getEndDate().before( new Date() );
     }
 }

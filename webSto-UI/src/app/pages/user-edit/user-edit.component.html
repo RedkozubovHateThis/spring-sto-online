@@ -1,6 +1,6 @@
 <div class="container-fluid mt--7">
   <div class="row">
-    <div class="col-xl-8 mb-5" [ngClass]="{ 'col-xl-12': model != null && ( model.userAdmin || model.userModerator ) }">
+    <div class="col-xl-8 mb-5 mb-xl-0" [ngClass]="{ 'col-xl-12': model != null && ( model.userAdmin || model.userModerator ) }">
       <div class="card bg-secondary shadow">
         <div class="card-header bg-white border-0">
           <app-loading-bar [isLoading]="isLoading || userService.isSaving"></app-loading-bar>
@@ -155,8 +155,72 @@
                 </div>
               </div>
             </div>
-            <hr class="my-4" />
             <ng-container *ngIf="userService.isSameUser( model ) && model.userServiceLeader">
+              <hr class="my-4" />
+              <!-- Subscriptions -->
+              <h6 class="heading-small text-muted mb-4">Тариф по умолчанию</h6>
+              <div class="pl-lg-4">
+                <div class="row">
+                  <div class="col" *ngFor="let subscriptionType of subscriptionTypes">
+                    <div class="card mb-2" style="min-width: 230px;" *ngIf="!subscriptionType.isFree && !subscriptionType.isInactive">
+                      <div class="card-header">
+                        <h3 class="mb-0">
+                          {{subscriptionType.name}}
+                        </h3>
+                      </div>
+
+                      <div class="card-body">
+
+                        <div class="row form-group">
+                          <div class="col">
+                            Стоимость, руб.
+                          </div>
+                          <div class="col-auto h3 mb-0">
+                            {{subscriptionType.cost | number : '.2' : 'ru'}}
+                          </div>
+                        </div>
+
+                        <div class="row form-group">
+                          <div class="col">
+                            Количество доступных заказ-нарядов
+                          </div>
+                          <div class="col-auto h3 mb-0">
+                            {{subscriptionType.documentsCount}}
+                          </div>
+                        </div>
+
+                        <div class="row form-group">
+                          <div class="col">
+                            Стоимость заказ-наряда, руб.
+                          </div>
+                          <div class="col-auto h3 mb-0">
+                            {{subscriptionType.documentCost}}
+                          </div>
+                        </div>
+
+                        <div class="row form-group">
+                          <div class="col">
+                            Длительность, дней
+                          </div>
+                          <div class="col-auto h3 mb-0">
+                            {{subscriptionType.durationDays}}
+                          </div>
+                        </div>
+
+                        <button class="btn btn-buro-green btn-block" (click)="model.subscriptionType = subscriptionType.type"
+                                [disabled]="model.subscriptionType === subscriptionType.type">
+                          <span *ngIf="model.subscriptionType === subscriptionType.type">Выбран</span>
+                          <span *ngIf="model.subscriptionType !== subscriptionType.type">Выбрать</span>
+                        </button>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="userService.isSameUser( model ) && model.userServiceLeader">
+              <hr class="my-4" />
               <!-- Shops -->
               <h6 class="heading-small text-muted mb-4">Магазины</h6>
               <div class="pl-lg-4">
@@ -181,7 +245,7 @@
         </div>
       </div>
     </div>
-    <div class="col-xl-4 mb-5" *ngIf="model != null && ( model.userClient || model.userServiceLeader )">
+    <div class="col-xl-4" *ngIf="model != null && ( model.userClient || model.userServiceLeader )">
       <div class="card bg-secondary shadow">
 
         <div class="card-header bg-white border-0">

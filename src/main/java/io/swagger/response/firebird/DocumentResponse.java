@@ -28,9 +28,20 @@ public class DocumentResponse {
     private ServiceGoodsAddonTotalResponse serviceGoodsAddon;
     private GoodsOutClientTotalResponse goodsOutClient;
 
-    public DocumentResponse(DocumentServiceDetail document) {
+    private Boolean isInactive;
 
+    public DocumentResponse(DocumentServiceDetail document) {
+        setFields( document, false );
+    }
+
+    public DocumentResponse(DocumentServiceDetail document, Boolean isInactive) {
+        setFields(document, isInactive);
+    }
+
+    private void setFields(DocumentServiceDetail document, Boolean isInactive) {
         if ( document == null ) return;
+
+        this.isInactive = isInactive;
 
         id = document.getId();
         startDate = DateHelper.formatDateTime( document.getDateStart() );
@@ -73,7 +84,6 @@ public class DocumentResponse {
 
         Organization organization = documentOut.getOrganization();
         if ( organization != null ) this.organization = organization.getFullName();
-
     }
 
     public void incrementSum(Double sum) {
