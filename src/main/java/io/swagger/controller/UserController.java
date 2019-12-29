@@ -180,7 +180,7 @@ public class UserController {
         userRepository.save( user );
 
         if ( user.getModeratorId() != null )
-            webSocketController.sendCounterRefreshMessage( user.getModeratorId() );
+            webSocketController.sendCounterRefreshMessage( user.getModerator(), false, true );
 
         if ( sendMessage ) {
             eventMessageService.buildModeratorReplacementMessage( currentUser, targetUser );

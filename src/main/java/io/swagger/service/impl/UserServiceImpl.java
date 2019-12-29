@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
         if ( userModerator != null ) {
             logger.info( "Got moderator \"{}\" for user \"{}\"", userModerator.getFio(), user.getFio() );
             user.setModerator( userModerator );
-            webSocketController.sendCounterRefreshMessage( userModerator.getId() );
+            webSocketController.sendCounterRefreshMessage( userModerator, false, true );
 
             userModerator.setLastUserAcceptDate( new Date() );
             userRepository.save( userModerator );

@@ -6,6 +6,8 @@ import io.swagger.firebird.model.ServiceGoodsAddon;
 import io.swagger.firebird.model.ServiceWork;
 import io.swagger.postgres.model.ChatMessage;
 import io.swagger.postgres.model.EventMessage;
+import io.swagger.postgres.model.security.User;
+import io.swagger.postgres.repository.UserRepository;
 import io.swagger.response.ChatMessageResponse;
 import io.swagger.response.EventMessageResponse;
 import org.slf4j.Logger;
@@ -14,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
+import java.util.List;
+
 @Controller
 public class WebSocketController {
 
@@ -21,6 +25,8 @@ public class WebSocketController {
 
     @Autowired
     private SimpMessagingTemplate template;
+    @Autowired
+    private UserRepository userRepository;
 
     public void sendChatMessage(ChatMessage chatMessage) {
 
@@ -57,11 +63,27 @@ public class WebSocketController {
 
     }
 
-    //TODO: добавить авторассылку админам и модерам по параметрам
-    public void sendCounterRefreshMessage(Long userId) {
+    public void sendCounterRefreshMessage(User user, Boolean toModerator, Boolean toAdmins) {
 
         try {
-            template.convertAndSend( String.format( "/topic/counters/%s", userId ), userId );
+            template.convertAndSend( String.format( "/topic/counters/%s", user.getId() ), user.getId() );
+
+            if ( toModerator && user.getModerator() != null )
+                template.convertAndSend(
+                        String.format( "/topic/counters/%s", user.getModerator().getId() ), user.getModerator().getId()
+                );
+
+            if ( toAdmins ) {
+
+                List<Long> adminsIds = userRepository.collectUserIdsByRoleName("ADMIN");
+
+                for (Long adminsId : adminsIds) {
+                    template.convertAndSend(
+                            String.format( "/topic/counters/%s", adminsId ), adminsId
+                    );
+                }
+
+            }
         }
         catch ( IllegalArgumentException iae ) {
             logger.error( "Counter refresh message sending error: {}", iae.getMessage() );

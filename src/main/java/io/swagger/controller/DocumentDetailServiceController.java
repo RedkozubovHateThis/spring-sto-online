@@ -63,7 +63,7 @@ public class DocumentDetailServiceController {
         User currentUser = userRepository.findCurrentUser();
         if ( currentUser == null ) return ResponseEntity.status(401).build();
 
-        webSocketController.sendCounterRefreshMessage( currentUser.getId() );
+        webSocketController.sendCounterRefreshMessage( currentUser, false, false );
 
         List<Integer> paidDocumentsIds = new ArrayList<>();
 
@@ -246,7 +246,7 @@ public class DocumentDetailServiceController {
 
         documentOutHeaderRepository.updateState( documentOutHeaderId, state );
 
-        webSocketController.sendCounterRefreshMessage( currentUser.getId() );
+        webSocketController.sendCounterRefreshMessage( currentUser, true, true );
 
         return findOne(documentId);
 
