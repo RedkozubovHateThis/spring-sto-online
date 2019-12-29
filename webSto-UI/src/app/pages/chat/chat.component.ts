@@ -10,6 +10,7 @@ import {OpponentResponse} from '../../model/postgres/opponentResponse';
 import {FileItem, FileUploader, ParsedResponseHeaders} from 'ng2-file-upload';
 import {UploadFileResponse} from '../../model/postgres/uploadFileResponse';
 import {ToastrService} from 'ngx-toastr';
+import {PaymentService} from '../../api/payment.service';
 
 @Component({
   selector: 'app-chat',
@@ -19,7 +20,8 @@ import {ToastrService} from 'ngx-toastr';
 export class ChatComponent implements OnInit, OnDestroy {
 
   constructor(private userService: UserService, private chatMessageResponseService: ChatMessageResponseService,
-              private webSocketService: WebSocketService, private toastrService: ToastrService) {}
+              private webSocketService: WebSocketService, private toastrService: ToastrService,
+              private paymentService: PaymentService) {}
 
   private isOpponentsLoading = false;
   private isMessageSaving = false;

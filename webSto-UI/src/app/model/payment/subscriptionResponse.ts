@@ -9,5 +9,6 @@ export class SubscriptionResponse {
   documentCost: number;
   documentsCount: number;
   documentsRemains: number;
+  isClosedEarly: boolean;
 }
 

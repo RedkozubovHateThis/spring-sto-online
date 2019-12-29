@@ -9,6 +9,7 @@ import {HttpClient} from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import {Location} from '@angular/common';
 import {UserResponse} from '../../model/firebird/userResponse';
+import {PaymentService} from '../../api/payment.service';
 
 @Component({
   selector: 'app-documents',
@@ -34,7 +35,7 @@ export class DocumentComponent extends ModelTransfer<DocumentResponse, number> i
 
   constructor(private documentResponseService: DocumentResponseService, protected route: ActivatedRoute, private toastrService: ToastrService,
               private serviceWorkResponseService: ServiceWorkResponseService, private userService: UserService, private httpClient: HttpClient,
-              private location: Location) {
+              private location: Location, private paymentService: PaymentService) {
     super(documentResponseService, route);
   }
 

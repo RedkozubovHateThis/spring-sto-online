@@ -179,8 +179,7 @@ public class UserController {
         user.setBalance( existingUser.getBalance() );
         userRepository.save( user );
 
-        if ( user.getModeratorId() != null )
-            webSocketController.sendCounterRefreshMessage( user.getModerator(), false, true );
+        webSocketController.sendCounterRefreshMessage( user, true, true );
 
         if ( sendMessage ) {
             eventMessageService.buildModeratorReplacementMessage( currentUser, targetUser );

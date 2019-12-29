@@ -10,6 +10,8 @@ import {ClientResponseService} from "../../api/clientResponse.service";
 import {OrganizationResponseService} from "../../api/organizationResponse.service";
 import {OrganizationResponse} from "../../model/firebird/organizationResponse";
 import { Shops } from './../../variables/shops';
+import {PaymentService} from '../../api/payment.service';
+import {SubscriptionTypeResponse} from '../../model/payment/subscriptionTypeResponse';
 
 @Component({
   selector: 'app-user-edit',
@@ -26,10 +28,12 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
   private replaceModerators: User[];
   private moderators: User[];
   private shops: ShopInterface[] = [];
+  private subscriptionTypes: SubscriptionTypeResponse[] = [];
+  private isTypesLoading: boolean = false;
 
   constructor(private userService: UserService, protected route: ActivatedRoute, private location: Location,
               private clientResponseService: ClientResponseService, private router: Router,
-              private organizationResponseService: OrganizationResponseService) {
+              private organizationResponseService: OrganizationResponseService, private paymentService: PaymentService) {
     super(userService, route);
     this.shops = Shops.shops;
   }
@@ -50,6 +54,18 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
     } );
 
     this.requestReplacementModerators();
+    this.requestAllSubscriptionTypes();
+  }
+
+  requestAllSubscriptionTypes() {
+    this.isTypesLoading = true;
+
+    this.paymentService.getAllSubscriptionTypes().subscribe(subscriptionTypes => {
+      this.subscriptionTypes = subscriptionTypes;
+      this.isTypesLoading = false;
+    }, () => {
+      this.isTypesLoading = false;
+    } );
   }
 
   manageShop(user: User, shopId: number) {

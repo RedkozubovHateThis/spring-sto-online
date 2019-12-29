@@ -20,6 +20,7 @@ public class SubscriptionResponse {
     private Double documentCost;
     private Integer documentsCount;
     private Integer documentsRemains;
+    private Boolean isClosedEarly;
 
     public SubscriptionResponse(Subscription subscription, Integer documentsRemains) {
         this.id = subscription.getId();
@@ -32,6 +33,7 @@ public class SubscriptionResponse {
         this.documentCost = subscription.getDocumentCost();
         this.documentsCount = subscription.getDocumentsCount();
         this.documentsRemains = documentsRemains;
+        this.isClosedEarly = subscription.getIsClosedEarly();
     }
 
 }

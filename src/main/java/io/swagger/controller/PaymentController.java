@@ -224,7 +224,8 @@ public class PaymentController {
     public ResponseEntity buySubscription(@RequestParam("subscriptionType") SubscriptionType subscriptionType) {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.hasRole(currentUser, "SERVICE_LEADER") )
+        if ( !UserHelper.hasRole(currentUser, "SERVICE_LEADER") ||
+                currentUser.getOrganizationId() == null || !currentUser.getIsApproved() )
             return ResponseEntity.status(404).build();
 
         try {

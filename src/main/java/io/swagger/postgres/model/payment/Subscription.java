@@ -58,6 +58,8 @@ public class Subscription implements Serializable {
     @OneToMany(mappedBy = "subscription")
     private Set<SubscriptionAddon> addons = new HashSet<>();
 
+    private Boolean isClosedEarly;
+
     public Subscription() {}
 
     public Subscription(SubscriptionType subscriptionType) {

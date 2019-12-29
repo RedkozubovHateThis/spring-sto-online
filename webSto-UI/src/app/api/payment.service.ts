@@ -45,6 +45,10 @@ export class PaymentService {
     } );
   }
 
+  isServiceLeaderWithExpiredSubscription() {
+    return this.userService.isServiceLeader() && this.currentSubscription != null && this.currentSubscription.documentsRemains === 0;
+  }
+
   sendRegisterRequest(amount: number): Observable<RegisterResponse> {
     const headers = this.userService.getHeaders();
 

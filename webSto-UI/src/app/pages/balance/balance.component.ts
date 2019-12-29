@@ -114,11 +114,11 @@ export class BalanceComponent implements OnInit {
     } );
   }
 
-  sendPromisedRequest() {
-    if ( this.promisedAmount == null || this.promisedAmount <= 0 ) return;
+  sendPromisedRequest(promisedAmount) {
+    // if ( this.promisedAmount == null || this.promisedAmount <= 0 ) return;
 
     this.isProcessing = true;
-    this.paymentService.sendRegisterPromisedRequest( this.promisedAmount * 100 ).subscribe(response => {
+    this.paymentService.sendRegisterPromisedRequest( promisedAmount * 100 ).subscribe(response => {
       this.isProcessing = false;
       this.userService.getCurrentUser();
       this.requestData();

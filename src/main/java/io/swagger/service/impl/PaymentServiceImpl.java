@@ -1,6 +1,7 @@
 package io.swagger.service.impl;
 
 import io.swagger.controller.WebSocketController;
+import io.swagger.firebird.repository.DocumentServiceDetailRepository;
 import io.swagger.postgres.model.enums.PaymentState;
 import io.swagger.postgres.model.enums.PaymentType;
 import io.swagger.postgres.model.enums.SubscriptionType;
@@ -51,6 +52,8 @@ public class PaymentServiceImpl implements PaymentService {
     private SubscriptionRepository subscriptionRepository;
     @Autowired
     private SubscriptionAddonRepository subscriptionAddonRepository;
+    @Autowired
+    private DocumentServiceDetailRepository documentsRepository;
 
     @Value("${sb.api.username}")
     private String sbUsername;
@@ -250,17 +253,43 @@ public class PaymentServiceImpl implements PaymentService {
         Subscription subscription = new Subscription( subscriptionType );
 
         Subscription currentSubscription = user.getCurrentSubscription();
+        boolean isCurrentSubscriptionChanged = false;
 
-        if ( currentSubscription != null && currentSubscription.getEndDate().after( now ) ) {
-            throw new PaymentException("Текущий тариф еще активен!");
-        }
-        else if ( currentSubscription != null && currentSubscription.getEndDate().before( now ) ) {
-            subscription.setStartDate(
-                    generateStartDate( currentSubscription.getEndDate(), true )
-            );
-            subscription.setEndDate(
-                    generateEndDate( currentSubscription.getEndDate(), subscriptionType.getDurationDays(), false )
-            );
+        if ( currentSubscription != null ) {
+            if ( currentSubscription.getEndDate().after( now ) ) {
+
+                int documentsCount = documentsRepository.countDocumentsByOrganizationIdAndDates(
+                        user.getOrganizationId(), currentSubscription.getStartDate(), currentSubscription.getEndDate()
+                );
+
+                int availableDocuments = Math.max( currentSubscription.getDocumentsCount() - documentsCount, 0 );
+
+                if ( availableDocuments > 0 )
+                    throw new PaymentException("Текущий тариф еще не истек и имеет доступные заказ-наряды!");
+                else {
+                    subscription.setStartDate(
+                            generateStartDate( now, false )
+                    );
+                    subscription.setEndDate(
+                            generateEndDate( now, subscriptionType.getDurationDays(), false )
+                    );
+
+                    currentSubscription.setEndDate(
+                            generateEndDate( now, -1, false )
+                    );
+                    currentSubscription.setIsClosedEarly(true);
+                    isCurrentSubscriptionChanged = true;
+                }
+            }
+            else if ( currentSubscription.getEndDate().before( now ) ) {
+                subscription.setStartDate(
+                        generateStartDate( currentSubscription.getEndDate(), true )
+                );
+                subscription.setEndDate(
+                        generateEndDate( currentSubscription.getEndDate(), subscriptionType.getDurationDays(), false )
+                );
+            }
+
         }
         else {
             subscription.setStartDate( generateStartDate( now, false ) );
@@ -272,7 +301,10 @@ public class PaymentServiceImpl implements PaymentService {
         subscriptionRepository.save( subscription );
         user.setCurrentSubscription( subscription );
 
-        if ( !subscription.getType().getFree() )
+        if ( isCurrentSubscriptionChanged )
+            subscriptionRepository.save( currentSubscription );
+
+        if ( !subscription.getType().getFree() && user.getSubscriptionType() == null )
             user.setSubscriptionType( subscription.getType() );
 
         generatePaymentRecord( user, subscription, null, now );

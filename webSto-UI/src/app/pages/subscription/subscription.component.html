@@ -26,10 +26,11 @@
                     [disabled]="isLoading || subscriptions.length === 0">
               <option [selected]="selectedSubscription != null && subscription.id === selectedSubscription.id"
                       *ngFor="let subscription of subscriptions" [ngValue]="subscription">
-                <ng-container *ngIf="userService.currentUser != null && userService.currentUser.currentSubscriptionId === subscription.id">
-                  Текущий:&nbsp;
-                </ng-container>
+                {{subscription.name}}:&nbsp;
                 {{ subscription.startDate | date : 'dd.MM.yyyy' }} - {{ subscription.endDate | date : 'dd.MM.yyyy' }}
+                <ng-container *ngIf="userService.currentUser != null && userService.currentUser.currentSubscriptionId === subscription.id">
+                  &nbsp;(текущий)
+                </ng-container>
               </option>
             </select>
           </div>
@@ -102,7 +103,7 @@
 
             <div class="row form-group">
               <div class="col">
-                Стоимость заказ-наряда сверх лимита, руб.
+                Стоимость заказ-наряда, руб.
               </div>
               <div class="col-auto h3 mb-0">
                 <span *ngIf="selectedSubscription.type === 'FREE'">н/д</span>
@@ -110,10 +111,16 @@
               </div>
             </div>
 
-            <button class="btn btn-sm btn-buro-green btn-block" *ngIf="!showAddon && selectedSubscription.type != 'FREE'"
-                    (click)="toggleAddon()">
-              Дополнить тариф
-            </button>
+            <div class="row form-group" *ngIf="selectedSubscription.isClosedEarly">
+              <div class="col text-muted text-center">
+                Тариф был завершен досрочно.
+              </div>
+            </div>
+
+<!--            <button class="btn btn-sm btn-buro-green btn-block" *ngIf="!showAddon && selectedSubscription.type != 'FREE'"-->
+<!--                    (click)="toggleAddon()">-->
+<!--              Дополнить тариф-->
+<!--            </button>-->
 
             <ng-container *ngIf="showAddon && selectedSubscription.type != 'FREE'">
 
@@ -171,15 +178,18 @@
           <app-loading-bar [isLoading]="isTypesLoading"></app-loading-bar>
 
           <h3 class="mb-0">
-            Доступные тарифы - {{isBuyAvailable() ? 'покупка' : 'выбор по умолчанию'}}
+<!--            Доступные тарифы - {{isBuyAvailable() ? 'покупка' : 'выбор по умолчанию'}}-->
+            Доступные тарифы
           </h3>
 
         </div>
         <div class="card-body">
 
-          <ng-container *ngIf="isBuyAvailable(); else renewalBlock">
+<!--          <ng-container *ngIf="isBuyAvailable(); else renewalBlock">-->
+          <ng-container *ngIf="true; else renewalBlock">
             <div class="form-group text-center">
-              Выберите доступный тариф для покупки.
+              <div class="mb-1">Выберите доступный тариф для покупки.</div>
+              <div>Для успешного продления, баланс на вашем счету должен полностью покрывать стоимость тарифа.</div>
             </div>
           </ng-container>
           <ng-template #renewalBlock>
@@ -221,7 +231,7 @@
 
                   <div class="row form-group">
                     <div class="col">
-                      Стоимость заказ-наряда сверх лимита, руб.
+                      Стоимость заказ-наряда, руб.
                     </div>
                     <div class="col-auto h3 mb-0">
                       <span *ngIf="subscriptionType.isFree">н/д</span>
@@ -238,7 +248,8 @@
                     </div>
                   </div>
 
-                  <ng-container *ngIf="isBuyAvailable(); else updateBlock">
+<!--                  <ng-container *ngIf="isBuyAvailable(); else updateBlock">-->
+                  <ng-container *ngIf="true; else updateBlock">
                     <button class="btn btn-buro-green btn-block" (click)="buySubscription(subscriptionType.type)"
                             [disabled]="subscriptionType.isInactive || userService.currentUser.balance < subscriptionType.cost">
                       Купить
