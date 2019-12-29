@@ -122,6 +122,7 @@ export class BalanceComponent implements OnInit {
       this.isProcessing = false;
       this.userService.getCurrentUser();
       this.requestData();
+      this.getPromisedStatus();
       this.paymentStatus = 'SUCCESS';
       this.isPromised = false;
       this.promisedAmount = null;
