@@ -1,6 +1,6 @@
 <div class="container-fluid mt--7">
   <div class="row">
-    <div class="col-xl-8 mb-5" [ngClass]="{ 'col-xl-12': model != null && ( model.userAdmin || model.userModerator ) }">
+    <div class="col-xl-8 mb-5 mb-xl-0" [ngClass]="{ 'col-xl-12': model != null && ( model.userAdmin || model.userModerator ) }">
       <div class="card bg-secondary shadow">
         <div class="card-header bg-white border-0">
           <app-loading-bar [isLoading]="isLoading || userService.isSaving"></app-loading-bar>
@@ -181,7 +181,7 @@
         </div>
       </div>
     </div>
-    <div class="col-xl-4 mb-5" *ngIf="model != null && ( model.userClient || model.userServiceLeader )">
+    <div class="col-xl-4" *ngIf="model != null && ( model.userClient || model.userServiceLeader )">
       <div class="card bg-secondary shadow">
 
         <div class="card-header bg-white border-0">

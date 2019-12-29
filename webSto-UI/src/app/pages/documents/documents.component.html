@@ -2,7 +2,7 @@
 <div class="container-fluid mt--7">
   <!-- Table -->
   <div class="row">
-    <div class="col-xl-9 mb-5">
+    <div class="col-xl-9 mb-5 mb-xl-0">
       <div class="card shadow">
         <div class="card-header border-0">
           <app-loading-bar [isLoading]="isLoading"></app-loading-bar>
@@ -115,7 +115,7 @@
         </div>
       </div>
     </div>
-    <div class="col-xl-3 mb-5">
+    <div class="col-xl-3">
       <app-document-filter (onChange)="applyFilter()"
                            [filter]="documentResponseController.filter"
                            [document]="selected"
