@@ -189,7 +189,7 @@
                   <tr>
                     <th scope="col" style="width: 125px;">Код работ</th>
                     <th scope="col">Наименование работ</th>
-                    <th scope="col" style="width: 175px;" *ngIf="userService.isNotClient()">
+                    <th scope="col" style="text-align: right; width: 175px;" *ngIf="userService.isNotClient()">
                       Стоимость по Н/Ч /
                       <div>
                         Фиксированная стоимость
@@ -208,36 +208,42 @@
                     <th>
                       {{work.number}}
                     </th>
-                    <th>
+                    <th class="wrap-column-500">
                       {{work.name}}
                       <app-share-button *ngIf="model != null && userService.isNotClient()" [isLink]="true"
                                         [disabled]="userService.isServiceLeaderWithExpiredSubscription() ||
                                         paymentService.isServiceLeaderWithExpiredSubscription()"
                                         [document]="model" [serviceWork]="work"></app-share-button>
                     </th>
-                    <th *ngIf="userService.isNotClient()">
-                      <div class="input-group input-group-sm" *ngIf="work.byPrice; else byPriceNorm">
-                        <input type="number" class="form-control" (keyup.enter)="updatePrice(model, work, work.price)"
-                               [(ngModel)]="work.price" [placeholder]="work.price"/>
-                        <div class="input-group-append">
-                          <button class="btn btn-buro-green" type="button" (click)="updatePrice(model, work, work.price)"
-                                  [disabled]="isUpdating">
-                            <i class="fas fa-check"></i>
-                          </button>
-                        </div>
-                      </div>
+                    <th *ngIf="userService.isNotClient()" style="text-align: right;">
+                      <ng-container *ngIf="work.byPrice; else byPriceNorm">
+                        <div>{{work.price | number:'.2':'ru'}} р.</div>
+                      </ng-container>
                       <ng-template #byPriceNorm>
-                        <div class="input-group input-group-sm">
-                          <input type="number" class="form-control" (keyup.enter)="updatePrice(model, work, work.priceNorm)"
-                                 [(ngModel)]="work.priceNorm" [placeholder]="work.priceNorm"/>
-                          <div class="input-group-append">
-                            <button class="btn btn-buro-green" type="button" (click)="updatePrice(model, work, work.priceNorm)"
-                                    [disabled]="isUpdating">
-                              <i class="fas fa-check"></i>
-                            </button>
-                          </div>
-                        </div>
+                        <div>{{work.priceNorm | number:'.2':'ru'}} р.</div>
                       </ng-template>
+<!--                      <div class="input-group input-group-sm" *ngIf="work.byPrice; else byPriceNorm">-->
+<!--                        <input type="number" class="form-control" (keyup.enter)="updatePrice(model, work, work.price)"-->
+<!--                               [(ngModel)]="work.price" [placeholder]="work.price"/>-->
+<!--                        <div class="input-group-append">-->
+<!--                          <button class="btn btn-buro-green" type="button" (click)="updatePrice(model, work, work.price)"-->
+<!--                                  [disabled]="isUpdating">-->
+<!--                            <i class="fas fa-check"></i>-->
+<!--                          </button>-->
+<!--                        </div>-->
+<!--                      </div>-->
+<!--                      <ng-template #byPriceNorm>-->
+<!--                        <div class="input-group input-group-sm">-->
+<!--                          <input type="number" class="form-control" (keyup.enter)="updatePrice(model, work, work.priceNorm)"-->
+<!--                                 [(ngModel)]="work.priceNorm" [placeholder]="work.priceNorm"/>-->
+<!--                          <div class="input-group-append">-->
+<!--                            <button class="btn btn-buro-green" type="button" (click)="updatePrice(model, work, work.priceNorm)"-->
+<!--                                    [disabled]="isUpdating">-->
+<!--                              <i class="fas fa-check"></i>-->
+<!--                            </button>-->
+<!--                          </div>-->
+<!--                        </div>-->
+<!--                      </ng-template>-->
                     </th>
                     <th style="text-align: right;">
                       <div>{{work.total | number:'.2':'ru'}} р.</div>
@@ -292,7 +298,7 @@
                     <th>
                       {{addon.number}}
                     </th>
-                    <th>
+                    <th class="wrap-column-500">
                       {{addon.fullName}}
                       <app-share-button *ngIf="model != null && userService.isNotClient()" [isLink]="true"
                                         [disabled]="userService.isServiceLeaderWithExpiredSubscription() ||
@@ -353,7 +359,7 @@
                     <th>
                       {{addon.number}}
                     </th>
-                    <th>
+                    <th class="wrap-column-500">
                       {{addon.fullName}}
                       <app-share-button *ngIf="model != null && userService.isNotClient()" [isLink]="true"
                                         [disabled]="userService.isServiceLeaderWithExpiredSubscription() ||

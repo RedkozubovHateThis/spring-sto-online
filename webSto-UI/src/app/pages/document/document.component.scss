@@ -1,6 +1,9 @@
-.wrap-column {
+.wrap-column, .wrap-column-500 {
   min-width: 200px;
   overflow-x: hidden;
   word-break: break-word;
   white-space: pre-line;
+}
+.wrap-column-500 {
+  min-width: 500px;
 }
