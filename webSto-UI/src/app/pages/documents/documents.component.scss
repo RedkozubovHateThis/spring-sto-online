@@ -1,3 +1,9 @@
 .page-item.active .page-link {
   z-index: auto;
 }
+.wrap-column {
+  min-width: 150px;
+  overflow-x: hidden;
+  word-break: break-word;
+  white-space: pre-line;
+}
