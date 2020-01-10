@@ -190,4 +190,12 @@ export class ReportsComponent implements OnInit {
     this.clientsTotalRow = totalRow;
   }
 
+  private toggleData(isVisible: boolean) {
+    if ( this.reportData == null || this.reportData.length === 0 ) return;
+
+    this.reportData.forEach( data => {
+      data['isVisible'] = isVisible;
+    } );
+  }
+
 }
