@@ -151,7 +151,7 @@
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="9.8" isBold="true"/>
+						<font fontName="Arial" size="9.8" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{organizationName}]]></textFieldExpression>
 				</textField>
@@ -162,7 +162,7 @@
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="false"/>
+						<font fontName="Arial" size="7.9" isBold="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{organizationAddress}]]></textFieldExpression>
 				</textField>
@@ -179,7 +179,7 @@
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="8.8" isBold="true"/>
+						<font fontName="Arial" size="8.8" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA["ЗАДАНИЕ НА РЕМОНТНЫЕ РАБОТЫ К ЗАКАЗ-НАРЯДУ № " + $P{orderNum}]]></textFieldExpression>
 				</textField>
@@ -195,7 +195,7 @@
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="true"/>
+						<font fontName="Arial" size="7.9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Потребитель :]]></text>
 				</staticText>
@@ -206,7 +206,7 @@
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="true"/>
+						<font fontName="Arial" size="7.9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Адрес :]]></text>
 				</staticText>
@@ -217,7 +217,7 @@
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="true"/>
+						<font fontName="Arial" size="7.9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Телефон :]]></text>
 				</staticText>
@@ -228,7 +228,7 @@
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="true"/>
+						<font fontName="Arial" size="7.9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Автомобиль :]]></text>
 				</staticText>
@@ -239,7 +239,7 @@
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="true"/>
+						<font fontName="Arial" size="7.9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Год выпуска :]]></text>
 				</staticText>
@@ -250,7 +250,7 @@
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="true"/>
+						<font fontName="Arial" size="7.9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Пробег :]]></text>
 				</staticText>
@@ -261,7 +261,7 @@
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="true"/>
+						<font fontName="Arial" size="7.9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Гос. номер :]]></text>
 				</staticText>
@@ -272,7 +272,7 @@
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="true"/>
+						<font fontName="Arial" size="7.9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Вид ремонта :]]></text>
 				</staticText>
@@ -283,7 +283,7 @@
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="true"/>
+						<font fontName="Arial" size="7.9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[VIN-номер :]]></text>
 				</staticText>
@@ -294,7 +294,7 @@
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="true"/>
+						<font fontName="Arial" size="7.9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Двигатель № :]]></text>
 				</staticText>
@@ -305,7 +305,7 @@
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="true"/>
+						<font fontName="Arial" size="7.9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Кузов № :]]></text>
 				</staticText>
@@ -316,7 +316,7 @@
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="true"/>
+						<font fontName="Arial" size="7.9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Цвет :]]></text>
 				</staticText>
@@ -327,31 +327,31 @@
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="true"/>
+						<font fontName="Arial" size="7.9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Тип :]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="0" y="136" width="83" height="12" uuid="5bc584c3-9642-4617-8991-71ee73cf38ca">
+					<reportElement x="0" y="136" width="90" height="12" uuid="5bc584c3-9642-4617-8991-71ee73cf38ca">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.x" value="px"/>
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="true"/>
+						<font fontName="Arial" size="7.9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Причины обращения :]]></text>
 				</staticText>
 				<staticText>
-					<reportElement positionType="Float" x="0" y="148" width="123" height="12" uuid="e55908e0-bc10-4324-a27d-3cd2cb70bb73">
+					<reportElement positionType="Float" x="0" y="148" width="137" height="12" uuid="e55908e0-bc10-4324-a27d-3cd2cb70bb73">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.x" value="px"/>
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="true"/>
+						<font fontName="Arial" size="7.9" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Особые данные и рекомендации :]]></text>
 				</staticText>
@@ -363,7 +363,7 @@
 					</reportElement>
 					<box leftPadding="3"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="true"/>
+						<font fontName="Arial" size="7.9" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{customerName}]]></textFieldExpression>
 				</textField>
@@ -375,7 +375,7 @@
 					</reportElement>
 					<box leftPadding="3"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="true"/>
+						<font fontName="Arial" size="7.9" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{customerAddress}]]></textFieldExpression>
 				</textField>
@@ -387,7 +387,7 @@
 					</reportElement>
 					<box leftPadding="3"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="true"/>
+						<font fontName="Arial" size="7.9" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{customerPhone}]]></textFieldExpression>
 				</textField>
@@ -399,7 +399,7 @@
 					</reportElement>
 					<box leftPadding="3"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="true"/>
+						<font fontName="Arial" size="7.9" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{vehicleName}]]></textFieldExpression>
 				</textField>
@@ -411,7 +411,7 @@
 					</reportElement>
 					<box leftPadding="3"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="true"/>
+						<font fontName="Arial" size="7.9" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{vehicleYear}]]></textFieldExpression>
 				</textField>
@@ -423,7 +423,7 @@
 					</reportElement>
 					<box leftPadding="3"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="true"/>
+						<font fontName="Arial" size="7.9" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{vehicleMileage}]]></textFieldExpression>
 				</textField>
@@ -435,7 +435,7 @@
 					</reportElement>
 					<box leftPadding="3"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="true"/>
+						<font fontName="Arial" size="7.9" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{vehicleRegNum}]]></textFieldExpression>
 				</textField>
@@ -447,7 +447,7 @@
 					</reportElement>
 					<box leftPadding="3"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="true"/>
+						<font fontName="Arial" size="7.9" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{repairType}]]></textFieldExpression>
 				</textField>
@@ -459,8 +459,8 @@
 						<property name="com.jaspersoft.studio.unit.firstLineIndent" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="true"/>
-						<paragraph firstLineIndent="83"/>
+						<font fontName="Arial" size="7.9" isBold="true"/>
+						<paragraph firstLineIndent="90"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{repairReason}]]></textFieldExpression>
 				</textField>
@@ -472,8 +472,8 @@
 						<property name="com.jaspersoft.studio.unit.firstLineIndent" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="true"/>
-						<paragraph firstLineIndent="123"/>
+						<font fontName="Arial" size="7.9" isBold="true"/>
+						<paragraph firstLineIndent="137"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{repairSpecial}]]></textFieldExpression>
 				</textField>
@@ -485,7 +485,7 @@
 					</reportElement>
 					<box leftPadding="3"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="true"/>
+						<font fontName="Arial" size="7.9" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{vehicleVinNum}]]></textFieldExpression>
 				</textField>
@@ -497,7 +497,7 @@
 					</reportElement>
 					<box leftPadding="3"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="true"/>
+						<font fontName="Arial" size="7.9" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{vehicleEngNum}]]></textFieldExpression>
 				</textField>
@@ -509,7 +509,7 @@
 					</reportElement>
 					<box leftPadding="3"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="true"/>
+						<font fontName="Arial" size="7.9" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{vehicleChassisNum}]]></textFieldExpression>
 				</textField>
@@ -521,7 +521,7 @@
 					</reportElement>
 					<box leftPadding="3"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="true"/>
+						<font fontName="Arial" size="7.9" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{vehicleColor}]]></textFieldExpression>
 				</textField>
@@ -533,7 +533,7 @@
 					</reportElement>
 					<box leftPadding="3"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font fontName="Times New Roman" size="7.9" isBold="true"/>
+						<font fontName="Arial" size="7.9" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{vehicleType}]]></textFieldExpression>
 				</textField>
@@ -565,7 +565,7 @@
 								<reportElement x="0" y="0" width="555" height="13" uuid="e9629bf8-a801-44a7-a339-fd610442c723"/>
 								<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 								<textElement textAlignment="Center" verticalAlignment="Top">
-									<font fontName="Times New Roman" size="8.8" isBold="true"/>
+									<font fontName="Arial" size="8.8" isBold="true"/>
 								</textElement>
 								<text><![CDATA[Выполненные работы]]></text>
 							</staticText>
@@ -581,7 +581,7 @@
 									<reportElement x="0" y="0" width="59" height="12" uuid="c764851f-6d12-4ee2-b403-1fe83e5ddb0f"/>
 									<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font fontName="Times New Roman" size="7.9" isBold="true"/>
+										<font fontName="Arial" size="7.9" isBold="true"/>
 									</textElement>
 									<text><![CDATA[Код работы]]></text>
 								</staticText>
@@ -592,7 +592,7 @@
 									<reportElement stretchType="ContainerHeight" x="0" y="0" width="59" height="12" uuid="4332387f-5cbf-4374-a682-fffcfc2ee953"/>
 									<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font fontName="Times New Roman" size="6.9"/>
+										<font fontName="Arial" size="6.9"/>
 									</textElement>
 									<textFieldExpression><![CDATA[$F{workCode}]]></textFieldExpression>
 								</textField>
@@ -610,7 +610,7 @@
 									<reportElement x="0" y="0" width="226" height="12" uuid="79784161-dbc9-46d5-8f24-c784134a71e0"/>
 									<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font fontName="Times New Roman" size="7.9" isBold="true"/>
+										<font fontName="Arial" size="7.9" isBold="true"/>
 									</textElement>
 									<text><![CDATA[Выполненные работы]]></text>
 								</staticText>
@@ -621,34 +621,35 @@
 									<reportElement stretchType="ContainerHeight" x="0" y="0" width="226" height="12" uuid="5bc42b79-8f5e-4d37-9beb-5a9e36683e91"/>
 									<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 									<textElement textAlignment="Left" verticalAlignment="Middle">
-										<font fontName="Times New Roman" size="6.9"/>
+										<font fontName="Arial" size="6.9"/>
 									</textElement>
 									<textFieldExpression><![CDATA[$F{workName}]]></textFieldExpression>
 								</textField>
 							</jr:detailCell>
 						</jr:column>
-						<jr:column width="20" uuid="b7f2385c-05d2-48ae-92c1-b2202f4b3c60">
+						<jr:column width="23" uuid="b7f2385c-05d2-48ae-92c1-b2202f4b3c60">
 							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							<jr:tableHeader style="Table_TH" height="0" rowSpan="1">
 								<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							</jr:tableHeader>
 							<jr:columnHeader style="Table_CH" height="12" rowSpan="1">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
 								<staticText>
-									<reportElement x="0" y="0" width="20" height="12" uuid="78ac89c4-db49-4855-9b6b-d13e863d0990"/>
+									<reportElement x="0" y="0" width="23" height="12" uuid="78ac89c4-db49-4855-9b6b-d13e863d0990"/>
 									<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font fontName="Times New Roman" size="7.9" isBold="true"/>
+										<font fontName="Arial" size="7.9" isBold="true"/>
 									</textElement>
 									<text><![CDATA[Крат]]></text>
 								</staticText>
 							</jr:columnHeader>
 							<jr:detailCell style="Table_TD" height="12">
 								<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-									<reportElement stretchType="ContainerHeight" x="0" y="0" width="20" height="12" uuid="0b88e7fa-06fc-44b7-b1b7-e8efd559d296"/>
+									<reportElement stretchType="ContainerHeight" x="0" y="0" width="23" height="12" uuid="0b88e7fa-06fc-44b7-b1b7-e8efd559d296"/>
 									<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font fontName="Times New Roman" size="6.9"/>
+										<font fontName="Arial" size="6.9"/>
 									</textElement>
 									<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
 								</textField>
@@ -664,7 +665,7 @@
 									<reportElement x="0" y="0" width="35" height="12" uuid="b14d07b0-0505-43b1-991e-51b633ff9a9e"/>
 									<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font fontName="Times New Roman" size="7.9" isBold="true"/>
+										<font fontName="Arial" size="7.9" isBold="true"/>
 									</textElement>
 									<text><![CDATA[Время]]></text>
 								</staticText>
@@ -674,7 +675,7 @@
 									<reportElement stretchType="ContainerHeight" x="0" y="0" width="35" height="12" uuid="d9e941dd-f139-477c-ab9a-3f3a9ecbb879"/>
 									<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font fontName="Times New Roman" size="6.9"/>
+										<font fontName="Arial" size="6.9"/>
 									</textElement>
 									<textFieldExpression><![CDATA[$F{timeValue}]]></textFieldExpression>
 								</textField>
@@ -691,7 +692,7 @@
 									<reportElement x="0" y="0" width="119" height="12" uuid="e1cf597e-6890-4c3a-9690-580582d64239"/>
 									<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font fontName="Times New Roman" size="7.9" isBold="true"/>
+										<font fontName="Arial" size="7.9" isBold="true"/>
 									</textElement>
 									<text><![CDATA[Исполнитель]]></text>
 								</staticText>
@@ -701,21 +702,22 @@
 									<reportElement stretchType="ContainerHeight" x="0" y="0" width="119" height="12" uuid="2c530832-3686-4d18-b3ee-e91ed7e7042a"/>
 									<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 									<textElement textAlignment="Left" verticalAlignment="Middle">
-										<font fontName="Times New Roman" size="6.9"/>
+										<font fontName="Arial" size="6.9"/>
 									</textElement>
 									<textFieldExpression><![CDATA[$F{executor}]]></textFieldExpression>
 								</textField>
 							</jr:detailCell>
 						</jr:column>
-						<jr:column width="96" uuid="5d1def8b-2a8a-4fd3-9c3f-35eacd60b0e8">
+						<jr:column width="93" uuid="5d1def8b-2a8a-4fd3-9c3f-35eacd60b0e8">
 							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
 							<jr:tableHeader style="Table_TH" height="0" rowSpan="1"/>
 							<jr:columnHeader style="Table_CH" height="12" rowSpan="1">
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
 								<staticText>
-									<reportElement x="0" y="0" width="96" height="12" uuid="45a05bcc-8837-4a29-aebc-ea013d9ad742"/>
+									<reportElement x="0" y="0" width="93" height="12" uuid="45a05bcc-8837-4a29-aebc-ea013d9ad742"/>
 									<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font fontName="Times New Roman" size="7.9" isBold="true"/>
+										<font fontName="Arial" size="7.9" isBold="true"/>
 									</textElement>
 									<text><![CDATA[Подпись]]></text>
 								</staticText>
@@ -749,7 +751,7 @@
 								<reportElement x="0" y="0" width="555" height="13" uuid="c38917b4-b8a2-4381-8bbd-dd2d328dc9bc"/>
 								<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 								<textElement textAlignment="Center" verticalAlignment="Top">
-									<font fontName="Times New Roman" size="8.8" isBold="true"/>
+									<font fontName="Arial" size="8.8" isBold="true"/>
 								</textElement>
 								<text><![CDATA[Запасные части и расходные материалы]]></text>
 							</staticText>
@@ -765,7 +767,7 @@
 									<reportElement x="0" y="0" width="80" height="12" uuid="cc7a946a-5595-4ab3-8254-d16d937c278b"/>
 									<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font fontName="Times New Roman" size="7.9" isBold="true"/>
+										<font fontName="Arial" size="7.9" isBold="true"/>
 									</textElement>
 									<text><![CDATA[Номер]]></text>
 								</staticText>
@@ -776,7 +778,7 @@
 									<reportElement stretchType="ContainerHeight" x="0" y="0" width="80" height="12" uuid="92343316-6382-498a-bbe2-2092469ff491"/>
 									<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font fontName="Times New Roman" size="6.9"/>
+										<font fontName="Arial" size="6.9"/>
 									</textElement>
 									<textFieldExpression><![CDATA[$F{number}]]></textFieldExpression>
 								</textField>
@@ -793,7 +795,7 @@
 									<reportElement x="0" y="0" width="400" height="12" uuid="18a24c1e-5f83-4f03-adbe-40b9b4f44c53"/>
 									<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font fontName="Times New Roman" size="7.9" isBold="true"/>
+										<font fontName="Arial" size="7.9" isBold="true"/>
 									</textElement>
 									<text><![CDATA[Наименование]]></text>
 								</staticText>
@@ -804,7 +806,7 @@
 									<reportElement stretchType="ContainerHeight" x="0" y="0" width="400" height="12" uuid="a815a136-37e6-475d-a83c-18acd3ab8f65"/>
 									<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 									<textElement textAlignment="Left" verticalAlignment="Middle">
-										<font fontName="Times New Roman" size="6.9"/>
+										<font fontName="Arial" size="6.9"/>
 									</textElement>
 									<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 								</textField>
@@ -820,7 +822,7 @@
 									<reportElement x="0" y="0" width="40" height="12" uuid="9af72d66-a396-4a93-b5c9-427337ea5da9"/>
 									<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font fontName="Times New Roman" size="7.9" isBold="true"/>
+										<font fontName="Arial" size="7.9" isBold="true"/>
 									</textElement>
 									<text><![CDATA[Ед. изм.]]></text>
 								</staticText>
@@ -830,7 +832,7 @@
 									<reportElement stretchType="ContainerHeight" x="0" y="0" width="40" height="12" uuid="03c6fd7e-dc6e-447e-b917-d8cc2a503578"/>
 									<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font fontName="Times New Roman" size="6.9"/>
+										<font fontName="Arial" size="6.9"/>
 									</textElement>
 									<textFieldExpression><![CDATA[$F{unit}]]></textFieldExpression>
 								</textField>
@@ -847,7 +849,7 @@
 									<reportElement x="0" y="0" width="35" height="12" uuid="47f3a819-848d-4f7d-9c44-04d206db9609"/>
 									<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font fontName="Times New Roman" size="7.9" isBold="true"/>
+										<font fontName="Arial" size="7.9" isBold="true"/>
 									</textElement>
 									<text><![CDATA[Кол-во]]></text>
 								</staticText>
@@ -857,7 +859,7 @@
 									<reportElement stretchType="ContainerHeight" x="0" y="0" width="35" height="12" uuid="e330e129-5f97-4287-a7bc-36683a7be302"/>
 									<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font fontName="Times New Roman" size="6.9"/>
+										<font fontName="Arial" size="6.9"/>
 									</textElement>
 									<textFieldExpression><![CDATA[$F{count}]]></textFieldExpression>
 								</textField>
@@ -891,7 +893,7 @@
 								<reportElement x="0" y="0" width="555" height="13" uuid="53e7efcd-9f72-4225-aa7c-7ce816af0cf4"/>
 								<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 								<textElement textAlignment="Center" verticalAlignment="Top">
-									<font fontName="Times New Roman" size="8.8" isBold="true"/>
+									<font fontName="Arial" size="8.8" isBold="true"/>
 								</textElement>
 								<text><![CDATA[Запасные части и расходные материалы потребителя]]></text>
 							</staticText>
@@ -908,7 +910,7 @@
 									<reportElement x="0" y="0" width="335" height="12" uuid="5c8c2f59-5996-4588-b89e-7309a2b11cf2"/>
 									<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font fontName="Times New Roman" size="7.9" isBold="true"/>
+										<font fontName="Arial" size="7.9" isBold="true"/>
 									</textElement>
 									<text><![CDATA[Наименование]]></text>
 								</staticText>
@@ -920,7 +922,7 @@
 									<reportElement stretchType="ContainerHeight" x="0" y="0" width="335" height="12" uuid="5961bc4a-a1b5-411e-bc6d-785cd2015d18"/>
 									<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 									<textElement textAlignment="Left" verticalAlignment="Middle">
-										<font fontName="Times New Roman" size="6.9"/>
+										<font fontName="Arial" size="6.9"/>
 									</textElement>
 									<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 								</textField>
@@ -935,7 +937,7 @@
 									<reportElement x="0" y="0" width="80" height="12" uuid="9eac3ac1-6825-4511-9f8f-73646704640c"/>
 									<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font fontName="Times New Roman" size="7.9" isBold="true"/>
+										<font fontName="Arial" size="7.9" isBold="true"/>
 									</textElement>
 									<text><![CDATA[Номер]]></text>
 								</staticText>
@@ -946,7 +948,7 @@
 									<reportElement stretchType="ContainerHeight" x="0" y="0" width="80" height="12" uuid="cdfb2b33-d432-44ce-88e2-14da027caf24"/>
 									<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font fontName="Times New Roman" size="6.9"/>
+										<font fontName="Arial" size="6.9"/>
 									</textElement>
 									<textFieldExpression><![CDATA[$F{number}]]></textFieldExpression>
 								</textField>
@@ -960,7 +962,7 @@
 									<reportElement x="0" y="0" width="60" height="12" uuid="67407d86-3097-459b-9117-414c4b366276"/>
 									<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font fontName="Times New Roman" size="7.9" isBold="true"/>
+										<font fontName="Arial" size="7.9" isBold="true"/>
 									</textElement>
 									<text><![CDATA[Количество]]></text>
 								</staticText>
@@ -970,7 +972,7 @@
 									<reportElement stretchType="ContainerHeight" x="0" y="0" width="60" height="12" uuid="e91fd114-2bda-481e-99ce-cf770975a416"/>
 									<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font fontName="Times New Roman" size="6.9"/>
+										<font fontName="Arial" size="6.9"/>
 									</textElement>
 									<textFieldExpression><![CDATA[$F{count}]]></textFieldExpression>
 								</textField>
@@ -988,7 +990,7 @@
 									<reportElement x="0" y="0" width="80" height="12" uuid="7ffbc05b-0248-4dec-81a1-ecc4189cf3dd"/>
 									<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font fontName="Times New Roman" size="7.9" isBold="true"/>
+										<font fontName="Arial" size="7.9" isBold="true"/>
 									</textElement>
 									<text><![CDATA[Примечание]]></text>
 								</staticText>
@@ -1009,7 +1011,7 @@
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="9.8" isBold="false"/>
+					<font fontName="Arial" size="9.8" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Работы принял ________________________________]]></text>
 			</staticText>
@@ -1020,7 +1022,7 @@
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="9.8" isBold="false"/>
+					<font fontName="Arial" size="9.8" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Работы сдал _________________________________]]></text>
 			</staticText>

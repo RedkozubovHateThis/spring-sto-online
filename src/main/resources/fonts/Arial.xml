@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fontFamilies>
+    <fontFamily name="Arial">
+        <normal>
+            <ttf><![CDATA[fonts/Arial/ArialMT.ttf]]></ttf>
+            <pdf><![CDATA[fonts/Arial/ArialMT.ttf]]></pdf>
+        </normal>
+        <bold>
+            <ttf><![CDATA[fonts/Arial/Arial-BoldMT.ttf]]></ttf>
+            <pdf><![CDATA[fonts/Arial/Arial-BoldMT.ttf]]></pdf>
+        </bold>
+        <italic>
+            <ttf><![CDATA[fonts/Arial/Arial-ItalicMT.ttf]]></ttf>
+            <pdf><![CDATA[fonts/Arial/Arial-ItalicMT.ttf]]></pdf>
+        </italic>
+        <boldItalic>
+            <ttf><![CDATA[fonts/Arial/Arial-BoldItalicMT.ttf]]></ttf>
+            <pdf><![CDATA[fonts/Arial/Arial-BoldItalicMT.ttf]]></pdf>
+        </boldItalic>
+        <pdfEncoding><![CDATA[Identity-H]]></pdfEncoding>
+        <pdfEmbedded><![CDATA[true]]></pdfEmbedded>
+        <exportFonts/>
+    </fontFamily>
+</fontFamilies>

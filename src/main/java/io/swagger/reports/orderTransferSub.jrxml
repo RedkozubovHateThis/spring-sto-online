@@ -90,7 +90,7 @@
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{number}]]></textFieldExpression>
 			</textField>
@@ -101,148 +101,164 @@
 					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{code}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="ElementGroupHeight" x="85" y="0" width="151" height="12" uuid="bf43bc03-db0b-4e59-ab4d-e68f8f361a09"/>
+				<reportElement stretchType="ElementGroupHeight" x="85" y="0" width="152" height="12" uuid="bf43bc03-db0b-4e59-ab4d-e68f8f361a09">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 					<leftPen lineWidth="0.0"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="ElementGroupHeight" x="236" y="0" width="30" height="12" uuid="860a863d-e884-4c4d-bfcc-21888650fa38"/>
+				<reportElement stretchType="ElementGroupHeight" x="237" y="0" width="28" height="12" uuid="860a863d-e884-4c4d-bfcc-21888650fa38">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{typeCode}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="ElementGroupHeight" x="266" y="0" width="25" height="12" uuid="ce1347c0-845b-493f-a893-266ba1b9b10e"/>
+				<reportElement stretchType="ElementGroupHeight" x="265" y="0" width="25" height="12" uuid="ce1347c0-845b-493f-a893-266ba1b9b10e"/>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{measureCode}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="ElementGroupHeight" x="291" y="0" width="55" height="12" uuid="2a5cb89e-2caf-4023-88f5-d6b82929dd1e"/>
+				<reportElement stretchType="ElementGroupHeight" x="290" y="0" width="55" height="12" uuid="2a5cb89e-2caf-4023-88f5-d6b82929dd1e"/>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{measureName}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="ElementGroupHeight" x="346" y="0" width="30" height="12" uuid="1abcce6e-5ae2-42a3-bbb6-61f495468260"/>
+				<reportElement stretchType="ElementGroupHeight" x="345" y="0" width="30" height="12" uuid="1abcce6e-5ae2-42a3-bbb6-61f495468260"/>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{count}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="ElementGroupHeight" x="376" y="0" width="36" height="12" uuid="17bdf19a-9822-4f5b-aa2b-ec93e6ea8fbe"/>
+				<reportElement stretchType="ElementGroupHeight" x="375" y="0" width="39" height="12" uuid="17bdf19a-9822-4f5b-aa2b-ec93e6ea8fbe">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cost}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="ElementGroupHeight" x="412" y="0" width="55" height="12" uuid="9f5cc48c-aa61-44c9-bb36-870e018f4f6f"/>
+				<reportElement stretchType="ElementGroupHeight" x="414" y="0" width="56" height="12" uuid="9f5cc48c-aa61-44c9-bb36-870e018f4f6f">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{totalCost} != null ? String.format("%.2f", $F{totalCost}) : null]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="ElementGroupHeight" x="467" y="0" width="35" height="12" uuid="bd7107f7-b4a4-4201-a01b-672928b00b7a"/>
-				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+				<reportElement stretchType="ElementGroupHeight" x="470" y="0" width="37" height="12" uuid="71a707bb-7031-4764-b18d-75f4718dd693">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box topPadding="1" leftPadding="0" bottomPadding="1" rightPadding="0">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{excise}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="ElementGroupHeight" x="502" y="0" width="40" height="12" uuid="7cb5f1ee-7331-4738-90e2-0eded345368f"/>
-				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+				<reportElement stretchType="ElementGroupHeight" x="507" y="0" width="40" height="12" uuid="7cb5f1ee-7331-4738-90e2-0eded345368f">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box topPadding="1" leftPadding="0" bottomPadding="1" rightPadding="0">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nds}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="ElementGroupHeight" x="542" y="0" width="55" height="12" uuid="759b7529-7fd6-4748-8b0c-b5460483aaeb"/>
+				<reportElement stretchType="ElementGroupHeight" x="547" y="0" width="56" height="12" uuid="759b7529-7fd6-4748-8b0c-b5460483aaeb">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{tax}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="ElementGroupHeight" x="597" y="0" width="58" height="12" uuid="5c89b642-3400-4836-9a99-7a562a329d76"/>
+				<reportElement stretchType="ElementGroupHeight" x="603" y="0" width="58" height="12" uuid="5c89b642-3400-4836-9a99-7a562a329d76"/>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{totalCostWithTax} != null ? String.format("%.2f", $F{totalCostWithTax}) : null]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="ElementGroupHeight" x="655" y="0" width="40" height="12" uuid="ac04ac63-17d7-4abd-a147-a259972d6405"/>
+				<reportElement stretchType="ElementGroupHeight" x="661" y="0" width="40" height="12" uuid="ac04ac63-17d7-4abd-a147-a259972d6405"/>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{partCountryCode}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="ElementGroupHeight" x="695" y="0" width="50" height="12" uuid="cc58f05f-371a-4a44-b6ef-5032bde6eed0"/>
+				<reportElement stretchType="ElementGroupHeight" x="701" y="0" width="50" height="12" uuid="cc58f05f-371a-4a44-b6ef-5032bde6eed0"/>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{partCountryName}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="ElementGroupHeight" x="745" y="0" width="55" height="12" uuid="fae3cfa8-b11d-4372-8fa2-e7948a75baa9"/>
+				<reportElement stretchType="ElementGroupHeight" x="751" y="0" width="49" height="12" uuid="fae3cfa8-b11d-4372-8fa2-e7948a75baa9">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{declarationCode}]]></textFieldExpression>
 			</textField>
@@ -263,99 +279,109 @@
 		<band height="12">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
-				<reportElement stretchType="ElementGroupHeight" x="85" y="0" width="151" height="12" uuid="cc20d5fe-262a-4fae-a941-950ede8e9c7c"/>
-				<box padding="1">
+				<reportElement stretchType="ElementGroupHeight" x="85" y="0" width="152" height="12" uuid="cc20d5fe-262a-4fae-a941-950ede8e9c7c">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 					<leftPen lineWidth="0.0"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9" isBold="true"/>
+					<font fontName="Arial" size="6.9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[ИТОГО]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="ElementGroupHeight" x="236" y="0" width="30" height="12" uuid="0138d74e-a46e-49af-843f-096ca055f8a5"/>
+				<reportElement stretchType="ElementGroupHeight" x="237" y="0" width="28" height="12" uuid="0138d74e-a46e-49af-843f-096ca055f8a5">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="ElementGroupHeight" x="266" y="0" width="25" height="12" uuid="4496ddaa-c3eb-4fd3-b80e-9b4bfbfc7057"/>
+				<reportElement stretchType="ElementGroupHeight" x="265" y="0" width="25" height="12" uuid="4496ddaa-c3eb-4fd3-b80e-9b4bfbfc7057"/>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="ElementGroupHeight" x="291" y="0" width="55" height="12" uuid="6a7f7704-762c-4acf-95d5-08b934c7f059"/>
+				<reportElement stretchType="ElementGroupHeight" x="290" y="0" width="55" height="12" uuid="6a7f7704-762c-4acf-95d5-08b934c7f059"/>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="ElementGroupHeight" x="346" y="0" width="30" height="12" uuid="3e75009f-a0c7-4c90-894f-e9b5362e7a04"/>
+				<reportElement stretchType="ElementGroupHeight" x="345" y="0" width="30" height="12" uuid="3e75009f-a0c7-4c90-894f-e9b5362e7a04"/>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{countTotal}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="ElementGroupHeight" x="376" y="0" width="36" height="12" uuid="794b79c7-f256-49e5-a636-9e692d255e64"/>
+				<reportElement stretchType="ElementGroupHeight" x="375" y="0" width="39" height="12" uuid="794b79c7-f256-49e5-a636-9e692d255e64">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="ElementGroupHeight" x="412" y="0" width="55" height="12" uuid="0f933547-747b-4ba1-8cb1-d90dc4a11dc6"/>
+				<reportElement stretchType="ElementGroupHeight" x="414" y="0" width="56" height="12" uuid="0f933547-747b-4ba1-8cb1-d90dc4a11dc6">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{costTotal} != null ? String.format("%.2f", $V{costTotal}) : 0.00]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement stretchType="ElementGroupHeight" x="467" y="0" width="75" height="12" uuid="ed58938e-de6b-45bc-bb6f-90ad1685355d"/>
+				<reportElement stretchType="ElementGroupHeight" x="470" y="0" width="77" height="12" uuid="ed58938e-de6b-45bc-bb6f-90ad1685355d"/>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 				<text><![CDATA[X]]></text>
 			</staticText>
 			<staticText>
-				<reportElement stretchType="ElementGroupHeight" x="542" y="0" width="55" height="12" uuid="6f1a78d8-1458-4217-8f5e-5d3f4431f123"/>
+				<reportElement stretchType="ElementGroupHeight" x="547" y="0" width="56" height="12" uuid="6f1a78d8-1458-4217-8f5e-5d3f4431f123">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 				<text><![CDATA[0,00]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="ElementGroupHeight" x="597" y="0" width="58" height="12" uuid="48a2ba7b-5d5d-466a-bc59-4729dc789e6b"/>
+				<reportElement stretchType="ElementGroupHeight" x="603" y="0" width="58" height="12" uuid="48a2ba7b-5d5d-466a-bc59-4729dc789e6b"/>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{costWithTaxTotal} != null ? String.format("%.2f", $V{costWithTaxTotal}) : 0.00]]></textFieldExpression>
 			</textField>
@@ -365,7 +391,7 @@
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
@@ -375,7 +401,7 @@
 					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 			</textField>
 			<line>
@@ -400,7 +426,7 @@
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
@@ -410,103 +436,113 @@
 					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 			</textField>
 			<staticText>
-				<reportElement stretchType="ElementGroupHeight" x="85" y="0" width="151" height="12" uuid="39377b7d-a31c-4c09-9397-d4b5dcb9a46b"/>
+				<reportElement stretchType="ElementGroupHeight" x="85" y="0" width="152" height="12" uuid="39377b7d-a31c-4c09-9397-d4b5dcb9a46b">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 					<leftPen lineWidth="0.0"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9" isBold="true"/>
+					<font fontName="Arial" size="6.9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Всего к оплате]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="ElementGroupHeight" x="236" y="0" width="30" height="12" uuid="f72eae12-b56a-42f0-9a8d-c5567db38851"/>
+				<reportElement stretchType="ElementGroupHeight" x="237" y="0" width="28" height="12" uuid="f72eae12-b56a-42f0-9a8d-c5567db38851">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="ElementGroupHeight" x="266" y="0" width="25" height="12" uuid="b474e209-81cc-47dc-b3e0-35031131e370"/>
+				<reportElement stretchType="ElementGroupHeight" x="265" y="0" width="25" height="12" uuid="b474e209-81cc-47dc-b3e0-35031131e370"/>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="ElementGroupHeight" x="291" y="0" width="55" height="12" uuid="0a6859a6-6ee5-4ef1-aa8c-25ce30b7b0b0"/>
+				<reportElement stretchType="ElementGroupHeight" x="290" y="0" width="55" height="12" uuid="0a6859a6-6ee5-4ef1-aa8c-25ce30b7b0b0"/>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="ElementGroupHeight" x="346" y="0" width="30" height="12" uuid="1fe498f6-1bd3-4e94-9f06-eefa981f1ffb"/>
+				<reportElement stretchType="ElementGroupHeight" x="345" y="0" width="30" height="12" uuid="1fe498f6-1bd3-4e94-9f06-eefa981f1ffb"/>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{countTotal}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="ElementGroupHeight" x="376" y="0" width="36" height="12" uuid="398305c0-27e4-497d-9a98-4255c246811d"/>
+				<reportElement stretchType="ElementGroupHeight" x="375" y="0" width="39" height="12" uuid="398305c0-27e4-497d-9a98-4255c246811d">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="ElementGroupHeight" x="412" y="0" width="55" height="12" uuid="d3274d9e-e088-4fa8-af96-fa6189a20d43"/>
+				<reportElement stretchType="ElementGroupHeight" x="414" y="0" width="56" height="12" uuid="d3274d9e-e088-4fa8-af96-fa6189a20d43">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{costTotal} != null ? String.format("%.2f", $V{costTotal}) : 0.00]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement stretchType="ElementGroupHeight" x="467" y="0" width="75" height="12" uuid="50748535-ca00-478a-9be0-10b932ee6919"/>
+				<reportElement stretchType="ElementGroupHeight" x="470" y="0" width="77" height="12" uuid="50748535-ca00-478a-9be0-10b932ee6919"/>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 				<text><![CDATA[X]]></text>
 			</staticText>
 			<staticText>
-				<reportElement stretchType="ElementGroupHeight" x="542" y="0" width="55" height="12" uuid="557524ec-5d78-40c1-80c2-4f9390e1f3db"/>
+				<reportElement stretchType="ElementGroupHeight" x="547" y="0" width="56" height="12" uuid="557524ec-5d78-40c1-80c2-4f9390e1f3db">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 				<text><![CDATA[0,00]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="ElementGroupHeight" x="597" y="0" width="58" height="12" uuid="ec8abaa6-49e1-469f-b9f1-d33ef1992f39"/>
+				<reportElement stretchType="ElementGroupHeight" x="603" y="0" width="58" height="12" uuid="ec8abaa6-49e1-469f-b9f1-d33ef1992f39"/>
 				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
 					<pen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="6.9"/>
+					<font fontName="Arial" size="6.9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{costWithTaxTotal} != null ? String.format("%.2f", $V{costWithTaxTotal}) : 0.00]]></textFieldExpression>
 			</textField>

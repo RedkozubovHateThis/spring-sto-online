@@ -60,7 +60,7 @@
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="11" isBold="false"/>
+					<font fontName="Arial" size="11" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{reportTitle}]]></textFieldExpression>
 			</textField>
@@ -88,7 +88,7 @@
 							<staticText>
 								<reportElement x="0" y="0" width="278" height="20" uuid="26c8b094-cd7f-42c0-a8a7-4af1dd536d97"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="Times New Roman" size="11" isBold="true"/>
+									<font fontName="Arial" size="11" isBold="true"/>
 								</textElement>
 								<text><![CDATA[Контрагент / Заказ-наряд]]></text>
 							</staticText>
@@ -99,7 +99,7 @@
 								<reportElement style="conditionalBold" x="0" y="0" width="278" height="20" uuid="2185dc08-1739-420a-be67-fe2af71f2a43"/>
 								<box padding="3"/>
 								<textElement verticalAlignment="Middle">
-									<font fontName="Times New Roman" size="11"/>
+									<font fontName="Arial" size="11"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{fullName}]]></textFieldExpression>
 							</textField>
@@ -112,7 +112,7 @@
 							<staticText>
 								<reportElement x="0" y="0" width="277" height="20" uuid="3751ab30-2995-4503-bb59-7c2f24f38d94"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="Times New Roman" size="11" isBold="true"/>
+									<font fontName="Arial" size="11" isBold="true"/>
 								</textElement>
 								<text><![CDATA[Сумма / Итого]]></text>
 							</staticText>
@@ -122,7 +122,7 @@
 								<reportElement style="conditionalBold" x="0" y="0" width="277" height="20" uuid="a516746e-d43d-42ee-962c-4a5ed90f3a38"/>
 								<box padding="3"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="Times New Roman" size="11"/>
+									<font fontName="Arial" size="11"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{total} != null ? String.format("%.2f", $F{total}) : 0.00]]></textFieldExpression>
 							</textField>
