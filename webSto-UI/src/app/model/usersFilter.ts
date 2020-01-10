@@ -9,6 +9,7 @@ export class UsersFilter extends PageFilter {
   phone: string;
   email: string;
   fio: string;
+  inn: string;
   sort: string;
   direction: string;
 
@@ -20,6 +21,7 @@ export class UsersFilter extends PageFilter {
     this.phone = null;
     this.email = null;
     this.fio = null;
+    this.inn = null;
     this.sort = 'lastName';
     this.direction = 'asc';
   }
@@ -42,6 +44,9 @@ export class UsersFilter extends PageFilter {
 
     if ( queryParams.email ) this.email = queryParams.email;
     // else this.email = null;
+
+    if ( queryParams.inn ) this.inn = queryParams.inn;
+    // else this.inn = null;
 
     if ( queryParams.fio ) this.fio = queryParams.fio;
     // else this.fio = null;

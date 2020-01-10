@@ -76,10 +76,10 @@
     </div>
 
     <div class="form-group">
-      <label class="form-control-label" for="model-input">Марка/модель автомобиля</label>
+      <label class="form-control-label" for="model-input">VIN-номер</label>
       <div class="input-group input-group-sm">
-        <input id="model-input" class="form-control" placeholder="Марка/модель автомобиля"
-               [disabled]="disabled" [(ngModel)]="filter.vehicle" (keyup.enter)="emitChange()">
+        <input id="model-input" class="form-control" placeholder="VIN-номер"
+               [disabled]="disabled" [(ngModel)]="filter.vinNumber" (keyup.enter)="emitChange()">
         <div class="input-group-append">
           <button class="btn btn-buro-green" type="button" (click)="emitChange()" [disabled]="disabled">
             <i class="fas fa-search"></i>
@@ -92,7 +92,7 @@
       <label class="form-control-label" for="vin-input">Рег. номер</label>
       <div class="input-group input-group-sm">
         <input id="vin-input" class="form-control" placeholder="Рег. номер"
-               [disabled]="disabled" [(ngModel)]="filter.vinNumber" (keyup.enter)="emitChange()">
+               [disabled]="disabled" [(ngModel)]="filter.vehicle" (keyup.enter)="emitChange()">
         <div class="input-group-append">
           <button class="btn btn-buro-green" type="button" (click)="emitChange()" [disabled]="disabled">
             <i class="fas fa-search"></i>

@@ -93,6 +93,19 @@
     </div>
 
     <div class="form-group">
+      <label class="form-control-label" for="inn-input">ИНН</label>
+      <div class="input-group input-group-sm">
+        <input id="inn-input" class="form-control" placeholder="ИНН"
+               [(ngModel)]="filter.inn" (keyup.enter)="emitChange()">
+        <div class="input-group-append">
+          <button class="btn btn-buro-green" type="button" (click)="emitChange()">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
       <label class="form-control-label" for="fio-input">ФИО</label>
       <div class="input-group input-group-sm">
         <input id="fio-input" class="form-control" placeholder="ФИО"

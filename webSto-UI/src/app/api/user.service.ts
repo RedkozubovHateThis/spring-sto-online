@@ -246,6 +246,7 @@ export class UserService implements TransferService<User>, RestService<User> {
       isAutoRegistered: filter.isAutoRegistered != null ? filter.isAutoRegistered : '',
       phone: filter.phone != null ? filter.phone : '',
       email: filter.email != null ? filter.email : '',
+      inn: filter.inn != null ? filter.inn : '',
       fio: filter.fio != null ? filter.fio : ''
     };
 

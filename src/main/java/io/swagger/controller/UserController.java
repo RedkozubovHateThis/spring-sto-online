@@ -478,6 +478,7 @@ public class UserController {
         private String phone;
         private String email;
         private String fio;
+        private String inn;
 
     }
 

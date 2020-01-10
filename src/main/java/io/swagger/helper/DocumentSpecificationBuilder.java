@@ -103,20 +103,25 @@ public class DocumentSpecificationBuilder {
                 }
                 if ( filterPayload.getVehicle() != null && filterPayload.getVehicle().length() > 0 ) {
                     predicates.add(
-                            cb.or(
-                                    cb.like(
-                                            cb.upper( modelJoin.get( Model_.name ) ), "%" + filterPayload.getVehicle().toUpperCase() + "%"
-                                    ),
-                                    cb.like(
-                                            cb.upper( markJoin.get( Mark_.name ) ), "%" + filterPayload.getVehicle().toUpperCase() + "%"
-                                    )
+                            cb.like(
+                                    cb.upper( mdJoin.get( ModelDetail_.regNumber ) ), "%" + filterPayload.getVehicle().toUpperCase() + "%"
                             )
                     );
+//                    predicates.add(
+//                            cb.or(
+//                                    cb.like(
+//                                            cb.upper( modelJoin.get( Model_.name ) ), "%" + filterPayload.getVehicle().toUpperCase() + "%"
+//                                    ),
+//                                    cb.like(
+//                                            cb.upper( markJoin.get( Mark_.name ) ), "%" + filterPayload.getVehicle().toUpperCase() + "%"
+//                                    )
+//                            )
+//                    );
                 }
                 if ( filterPayload.getVinNumber() != null && filterPayload.getVinNumber().length() > 0 ) {
                     predicates.add(
                             cb.like(
-                                    cb.upper( mdJoin.get( ModelDetail_.regNumber ) ), "%" + filterPayload.getVinNumber().toUpperCase() + "%"
+                                    cb.upper( mdJoin.get( ModelDetail_.vinNumber ) ), "%" + filterPayload.getVinNumber().toUpperCase() + "%"
                             )
                     );
                 }

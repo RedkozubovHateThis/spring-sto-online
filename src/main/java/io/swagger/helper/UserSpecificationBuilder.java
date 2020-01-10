@@ -85,6 +85,11 @@ public class UserSpecificationBuilder {
                             )
                     );
                 }
+                if ( filterPayload.getInn() != null && filterPayload.getInn().length() > 0 ) {
+                    predicates.add(
+                            cb.like( root.get( User_.inn ), "%" + filterPayload.getInn() + "%" )
+                    );
+                }
 
                 query.distinct(true);
 
