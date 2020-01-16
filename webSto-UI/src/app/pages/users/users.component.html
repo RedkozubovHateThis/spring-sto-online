@@ -14,11 +14,11 @@
               </h3>
             </div>
             <div class="col-auto">
-              <a href="#" class="btn btn-sm btn-buro-green" [routerLink]="['/users/add']"
+              <a href="#" class="btn btn-sm btn-buro-blue" [routerLink]="['/users/add']"
                  *ngIf="userService.isAdmin()">
                 Добавить
               </a>
-              <button class="btn btn-sm btn-buro-green" (click)="requestData()" [disabled]="isLoading">
+              <button class="btn btn-sm btn-buro-blue" (click)="requestData()" [disabled]="isLoading">
                 Обновить
               </button>
             </div>

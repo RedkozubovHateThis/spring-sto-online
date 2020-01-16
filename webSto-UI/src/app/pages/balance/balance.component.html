@@ -20,7 +20,7 @@
 
           <div class="row form-group justify-content-end">
             <div class="col-auto">
-              <button class="btn btn-buro-green btn-sm" [disabled]="amount == null || amount <= 0 || userService.isDemoDomain()"
+              <button class="btn btn-buro-blue btn-sm" [disabled]="amount == null || amount <= 0 || userService.isDemoDomain()"
                       (click)="sendRequest()">Оплатить картой</button>
             </div>
           </div>
@@ -50,7 +50,7 @@
 
           <div class="row form-group" *ngIf="!isPromised">
             <div class="col">
-              <button class="btn btn-buro-green btn-sm btn-block" [disabled]="userService.isDemoDomain()"
+              <button class="btn btn-buro-blue btn-sm btn-block" [disabled]="userService.isDemoDomain()"
                       (click)="togglePromised()">Обещанный платеж</button>
             </div>
           </div>
@@ -79,7 +79,7 @@
 
               <div class="row form-group">
                 <div class="col">
-                  <button class="btn btn-sm btn-buro-green btn-block" (click)="sendPromisedRequest(7500)" [disabled]="isProcessing">
+                  <button class="btn btn-sm btn-buro-blue btn-block" (click)="sendPromisedRequest(7500)" [disabled]="isProcessing">
                     {{7500 | number : '.2' : 'ru'}} руб.
                   </button>
                 </div>
@@ -87,7 +87,7 @@
 
               <div class="row form-group">
                 <div class="col">
-                  <button class="btn btn-sm btn-buro-green btn-block" (click)="sendPromisedRequest(11500)" [disabled]="isProcessing">
+                  <button class="btn btn-sm btn-buro-blue btn-block" (click)="sendPromisedRequest(11500)" [disabled]="isProcessing">
                     {{11500 | number : '.2' : 'ru'}} руб.
                   </button>
                 </div>
@@ -95,7 +95,7 @@
 
               <div class="row form-group">
                 <div class="col">
-                  <button class="btn btn-sm btn-buro-green btn-block" (click)="sendPromisedRequest(16000)" [disabled]="isProcessing">
+                  <button class="btn btn-sm btn-buro-blue btn-block" (click)="sendPromisedRequest(16000)" [disabled]="isProcessing">
                     {{16000 | number : '.2' : 'ru'}} руб.
                   </button>
                 </div>
@@ -111,7 +111,7 @@
 
 <!--              <div class="row form-group justify-content-end">-->
 <!--                <div class="col-auto">-->
-<!--                  <button class="btn btn-buro-green btn-sm" [disabled]="promisedAmount == null || promisedAmount <= 0"-->
+<!--                  <button class="btn btn-buro-blue btn-sm" [disabled]="promisedAmount == null || promisedAmount <= 0"-->
 <!--                          (click)="sendPromisedRequest()">Запросить</button>-->
 <!--                </div>-->
 <!--              </div>-->
@@ -178,7 +178,7 @@
                      (ngModelChange)="setToDate($event)" [(ngModel)]="toDate" [dpDayPicker]="datePickerConfig" theme="dp-material" />
             </div>
             <div class="col-auto">
-              <button class="btn btn-sm btn-buro-green" (click)="requestData()" [disabled]="isLoading">
+              <button class="btn btn-sm btn-buro-blue" (click)="requestData()" [disabled]="isLoading">
                 Обновить
               </button>
             </div>

@@ -66,12 +66,12 @@
             <h6 class="text-overflow m-0">Добро пожаловать</h6>
           </div>
           <a routerLinkActive="active" [routerLink]="['/user-profile']" class="dropdown-item">
-            <i class="fas fa-user text-buro-green"></i>
+            <i class="fas fa-user text-buro-blue"></i>
             <span>Профиль</span>
           </a>
           <div class="dropdown-divider"></div>
           <a href="#!" class="dropdown-item">
-            <i class="fa fa-sign-out-alt text-buro-green"></i>
+            <i class="fa fa-sign-out-alt text-buro-blue"></i>
             <span>Выйти</span>
           </a>
         </div>
@@ -99,36 +99,36 @@
       <ul class="navbar-nav">
         <a routerLinkActive="active" [routerLink]="['/dashboard']" class="nav-link"
            *ngIf="userService.isNotClient()">
-            <i class="fas fa-tv text-buro-green"></i> Главная
+            <i class="fas fa-tv text-buro-blue"></i> Главная
         </a>
         <a routerLinkActive="active" [routerLink]="['/chat']" class="nav-link"
            *ngIf="userService.isNotClient()">
-            <i class="fas fa-comments text-buro-green"></i> Чат
+            <i class="fas fa-comments text-buro-blue"></i> Чат
         </a>
         <a routerLinkActive="active" [routerLink]="['/documents']" class="nav-link">
-            <i class="fas fa-list text-buro-green"></i> Заказ-наряды
+            <i class="fas fa-list text-buro-blue"></i> Заказ-наряды
         </a>
         <a routerLinkActive="active" [routerLink]="['/user-profile']" class="nav-link">
-            <i class="fas fa-user text-buro-green"></i> Профиль
+            <i class="fas fa-user text-buro-blue"></i> Профиль
         </a>
         <a routerLinkActive="active" [routerLink]="['/users']" class="nav-link"
            *ngIf="userService.isModeratorOrAdmin()">
-            <i class="fas fa-users text-buro-green"></i> Пользователи
+            <i class="fas fa-users text-buro-blue"></i> Пользователи
         </a>
         <a routerLinkActive="active" [routerLink]="['/reports']" class="nav-link"
            *ngIf="userService.isNotClient()">
-            <i class="fas fa-copy text-buro-green"></i> Отчеты
+            <i class="fas fa-copy text-buro-blue"></i> Отчеты
         </a>
         <a routerLinkActive="active" [routerLink]="['/event-messages']" class="nav-link">
-          <i class="fas fa-bell text-buro-green"></i> Уведомления
+          <i class="fas fa-bell text-buro-blue"></i> Уведомления
         </a>
         <a routerLinkActive="active" [routerLink]="['/balance']" class="nav-link"
            *ngIf="userService.isServiceLeader()">
-          <i class="fas fa-ruble-sign text-buro-green"></i> Баланс
+          <i class="fas fa-ruble-sign text-buro-blue"></i> Баланс
         </a>
         <a routerLinkActive="active" [routerLink]="['/subscription']" class="nav-link"
            *ngIf="userService.isServiceLeader()">
-          <i class="fas fa-book text-buro-green"></i> Тарифы
+          <i class="fas fa-book text-buro-blue"></i> Тарифы
         </a>
       </ul>
     </div>

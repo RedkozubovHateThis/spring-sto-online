@@ -9,10 +9,10 @@
               <h3 class="mb-0">Данные пользователя: редактирование</h3>
             </div>
             <div class="col-auto">
-              <button class="btn btn-sm btn-buro-green" [disabled]="userService.isSaving" (click)="location.back()">
+              <button class="btn btn-sm btn-buro-blue" [disabled]="userService.isSaving" (click)="location.back()">
                 Назад
               </button>
-              <button class="btn btn-sm btn-buro-green" [disabled]="userService.isSaving"
+              <button class="btn btn-sm btn-buro-blue" [disabled]="userService.isSaving"
                       *ngIf="userService.isAdmin() || userService.isSameUser( model )"
                       (click)="userService.saveUser( model, 'Пользователь успешно сохранен!' )">
                 Сохранить
@@ -207,7 +207,7 @@
                           </div>
                         </div>
 
-                        <button class="btn btn-buro-green btn-block" (click)="model.subscriptionType = subscriptionType.type"
+                        <button class="btn btn-buro-blue btn-block" (click)="model.subscriptionType = subscriptionType.type"
                                 [disabled]="model.subscriptionType === subscriptionType.type">
                           <span *ngIf="model.subscriptionType === subscriptionType.type">Выбран</span>
                           <span *ngIf="model.subscriptionType !== subscriptionType.type">Выбрать</span>
@@ -256,13 +256,13 @@
             </div>
             <div class="col-auto text-right" *ngIf="userService.isSameUser( model )">
 
-              <button class="btn btn-sm btn-buro-green" *ngIf="model.userClient"
+              <button class="btn btn-sm btn-buro-blue" *ngIf="model.userClient"
                       [disabled]="model.isApproved || userService.isSaving || clientResponse == null || ( clientResponse.id == model.clientId )"
                       (click)="linkClient(model)">
                 Привязать
               </button>
 
-              <button class="btn btn-sm btn-buro-green" *ngIf="model.userServiceLeader"
+              <button class="btn btn-sm btn-buro-blue" *ngIf="model.userServiceLeader"
                       [disabled]="model.isApproved || userService.isSaving || organizationResponse == null || ( organizationResponse.id == model.organizationId )"
                       (click)="linkOrganization(model)">
                 Привязать
@@ -288,7 +288,7 @@
                   <input type="text" id="vin-number" class="form-control" placeholder="VIN - номер" [disabled]="model.isApproved"
                          [(ngModel)]="model.vin" name="vinNumber">
                   <div class="input-group-append">
-                    <button class="btn btn-buro-green" type="button" (click)="findClientByVin()"
+                    <button class="btn btn-buro-blue" type="button" (click)="findClientByVin()"
                             [disabled]="model.isApproved || model.vin == null || model.vin.length == 0 || isADLoading">
                       Найти
                     </button>
@@ -304,7 +304,7 @@
                   <input type="text" id="inn" class="form-control" placeholder="ИНН" [disabled]="model.isApproved"
                          [(ngModel)]="model.inn" name="inn">
                   <div class="input-group-append">
-                    <button class="btn btn-buro-green" type="button" (click)="findOrganizationByInn()"
+                    <button class="btn btn-buro-blue" type="button" (click)="findOrganizationByInn()"
                             [disabled]="model.isApproved || model.inn == null || model.inn.length == 0 || isADLoading">
                       Найти
                     </button>

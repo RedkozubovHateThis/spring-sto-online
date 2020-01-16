@@ -9,10 +9,10 @@
               <h3 class="mb-0">{{title}}</h3>
             </div>
             <div class="col-auto">
-              <button class="btn btn-sm btn-buro-green" (click)="location.back()" *ngIf="showBack">
+              <button class="btn btn-sm btn-buro-blue" (click)="location.back()" *ngIf="showBack">
                 Назад
               </button>
-              <button class="btn btn-sm btn-buro-green" (click)="navigate( model )"
+              <button class="btn btn-sm btn-buro-blue" (click)="navigate( model )"
                       *ngIf="userService.currentUser != null && model != null && ( userService.currentUser.id == model.id || userService.currentUser.userAdmin )">
                 Редактировать
               </button>
@@ -193,11 +193,11 @@
 
               <div class="form-group"
                    *ngIf="userService.isModeratorOrAdmin() && model != null && model.id != userService.currentUser.id">
-                <button class="btn btn-buro-green" [disabled]="model.clientId == null && model.organizationId == null" (click)="approve( model, true )" *ngIf="!model.isApproved; else disapprove">
+                <button class="btn btn-buro-blue" [disabled]="model.clientId == null && model.organizationId == null" (click)="approve( model, true )" *ngIf="!model.isApproved; else disapprove">
                   Подвердить
                 </button>
                 <ng-template #disapprove>
-                  <button class="btn btn-buro-green" (click)="approve( model, false )">
+                  <button class="btn btn-buro-blue" (click)="approve( model, false )">
                     Отменить
                   </button>
                 </ng-template>

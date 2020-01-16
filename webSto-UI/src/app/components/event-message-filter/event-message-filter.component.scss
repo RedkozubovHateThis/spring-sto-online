@@ -3,7 +3,7 @@
   border-radius: 10px;
 }
 //.img-container > .img-preview:hover {
-//  border: 1px solid #60B61C;
+//  border: 1px solid #5A6FF9;
 //}
 .img-container {
   display: inline-block;
@@ -18,12 +18,12 @@
   width: 100%;
   height: 100%;
   border-radius: 10px;
-  color: #60B61C;
-  background: rgba(96, 182, 28, 0.1);
+  color: #5A6FF9;
+  background: rgba(90, 111, 249, 0.1);
 }
 .img-container > .overlay {
   display: none;
-  border: 2px solid #60B61C;
+  border: 2px solid #5A6FF9;
 }
 .img-container > .download-overlay,
 .img-container:hover > .overlay {

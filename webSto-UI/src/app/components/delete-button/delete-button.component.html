@@ -1,4 +1,4 @@
-<button class="btn btn-sm btn-buro-green" (click)="open(content)" [disabled]="isDeleting">
+<button class="btn btn-sm btn-buro-blue" (click)="open(content)" [disabled]="isDeleting">
   Удалить
 </button>
 
@@ -14,10 +14,10 @@
     Вы действительно хотите удалить: {{modalTitle}}?
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-sm btn-buro-green" (click)="promptDelete()" [disabled]="isDeleting">
+    <button type="button" class="btn btn-sm btn-buro-blue" (click)="promptDelete()" [disabled]="isDeleting">
       Удалить
       <span *ngIf="isDeleting">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
     </button>
-    <button type="button" class="btn btn-sm btn-buro-green" (click)="modal.dismiss()">Закрыть</button>
+    <button type="button" class="btn btn-sm btn-buro-blue" (click)="modal.dismiss()">Закрыть</button>
   </div>
 </ng-template>

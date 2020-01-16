@@ -14,7 +14,7 @@
         <app-report-button [model]="document" [printDisabled]="document != null && document.state !== 4"
                            *ngIf="userService.currentUser != null">
         </app-report-button>
-        <button class="btn btn-sm btn-buro-green" (click)="resetFilters()" *ngIf="filter.state || filter.organization ||
+        <button class="btn btn-sm btn-buro-blue" (click)="resetFilters()" *ngIf="filter.state || filter.organization ||
         filter.vehicle || filter.vinNumber || filter.client || filter.fromDate || filter.toDate">
           Сбросить
         </button>
@@ -65,7 +65,7 @@
                (selectItem)="setClient($event)" [(ngModel)]="selectedClient" [ngbTypeahead]="search"
                [resultTemplate]="rt" [inputFormatter]="formatter"/>
         <div class="input-group-append">
-          <button class="btn btn-buro-green" type="button" (click)="setClient(null)" [disabled]="disabled">
+          <button class="btn btn-buro-blue" type="button" (click)="setClient(null)" [disabled]="disabled">
             <i class="fas fa-times"></i>
           </button>
         </div>
@@ -81,7 +81,7 @@
         <input id="model-input" class="form-control" placeholder="VIN-номер"
                [disabled]="disabled" [(ngModel)]="filter.vinNumber" (keyup.enter)="emitChange()">
         <div class="input-group-append">
-          <button class="btn btn-buro-green" type="button" (click)="emitChange()" [disabled]="disabled">
+          <button class="btn btn-buro-blue" type="button" (click)="emitChange()" [disabled]="disabled">
             <i class="fas fa-search"></i>
           </button>
         </div>
@@ -94,7 +94,7 @@
         <input id="vin-input" class="form-control" placeholder="Рег. номер"
                [disabled]="disabled" [(ngModel)]="filter.vehicle" (keyup.enter)="emitChange()">
         <div class="input-group-append">
-          <button class="btn btn-buro-green" type="button" (click)="emitChange()" [disabled]="disabled">
+          <button class="btn btn-buro-blue" type="button" (click)="emitChange()" [disabled]="disabled">
             <i class="fas fa-search"></i>
           </button>
         </div>
@@ -130,7 +130,7 @@
         </h3>
       </div>
       <div *ngIf="filter.sort !== 'dateStart' || filter.direction !== 'desc'" class="col-auto text-muted">
-        <button class="btn btn-sm btn-buro-green" (click)="resetSort()">
+        <button class="btn btn-sm btn-buro-blue" (click)="resetSort()">
           Сбросить
         </button>
       </div>

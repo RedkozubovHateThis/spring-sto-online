@@ -8,7 +8,7 @@
         </h3>
       </div>
       <div *ngIf="filter.messageType || filter.fromId || filter.toId || filter.documentId" class="col-auto mb-3">
-        <button class="btn btn-sm btn-buro-green" (click)="resetFilters()">
+        <button class="btn btn-sm btn-buro-blue" (click)="resetFilters()">
           Сбросить
         </button>
       </div>
@@ -69,7 +69,7 @@
         </h3>
       </div>
       <div *ngIf="filter.direction !== 'desc'" class="col-auto text-muted">
-        <button class="btn btn-sm btn-buro-green" (click)="resetSort()">
+        <button class="btn btn-sm btn-buro-blue" (click)="resetSort()">
           Сбросить
         </button>
       </div>

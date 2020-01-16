@@ -1,5 +1,5 @@
 <div ngbDropdown class="d-inline-block" placement="auto">
-  <button class="btn btn-sm btn-buro-green" id="reports-dropdown" [disabled]="isDownloading || model == null || disabled" ngbDropdownToggle
+  <button class="btn btn-sm btn-buro-blue" id="reports-dropdown" [disabled]="isDownloading || model == null || disabled" ngbDropdownToggle
           [ngbTooltip]="withPrint ? 'Выгрузить и распечатать...' : 'Выгрузить...'">
     <span *ngIf="withPrint">
       <i class="fas fa-print"></i>
@@ -84,8 +84,8 @@
     ></pdf-viewer>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-sm btn-buro-green" [disabled]="printDisabled" (click)="save()">Сохранить как...</button>
-    <button type="button" class="btn btn-sm btn-buro-green" [disabled]="printDisabled" (click)="print()">Распечатать</button>
-    <button type="button" class="btn btn-sm btn-buro-green" (click)="modal.dismiss()">Закрыть</button>
+    <button type="button" class="btn btn-sm btn-buro-blue" [disabled]="printDisabled" (click)="save()">Сохранить как...</button>
+    <button type="button" class="btn btn-sm btn-buro-blue" [disabled]="printDisabled" (click)="print()">Распечатать</button>
+    <button type="button" class="btn btn-sm btn-buro-blue" (click)="modal.dismiss()">Закрыть</button>
   </div>
 </ng-template>

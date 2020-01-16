@@ -12,7 +12,7 @@
               </h3>
             </div>
             <div class="col-auto">
-              <button class="btn btn-sm btn-buro-green" (click)="requestAllSubscriptions()" [disabled]="isLoading">
+              <button class="btn btn-sm btn-buro-blue" (click)="requestAllSubscriptions()" [disabled]="isLoading">
                 Обновить
               </button>
             </div>
@@ -117,7 +117,7 @@
               </div>
             </div>
 
-<!--            <button class="btn btn-sm btn-buro-green btn-block" *ngIf="!showAddon && selectedSubscription.type != 'FREE'"-->
+<!--            <button class="btn btn-sm btn-buro-blue btn-block" *ngIf="!showAddon && selectedSubscription.type != 'FREE'"-->
 <!--                    (click)="toggleAddon()">-->
 <!--              Дополнить тариф-->
 <!--            </button>-->
@@ -150,7 +150,7 @@
 
               <div class="row form-group justify-content-end">
                 <div class="col-auto">
-                  <button class="btn btn-sm btn-buro-green btn-block" (click)="buySubscriptionAddon()"
+                  <button class="btn btn-sm btn-buro-blue btn-block" (click)="buySubscriptionAddon()"
                           [disabled]="selectedSubscription == null || documentsCount == null || documentsCount == 0 ||
                       cost == null || cost === 0 || userService.currentUser.balance < cost || isLoading">
                     Дополнить
@@ -250,13 +250,13 @@
 
 <!--                  <ng-container *ngIf="isBuyAvailable(); else updateBlock">-->
                   <ng-container *ngIf="true; else updateBlock">
-                    <button class="btn btn-buro-green btn-block" (click)="buySubscription(subscriptionType.type)"
+                    <button class="btn btn-buro-blue btn-block" (click)="buySubscription(subscriptionType.type)"
                             [disabled]="subscriptionType.isInactive || userService.currentUser.balance < subscriptionType.cost">
                       Купить
                     </button>
                   </ng-container>
                   <ng-template #updateBlock>
-                    <button class="btn btn-buro-green btn-block" (click)="updateRenewalSubscription(subscriptionType)"
+                    <button class="btn btn-buro-blue btn-block" (click)="updateRenewalSubscription(subscriptionType)"
                             [disabled]="subscriptionType.isInactive ||
                             userService.currentUser.subscriptionType === subscriptionType.type">
                       <span *ngIf="userService.currentUser.subscriptionType === subscriptionType.type">Выбран</span>

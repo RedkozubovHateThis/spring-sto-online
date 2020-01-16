@@ -11,7 +11,7 @@
   </div>
   <div class="separator separator-bottom separator-skew zindex-100">
     <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1" xmlns="http://www.w3.org/2000/svg">
-      <polygon class="fill-buro-green" points="2560 0 2560 100 0 100"></polygon>
+      <polygon class="fill-buro-blue" points="2560 0 2560 100 0 100"></polygon>
     </svg>
   </div>
 </div>
@@ -29,8 +29,8 @@
           <form [formGroup]="addForm" (ngSubmit)="onSubmit()">
             <div class="form-group">
               <div class="btn-group btn-group-sm btn-block" role="group">
-                <button type="button" class="btn btn-buro-green" style="width: 100%;" (click)="setSelectedRole('CLIENT')" [ngClass]="{active: 'CLIENT' === selectedRole}">Клиент</button>
-                <button type="button" class="btn btn-buro-green" style="width: 100%;" (click)="setSelectedRole('SERVICE_LEADER')" [ngClass]="{active: 'SERVICE_LEADER' === selectedRole}">Автосервис</button>
+                <button type="button" class="btn btn-buro-blue" style="width: 100%;" (click)="setSelectedRole('CLIENT')" [ngClass]="{active: 'CLIENT' === selectedRole}">Клиент</button>
+                <button type="button" class="btn btn-buro-blue" style="width: 100%;" (click)="setSelectedRole('SERVICE_LEADER')" [ngClass]="{active: 'SERVICE_LEADER' === selectedRole}">Автосервис</button>
               </div>
             </div>
             <ng-container *ngIf="selectedRole === 'SERVICE_LEADER'">
@@ -121,7 +121,7 @@
 <!--              </div>-->
 <!--            </div>-->
             <div class="text-center">
-              <button class="btn btn-buro-green mt-4" type="submit" [disabled]="addForm.invalid || selectedRole == null || isRegistering">Зарегистрироваться
+              <button class="btn btn-buro-blue mt-4" type="submit" [disabled]="addForm.invalid || selectedRole == null || isRegistering">Зарегистрироваться
                 <span *ngIf="isRegistering">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
               </button>
             </div>

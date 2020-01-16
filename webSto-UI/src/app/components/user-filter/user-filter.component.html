@@ -8,7 +8,7 @@
         </h3>
       </div>
       <div class="col-auto mb-3">
-        <button class="btn btn-sm btn-buro-green" (click)="resetFilters()" *ngIf="filter.role || filter.isApproved != null ||
+        <button class="btn btn-sm btn-buro-blue" (click)="resetFilters()" *ngIf="filter.role || filter.isApproved != null ||
         filter.isAutoRegistered != null || filter.phone || filter.email || filter.fio">
           Сбросить
         </button>
@@ -72,7 +72,7 @@
         <input id="phone-input" class="form-control" placeholder="Телефон"
                [(ngModel)]="filter.phone" (keyup.enter)="emitChange()">
         <div class="input-group-append">
-          <button class="btn btn-buro-green" type="button" (click)="emitChange()">
+          <button class="btn btn-buro-blue" type="button" (click)="emitChange()">
             <i class="fas fa-search"></i>
           </button>
         </div>
@@ -85,7 +85,7 @@
         <input id="email-input" class="form-control" placeholder="Email"
                [(ngModel)]="filter.email" (keyup.enter)="emitChange()">
         <div class="input-group-append">
-          <button class="btn btn-buro-green" type="button" (click)="emitChange()">
+          <button class="btn btn-buro-blue" type="button" (click)="emitChange()">
             <i class="fas fa-search"></i>
           </button>
         </div>
@@ -98,7 +98,7 @@
         <input id="inn-input" class="form-control" placeholder="ИНН"
                [(ngModel)]="filter.inn" (keyup.enter)="emitChange()">
         <div class="input-group-append">
-          <button class="btn btn-buro-green" type="button" (click)="emitChange()">
+          <button class="btn btn-buro-blue" type="button" (click)="emitChange()">
             <i class="fas fa-search"></i>
           </button>
         </div>
@@ -111,7 +111,7 @@
         <input id="fio-input" class="form-control" placeholder="ФИО"
                [(ngModel)]="filter.fio" (keyup.enter)="emitChange()">
         <div class="input-group-append">
-          <button class="btn btn-buro-green" type="button" (click)="emitChange()">
+          <button class="btn btn-buro-blue" type="button" (click)="emitChange()">
             <i class="fas fa-search"></i>
           </button>
         </div>
@@ -125,7 +125,7 @@
         </h3>
       </div>
       <div *ngIf="filter.sort !== 'lastName' || filter.direction !== 'asc'" class="col-auto text-muted">
-        <button class="btn btn-sm btn-buro-green" (click)="resetSort()">
+        <button class="btn btn-sm btn-buro-blue" (click)="resetSort()">
           Сбросить
         </button>
       </div>

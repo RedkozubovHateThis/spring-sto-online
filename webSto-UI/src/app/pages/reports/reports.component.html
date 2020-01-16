@@ -11,21 +11,21 @@
               </h3>
             </div>
             <div class="col-auto">
-              <button class="btn btn-sm btn-buro-green" (click)="requestReportData()"
+              <button class="btn btn-sm btn-buro-blue" (click)="requestReportData()"
                       [disabled]="isLoading || userService.isServiceLeaderWithRestrictedAccess()">
                 Обновить
               </button>
-              <button type="button" class="btn btn-sm btn-buro-green" [ngbTooltip]="'Развернуть все'"
+              <button type="button" class="btn btn-sm btn-buro-blue" [ngbTooltip]="'Развернуть все'"
                       (click)="toggleData(true)"
                       [disabled]="reportData == null || reportData.length === 0">
                 <i class="fas fa-plus-square"></i>
               </button>
-              <button type="button" class="btn btn-sm btn-buro-green" [ngbTooltip]="'Свернуть все'"
+              <button type="button" class="btn btn-sm btn-buro-blue" [ngbTooltip]="'Свернуть все'"
                       (click)="toggleData(false)"
                       [disabled]="reportData == null || reportData.length === 0">
                 <i class="fas fa-minus-square"></i>
               </button>
-              <button class="btn btn-sm btn-buro-green" (click)="requestReportPDF()"
+              <button class="btn btn-sm btn-buro-blue" (click)="requestReportPDF()"
                       [disabled]="isDownloading || userService.isServiceLeaderWithRestrictedAccess()">
                 Выгрузить в PDF
               </button>
@@ -206,7 +206,7 @@
                      [disabled]="userService.isServiceLeaderWithRestrictedAccess()"
                      [(ngModel)]="selectedYear" (keyup.enter)="requestReportData()">
               <div class="input-group-append">
-                <button class="btn btn-buro-green" type="button"
+                <button class="btn btn-buro-blue" type="button"
                         [disabled]="userService.isServiceLeaderWithRestrictedAccess()" (click)="requestReportData()">
                   <i class="fas fa-search"></i>
                 </button>

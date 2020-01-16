@@ -5,7 +5,7 @@
 .opponents-list > .opponent:first-child {
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
-  border-top: 1px solid rgba(96, 182, 28, 0.25);
+  border-top: 1px solid rgba(90, 111, 249, 0.25);
 }
 .opponents-list > .opponent:last-child {
   border-bottom-left-radius: 6px;
@@ -14,9 +14,9 @@
 }
 .opponents-list > .opponent {
   //border-left: 2px solid transparent;
-  border-left: 1px solid rgba(96, 182, 28, 0.25);
-  border-right: 1px solid rgba(96, 182, 28, 0.25);
-  border-bottom: 1px solid rgba(96, 182, 28, 0.25);
+  border-left: 1px solid rgba(90, 111, 249, 0.25);
+  border-right: 1px solid rgba(90, 111, 249, 0.25);
+  border-bottom: 1px solid rgba(90, 111, 249, 0.25);
   cursor: pointer;
   padding: 3px 0 3px 6px;
   min-height: 45px;
@@ -30,8 +30,8 @@
   border-bottom: 1px solid #dddddd;
 }
 .opponents-list > .opponent.active {
-  //border-left: 2px solid #60B61C;
-  background: rgba(96, 182, 28, 0.1);
+  //border-left: 2px solid #5A6FF9;
+  background: rgba(90, 111, 249, 0.1);
 }
 .opponents-list > .opponent.delimeter {
   //border-bottom: 1px solid #cccccc;
@@ -50,7 +50,7 @@
   overflow: auto;
 }
 .chat-block > .chat-messages.active {
-  border: 1px solid rgba(96, 182, 28, 0.25);
+  border: 1px solid rgba(90, 111, 249, 0.25);
 }
 .chat-block > .chat-messages .message {
   margin-bottom: 10px;
@@ -74,7 +74,7 @@
   display: inline-block;
   padding: 6px;
   border-radius: 0 9px 9px 9px;
-  background: rgba(96, 182, 28, 0.1);
+  background: rgba(90, 111, 249, 0.1);
 }
 .chat-block > .chat-messages .message > .message-body > .upload-file {
   border: 1px solid #dddddd;
