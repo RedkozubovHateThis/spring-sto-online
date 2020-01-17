@@ -394,7 +394,7 @@ public class SchedulerService {
 
     private String compileReport(Integer documentId) {
         try {
-            byte[] reportSource = reportService.getOrderReport( documentId, compiledWithPrint );
+            byte[] reportSource = reportService.getOrderReport( documentId, compiledWithPrint, true );
             String uuid = UUID.randomUUID().toString();
 
             File reportFile = new File( String.format( "%s%s", compiledReportCatalog, uuid ) );

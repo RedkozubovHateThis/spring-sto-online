@@ -19,22 +19,22 @@
 <div class="container mt--8 pb-5">
   <div class="row justify-content-center">
     <div class="col-lg-auto col-md-12">
-      <div class="card bg-secondary shadow border-0">
-        <div class="card-body" style="padding: 0;">
-          <div class="text-muted" style="padding: 6px;" *ngIf="isDownloading">
-            <i class="fas fa-spinner fa-spin"></i> получение заказ-наряда...
-          </div>
-          <pdf-viewer [src]="pdfSrc"
-                      [render-text]="true"
-          ></pdf-viewer>
-        </div>
-        <div class="card-footer">
-          <div style="float: right;">
-            <button type="button" class="btn btn-sm btn-buro-blue" [disabled]="pdfSrc == null" (click)="save()">Сохранить как...</button>
-            <button type="button" class="btn btn-sm btn-buro-blue" [disabled]="pdfSrc == null" (click)="print()">Распечатать</button>
-          </div>
-        </div>
-      </div>
+<!--      <div class="card bg-secondary shadow border-0">-->
+<!--        <div class="card-body" style="padding: 0;">-->
+<!--          <div class="text-muted" style="padding: 6px;" *ngIf="isDownloading">-->
+<!--            <i class="fas fa-spinner fa-spin"></i> получение заказ-наряда...-->
+<!--          </div>-->
+<!--          <pdf-viewer [src]="pdfSrc"-->
+<!--                      [render-text]="true"-->
+<!--          ></pdf-viewer>-->
+<!--        </div>-->
+<!--        <div class="card-footer">-->
+<!--          <div style="float: right;">-->
+<!--            <button type="button" class="btn btn-sm btn-buro-blue" [disabled]="pdfSrc == null" (click)="save()">Сохранить как...</button>-->
+<!--            <button type="button" class="btn btn-sm btn-buro-blue" [disabled]="pdfSrc == null" (click)="print()">Распечатать</button>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
     </div>
   </div>
 </div>

@@ -45,12 +45,14 @@ public class ReportServiceImpl implements ReportService {
     private Boolean demoDomain;
 
     @Override
-    public byte[] getOrderReport(Integer documentId, Boolean printStamp) throws IOException, JRException, DataNotFoundException {
+    public byte[] getOrderReport(Integer documentId, Boolean printStamp, Boolean isCompact) throws IOException, JRException, DataNotFoundException {
 
         DocumentServiceDetail document = documentServiceDetailRepository.findOne( documentId );
         if ( document == null ) throw new DataNotFoundException();
 
-        File template = new File( reportsCatalog + "order.jasper" );
+        String orderName = isCompact ? "orderCompact.jasper" : "order.jasper";
+
+        File template = new File( reportsCatalog + orderName );
         InputStream templateStream = new FileInputStream(template);
 
         Map<String, Object> parameters = new HashMap<>();

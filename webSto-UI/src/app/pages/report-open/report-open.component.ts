@@ -23,13 +23,15 @@ export class ReportOpenComponent implements OnInit {
 
     if ( uuid == null ) this.router.navigate(['login']);
 
-    this.isDownloading = true;
-    this.userService.requestOpenReport(uuid).subscribe( response => {
-      this.pdfSrc = window.URL.createObjectURL(new Blob([response], { type: 'application/pdf' }));
-      this.isDownloading = false;
-    }, () => {
-      this.toastrService.error('Отчет по заказ-наряду не найден!', 'Внимание!');
-    } );
+    window.location.href = `${this.userService.getApiUrl()}open/report/compiled?uuid=${uuid}`;
+
+    // this.isDownloading = true;
+    // this.userService.requestOpenReport(uuid).subscribe( response => {
+    //   this.pdfSrc = window.URL.createObjectURL(new Blob([response], { type: 'application/pdf' }));
+    //   this.isDownloading = false;
+    // }, () => {
+    //   this.toastrService.error('Отчет по заказ-наряду не найден!', 'Внимание!');
+    // } );
   }
 
   save() {

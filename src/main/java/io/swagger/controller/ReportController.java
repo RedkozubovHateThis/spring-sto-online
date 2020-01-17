@@ -55,7 +55,7 @@ public class ReportController {
         try {
             byte[] response;
             switch (reportType) {
-                case ORDER: response = reportService.getOrderReport(documentId, printStamp); break;
+                case ORDER: response = reportService.getOrderReport(documentId, printStamp, false); break;
                 case ORDER_ACT: response = reportService.getOrderActReport(documentId, printStamp); break;
                 case ORDER_DEFECTION: response = reportService.getOrderDefectionReport(documentId); break;
                 case ORDER_INSPECTION: response = reportService.getOrderInspectionReport(documentId); break;

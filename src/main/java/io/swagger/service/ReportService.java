@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface ReportService {
-    byte[] getOrderReport(Integer documentId, Boolean printStamp) throws IOException, JRException, DataNotFoundException;
+    byte[] getOrderReport(Integer documentId, Boolean printStamp, Boolean isCompact) throws IOException, JRException, DataNotFoundException;
 
     byte[] getOrderActReport(Integer documentId, Boolean printStamp) throws IOException, JRException, DataNotFoundException;
 
