@@ -11,6 +11,7 @@ import java.util.Map;
 @Data
 public class ExecutorDocumentResponse {
 
+    private String documentNumber;
     private Date documentDate;
     private Double totalByNorm;
     private Double totalByPrice;
@@ -19,6 +20,7 @@ public class ExecutorDocumentResponse {
     public ExecutorDocumentResponse() {}
 
     public ExecutorDocumentResponse(ExecutorsNativeResponse response, ExecutorResponse executorResponse) {
+        this.documentNumber = response.getFullNumber();
         this.documentDate = response.getDateStart();
         this.totalByNorm = response.getTotalByNorm();
         this.totalByPrice = response.getTotalByPrice();
@@ -33,11 +35,11 @@ public class ExecutorDocumentResponse {
         return getTotalSum() * ( percent / 100 );
     }
 
-    public Map<String, Object> buildReportData(int index) {
+    public Map<String, Object> buildReportData() {
         Map<String, Object> reportData = new HashMap<>();
 
         reportData.put("isBold", false);
-        reportData.put("fullName", String.format("\t№%s от %s", index, DateHelper.formatDate(documentDate)));
+        reportData.put("fullName", String.format("\t№ %s от %s", documentNumber, DateHelper.formatDate(documentDate)));
         reportData.put("totalByNorm", totalByNorm);
         reportData.put("totalByPrice", totalByPrice);
         reportData.put("percent", percent);

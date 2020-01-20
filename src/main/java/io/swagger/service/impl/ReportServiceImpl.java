@@ -837,9 +837,8 @@ public class ReportServiceImpl implements ReportService {
             totalSum += response.getTotalSum();
             totalSalary += response.getSalary();
 
-            int index = 0;
             for ( ExecutorDocumentResponse executorDocumentResponse : response.getExecutorDocumentResponses() ) {
-                result.add( executorDocumentResponse.buildReportData( ++index ) );
+                result.add( executorDocumentResponse.buildReportData() );
             }
 
         }
@@ -890,9 +889,8 @@ public class ReportServiceImpl implements ReportService {
             result.add( response.buildReportData() );
             total += response.getTotal();
 
-            int index = 0;
             for ( ClientDocumentResponse clientDocumentResponse : response.getClientDocumentResponses() ) {
-                result.add( clientDocumentResponse.buildReportData( ++index ) );
+                result.add( clientDocumentResponse.buildReportData() );
             }
 
         }

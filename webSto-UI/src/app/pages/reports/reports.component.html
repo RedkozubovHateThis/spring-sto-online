@@ -79,7 +79,7 @@
                   </tr>
                   <ng-container *ngIf="data.isVisible">
                     <tr *ngFor="let documents of data.executorDocumentResponses, let i = index" [attr.data-index]="i">
-                      <td>&ensp;№ {{i + 1}} от {{documents.documentDate | date : 'dd.MM.yy'}}</td>
+                      <td>&ensp;№ {{documents.documentNumber}} от {{documents.documentDate | date : 'dd.MM.yy'}}</td>
                       <td class="text-center">{{documents.totalByNorm | number:'.2':'ru'}}</td>
                       <td class="text-center">{{documents.totalByPrice | number:'.2':'ru'}}</td>
                       <td class="text-center">{{documents.totalSum | number:'.2':'ru'}}</td>
@@ -137,7 +137,7 @@
                   </tr>
                   <ng-container *ngIf="data.isVisible">
                     <tr *ngFor="let documents of data.clientDocumentResponses, let i = index" [attr.data-index]="i">
-                      <td>&ensp;№ {{i + 1}} от {{documents.documentDate | date : 'dd.MM.yy'}}</td>
+                      <td>&ensp;№ {{documents.documentNumber}} от {{documents.documentDate | date : 'dd.MM.yy'}}</td>
                       <td class="text-center">{{documents.total | number:'.2':'ru'}}</td>
                     </tr>
                   </ng-container>
