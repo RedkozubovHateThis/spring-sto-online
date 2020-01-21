@@ -1,0 +1,14 @@
+.loading-wrapper {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  display: -ms-flex;
+  align-items: center;
+  justify-content: center;
+}
+.loading-wrapper > .logo {
+  opacity: 0.25;
+}
+.loading-wrapper > .logo > img {
+  max-height: 100px;
+}

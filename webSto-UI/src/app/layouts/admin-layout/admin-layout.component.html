@@ -1,12 +1,21 @@
 <!-- Sidenav -->
-<app-sidebar></app-sidebar>
-<div class="main-content">
-  <!-- Top navbar -->
-  <app-navbar></app-navbar>
-  <app-infobar></app-infobar>
-  <!-- Pages -->
-  <router-outlet></router-outlet>
-  <div class="container-fluid">
-    <app-footer></app-footer>
+<ng-container *ngIf="userService.currentUser != null; else loadingBlock">
+  <app-sidebar></app-sidebar>
+  <div class="main-content">
+    <!-- Top navbar -->
+    <app-navbar></app-navbar>
+    <app-infobar></app-infobar>
+    <!-- Pages -->
+    <router-outlet></router-outlet>
+    <div class="container-fluid">
+      <app-footer></app-footer>
+    </div>
   </div>
-</div>
+</ng-container>
+<ng-template #loadingBlock>
+  <div class="loading-wrapper bg-secondary">
+    <div class="logo">
+      <img src="assets/img/brand/buromotors.png" alt="BUROMOTORS">
+    </div>
+  </div>
+</ng-template>
