@@ -1,12 +1,12 @@
 package io.swagger.response.payment;
 
-import io.swagger.postgres.model.enums.SubscriptionType;
+import io.swagger.postgres.model.payment.SubscriptionType;
 import lombok.Data;
 
 @Data
 public class SubscriptionTypeResponse {
 
-    private SubscriptionType type;
+    private Long id;
     private String name;
     private Boolean isFree;
     private Double cost;
@@ -15,10 +15,12 @@ public class SubscriptionTypeResponse {
     private Integer durationDays;
     private Boolean isInactive;
 
+    public SubscriptionTypeResponse() {}
+
     public SubscriptionTypeResponse(SubscriptionType type) {
-        this.type = type;
+        this.id = type.getId();
         this.name = type.getName();
-        this.isFree = type.getFree();
+        this.isFree = type.getIsFree();
         this.cost = type.getCost();
         this.documentCost = type.getDocumentCost();
         this.documentsCount = type.getDocumentsCount();

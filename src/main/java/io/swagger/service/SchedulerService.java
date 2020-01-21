@@ -10,8 +10,8 @@ import io.swagger.firebird.repository.DocumentServiceDetailRepository;
 import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.CompiledReport;
 import io.swagger.postgres.model.DocumentUserState;
-import io.swagger.postgres.model.enums.SubscriptionType;
 import io.swagger.postgres.model.payment.Subscription;
+import io.swagger.postgres.model.payment.SubscriptionType;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.model.security.UserRole;
 import io.swagger.postgres.repository.*;
@@ -66,6 +66,8 @@ public class SchedulerService {
     private CompiledReportRepository compiledReportRepository;
     @Autowired
     private PaymentService paymentService;
+    @Autowired
+    private SubscriptionTypeRepository subscriptionTypeRepository;
 
     @Value("${domain.url}")
     private String domainUrl;
@@ -129,18 +131,18 @@ public class SchedulerService {
                 continue;
             }
 
-            SubscriptionType renewalType;
+            Long renewalTypeId;
 
-            if ( serviceLeader.getSubscriptionType() != null )
-                renewalType = serviceLeader.getSubscriptionType();
+            if ( serviceLeader.getSubscriptionTypeId() != null )
+                renewalTypeId = serviceLeader.getSubscriptionTypeId();
             else
-                renewalType = currentSubscription.getType();
+                renewalTypeId = currentSubscription.getType().getId();
 
             try {
-                Subscription subscription = paymentService.buySubscription( renewalType, serviceLeader );
+                Subscription subscription = paymentService.buySubscription( renewalTypeId, serviceLeader );
 
                 logger.info( " [ SUBSCRIPTION SCHEDULER ] Successfully bought new subscription \"{}\" for user \"{}\"...",
-                        subscription.getType().name(), serviceLeader.getFio() );
+                        subscription.getType().getName(), serviceLeader.getFio() );
             }
             catch ( PaymentException ignored ) {}
             catch ( Exception e ) {

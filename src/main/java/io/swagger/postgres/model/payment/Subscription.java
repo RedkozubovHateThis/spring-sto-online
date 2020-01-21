@@ -1,6 +1,6 @@
 package io.swagger.postgres.model.payment;
 
-import io.swagger.postgres.model.enums.SubscriptionType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.postgres.model.security.User;
 import lombok.Data;
 import org.hibernate.annotations.NotFound;
@@ -21,8 +21,9 @@ public class Subscription implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
+    @ManyToOne
+    @NotFound(action = NotFoundAction.IGNORE)
+    @JoinColumn(name = "subscription_type_id")
     private SubscriptionType type;
 
     @Column(nullable = false)
@@ -35,8 +36,6 @@ public class Subscription implements Serializable {
 
     @Column(nullable = false)
     private Boolean isRenewable;
-    @Column(nullable = false)
-    private Double renewalCost;
 
     @Column(nullable = false)
     private Double documentCost;
@@ -65,8 +64,7 @@ public class Subscription implements Serializable {
     public Subscription(SubscriptionType subscriptionType) {
         this.name = subscriptionType.getName();
         this.type = subscriptionType;
-        this.isRenewable = !subscriptionType.getFree();
-        this.renewalCost = subscriptionType.getCost();
+        this.isRenewable = !subscriptionType.getIsFree();
         this.documentCost = subscriptionType.getDocumentCost();
         this.documentsCount = subscriptionType.getDocumentsCount();
     }

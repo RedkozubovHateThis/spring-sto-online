@@ -61,10 +61,10 @@ export class SubscriptionComponent implements OnInit {
     } );
   }
 
-  buySubscription(subscriptionType: string) {
+  buySubscription(subscriptionTypeId: number) {
     this.paymentService.isSubscriptionLoading = true;
 
-    this.paymentService.buySubscription( subscriptionType ).subscribe( subscription => {
+    this.paymentService.buySubscription( subscriptionTypeId ).subscribe( subscription => {
       this.paymentService.isSubscriptionLoading = false;
 
       this.toastrService.success(`Тариф "${subscription.name}" успешно оформлен!`);
@@ -110,9 +110,9 @@ export class SubscriptionComponent implements OnInit {
   updateRenewalSubscription(subscription: SubscriptionTypeResponse) {
     this.paymentService.isSubscriptionLoading = true;
 
-    const isSame = this.userService.currentUser.subscriptionType === subscription.type;
+    const isSame = this.userService.currentUser.subscriptionTypeId === subscription.id;
 
-    this.paymentService.updateRenewalSubscription( subscription.type ).subscribe( () => {
+    this.paymentService.updateRenewalSubscription( subscription.id ).subscribe( () => {
       this.paymentService.isSubscriptionLoading = false;
 
       if ( isSame )
@@ -129,6 +129,25 @@ export class SubscriptionComponent implements OnInit {
       else
         this.toastrService.error( 'Ошибка установки тарифа по умолчанию!', 'Внимание!' );
     } );
+  }
+
+  updateSubscription(subscriptionType: SubscriptionTypeResponse) {
+    if ( !this.userService.isAdmin() ) return;
+
+    this.isTypesLoading = true;
+
+    this.paymentService.updateSubscription( subscriptionType ).subscribe( () => {
+      this.isTypesLoading = false;
+      this.requestAllSubscriptionTypes();
+      this.toastrService.success( `Тариф "${subscriptionType.name}" успешно изменен!` );
+    }, error => {
+      this.isTypesLoading = false;
+
+      if ( error.error.responseText )
+        this.toastrService.error( error.error.responseText, 'Внимание!' );
+      else
+        this.toastrService.error( 'Ошибка изменения тарифа!', 'Внимание!' );
+    } )
   }
 
   isBuyAvailable(): boolean {

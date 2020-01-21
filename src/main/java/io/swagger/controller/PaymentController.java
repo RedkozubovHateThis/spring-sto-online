@@ -3,12 +3,13 @@ package io.swagger.controller;
 import io.swagger.firebird.repository.DocumentServiceDetailRepository;
 import io.swagger.helper.DateHelper;
 import io.swagger.helper.UserHelper;
-import io.swagger.postgres.model.enums.SubscriptionType;
 import io.swagger.postgres.model.payment.PaymentRecord;
 import io.swagger.postgres.model.payment.Subscription;
+import io.swagger.postgres.model.payment.SubscriptionType;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.PaymentRecordRepository;
 import io.swagger.postgres.repository.SubscriptionRepository;
+import io.swagger.postgres.repository.SubscriptionTypeRepository;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.response.payment.PromisedAvailableResponse;
 import io.swagger.response.payment.SubscriptionResponse;
@@ -43,6 +44,8 @@ public class PaymentController {
     private PaymentService paymentService;
     @Autowired
     private SubscriptionRepository subscriptionRepository;
+    @Autowired
+    private SubscriptionTypeRepository subscriptionTypeRepository;
     @Autowired
     private DocumentServiceDetailRepository documentsRepository;
 
@@ -162,15 +165,16 @@ public class PaymentController {
     public ResponseEntity findAllSubscriptionTypes() {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.hasRole(currentUser, "SERVICE_LEADER") )
+        if ( !UserHelper.hasRole(currentUser, "SERVICE_LEADER") && !UserHelper.hasRole(currentUser, "ADMIN") )
             return ResponseEntity.status(404).build();
 
         List<SubscriptionTypeResponse> subscriptionTypeResponses = new ArrayList<>();
+        List<SubscriptionType> subscriptionTypes = subscriptionTypeRepository.findAllAndOrderBySortPosition();
 
-        for ( SubscriptionType type : SubscriptionType.values() ) {
+        for ( SubscriptionType type : subscriptionTypes ) {
             SubscriptionTypeResponse subscriptionTypeResponse = new SubscriptionTypeResponse( type );
 
-            if ( type.getFree() ) {
+            if ( type.getIsFree() ) {
                 Boolean isAnyFormed = subscriptionRepository.isAnyIsFormed( currentUser.getId() );
                 if ( isAnyFormed ) continue;
             }
@@ -221,7 +225,7 @@ public class PaymentController {
     }
 
     @PutMapping("/subscriptions/buy")
-    public ResponseEntity buySubscription(@RequestParam("subscriptionType") SubscriptionType subscriptionType) {
+    public ResponseEntity buySubscription(@RequestParam("subscriptionTypeId") Long subscriptionTypeId) {
 
         User currentUser = userRepository.findCurrentUser();
         if ( !UserHelper.hasRole(currentUser, "SERVICE_LEADER") ||
@@ -229,7 +233,7 @@ public class PaymentController {
             return ResponseEntity.status(404).build();
 
         try {
-            Subscription subscription = paymentService.buySubscription( subscriptionType, currentUser );
+            Subscription subscription = paymentService.buySubscription( subscriptionTypeId, currentUser );
 
             return ResponseEntity.ok( new SubscriptionResponse(
                     subscription, countDocumentsRemains( currentUser, subscription)
@@ -269,14 +273,14 @@ public class PaymentController {
     }
 
     @PutMapping("/subscriptions/updateRenewal")
-    public ResponseEntity updateRenewalSubscription(@RequestParam("subscriptionType") SubscriptionType subscriptionType) {
+    public ResponseEntity updateRenewalSubscription(@RequestParam("subscriptionTypeId") Long subscriptionTypeId) {
 
         User currentUser = userRepository.findCurrentUser();
         if ( !UserHelper.hasRole(currentUser, "SERVICE_LEADER") )
             return ResponseEntity.status(404).build();
 
         try {
-            paymentService.updateRenewalSubscription( subscriptionType, currentUser );
+            paymentService.updateRenewalSubscription( subscriptionTypeId, currentUser );
 
             return ResponseEntity.ok().build();
         }
@@ -288,6 +292,33 @@ public class PaymentController {
             return ResponseEntity.status(500).body( new ApiResponse("Ошибка установки тарифа по умолчанию! Попробуйте повторить позже.") );
         }
 
+    }
+
+    @PostMapping("/subscriptions/types/update")
+    public ResponseEntity updateSubscriptionType(@RequestBody SubscriptionTypeResponse subscriptionTypeResponse) {
+
+        User currentUser = userRepository.findCurrentUser();
+        if ( !UserHelper.hasRole(currentUser, "ADMIN") )
+            return ResponseEntity.status(403).build();
+
+        if ( subscriptionTypeResponse == null )
+            return ResponseEntity.status(404).body( new ApiResponse( "Тариф не найден!" ) );
+
+        SubscriptionType subscriptionType = subscriptionTypeRepository.findOne( subscriptionTypeResponse.getId() );
+        if ( subscriptionType == null )
+            return ResponseEntity.status(404).body( new ApiResponse( "Тариф не найден!" ) );
+
+        if ( !subscriptionType.getIsFree() ) {
+            subscriptionType.setCost( subscriptionTypeResponse.getCost() );
+            subscriptionType.setDocumentCost( subscriptionTypeResponse.getDocumentCost() );
+        }
+
+        subscriptionType.setDocumentsCount( subscriptionTypeResponse.getDocumentsCount() );
+        subscriptionType.setDurationDays( subscriptionTypeResponse.getDurationDays() );
+
+        subscriptionTypeRepository.save( subscriptionType );
+
+        return ResponseEntity.ok().build();
     }
 
     private Integer countDocumentsRemains(User user, Subscription subscription) {

@@ -1,5 +1,5 @@
 export class SubscriptionTypeResponse {
-  type: string;
+  id: number;
   name: string;
   isFree: boolean;
   cost: number;

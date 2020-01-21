@@ -1,6 +1,5 @@
 package io.swagger.service;
 
-import io.swagger.postgres.model.enums.SubscriptionType;
 import io.swagger.postgres.model.payment.PaymentRecord;
 import io.swagger.postgres.model.payment.Subscription;
 import io.swagger.postgres.model.security.User;
@@ -17,7 +16,7 @@ public interface PaymentService {
     void processPromisedPayments();
     PaymentResponse updateRequestExtended(String orderId) throws PaymentException;
     PaymentResponse updateRequestExtended(PaymentRecord paymentRecord) throws PaymentException;
-    Subscription buySubscription(SubscriptionType subscriptionType, User user) throws PaymentException;
+    Subscription buySubscription(Long subscriptionTypeId, User user) throws PaymentException;
     void buySubscriptionAddon(Long subscriptionId, Integer documentsCount, User user) throws PaymentException;
-    void updateRenewalSubscription(SubscriptionType subscriptionType, User user) throws PaymentException;
+    void updateRenewalSubscription(Long subscriptionTypeId, User user) throws PaymentException;
 }
