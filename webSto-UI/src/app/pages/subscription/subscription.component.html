@@ -316,10 +316,7 @@
                     </div>
                     <div class="col-auto h3 mb-0">
                       <span *ngIf="subscriptionType.isFree">Бесплатно</span>
-                      <span *ngIf="!subscriptionType.isFree">
-                        <input class="form-control form-control-sm form-control-alternative" type="number" min="0"
-                               style="width: 100px;" [(ngModel)]="subscriptionType.cost">
-                      </span>
+                      <span *ngIf="!subscriptionType.isFree">{{subscriptionType.cost | number : '.2' : 'ru'}}</span>
                     </div>
                   </div>
 
@@ -329,6 +326,8 @@
                     </div>
                     <div class="col-auto h3 mb-0">
                       <input class="form-control form-control-sm form-control-alternative" type="number" min="0"
+                             (change)="calculateSubscriptionCost(subscriptionType)"
+                             (keyup)="calculateSubscriptionCost(subscriptionType)"
                              style="width: 100px;" [(ngModel)]="subscriptionType.documentsCount">
                     </div>
                   </div>
@@ -341,6 +340,8 @@
                       <span *ngIf="subscriptionType.isFree">н/д</span>
                       <span *ngIf="!subscriptionType.isFree">
                         <input class="form-control form-control-sm form-control-alternative" type="number" min="0"
+                               (change)="calculateSubscriptionCost(subscriptionType)"
+                               (keyup)="calculateSubscriptionCost(subscriptionType)"
                                style="width: 100px;" [(ngModel)]="subscriptionType.documentCost">
                       </span>
                     </div>
@@ -356,7 +357,9 @@
                     </div>
                   </div>
 
-                  <button class="btn btn-buro-blue btn-block" [disabled]="isTypesLoading" (click)="updateSubscription(subscriptionType)">
+                  <button class="btn btn-buro-blue btn-block"
+                          [disabled]="isTypesLoading || isNotValid(subscriptionType)"
+                          (click)="updateSubscription(subscriptionType)">
                     Применить
                   </button>
 

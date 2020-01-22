@@ -176,6 +176,36 @@ export class SubscriptionComponent implements OnInit {
       this.cost = this.documentsCount * this.selectedSubscription.documentCost;
   }
 
+  calculateSubscriptionCost(subscriptionType: SubscriptionTypeResponse) {
+
+    if ( subscriptionType.isFree ) return;
+
+    if ( subscriptionType.documentsCount == null || subscriptionType.documentCost == null ) {
+      subscriptionType.cost = null;
+      return;
+    }
+
+    if ( subscriptionType.documentsCount < 0 ) subscriptionType.documentsCount = 0;
+    if ( !Number.isInteger(subscriptionType.documentsCount) )
+      subscriptionType.documentsCount = Math.floor( subscriptionType.documentsCount );
+
+    if ( subscriptionType.documentCost < 0 ) subscriptionType.documentCost = 0;
+    if ( !Number.isInteger(subscriptionType.documentCost) )
+      subscriptionType.documentCost = Math.floor( subscriptionType.documentCost );
+
+    subscriptionType.cost = subscriptionType.documentsCount * subscriptionType.documentCost;
+  }
+
+  isNotValid(subscriptionType: SubscriptionTypeResponse) {
+
+    const isFreeOrCostValid = subscriptionType.isFree || ( subscriptionType.cost > 0 && subscriptionType.documentCost > 0 );
+    const isDocumentsValid = subscriptionType.documentsCount > 0;
+    const isDaysValid = subscriptionType.durationDays > 0;
+
+    return !isFreeOrCostValid || !isDocumentsValid || !isDaysValid;
+
+  }
+
   toggleAddon() {
     this.showAddon = true;
   }

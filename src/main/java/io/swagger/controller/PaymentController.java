@@ -308,7 +308,20 @@ public class PaymentController {
         if ( subscriptionType == null )
             return ResponseEntity.status(404).body( new ApiResponse( "Тариф не найден!" ) );
 
+        if ( subscriptionTypeResponse.getDocumentsCount() == null || subscriptionTypeResponse.getDocumentsCount() <= 0 )
+            return ResponseEntity.status(404).body( new ApiResponse( "Наверно указано количество документов!" ) );
+
+        if ( subscriptionTypeResponse.getDurationDays() == null || subscriptionTypeResponse.getDurationDays() <= 0 )
+            return ResponseEntity.status(404).body( new ApiResponse( "Наверно указано количество дней!" ) );
+
         if ( !subscriptionType.getIsFree() ) {
+
+            if ( subscriptionTypeResponse.getCost() == null || subscriptionTypeResponse.getCost() <= 0 )
+                return ResponseEntity.status(404).body( new ApiResponse( "Наверно указана стоимость тарифа!" ) );
+
+            if ( subscriptionTypeResponse.getDocumentCost() == null || subscriptionTypeResponse.getDocumentCost() <= 0 )
+                return ResponseEntity.status(404).body( new ApiResponse( "Наверно указана стоимость документов!" ) );
+
             subscriptionType.setCost( subscriptionTypeResponse.getCost() );
             subscriptionType.setDocumentCost( subscriptionTypeResponse.getDocumentCost() );
         }
