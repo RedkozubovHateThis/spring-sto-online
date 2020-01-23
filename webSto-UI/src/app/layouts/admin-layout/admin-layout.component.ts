@@ -13,6 +13,11 @@ export class AdminLayoutComponent implements OnInit {
 
   constructor(private router: Router, private userService: UserService, private webSocketService: WebSocketService,
               private paymentService: PaymentService) {
+
+    const splashScreen = document.getElementById("loading-splash");
+    if ( splashScreen )
+      splashScreen.remove();
+
     paymentService.subscribeToUserLoaded();
 
     router.events.subscribe(val => {

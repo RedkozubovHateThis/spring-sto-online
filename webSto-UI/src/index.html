@@ -35,11 +35,39 @@
   <script type="application/javascript">
       var global = window;
   </script>
+  <style>
+    .loading-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      display: -ms-flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      background: #f8f9fe;
+    }
+    .loading-wrapper > .logo {
+      opacity: 0.25;
+    }
+    .loading-wrapper > .logo > img {
+      max-height: 100px;
+      max-width: 100vw;
+    }
+
+  </style>
 
 <!--  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY_HERE"></script>-->
 
 </head>
 <body>
+  <div id="loading-splash" class="loading-wrapper bg-secondary">
+    <div class="logo">
+      <img src="assets/img/brand/buromotors.png" alt="BUROMOTORS">
+    </div>
+  </div>
   <app-root></app-root>
 </body>
 </html>
