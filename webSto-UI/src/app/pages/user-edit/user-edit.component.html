@@ -161,61 +161,63 @@
               <h6 class="heading-small text-muted mb-4">Тариф по умолчанию</h6>
               <div class="pl-lg-4">
                 <div class="row">
-                  <div class="col" *ngFor="let subscriptionType of subscriptionTypes">
-                    <div class="card mb-2" style="min-width: 230px;" *ngIf="!subscriptionType.isFree && !subscriptionType.isInactive">
-                      <div class="card-header">
-                        <h3 class="mb-0">
-                          {{subscriptionType.name}}
-                        </h3>
-                      </div>
-
-                      <div class="card-body">
-
-                        <div class="row form-group">
-                          <div class="col">
-                            Стоимость, руб.
-                          </div>
-                          <div class="col-auto h3 mb-0">
-                            {{subscriptionType.cost | number : '.2' : 'ru'}}
-                          </div>
+                  <ng-container *ngFor="let subscriptionType of subscriptionTypes">
+                    <div class="col" *ngIf="!subscriptionType.isFree && !subscriptionType.isInactive">
+                      <div class="card mb-2" style="min-width: 230px;">
+                        <div class="card-header">
+                          <h3 class="mb-0">
+                            {{subscriptionType.name}}
+                          </h3>
                         </div>
 
-                        <div class="row form-group">
-                          <div class="col">
-                            Количество доступных заказ-нарядов
+                        <div class="card-body">
+
+                          <div class="row form-group">
+                            <div class="col">
+                              Стоимость, руб.
+                            </div>
+                            <div class="col-auto h3 mb-0">
+                              {{subscriptionType.cost | number : '.2' : 'ru'}}
+                            </div>
                           </div>
-                          <div class="col-auto h3 mb-0">
-                            {{subscriptionType.documentsCount}}
+
+                          <div class="row form-group">
+                            <div class="col">
+                              Количество доступных заказ-нарядов
+                            </div>
+                            <div class="col-auto h3 mb-0">
+                              {{subscriptionType.documentsCount}}
+                            </div>
                           </div>
+
+                          <div class="row form-group">
+                            <div class="col">
+                              Стоимость заказ-наряда, руб.
+                            </div>
+                            <div class="col-auto h3 mb-0">
+                              {{subscriptionType.documentCost}}
+                            </div>
+                          </div>
+
+                          <div class="row form-group">
+                            <div class="col">
+                              Длительность, дней
+                            </div>
+                            <div class="col-auto h3 mb-0">
+                              {{subscriptionType.durationDays}}
+                            </div>
+                          </div>
+
+                          <button class="btn btn-buro-blue btn-block" (click)="model.subscriptionTypeId = subscriptionType.id"
+                                  [disabled]="model.subscriptionTypeId === subscriptionType.id">
+                            <span *ngIf="model.subscriptionTypeId === subscriptionType.id">Выбран</span>
+                            <span *ngIf="model.subscriptionTypeId !== subscriptionType.id">Выбрать</span>
+                          </button>
+
                         </div>
-
-                        <div class="row form-group">
-                          <div class="col">
-                            Стоимость заказ-наряда, руб.
-                          </div>
-                          <div class="col-auto h3 mb-0">
-                            {{subscriptionType.documentCost}}
-                          </div>
-                        </div>
-
-                        <div class="row form-group">
-                          <div class="col">
-                            Длительность, дней
-                          </div>
-                          <div class="col-auto h3 mb-0">
-                            {{subscriptionType.durationDays}}
-                          </div>
-                        </div>
-
-                        <button class="btn btn-buro-blue btn-block" (click)="model.subscriptionType = subscriptionType.type"
-                                [disabled]="model.subscriptionType === subscriptionType.type">
-                          <span *ngIf="model.subscriptionType === subscriptionType.type">Выбран</span>
-                          <span *ngIf="model.subscriptionType !== subscriptionType.type">Выбрать</span>
-                        </button>
-
                       </div>
                     </div>
-                  </div>
+                  </ng-container>
                 </div>
               </div>
             </ng-container>

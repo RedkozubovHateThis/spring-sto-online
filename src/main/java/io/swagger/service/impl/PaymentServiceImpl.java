@@ -4,15 +4,12 @@ import io.swagger.controller.WebSocketController;
 import io.swagger.firebird.repository.DocumentServiceDetailRepository;
 import io.swagger.postgres.model.enums.PaymentState;
 import io.swagger.postgres.model.enums.PaymentType;
-import io.swagger.postgres.model.enums.SubscriptionType;
 import io.swagger.postgres.model.payment.PaymentRecord;
 import io.swagger.postgres.model.payment.Subscription;
 import io.swagger.postgres.model.payment.SubscriptionAddon;
+import io.swagger.postgres.model.payment.SubscriptionType;
 import io.swagger.postgres.model.security.User;
-import io.swagger.postgres.repository.PaymentRecordRepository;
-import io.swagger.postgres.repository.SubscriptionAddonRepository;
-import io.swagger.postgres.repository.SubscriptionRepository;
-import io.swagger.postgres.repository.UserRepository;
+import io.swagger.postgres.repository.*;
 import io.swagger.response.exception.PaymentException;
 import io.swagger.response.payment.PaymentResponse;
 import io.swagger.response.payment.PromisedAvailableResponse;
@@ -29,11 +26,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -50,6 +45,8 @@ public class PaymentServiceImpl implements PaymentService {
     private UserRepository userRepository;
     @Autowired
     private SubscriptionRepository subscriptionRepository;
+    @Autowired
+    private SubscriptionTypeRepository subscriptionTypeRepository;
     @Autowired
     private SubscriptionAddonRepository subscriptionAddonRepository;
     @Autowired
@@ -118,6 +115,12 @@ public class PaymentServiceImpl implements PaymentService {
 
         if ( promisedRecord == null ) {
             response.setIsAvailable(true);
+
+            List<SubscriptionType> subscriptionTypes = subscriptionTypeRepository.findNotFreeAndOrderBySortPosition();
+            response.setAvailableCosts(
+                    subscriptionTypes.stream().map(SubscriptionType::getCost).collect( Collectors.toList() )
+            );
+
             return response;
         }
         else {
@@ -132,6 +135,12 @@ public class PaymentServiceImpl implements PaymentService {
             }
             else {
                 response.setIsAvailable( true );
+
+                List<SubscriptionType> subscriptionTypes = subscriptionTypeRepository.findNotFreeAndOrderBySortPosition();
+                response.setAvailableCosts(
+                        subscriptionTypes.stream().map(SubscriptionType::getCost).collect( Collectors.toList() )
+                );
+
                 return response;
             }
 
@@ -243,9 +252,13 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public Subscription buySubscription(SubscriptionType subscriptionType, User user) throws PaymentException {
+    public Subscription buySubscription(Long subscriptionTypeId, User user) throws PaymentException {
 
-        if ( !subscriptionType.getFree() && user.getBalance() < subscriptionType.getCost() )
+        SubscriptionType subscriptionType = subscriptionTypeRepository.findOne( subscriptionTypeId );
+        if ( subscriptionType == null )
+            throw new PaymentException("Тариф не найден!");
+
+        if ( !subscriptionType.getIsFree() && user.getBalance() < subscriptionType.getCost() )
             throw new PaymentException("Недостаточно средств для оформления тарифа!");
 
         Date now = new Date();
@@ -304,8 +317,8 @@ public class PaymentServiceImpl implements PaymentService {
         if ( isCurrentSubscriptionChanged )
             subscriptionRepository.save( currentSubscription );
 
-        if ( !subscription.getType().getFree() && user.getSubscriptionType() == null )
-            user.setSubscriptionType( subscription.getType() );
+        if ( !subscription.getType().getIsFree() && user.getSubscriptionTypeId() == null )
+            user.setSubscriptionTypeId( subscription.getType().getId() );
 
         generatePaymentRecord( user, subscription, null, now );
 
@@ -346,7 +359,11 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public void updateRenewalSubscription(SubscriptionType subscriptionType, User user) throws PaymentException {
+    public void updateRenewalSubscription(Long subscriptionTypeId, User user) throws PaymentException {
+
+        SubscriptionType subscriptionType = subscriptionTypeRepository.findOne( subscriptionTypeId );
+        if ( subscriptionType == null )
+            throw new PaymentException("Тариф не найден!");
 
 //        if ( !subscriptionType.getFree() && user.getBalance() < subscriptionType.getCost() )
 //            throw new PaymentException("Недостаточно средств для продления тарифа!");
@@ -357,11 +374,11 @@ public class PaymentServiceImpl implements PaymentService {
 
         if ( currentSubscription != null && currentSubscription.getEndDate().after( now ) ) {
 
-            if ( user.getSubscriptionType() != null &&
-                    user.getSubscriptionType().equals( subscriptionType ) )
-                user.setSubscriptionType( null );
+            if ( user.getSubscriptionTypeId() != null &&
+                    user.getSubscriptionTypeId().equals( subscriptionType.getId() ) )
+                user.setSubscriptionTypeId( null );
             else
-                user.setSubscriptionType( subscriptionType );
+                user.setSubscriptionTypeId( subscriptionType.getId() );
 
             userRepository.save( user );
 

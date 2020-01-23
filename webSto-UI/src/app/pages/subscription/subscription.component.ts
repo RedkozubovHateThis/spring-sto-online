@@ -61,10 +61,10 @@ export class SubscriptionComponent implements OnInit {
     } );
   }
 
-  buySubscription(subscriptionType: string) {
+  buySubscription(subscriptionTypeId: number) {
     this.paymentService.isSubscriptionLoading = true;
 
-    this.paymentService.buySubscription( subscriptionType ).subscribe( subscription => {
+    this.paymentService.buySubscription( subscriptionTypeId ).subscribe( subscription => {
       this.paymentService.isSubscriptionLoading = false;
 
       this.toastrService.success(`Тариф "${subscription.name}" успешно оформлен!`);
@@ -110,9 +110,9 @@ export class SubscriptionComponent implements OnInit {
   updateRenewalSubscription(subscription: SubscriptionTypeResponse) {
     this.paymentService.isSubscriptionLoading = true;
 
-    const isSame = this.userService.currentUser.subscriptionType === subscription.type;
+    const isSame = this.userService.currentUser.subscriptionTypeId === subscription.id;
 
-    this.paymentService.updateRenewalSubscription( subscription.type ).subscribe( () => {
+    this.paymentService.updateRenewalSubscription( subscription.id ).subscribe( () => {
       this.paymentService.isSubscriptionLoading = false;
 
       if ( isSame )
@@ -129,6 +129,25 @@ export class SubscriptionComponent implements OnInit {
       else
         this.toastrService.error( 'Ошибка установки тарифа по умолчанию!', 'Внимание!' );
     } );
+  }
+
+  updateSubscription(subscriptionType: SubscriptionTypeResponse) {
+    if ( !this.userService.isAdmin() ) return;
+
+    this.isTypesLoading = true;
+
+    this.paymentService.updateSubscription( subscriptionType ).subscribe( () => {
+      this.isTypesLoading = false;
+      this.requestAllSubscriptionTypes();
+      this.toastrService.success( `Тариф "${subscriptionType.name}" успешно изменен!` );
+    }, error => {
+      this.isTypesLoading = false;
+
+      if ( error.error.responseText )
+        this.toastrService.error( error.error.responseText, 'Внимание!' );
+      else
+        this.toastrService.error( 'Ошибка изменения тарифа!', 'Внимание!' );
+    } )
   }
 
   isBuyAvailable(): boolean {
@@ -155,6 +174,36 @@ export class SubscriptionComponent implements OnInit {
       this.cost = null;
     else
       this.cost = this.documentsCount * this.selectedSubscription.documentCost;
+  }
+
+  calculateSubscriptionCost(subscriptionType: SubscriptionTypeResponse) {
+
+    if ( subscriptionType.isFree ) return;
+
+    if ( subscriptionType.documentsCount == null || subscriptionType.documentCost == null ) {
+      subscriptionType.cost = null;
+      return;
+    }
+
+    if ( subscriptionType.documentsCount < 0 ) subscriptionType.documentsCount = 0;
+    if ( !Number.isInteger(subscriptionType.documentsCount) )
+      subscriptionType.documentsCount = Math.floor( subscriptionType.documentsCount );
+
+    if ( subscriptionType.documentCost < 0 ) subscriptionType.documentCost = 0;
+    if ( !Number.isInteger(subscriptionType.documentCost) )
+      subscriptionType.documentCost = Math.floor( subscriptionType.documentCost );
+
+    subscriptionType.cost = subscriptionType.documentsCount * subscriptionType.documentCost;
+  }
+
+  isNotValid(subscriptionType: SubscriptionTypeResponse) {
+
+    const isFreeOrCostValid = subscriptionType.isFree || ( subscriptionType.cost > 0 && subscriptionType.documentCost > 0 );
+    const isDocumentsValid = subscriptionType.documentsCount > 0;
+    const isDaysValid = subscriptionType.durationDays > 0;
+
+    return !isFreeOrCostValid || !isDocumentsValid || !isDaysValid;
+
   }
 
   toggleAddon() {

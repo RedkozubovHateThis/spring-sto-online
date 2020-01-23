@@ -112,10 +112,10 @@ export class PaymentService {
     );
   }
 
-  buySubscription(subscriptionType: string): Observable<SubscriptionResponse> {
+  buySubscription(subscriptionTypeId: number): Observable<SubscriptionResponse> {
     const headers = this.userService.getHeaders();
     const params = {
-      subscriptionType
+      subscriptionTypeId: subscriptionTypeId != null ? subscriptionTypeId.toString() : ''
     };
 
     return this.http.put<SubscriptionResponse>(
@@ -135,14 +135,22 @@ export class PaymentService {
     );
   }
 
-  updateRenewalSubscription(subscriptionType: string): Observable<void> {
+  updateRenewalSubscription(subscriptionTypeId: number): Observable<void> {
     const headers = this.userService.getHeaders();
     const params = {
-      subscriptionType
+      subscriptionTypeId: subscriptionTypeId != null ? subscriptionTypeId.toString() : ''
     };
 
     return this.http.put<void>(
       `${this.userService.getApiUrl()}secured/payment/subscriptions/updateRenewal`, {}, {headers, params}
+    );
+  }
+
+  updateSubscription(subscriptionType: SubscriptionTypeResponse): Observable<void> {
+    const headers = this.userService.getHeaders();
+
+    return this.http.post<void>(
+      `${this.userService.getApiUrl()}secured/payment/subscriptions/types/update`, subscriptionType, {headers}
     );
   }
 

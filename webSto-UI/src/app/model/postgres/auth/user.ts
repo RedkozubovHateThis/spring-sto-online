@@ -34,7 +34,7 @@ export class User {
   isCurrentSubscriptionEmpty: boolean;
   isBalanceInvalid: boolean;
   isAccessRestricted: boolean;
-  subscriptionType: string;
+  subscriptionTypeId: number;
 
   // TODO: подключить js-data-angular и переделать на computed property
   userAdmin: boolean;

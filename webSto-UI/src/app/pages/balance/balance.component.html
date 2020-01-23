@@ -77,29 +77,15 @@
 
             <ng-container *ngIf="promisedStatus != null && promisedStatus.isAvailable">
 
-              <div class="row form-group">
-                <div class="col">
-                  <button class="btn btn-sm btn-buro-blue btn-block" (click)="sendPromisedRequest(7500)" [disabled]="isProcessing">
-                    {{7500 | number : '.2' : 'ru'}} руб.
-                  </button>
+              <ng-container *ngFor="let cost of promisedStatus.availableCosts">
+                <div class="row form-group">
+                  <div class="col">
+                    <button class="btn btn-sm btn-buro-blue btn-block" (click)="sendPromisedRequest(cost)" [disabled]="isProcessing">
+                      {{cost | number : '.2' : 'ru'}} руб.
+                    </button>
+                  </div>
                 </div>
-              </div>
-
-              <div class="row form-group">
-                <div class="col">
-                  <button class="btn btn-sm btn-buro-blue btn-block" (click)="sendPromisedRequest(11500)" [disabled]="isProcessing">
-                    {{11500 | number : '.2' : 'ru'}} руб.
-                  </button>
-                </div>
-              </div>
-
-              <div class="row form-group">
-                <div class="col">
-                  <button class="btn btn-sm btn-buro-blue btn-block" (click)="sendPromisedRequest(16000)" [disabled]="isProcessing">
-                    {{16000 | number : '.2' : 'ru'}} руб.
-                  </button>
-                </div>
-              </div>
+              </ng-container>
 
 <!--              <div class="row form-group">-->
 <!--                <div class="col">-->
