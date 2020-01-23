@@ -16,4 +16,7 @@ public interface SubscriptionTypeRepository extends JpaRepository<SubscriptionTy
     @Query("SELECT st FROM SubscriptionType AS st ORDER BY sortPosition")
     List<SubscriptionType> findAllAndOrderBySortPosition();
 
+    @Query("SELECT st FROM SubscriptionType AS st WHERE st.isFree = FALSE ORDER BY sortPosition")
+    List<SubscriptionType> findNotFreeAndOrderBySortPosition();
+
 }

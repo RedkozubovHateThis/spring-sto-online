@@ -26,11 +26,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -117,6 +115,12 @@ public class PaymentServiceImpl implements PaymentService {
 
         if ( promisedRecord == null ) {
             response.setIsAvailable(true);
+
+            List<SubscriptionType> subscriptionTypes = subscriptionTypeRepository.findNotFreeAndOrderBySortPosition();
+            response.setAvailableCosts(
+                    subscriptionTypes.stream().map(SubscriptionType::getCost).collect( Collectors.toList() )
+            );
+
             return response;
         }
         else {
@@ -131,6 +135,12 @@ public class PaymentServiceImpl implements PaymentService {
             }
             else {
                 response.setIsAvailable( true );
+
+                List<SubscriptionType> subscriptionTypes = subscriptionTypeRepository.findNotFreeAndOrderBySortPosition();
+                response.setAvailableCosts(
+                        subscriptionTypes.stream().map(SubscriptionType::getCost).collect( Collectors.toList() )
+                );
+
                 return response;
             }
 
