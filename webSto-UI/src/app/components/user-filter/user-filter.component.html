@@ -27,6 +27,9 @@
         <option [selected]="'SERVICE_LEADER' === filter.role" [ngValue]="'SERVICE_LEADER'">
           Автосервис
         </option>
+        <option [selected]="'FREELANCER' === filter.role" [ngValue]="'FREELANCER'">
+          Самозанятый
+        </option>
         <option [selected]="'MODERATOR' === filter.role" [ngValue]="'MODERATOR'" *ngIf="userService.isAdmin()">
           Модератор
         </option>

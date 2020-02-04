@@ -67,18 +67,23 @@ public class DocumentDetailServiceController {
 
         List<Integer> paidDocumentsIds = new ArrayList<>();
 
-        if ( UserHelper.hasRole(currentUser, "CLIENT") &&
+        if ( UserHelper.isClient( currentUser ) &&
                 ( currentUser.getClientId() == null || !currentUser.getIsApproved() ) )
             return ResponseEntity.status(404).build();
 
-        else if ( UserHelper.hasRole(currentUser, "SERVICE_LEADER") &&
-                ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ||
+        else if ( UserHelper.isServiceLeader( currentUser ) &&
+                ( !currentUser.isServiceLeaderValid() ||
+                        currentUser.getIsAccessRestricted() ) )
+            return ResponseEntity.status(404).build();
+
+        else if ( UserHelper.isFreelancer( currentUser ) &&
+                ( !currentUser.isFreelancerValid() ||
                         currentUser.getIsAccessRestricted() ) )
             return ResponseEntity.status(404).build();
 
         Specification<DocumentServiceDetail> specification;
 
-        if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
+        if ( UserHelper.isModerator( currentUser ) ) {
             List<Integer> clientIds = userRepository.collectClientIds( currentUser.getId() );
             List<Integer> organizationIds = userRepository.collectOrganizationIds( currentUser.getId() );
 
@@ -87,7 +92,7 @@ public class DocumentDetailServiceController {
 
             specification = DocumentSpecificationBuilder.buildSpecificationList(clientIds, organizationIds, currentUser, filterPayload);
         }
-        else if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
+        else if ( UserHelper.isServiceLeaderOrFreelancer( currentUser ) ) {
 
             paidDocumentsIds =
                     documentsService.collectPaidDocumentIds( filterPayload.getFromDate(), filterPayload.getToDate() );
@@ -105,7 +110,7 @@ public class DocumentDetailServiceController {
         List<DocumentServiceDetail> resultList = result.getContent();
 
         List<DocumentResponse> responseList;
-        if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
+        if ( UserHelper.isServiceLeaderOrFreelancer( currentUser ) ) {
 
             responseList = new ArrayList<>();
             Date firstSubscriptionDate = documentsService.getFirstSubscriptionDate(currentUser);
@@ -140,10 +145,10 @@ public class DocumentDetailServiceController {
         User currentUser = userRepository.findCurrentUser();
         List<Integer> documentIds = null;
 
-        if ( UserHelper.hasRole( currentUser, "ADMIN" ) ) {
+        if ( UserHelper.isAdmin( currentUser ) ) {
             documentIds = userRepository.collectDocumentIdsByAdmin();
         }
-        else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
+        else if ( UserHelper.isModerator( currentUser ) ) {
             documentIds = userRepository.collectDocumentIds( currentUser.getId() );
         }
         else
@@ -164,14 +169,15 @@ public class DocumentDetailServiceController {
         User currentUser = userRepository.findCurrentUser();
         DocumentServiceDetail result;
 
-        if ( UserHelper.hasRole( currentUser, "CLIENT" ) ) {
+        if ( UserHelper.isClient( currentUser ) ) {
             if ( currentUser.getClientId() == null || !currentUser.getIsApproved() ) return ResponseEntity.status(403).build();
 
             result = documentsRepository.findOneByClientId( id, currentUser.getClientId() );
         }
-        else if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
-            if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ||
-                    currentUser.getIsAccessRestricted() ) return ResponseEntity.status(403).build();
+        else if ( UserHelper.isServiceLeader( currentUser ) ) {
+
+            if ( !currentUser.isServiceLeaderValid() || currentUser.getIsAccessRestricted() )
+                return ResponseEntity.status(403).build();
 
             List<Integer> paidDocumentsIds = documentsService.collectPaidDocumentIds( null, null );
 
@@ -179,7 +185,18 @@ public class DocumentDetailServiceController {
 
             result = documentsRepository.findOneByOrganizationId( id, currentUser.getOrganizationId() );
         }
-        else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
+        else if ( UserHelper.isFreelancer( currentUser ) ) {
+
+            if ( !currentUser.isFreelancerValid() || currentUser.getIsAccessRestricted() )
+                return ResponseEntity.status(403).build();
+
+            List<Integer> paidDocumentsIds = documentsService.collectPaidDocumentIds( null, null );
+
+            if ( !paidDocumentsIds.contains( id ) ) return ResponseEntity.status(403).build();
+
+            result = documentsRepository.findOneByOrganizationIdAndManagerId( id, currentUser.getOrganizationId(), currentUser.getManagerId() );
+        }
+        else if ( UserHelper.isModerator( currentUser ) ) {
             List<Integer> clientIds = userRepository.collectClientIds( currentUser.getId() );
             List<Integer> organizationIds = userRepository.collectOrganizationIds( currentUser.getId() );
 
@@ -211,9 +228,7 @@ public class DocumentDetailServiceController {
         User currentUser = userRepository.findCurrentUser();
         if ( currentUser == null ) return ResponseEntity.status(401).build();
 
-        if ( !UserHelper.hasRole( currentUser, "MODERATOR" ) &&
-                !UserHelper.hasRole( currentUser, "ADMIN" ) &&
-                !UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) return ResponseEntity.status(403).build();
+        if ( UserHelper.isClient( currentUser ) ) return ResponseEntity.status(403).build();
 
         if ( byPrice )
             serviceWorkRepository.updateServiceWorkByPrice( serviceWorkId, price );
@@ -240,9 +255,7 @@ public class DocumentDetailServiceController {
         User currentUser = userRepository.findCurrentUser();
         if ( currentUser == null ) return ResponseEntity.status(401).build();
 
-        if ( !UserHelper.hasRole( currentUser, "MODERATOR" ) &&
-                !UserHelper.hasRole( currentUser, "ADMIN" ) &&
-                !UserHelper.hasRole( currentUser, "SERVICE_LEADER" )) return ResponseEntity.status(403).build();
+        if ( UserHelper.isClient( currentUser ) ) return ResponseEntity.status(403).build();
 
         documentOutHeaderRepository.updateState( documentOutHeaderId, state );
 
@@ -260,9 +273,25 @@ public class DocumentDetailServiceController {
         User currentUser = userRepository.findCurrentUser();
         if ( currentUser == null ) return ResponseEntity.status(401).build();
 
-        if ( !UserHelper.hasRole( currentUser, "ADMIN" ) ) return ResponseEntity.status(403).build();
+        if ( !UserHelper.isAdminOrModerator( currentUser ) ) return ResponseEntity.status(403).build();
 
         documentOutHeaderRepository.updateUserId( documentOutHeaderId, userId );
+
+        return findOne(documentId);
+
+    }
+
+    @PutMapping("/{documentId}/documentOutHeader/{documentOutHeaderId}/manager")
+    public ResponseEntity updateDocumentOutHeaderManager(@PathVariable("documentId") Integer documentId,
+                                                         @PathVariable("documentOutHeaderId") Integer documentOutHeaderId,
+                                                         @RequestParam("managerId") Integer managerId) {
+
+        User currentUser = userRepository.findCurrentUser();
+        if ( currentUser == null ) return ResponseEntity.status(401).build();
+
+        if ( !UserHelper.isAdminOrModerator( currentUser ) ) return ResponseEntity.status(403).build();
+
+        documentOutHeaderRepository.updateManagerId( documentOutHeaderId, managerId );
 
         return findOne(documentId);
 
@@ -276,9 +305,7 @@ public class DocumentDetailServiceController {
         User currentUser = userRepository.findCurrentUser();
         if ( currentUser == null ) return ResponseEntity.status(401).build();
 
-        if ( !UserHelper.hasRole( currentUser, "MODERATOR" ) &&
-                !UserHelper.hasRole( currentUser, "ADMIN" ) &&
-                !UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) return ResponseEntity.status(403).build();
+        if ( UserHelper.isClient( currentUser ) ) return ResponseEntity.status(403).build();
 
         serviceGoodsAddonRepository.updateCost( serviceGoodsAddonId, cost );
 

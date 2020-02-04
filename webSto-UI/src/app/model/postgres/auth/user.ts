@@ -15,6 +15,7 @@ export class User {
   roles: UserRole[];
   clientId: number;
   organizationId: number;
+  managerId: number;
   moderatorId: number;
   moderatorFio: string;
   isApproved: boolean;
@@ -41,6 +42,8 @@ export class User {
   userClient: boolean;
   userGuest: boolean;
   userServiceLeader: boolean;
+  userServiceLeaderOrFreelancer: boolean;
   userModerator: boolean;
+  userFreelancer: boolean;
 
 }

@@ -42,6 +42,17 @@ export class ServiceWorkResponseService {
     } );
   }
 
+  updateManager(documentId: number, documentOutHeaderId: number, managerId: number) {
+    const headers = this.userService.getHeaders();
+
+    return this.http.put( `${this.userService.getApiUrl()}secured/documents/${documentId}/documentOutHeader/${documentOutHeaderId}/manager`, null, {
+      headers,
+      params: {
+        managerId: managerId.toString()
+      }
+    } );
+  }
+
   updateCost(documentId: number, serviceGoodsAddonId: number, cost: number) {
     const headers = this.userService.getHeaders();
 

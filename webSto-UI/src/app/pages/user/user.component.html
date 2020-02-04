@@ -82,7 +82,7 @@
                   </ng-template>
                 </div>
               </div>
-              <div class="row" *ngIf="model.userServiceLeader">
+              <div class="row" *ngIf="model.userServiceLeaderOrFreelancer">
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="service-work-price">Стоимость работа по н/ч</label>
@@ -128,7 +128,7 @@
                     {{role.nameRus}}
                   </span>
                 </div>
-                <div class="col-lg-6" *ngIf="model.userClient || model.userServiceLeader">
+                <div class="col-lg-6" *ngIf="model.userClient || model.userServiceLeaderOrFreelancer">
                   <label class="form-control-label" for="moderator">Модератор</label>
                   <span class="form-control form-control-alternative" id="moderator">
                     {{model.moderatorFio}}
@@ -136,7 +136,7 @@
                 </div>
               </div>
             </div>
-<!--            <ng-container *ngIf="model != null && model.userServiceLeader">-->
+<!--            <ng-container *ngIf="model != null && model.userServiceLeaderOrFreelancer">-->
 <!--              <hr class="my-4" />-->
 <!--              &lt;!&ndash; Shops &ndash;&gt;-->
 <!--              <h6 class="heading-small text-muted mb-4">Магазины</h6>-->
@@ -159,7 +159,7 @@
         </div>
       </div>
     </div>
-    <div class="col-xl-4" *ngIf="model != null && ( model.userClient || model.userServiceLeader )">
+    <div class="col-xl-4" *ngIf="model != null && ( model.userClient || model.userServiceLeaderOrFreelancer )">
       <div class="card bg-secondary shadow">
 
         <div class="card-header bg-white border-0">
@@ -181,13 +181,18 @@
                 <span id="client-full-name" class="form-control form-control-alternative">{{clientResponse.fullName}}</span>
               </div>
 
-              <div class="form-group" *ngIf="model.userServiceLeader && organizationResponse != null">
+              <div class="form-group" *ngIf="model.userServiceLeaderOrFreelancer && organizationResponse != null">
                 <label class="form-control-label" for="organization-full-name">Наименование предприятия</label>
                 <span id="organization-full-name" class="form-control form-control-alternative">{{organizationResponse.fullName}}</span>
               </div>
 
-              <div class="form-group" *ngIf="( model.userServiceLeader && model.organizationId == null ) ||
-              ( model.userClient && model.clientId == null )">
+              <div class="form-group" *ngIf="model.userFreelancer && managerResponse != null">
+                <label class="form-control-label" for="manager-full-name">Менеджер</label>
+                <span id="manager-full-name" class="form-control form-control-alternative">{{managerResponse.fullName}}</span>
+              </div>
+
+              <div class="form-group" *ngIf="( model.userServiceLeaderOrFreelancer && model.organizationId == null ) ||
+              ( model.userFreelancer && model.managerId == null ) || ( model.userClient && model.clientId == null )">
                 <span class="form-control form-control-alternative">Необходимо выполнить привязку к системе АвтоДилер</span>
               </div>
 

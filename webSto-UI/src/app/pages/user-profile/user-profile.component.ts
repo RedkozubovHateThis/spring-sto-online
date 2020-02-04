@@ -10,6 +10,7 @@ import {OrganizationResponse} from "../../model/firebird/organizationResponse";
 import {HttpClient} from '@angular/common/http';
 import {ToastrService} from 'ngx-toastr';
 import {Shops} from '../../variables/shops';
+import {ManagerResponse} from '../../model/firebird/managerResponse';
 
 @Component({
   selector: 'app-user-profile',
@@ -21,6 +22,7 @@ export class UserProfileComponent implements OnInit {
   private model: User;
   private clientResponse: ClientResponse;
   private organizationResponse: OrganizationResponse;
+  private managerResponse: ManagerResponse;
   private isADLoading: boolean = false;
   private title: string = "Профиль";
   private showBack: boolean = false;
@@ -49,7 +51,7 @@ export class UserProfileComponent implements OnInit {
 
     if ( this.model.userClient )
       this.requestClient();
-    else if ( this.model.userServiceLeader )
+    else if ( this.model.userServiceLeaderOrFreelancer )
       this.requestOrganization();
 
   }
@@ -78,50 +80,30 @@ export class UserProfileComponent implements OnInit {
   }
 
   requestOrganization() {
-
     if ( this.model.organizationId == null ) return;
 
     this.isADLoading = true;
 
     this.organizationResponseService.getOne(this.model.organizationId).subscribe( data => {
       this.organizationResponse = data as OrganizationResponse;
-      this.isADLoading = false;
+
+      if ( this.model.userFreelancer )
+        this.requestManager();
+      else
+        this.isADLoading = false;
     }, () => {
       this.isADLoading = false;
     } );
   }
 
-  /** Временные методы для тестирвоания СМС */
+  requestManager() {
+    if ( this.model.managerId == null ) return;
 
-  private phoneNumber: string;
-  private messageText: string;
-  private smsSending = false;
-
-  private sendSms() {
-    if ( !this.phoneNumber || !this.messageText ) return;
-
-    const headers = this.userService.getHeaders();
-
-    const params = {
-      phone: this.phoneNumber,
-      message: this.messageText
-    };
-
-    this.smsSending = true;
-    this.httpClient.get( `${this.userService.getApiUrl()}secured/sms/send`, { headers, params } ).subscribe( response => {
-      this.smsSending = false;
-      // @ts-ignore
-      if ( response.error ) {
-        // @ts-ignore
-        this.toastrService.error(response.error, 'Внимание!');
-      } else {
-        // @ts-ignore
-        const successMessage = `Сообщение "${this.messageText}" успешно отправлено абоненту "${this.phoneNumber}".\nТекущий баланс: ${response.balance}`;
-        this.toastrService.success(successMessage);
-      }
-    }, error => {
-      this.smsSending = false;
-      this.toastrService.error('Ошибка отправки СМС!', 'Внимание!');
+    this.organizationResponseService.getOneManager( this.model.managerId ).subscribe( manager => {
+      this.managerResponse = manager;
+      this.isADLoading = false;
+    }, () => {
+      this.isADLoading = false;
     } );
   }
 

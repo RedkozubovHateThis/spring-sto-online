@@ -36,4 +36,60 @@ public class UserHelper {
 
     }
 
+    public static Boolean isClient() {
+        return hasRole( "CLIENT" );
+    }
+
+    public static Boolean isClient(User user) {
+        return hasRole( user, "CLIENT" );
+    }
+
+    public static Boolean isAdmin() {
+        return hasRole("ADMIN");
+    }
+
+    public static Boolean isAdmin(User user) {
+        return hasRole( user, "ADMIN" );
+    }
+
+    public static Boolean isAdminOrModerator() {
+        return hasRole("ADMIN") || hasRole("MODERATOR");
+    }
+
+    public static Boolean isAdminOrModerator(User user) {
+        return hasRole( user, "ADMIN" ) || hasRole( user, "MODERATOR" );
+    }
+
+    public static Boolean isModerator() {
+        return hasRole("MODERATOR");
+    }
+
+    public static Boolean isModerator(User user) {
+        return hasRole( user, "MODERATOR" );
+    }
+
+    public static Boolean isServiceLeader() {
+        return hasRole("SERVICE_LEADER");
+    }
+
+    public static Boolean isServiceLeader(User user) {
+        return hasRole( user, "SERVICE_LEADER" );
+    }
+
+    public static Boolean isFreelancer() {
+        return hasRole("FREELANCER");
+    }
+
+    public static Boolean isFreelancer(User user) {
+        return hasRole( user, "FREELANCER" );
+    }
+
+    public static Boolean isServiceLeaderOrFreelancer() {
+        return hasRole("FREELANCER") || hasRole("SERVICE_LEADER");
+    }
+
+    public static Boolean isServiceLeaderOrFreelancer(User user) {
+        return hasRole( user, "FREELANCER" ) || hasRole( user, "SERVICE_LEADER" );
+    }
+
 }

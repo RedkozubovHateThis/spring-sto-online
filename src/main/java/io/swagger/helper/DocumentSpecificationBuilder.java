@@ -45,7 +45,7 @@ public class DocumentSpecificationBuilder {
                 Join<ModelDetail, Model> modelJoin = mdJoin.join(ModelDetail_.model);
                 Join<Model, Mark> markJoin = modelJoin.join(Model_.mark);
 
-                if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
+                if ( UserHelper.isModerator( currentUser ) ) {
 
                     if ( organizationIds.size() == 0 && clientIds.size() > 0 )
                         predicates.add( clientJoin.get( Client_.id ).in( clientIds ) );
@@ -62,12 +62,17 @@ public class DocumentSpecificationBuilder {
                         );
 
                 }
-                else if ( UserHelper.hasRole( currentUser, "CLIENT" ) ) {
+                else if ( UserHelper.isClient( currentUser ) ) {
                     predicates.add( cb.equal( clientJoin.get( Client_.id ), currentUser.getClientId() ) );
                     predicates.add( cb.equal( dohJoin.get( DocumentOutHeader_.state ), (short) 4 ) );
                 }
-                else if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
+                else if ( UserHelper.isServiceLeaderOrFreelancer( currentUser ) ) {
                     predicates.add( cb.equal( orgJoin.get( Organization_.id ), currentUser.getOrganizationId() ) );
+
+                    if ( UserHelper.isFreelancer( currentUser ) ) {
+                        Join<DocumentOutHeader, Manager> managerJoin = dohJoin.join( DocumentOutHeader_.manager );
+                        predicates.add( cb.equal( managerJoin.get( Manager_.id ), currentUser.getManagerId() ) );
+                    }
 
                     if ( currentUser.getIsCurrentSubscriptionExpired() ) {
                         Subscription subscription = currentUser.getCurrentSubscription();
@@ -93,11 +98,11 @@ public class DocumentSpecificationBuilder {
                 if ( filterPayload.getStates() != null && filterPayload.getStates().size() > 0 ) {
                     predicates.add( dohJoin.get( DocumentOutHeader_.state ).in( filterPayload.getStates() ) );
                 }
-                if ( !UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) &&
+                if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) &&
                         filterPayload.getOrganizations() != null && filterPayload.getOrganizations().size() > 0 ) {
                     predicates.add( orgJoin.get( Organization_.id ).in( filterPayload.getOrganizations() ) );
                 }
-                if ( !UserHelper.hasRole( currentUser, "CLIENT" ) &&
+                if ( !UserHelper.isClient( currentUser ) &&
                         filterPayload.getClients() != null && filterPayload.getClients().size() > 0 ) {
                     predicates.add( clientJoin.get( Client_.id ).in( filterPayload.getClients() ) );
                 }

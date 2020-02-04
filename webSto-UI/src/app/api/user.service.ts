@@ -312,7 +312,7 @@ export class UserService implements TransferService<User>, RestService<User> {
   }
 
   isNotClient(): boolean {
-    return this.currentUser != null && ( this.currentUser.userAdmin || this.currentUser.userServiceLeader || this.currentUser.userModerator );
+    return this.currentUser != null && ( this.currentUser.userAdmin || this.currentUser.userServiceLeaderOrFreelancer || this.currentUser.userModerator );
   }
 
   isClient(): boolean {
@@ -327,21 +327,29 @@ export class UserService implements TransferService<User>, RestService<User> {
     return this.currentUser != null && this.currentUser.userServiceLeader;
   }
 
+  isFreelancer(): boolean {
+    return this.currentUser != null && this.currentUser.userFreelancer;
+  }
+
+  isServiceLeaderOrFreelancer(): boolean {
+    return this.currentUser != null && this.currentUser.userServiceLeaderOrFreelancer;
+  }
+
   isServiceLeaderWithEmptySubscription(): boolean {
-    return this.currentUser != null && this.currentUser.userServiceLeader && this.currentUser.isCurrentSubscriptionEmpty;
+    return this.currentUser != null && this.currentUser.userServiceLeaderOrFreelancer && this.currentUser.isCurrentSubscriptionEmpty;
   }
 
   isServiceLeaderWithInvalidBalance(): boolean {
-    return this.currentUser != null && this.currentUser.userServiceLeader && this.currentUser.isBalanceInvalid;
+    return this.currentUser != null && this.currentUser.userServiceLeaderOrFreelancer && this.currentUser.isBalanceInvalid;
   }
 
   isServiceLeaderWithRestrictedAccess(): boolean {
-    return this.currentUser != null && this.currentUser.userServiceLeader &&
+    return this.currentUser != null && this.currentUser.userServiceLeaderOrFreelancer &&
       ( this.currentUser.isCurrentSubscriptionEmpty || this.currentUser.isBalanceInvalid );
   }
 
   isServiceLeaderWithExpiredSubscription(): boolean {
-    return this.currentUser != null && this.currentUser.userServiceLeader && this.currentUser.isCurrentSubscriptionExpired;
+    return this.currentUser != null && this.currentUser.userServiceLeaderOrFreelancer && this.currentUser.isCurrentSubscriptionExpired;
   }
 
   isAdmin(): boolean {
@@ -353,7 +361,7 @@ export class UserService implements TransferService<User>, RestService<User> {
   }
 
   isClientOrServiceLeader(): boolean {
-    return this.currentUser != null && ( this.currentUser.userClient || this.currentUser.userServiceLeader );
+    return this.currentUser != null && ( this.currentUser.userClient || this.currentUser.userServiceLeaderOrFreelancer );
   }
 
   isSameUser(model: User) {

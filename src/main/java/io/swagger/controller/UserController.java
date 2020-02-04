@@ -89,12 +89,12 @@ public class UserController {
                 userRepository.isUserExistsEmailNotSelf( user.getEmail(), existingUser.getId() ) )
             return ResponseEntity.status(400).body("Данная почта уже указана у другого пользователя!");
 
-        if ( UserHelper.hasRole( user, "CLIENT" ) ) {
+        if ( UserHelper.isClient( user ) ) {
             if ( user.getVin() != null && user.getVin().length() > 0 &&
                     userRepository.isUserExistsVinNotSelf( user.getVin(), existingUser.getId() ) )
                 return ResponseEntity.status(400).body("Данный VIN-номер уже указан у другого пользователя!");
         }
-        if ( UserHelper.hasRole( user, "SERVICE_LEADER" ) ) {
+        if ( UserHelper.isServiceLeader( user ) ) {
             if ( user.getInn() != null && user.getInn().length() > 0 &&
                     userRepository.isUserExistsInnNotSelf( user.getInn(), existingUser.getId() ) )
                 return ResponseEntity.status(400).body("Данный ИНН уже указан у другого пользователя!");
@@ -109,15 +109,14 @@ public class UserController {
         boolean sendEventMessage = false;
         MessageType eventMessageType = null;
 
-        if ( UserHelper.hasRole( user, "CLIENT" ) && user.getModeratorId() != null )
+        if ( UserHelper.isClient( user ) && user.getModeratorId() != null )
             eventMessageStatus = isClientIdChanged(user, existingUser);
 
-        if ( UserHelper.hasRole( user, "SERVICE_LEADER" ) && user.getModeratorId() != null )
+        if ( UserHelper.isServiceLeaderOrFreelancer( user ) && user.getModeratorId() != null )
             eventMessageStatus = isOrganizationIdChanged(user, existingUser);
 
-        if ( ( UserHelper.hasRole( currentUser, "MODERATOR" ) || UserHelper.hasRole( currentUser, "ADMIN" ) ) &&
-                ( UserHelper.hasRole( user, "CLIENT" ) ||
-                        UserHelper.hasRole( user, "SERVICE_LEADER" ) ) ) {
+        if ( UserHelper.isAdminOrModerator( currentUser ) &&
+                ( UserHelper.isClient( user ) || UserHelper.isServiceLeaderOrFreelancer( user ) ) ) {
 
             if ( !existingUser.getIsApproved() && user.getIsApproved() ) {
                 eventMessageType = MessageType.USER_APPROVE;
@@ -270,7 +269,7 @@ public class UserController {
         user.setEnabled( false );
         userRepository.save( user );
 
-        if ( UserHelper.hasRole( user, "MODERATOR" ) ) {
+        if ( UserHelper.isModerator( user ) ) {
 
             List<User> users = userRepository.findAllByModeratorId( user.getId() );
 
@@ -304,7 +303,7 @@ public class UserController {
 
         User currentUser = userRepository.findCurrentUser();
 
-        if ( UserHelper.hasRole( currentUser, "ADMIN" ) ) {
+        if ( UserHelper.isAdmin( currentUser ) ) {
 
             if ( currentUser.getId().equals( id ) ) {
 
@@ -360,8 +359,7 @@ public class UserController {
 
         if ( currentUser == null ) return ResponseEntity.status(401).build();
 
-        if ( !UserHelper.hasRole( currentUser, "ADMIN" ) &&
-                !UserHelper.hasRole( currentUser, "MODERATOR" ) )
+        if ( !UserHelper.isAdminOrModerator( currentUser ) )
             return ResponseEntity.status(403).build();
 
         Specification<User> specification = UserSpecificationBuilder.buildSpecification( currentUser, filterPayload );
@@ -375,7 +373,7 @@ public class UserController {
         User currentUser = userRepository.findCurrentUser();
 
         if ( currentUser == null ) return ResponseEntity.status(401).build();
-        if ( !UserHelper.hasRole( currentUser, "MODERATOR" ) ) return ResponseEntity.status(404).build();
+        if ( !UserHelper.isModerator( currentUser ) ) return ResponseEntity.status(404).build();
 
         return ResponseEntity.ok( userRepository.findUsersByRoleNameExceptId( "MODERATOR", currentUser.getId() ) );
 
@@ -387,7 +385,7 @@ public class UserController {
         User currentUser = userRepository.findCurrentUser();
 
         if ( currentUser == null ) return ResponseEntity.status(401).build();
-        if ( !UserHelper.hasRole( currentUser, "ADMIN" ) ) return ResponseEntity.status(404).build();
+        if ( !UserHelper.isAdmin( currentUser ) ) return ResponseEntity.status(404).build();
 
         return ResponseEntity.ok( userRepository.findUsersByRoleName("MODERATOR") );
 
@@ -406,8 +404,8 @@ public class UserController {
             return ResponseEntity.status(404).build();
 
         if ( currentUser.getId().equals( user.getId() ) ||
-                UserHelper.hasRole(currentUser, "ADMIN") ||
-                ( UserHelper.hasRole( currentUser, "MODERATOR" ) && user.getModeratorId() != null && user.getModeratorId().equals( currentUser.getId() ) ) )
+                UserHelper.isAdmin( currentUser ) ||
+                ( UserHelper.isModerator( currentUser ) && user.getModeratorId() != null && user.getModeratorId().equals( currentUser.getId() ) ) )
             return ResponseEntity.ok( user );
         else
             return ResponseEntity.status(403).build();
@@ -418,10 +416,10 @@ public class UserController {
 
         User currentUser = userRepository.findCurrentUser();
 
-        if ( UserHelper.hasRole( currentUser, "ADMIN" ) ) {
+        if ( UserHelper.isAdmin( currentUser ) ) {
             return ResponseEntity.ok( userRepository.findEventMessageFromUsersByAdmin() );
         }
-        else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
+        else if ( UserHelper.isModerator( currentUser ) ) {
             return ResponseEntity.ok( userRepository.findEventMessageFromUsers( currentUser.getId() ) );
         }
         else
@@ -434,10 +432,10 @@ public class UserController {
 
         User currentUser = userRepository.findCurrentUser();
 
-        if ( UserHelper.hasRole( currentUser, "ADMIN" ) ) {
+        if ( UserHelper.isAdmin( currentUser ) ) {
             return ResponseEntity.ok( userRepository.findEventMessageToUsersByAdmin() );
         }
-        else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
+        else if ( UserHelper.isModerator( currentUser ) ) {
             return ResponseEntity.ok( userRepository.findEventMessageToUsers( currentUser.getId() ) );
         }
         else
@@ -450,8 +448,7 @@ public class UserController {
 
         User currentUser = userRepository.findCurrentUser();
 
-        if ( !UserHelper.hasRole( currentUser, "ADMIN" ) &&
-                !UserHelper.hasRole( currentUser, "MODERATOR" ) )
+        if ( !UserHelper.isAdminOrModerator( currentUser ) )
             return ResponseEntity.status(404).build();
 
         List<io.swagger.firebird.model.User> users = firebirdUserRepository.findAllVisibleUsers();

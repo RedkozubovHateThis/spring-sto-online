@@ -12,6 +12,7 @@ import {OrganizationResponse} from "../../model/firebird/organizationResponse";
 import { Shops } from './../../variables/shops';
 import {PaymentService} from '../../api/payment.service';
 import {SubscriptionTypeResponse} from '../../model/payment/subscriptionTypeResponse';
+import {ManagerResponse} from '../../model/firebird/managerResponse';
 
 @Component({
   selector: 'app-user-edit',
@@ -24,11 +25,14 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
 
   private clientResponse: ClientResponse;
   private organizationResponse: OrganizationResponse;
+  private managerResponse: ManagerResponse;
   private isADLoading: boolean = false;
   private replaceModerators: User[];
   private moderators: User[];
   private shops: ShopInterface[] = [];
   private subscriptionTypes: SubscriptionTypeResponse[] = [];
+  private organizations: OrganizationResponse[] = [];
+  private managers: ManagerResponse[] = [];
   private isTypesLoading: boolean = false;
 
   constructor(private userService: UserService, protected route: ActivatedRoute, private location: Location,
@@ -48,6 +52,12 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
         this.requestClient();
       else if ( this.model.userServiceLeader )
         this.requestOrganization();
+
+      if ( this.model.userFreelancer ) {
+        this.requestOrganizations();
+        if ( this.model.organizationId != null )
+          this.requestManagers( this.model.organizationId, false );
+      }
 
     }, error => {
       this.isLoading = false;
@@ -130,6 +140,11 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
     this.userService.saveUser( user, 'Организация успешно привязана! Ожидайте подтверждения данных модератором!' );
   }
 
+  linkManager(user: User) {
+    if ( this.model.organizationId == null || this.model.managerId == null ) return;
+    this.userService.saveUser( user, 'Менеджер успешно привязан! Ожидайте подтверждения данных модератором!' );
+  }
+
   requestClient() {
     if ( this.model.clientId == null ) return;
 
@@ -156,6 +171,37 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
     } );
   }
 
+  requestOrganizations() {
+    this.organizationResponseService.getAll().subscribe( data => {
+      this.organizations = data as OrganizationResponse[];
+    }, () => {
+    } );
+  }
+
+  requestManagers(organizationId: number, resetManager: boolean) {
+
+    if ( resetManager ) {
+      this.model.organizationId = organizationId;
+      this.model.managerId = null;
+    }
+
+    this.organizationResponseService.getAllManagers( organizationId ).subscribe( managers => {
+      this.managers = managers;
+    }, () => {
+    } );
+  }
+
+  requestManager() {
+    if ( this.model.managerId == null ) return;
+
+    this.organizationResponseService.getOneManager( this.model.managerId ).subscribe( manager => {
+      this.managerResponse = manager;
+      this.isADLoading = false;
+    }, () => {
+      this.isADLoading = false;
+    } );
+  }
+
   requestReplacementModerators() {
     this.userService.getReplacementModerators().subscribe( response => {
       this.replaceModerators = response as User[];
@@ -171,6 +217,12 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
     else if ( this.model.userServiceLeader )
       this.requestOrganization();
 
+    if ( this.model.userFreelancer ) {
+      this.requestOrganizations();
+      if ( this.model.organizationId != null )
+        this.requestManagers( this.model.organizationId, false );
+    }
+
     this.requestReplacementModerators();
     this.requestAllSubscriptionTypes();
   }
@@ -179,8 +231,10 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
     user.isApproved = false;
     user.clientId = null;
     user.organizationId = null;
+    user.managerId = null;
     this.clientResponse = null;
     this.organizationResponse = null;
+    this.managerResponse = null;
     this.userService.saveUser(user, `Привязка успешно удалена!`);
   }
 

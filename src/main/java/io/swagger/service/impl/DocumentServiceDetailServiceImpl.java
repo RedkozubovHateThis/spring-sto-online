@@ -31,9 +31,10 @@ public class DocumentServiceDetailServiceImpl implements DocumentServiceDetailSe
         User currentUser = userRepository.findCurrentUser();
         if ( currentUser == null ) return null;
 
-        if ( !UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) return null;
-        if ( currentUser.getIsAccessRestricted() ||
-                currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ) return null;
+        if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) || currentUser.getIsAccessRestricted() ) return null;
+
+        if ( UserHelper.isServiceLeader( currentUser ) && !currentUser.isServiceLeaderValid() ) return null;
+        if ( UserHelper.isFreelancer( currentUser ) && !currentUser.isFreelancerValid() ) return null;
 
         List<Subscription> subscriptions;
         List<Integer> paidDocumentIds = new ArrayList<>();
@@ -51,19 +52,42 @@ public class DocumentServiceDetailServiceImpl implements DocumentServiceDetailSe
             subscriptions = subscriptionRepository.findAllByUserId( currentUser.getId() );
         }
 
-        for (Subscription subscription : subscriptions) {
+        if ( UserHelper.isServiceLeader( currentUser ) ) {
 
-            paidDocumentIds.addAll( documentsRepository.collectPaidDocumentsByOrganizationIdAndDates(
-                    subscription.getDocumentsCount(), currentUser.getOrganizationId(),
-                    subscription.getStartDate(), subscription.getEndDate()
+            for (Subscription subscription : subscriptions) {
+
+                paidDocumentIds.addAll( documentsRepository.collectPaidDocumentsByOrganizationIdAndDates(
+                        subscription.getDocumentsCount(), currentUser.getOrganizationId(),
+                        subscription.getStartDate(), subscription.getEndDate()
+                ) );
+
+            }
+
+            paidDocumentIds.addAll( documentsRepository.collectPaidDocumentsByOrganizationIdAndBefore(
+                    currentUser.getOrganizationId(),
+                    getFirstSubscriptionDate(currentUser)
+            ) );
+
+        }
+        else if ( UserHelper.isFreelancer( currentUser ) ) {
+
+            for (Subscription subscription : subscriptions) {
+
+                paidDocumentIds.addAll( documentsRepository.collectPaidDocumentsByOrganizationIdAndDatesAndManagerId(
+                        subscription.getDocumentsCount(), currentUser.getOrganizationId(),
+                        subscription.getStartDate(), subscription.getEndDate(), currentUser.getManagerId()
+                ) );
+
+            }
+
+            paidDocumentIds.addAll( documentsRepository.collectPaidDocumentsByOrganizationIdAndBeforeAndManagerId(
+                    currentUser.getOrganizationId(),
+                    getFirstSubscriptionDate(currentUser),
+                    currentUser.getManagerId()
             ) );
 
         }
 
-        paidDocumentIds.addAll( documentsRepository.collectPaidDocumentsByOrganizationIdAndBefore(
-                currentUser.getOrganizationId(),
-                getFirstSubscriptionDate(currentUser)
-        ) );
 
         return paidDocumentIds;
     }

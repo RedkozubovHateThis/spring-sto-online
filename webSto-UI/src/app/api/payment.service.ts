@@ -22,7 +22,7 @@ export class PaymentService {
 
     this.subscription = this.userService.currentUserIsLoaded.subscribe( currentUser => {
 
-      if ( currentUser.userServiceLeader ) {
+      if ( currentUser.userServiceLeaderOrFreelancer ) {
         this.requestCurrentSubscription();
       }
 
@@ -46,7 +46,7 @@ export class PaymentService {
   }
 
   isServiceLeaderWithExpiredSubscription() {
-    return this.userService.isServiceLeader() && this.currentSubscription != null && this.currentSubscription.documentsRemains === 0;
+    return this.userService.isServiceLeaderOrFreelancer() && this.currentSubscription != null && this.currentSubscription.documentsRemains === 0;
   }
 
   sendRegisterRequest(amount: number): Observable<RegisterResponse> {

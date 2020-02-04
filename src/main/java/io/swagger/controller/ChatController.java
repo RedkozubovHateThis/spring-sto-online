@@ -56,10 +56,10 @@ public class ChatController {
         User currentUser = userRepository.findCurrentUser();
         if ( currentUser == null ) return ResponseEntity.status(401).build();
 
-        if ( UserHelper.hasRole(currentUser, "CLIENT") )
+        if ( UserHelper.isClient( currentUser ) )
             return ResponseEntity.status(400).body("У вас нет прав отправлять сообщения!");
 
-        if ( UserHelper.hasRole(currentUser, "SERVICE_LEADER") && currentUser.getIsAccessRestricted() )
+        if ( UserHelper.isServiceLeaderOrFreelancer( currentUser ) && currentUser.getIsAccessRestricted() )
             return ResponseEntity.status(400).body("У вас нет прав отправлять сообщения!");
 
         if ( payload.getUploadFileId() == null &&
@@ -107,10 +107,10 @@ public class ChatController {
         User currentUser = userRepository.findCurrentUser();
         if ( currentUser == null ) return ResponseEntity.status(401).build();
 
-        if ( UserHelper.hasRole(currentUser, "CLIENT") )
+        if ( UserHelper.isClient( currentUser ) )
             return ResponseEntity.status(400).body("У вас нет прав отправлять сообщения!");
 
-        if ( UserHelper.hasRole(currentUser, "SERVICE_LEADER") && currentUser.getIsAccessRestricted() )
+        if ( UserHelper.isServiceLeaderOrFreelancer( currentUser ) && currentUser.getIsAccessRestricted() )
             return ResponseEntity.status(400).body("У вас нет прав отправлять сообщения!");
 
         if ( payload.getDocumentId() == null )
@@ -172,10 +172,10 @@ public class ChatController {
         User currentUser = userRepository.findCurrentUser();
         if ( currentUser == null ) return ResponseEntity.status(401).build();
 
-        if ( UserHelper.hasRole(currentUser, "CLIENT") )
+        if ( UserHelper.isClient( currentUser ) )
             return ResponseEntity.status(404).build();
 
-        if ( UserHelper.hasRole(currentUser, "SERVICE_LEADER") && currentUser.getIsAccessRestricted() )
+        if ( UserHelper.isServiceLeaderOrFreelancer( currentUser ) && currentUser.getIsAccessRestricted() )
             return ResponseEntity.status(404).build();
 
         List<ChatMessage> chatMessages = chatMessageRepository.findMessagesByUsers( currentUser.getId(), toUserId );
@@ -258,13 +258,13 @@ public class ChatController {
         User currentUser = userRepository.findCurrentUser();
         List<User> opponents = null;
 
-        if ( UserHelper.hasRole( currentUser, "ADMIN" ) ) {
+        if ( UserHelper.isAdmin( currentUser ) ) {
             opponents = userRepository.findAllOpponentsByAdmin( currentUser.getUsername() );
         }
-        else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
+        else if ( UserHelper.isModerator( currentUser ) ) {
             opponents = userRepository.findAllOpponentsByModerator( currentUser.getId(), currentUser.getId() );
         }
-        else if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" )
+        else if ( UserHelper.isServiceLeaderOrFreelancer( currentUser )
                 && currentUser.getModeratorId() != null && !currentUser.getIsAccessRestricted() )
             opponents = userRepository.findAllOpponentsModerators( currentUser.getModeratorId(), currentUser.getId() );
 
@@ -313,16 +313,16 @@ public class ChatController {
 
         List<User> opponents = new ArrayList<>();
 
-        if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
+        if ( UserHelper.isServiceLeaderOrFreelancer( currentUser ) ) {
             findModerator(currentUser, opponents);
         }
-        else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
+        else if ( UserHelper.isModerator( currentUser ) ) {
             User serviceLeader = findServiceLeader( documentId );
 
             if ( serviceLeader != null )
                 opponents.add( serviceLeader );
         }
-        else if ( UserHelper.hasRole( currentUser, "ADMIN" ) ) {
+        else if ( UserHelper.isAdmin( currentUser ) ) {
             User serviceLeader = findServiceLeader( documentId );
 
             if ( serviceLeader != null ) {

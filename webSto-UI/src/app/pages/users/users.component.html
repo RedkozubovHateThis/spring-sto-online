@@ -55,7 +55,7 @@
                 </span>
               </th>
               <th>
-                <ng-container *ngIf="user.userClient || user.userServiceLeader">
+                <ng-container *ngIf="user.userClient || user.userServiceLeaderOrFreelancer">
                   {{user.isApproved ? 'Да' : 'Нет'}}
                 </ng-container>
               </th>

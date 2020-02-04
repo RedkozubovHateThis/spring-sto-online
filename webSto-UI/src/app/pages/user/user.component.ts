@@ -9,6 +9,7 @@ import {OrganizationResponse} from '../../model/firebird/organizationResponse';
 import {OrganizationResponseService} from '../../api/organizationResponse.service';
 import {Location} from '@angular/common';
 import {Shops} from '../../variables/shops';
+import {ManagerResponse} from '../../model/firebird/managerResponse';
 
 @Component({
   selector: 'app-user',
@@ -20,6 +21,7 @@ export class UserComponent extends ModelTransfer<User, number> implements OnInit
   private isLoading: boolean = false;
   private clientResponse: ClientResponse;
   private organizationResponse: OrganizationResponse;
+  private managerResponse: ManagerResponse;
   private isADLoading: boolean = false;
   private title: string = "Данные пользователя";
   private showBack: boolean = true;
@@ -40,7 +42,7 @@ export class UserComponent extends ModelTransfer<User, number> implements OnInit
 
       if ( this.model.userClient )
         this.requestClient();
-      else if ( this.model.userServiceLeader )
+      else if ( this.model.userServiceLeaderOrFreelancer )
         this.requestOrganization();
 
     }, error => {
@@ -73,6 +75,21 @@ export class UserComponent extends ModelTransfer<User, number> implements OnInit
 
     this.organizationResponseService.getOne(this.model.organizationId).subscribe( data => {
       this.organizationResponse = data as OrganizationResponse;
+
+      if ( this.model.userFreelancer )
+        this.requestManager();
+      else
+        this.isADLoading = false;
+    }, () => {
+      this.isADLoading = false;
+    } );
+  }
+
+  requestManager() {
+    if ( this.model.managerId == null ) return;
+
+    this.organizationResponseService.getOneManager( this.model.managerId ).subscribe( manager => {
+      this.managerResponse = manager;
       this.isADLoading = false;
     }, () => {
       this.isADLoading = false;
@@ -82,7 +99,7 @@ export class UserComponent extends ModelTransfer<User, number> implements OnInit
   onTransferComplete() {
     if ( this.model.userClient )
       this.requestClient();
-    else if ( this.model.userServiceLeader )
+    else if ( this.model.userServiceLeaderOrFreelancer )
       this.requestOrganization();
   }
 

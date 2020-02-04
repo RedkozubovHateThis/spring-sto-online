@@ -49,6 +49,7 @@ public class User implements UserDetails, Serializable {
     private String vin;
     private Integer clientId;
     private Integer organizationId;
+    private Integer managerId;
     private Boolean isApproved;
     private Date lastUserAcceptDate;
     private Boolean inVacation;
@@ -175,23 +176,27 @@ public class User implements UserDetails, Serializable {
     }
 
     public Boolean isUserAdmin() {
-        return UserHelper.hasRole( this, "ADMIN" );
+        return UserHelper.isAdmin( this );
     }
 
     public Boolean isUserClient() {
-        return UserHelper.hasRole( this, "CLIENT" );
-    }
-
-    public Boolean isUserGuest() {
-        return UserHelper.hasRole( this, "GUEST" );
+        return UserHelper.isClient( this );
     }
 
     public Boolean isUserServiceLeader() {
-        return UserHelper.hasRole( this, "SERVICE_LEADER" );
+        return UserHelper.isServiceLeader( this );
     }
 
     public Boolean isUserModerator() {
-        return UserHelper.hasRole( this, "MODERATOR" );
+        return UserHelper.isModerator( this );
+    }
+
+    public Boolean isUserFreelancer() {
+        return UserHelper.isFreelancer( this );
+    }
+
+    public Boolean isUserServiceLeaderOrFreelancer() {
+        return UserHelper.isServiceLeaderOrFreelancer( this );
     }
 
     @JsonIgnore
@@ -271,5 +276,20 @@ public class User implements UserDetails, Serializable {
 
     public Boolean getIsCurrentSubscriptionExpired() {
         return currentSubscription != null && currentSubscription.getEndDate().before( new Date() );
+    }
+
+    @JsonIgnore
+    public Boolean isServiceLeaderValid() {
+        return organizationId != null && isApproved;
+    }
+
+    @JsonIgnore
+    public Boolean isFreelancerValid() {
+        return organizationId != null && managerId != null && isApproved;
+    }
+
+    @JsonIgnore
+    public Boolean isClientValid() {
+        return clientId != null && isApproved;
     }
 }

@@ -80,7 +80,7 @@
                   </select>
                 </div>
               </div>
-              <div class="row" *ngIf="model.userServiceLeader">
+              <div class="row" *ngIf="model.userServiceLeaderOrFreelancer">
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="input-service-work-price">Стоимость работа по н/ч</label>
@@ -140,7 +140,7 @@
                     {{role.nameRus}}
                   </span>
                 </div>
-                <div class="col-lg-6" *ngIf="userService.isAdmin() && ( model.userClient || model.userServiceLeader )">
+                <div class="col-lg-6" *ngIf="userService.isAdmin() && ( model.userClient || model.userServiceLeaderOrFreelancer )">
                   <div class="form-group">
                     <label class="form-control-label" for="moderator-select">Модератор</label>
                     <select id="moderator-select" class="form-control form-control-alternative" [(ngModel)]="model.moderatorId" [ngModelOptions]="{standalone: true}">
@@ -155,7 +155,7 @@
                 </div>
               </div>
             </div>
-            <ng-container *ngIf="userService.isSameUser( model ) && model.userServiceLeader">
+            <ng-container *ngIf="userService.isSameUser( model ) && model.userServiceLeaderOrFreelancer">
               <hr class="my-4" />
               <!-- Subscriptions -->
               <h6 class="heading-small text-muted mb-4">Тариф по умолчанию</h6>
@@ -221,7 +221,7 @@
                 </div>
               </div>
             </ng-container>
-<!--            <ng-container *ngIf="userService.isSameUser( model ) && model.userServiceLeader">-->
+<!--            <ng-container *ngIf="userService.isSameUser( model ) && model.userServiceLeaderOrFreelancer">-->
 <!--              <hr class="my-4" />-->
 <!--              &lt;!&ndash; Shops &ndash;&gt;-->
 <!--              <h6 class="heading-small text-muted mb-4">Магазины</h6>-->
@@ -247,7 +247,7 @@
         </div>
       </div>
     </div>
-    <div class="col-xl-4" *ngIf="model != null && ( model.userClient || model.userServiceLeader )">
+    <div class="col-xl-4" *ngIf="model != null && ( model.userClient || model.userServiceLeaderOrFreelancer )">
       <div class="card bg-secondary shadow">
 
         <div class="card-header bg-white border-0">
@@ -267,6 +267,13 @@
               <button class="btn btn-sm btn-buro-blue" *ngIf="model.userServiceLeader"
                       [disabled]="model.isApproved || userService.isSaving || organizationResponse == null || ( organizationResponse.id == model.organizationId )"
                       (click)="linkOrganization(model)">
+                Привязать
+              </button>
+
+              <button class="btn btn-sm btn-buro-blue" *ngIf="model.userFreelancer"
+                      [disabled]="model.isApproved || userService.isSaving || model.organizationId == null ||
+                      model.managerId == null"
+                      (click)="linkManager(model)">
                 Привязать
               </button>
 
@@ -315,6 +322,38 @@
 
               </div>
 
+              <div class="form-group" *ngIf="model.userFreelancer">
+
+                <div class="row form-group">
+                  <div class="col">
+                    <label class="form-control-label" for="organization-select">Организация</label>
+                    <select id="organization-select" class="form-control form-control-sm form-control-alternative"
+                            (ngModelChange)="requestManagers($event, true)" [disabled]="model.isApproved"
+                            [ngModel]="model.organizationId">
+                      <option [selected]="model.organizationId != null && model.organizationId === organization.id" [ngValue]="organization.id"
+                              *ngFor="let organization of organizations">
+                        {{organization.fullName}}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="row form-group">
+                  <div class="col">
+                    <label class="form-control-label" for="manager-select">Менеджер</label>
+                    <select id="manager-select" class="form-control form-control-sm form-control-alternative"
+                            [disabled]="model.isApproved"
+                            [(ngModel)]="model.managerId">
+                      <option [selected]="model.managerId != null && model.managerId === manager.id" [ngValue]="manager.id"
+                              *ngFor="let manager of managers">
+                        {{manager.fullName}}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+
+              </div>
+
             </div>
           </div>
 
@@ -333,8 +372,8 @@
                        disabled [value]="organizationResponse.fullName" name="organizationFullName">
               </div>
 
-              <div class="form-group" *ngIf="!userService.isSameUser( model ) && ( ( model.userServiceLeader && model.organizationId == null ) ||
-              ( model.userClient && model.clientId == null ) )">
+              <div class="form-group" *ngIf="( model.userServiceLeaderOrFreelancer && model.organizationId == null ) ||
+              ( model.userFreelancer && model.managerId == null ) || ( model.userClient && model.clientId == null )">
                 <span class="form-control form-control-alternative">Необходимо выполнить привязку к системе АвтоДилер</span>
               </div>
 

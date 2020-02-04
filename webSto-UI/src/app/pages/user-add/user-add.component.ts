@@ -5,6 +5,9 @@ import {Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {User} from '../../model/postgres/auth/user';
+import {OrganizationResponse} from '../../model/firebird/organizationResponse';
+import {ManagerResponse} from '../../model/firebird/managerResponse';
+import {OrganizationResponseService} from '../../api/organizationResponse.service';
 
 @Component({
   selector: 'app-user-add',
@@ -13,8 +16,11 @@ import {User} from '../../model/postgres/auth/user';
 })
 export class UserAddComponent implements OnInit {
 
+  private organizations: OrganizationResponse[] = [];
+  private managers: ManagerResponse[] = [];
+
   constructor(private formBuilder: FormBuilder, private userService: UserService, private location: Location, private router: Router,
-              private toastrService: ToastrService) {}
+              private toastrService: ToastrService, private organizationResponseService: OrganizationResponseService) {}
 
   private addForm: FormGroup = this.formBuilder.group({
     email: [null],
@@ -27,6 +33,8 @@ export class UserAddComponent implements OnInit {
     middleName: ['', Validators.required],
     username: [''],
     moderatorId: [null],
+    organizationId: [null],
+    managerId: [null],
     serviceWorkPrice: [null],
     serviceGoodsCost: [null],
     selectedRole: [null, Validators.required]
@@ -35,7 +43,8 @@ export class UserAddComponent implements OnInit {
   private roles = [
     { name: 'Модератор', id: 'MODERATOR' },
     { name: 'Администратор', id: 'ADMIN' },
-    { name: 'Автосервис', id: 'SERVICE_LEADER' }
+    { name: 'Автосервис', id: 'SERVICE_LEADER' },
+    { name: 'Самозанятый', id: 'FREELANCER' }
   ];
   private moderators: User[] = [];
 
@@ -44,6 +53,41 @@ export class UserAddComponent implements OnInit {
     this.userService.getModerators().subscribe( moderators => {
       this.moderators = moderators as User[];
     } );
+    this.requestOrganizations();
+  }
+
+  requestOrganizations() {
+    this.organizationResponseService.getAll().subscribe( data => {
+      this.organizations = data as OrganizationResponse[];
+    }, () => {
+    } );
+  }
+
+  requestManagers(organizationId: number) {
+    this.organizationResponseService.getAllManagers( organizationId ).subscribe( managers => {
+      this.managers = managers;
+    }, () => {
+    } );
+  }
+
+  resetNotSharedFields() {
+    const selectedRole = this.addForm.controls.selectedRole.value;
+
+    if ( selectedRole == null ) return;
+
+    if ( selectedRole !== 'FREELANCER' && selectedRole !== 'SERVICE_LEADER' ) {
+      this.addForm.controls.moderatorId.setValue(null);
+      this.addForm.controls.serviceWorkPrice.setValue(null);
+      this.addForm.controls.serviceGoodsCost.setValue(null);
+
+      if ( selectedRole !== 'FREELANCER' ) {
+        this.addForm.controls.managerId.setValue(null);
+        this.addForm.controls.organizationId.setValue(null);
+      }
+      else if ( selectedRole !== 'SERVICE_LEADER' ) {
+        this.addForm.controls.inn.setValue(null);
+      }
+    }
   }
 
   onSubmit() {

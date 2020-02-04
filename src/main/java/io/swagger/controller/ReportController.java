@@ -41,8 +41,7 @@ public class ReportController {
                                            @PathVariable("reportType") ReportType reportType) {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.hasRole(currentUser, "ADMIN") && !UserHelper.hasRole(currentUser, "MODERATOR")
-                && !UserHelper.hasRole(currentUser, "SERVICE_LEADER") ) {
+        if ( UserHelper.isClient( currentUser ) ) {
 
             if ( !reportType.equals( ReportType.ORDER ) && !reportType.equals( ReportType.ORDER_ACT )
                     && !reportType.equals( ReportType.ORDER_TRANSFER ) )
@@ -91,10 +90,13 @@ public class ReportController {
         User currentUser = userRepository.findCurrentUser();
         List<ExecutorResponse> responses;
 
-        if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
+        if ( UserHelper.isServiceLeaderOrFreelancer( currentUser ) ) {
 
-            if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ||
-                    currentUser.getIsAccessRestricted() )
+            if ( UserHelper.isServiceLeader( currentUser ) &&
+                    ( !currentUser.isServiceLeaderValid() || currentUser.getIsAccessRestricted() ) )
+                return ResponseEntity.status(404).build();
+            else if ( UserHelper.isFreelancer( currentUser ) &&
+                    ( !currentUser.isFreelancerValid() || currentUser.getIsAccessRestricted() ) )
                 return ResponseEntity.status(404).build();
 
             if ( currentUser.getIsCurrentSubscriptionExpired() ) {
@@ -112,8 +114,7 @@ public class ReportController {
             else
                 responses = reportService.getExecutorResponses(currentUser.getOrganizationId(), startDate, endDate);
         }
-        else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ||
-                UserHelper.hasRole( currentUser, "ADMIN" ) ) {
+        else if ( UserHelper.isAdminOrModerator( currentUser ) ) {
 
             if ( organizationId == null )
                 return ResponseEntity.status(404).build();
@@ -141,10 +142,13 @@ public class ReportController {
 
             byte[] response;
 
-            if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
+            if ( UserHelper.isServiceLeaderOrFreelancer( currentUser ) ) {
 
-                if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ||
-                        currentUser.getIsAccessRestricted() )
+                if ( UserHelper.isServiceLeader( currentUser ) &&
+                        ( !currentUser.isServiceLeaderValid() || currentUser.getIsAccessRestricted() ) )
+                    return ResponseEntity.status(404).build();
+                else if ( UserHelper.isFreelancer( currentUser ) &&
+                        ( !currentUser.isFreelancerValid() || currentUser.getIsAccessRestricted() ) )
                     return ResponseEntity.status(404).build();
 
                 if ( currentUser.getIsCurrentSubscriptionExpired() ) {
@@ -162,8 +166,7 @@ public class ReportController {
                 else
                     response = reportService.getExecutorsReport(currentUser.getOrganizationId(), startDate, endDate);
             }
-            else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ||
-                    UserHelper.hasRole( currentUser, "ADMIN" ) ) {
+            else if ( UserHelper.isAdminOrModerator( currentUser ) ) {
 
                 if ( organizationId == null )
                     return ResponseEntity.status(404).build();
@@ -197,10 +200,13 @@ public class ReportController {
         User currentUser = userRepository.findCurrentUser();
         List<ClientResponse> responses;
 
-        if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
+        if ( UserHelper.isServiceLeaderOrFreelancer( currentUser ) ) {
 
-            if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ||
-                    currentUser.getIsAccessRestricted() )
+            if ( UserHelper.isServiceLeader( currentUser ) &&
+                    ( !currentUser.isServiceLeaderValid() || currentUser.getIsAccessRestricted() ) )
+                return ResponseEntity.status(404).build();
+            else if ( UserHelper.isFreelancer( currentUser ) &&
+                    ( !currentUser.isFreelancerValid() || currentUser.getIsAccessRestricted() ) )
                 return ResponseEntity.status(404).build();
 
             if ( currentUser.getIsCurrentSubscriptionExpired() ) {
@@ -218,8 +224,7 @@ public class ReportController {
             else
                 responses = reportService.getClientsResponses(currentUser.getOrganizationId(), startDate, endDate);
         }
-        else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ||
-                UserHelper.hasRole( currentUser, "ADMIN" ) ) {
+        else if ( UserHelper.isAdminOrModerator( currentUser ) ) {
 
             if ( organizationId == null )
                 return ResponseEntity.status(404).build();
@@ -247,10 +252,13 @@ public class ReportController {
 
             byte[] response;
 
-            if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
+            if ( UserHelper.isServiceLeaderOrFreelancer( currentUser ) ) {
 
-                if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ||
-                        currentUser.getIsAccessRestricted() )
+                if ( UserHelper.isServiceLeader( currentUser ) &&
+                        ( !currentUser.isServiceLeaderValid() || currentUser.getIsAccessRestricted() ) )
+                    return ResponseEntity.status(404).build();
+                else if ( UserHelper.isFreelancer( currentUser ) &&
+                        ( !currentUser.isFreelancerValid() || currentUser.getIsAccessRestricted() ) )
                     return ResponseEntity.status(404).build();
 
                 if ( currentUser.getIsCurrentSubscriptionExpired() ) {
@@ -268,8 +276,7 @@ public class ReportController {
                 else
                     response = reportService.getClientsReport(currentUser.getOrganizationId(), startDate, endDate);
             }
-            else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ||
-                    UserHelper.hasRole( currentUser, "ADMIN" ) ) {
+            else if ( UserHelper.isAdminOrModerator( currentUser ) ) {
 
                 if ( organizationId == null )
                     return ResponseEntity.status(404).build();

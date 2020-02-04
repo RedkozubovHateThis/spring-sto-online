@@ -123,11 +123,11 @@
           <i class="fas fa-bell text-buro-blue"></i> Уведомления
         </a>
         <a routerLinkActive="active" [routerLink]="['/balance']" class="nav-link"
-           *ngIf="userService.isServiceLeader()">
+           *ngIf="userService.isServiceLeaderOrFreelancer()">
           <i class="fas fa-ruble-sign text-buro-blue"></i> Баланс
         </a>
         <a routerLinkActive="active" [routerLink]="['/subscription']" class="nav-link"
-           *ngIf="userService.isServiceLeader() || userService.isAdmin()">
+           *ngIf="userService.isServiceLeaderOrFreelancer() || userService.isAdmin()">
           <i class="fas fa-book text-buro-blue"></i> Тарифы
         </a>
       </ul>

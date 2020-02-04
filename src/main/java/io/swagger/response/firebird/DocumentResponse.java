@@ -20,9 +20,12 @@ public class DocumentResponse {
     private Double sum = 0.0;
     private Integer userId;
     private String userFio;
+    private Integer managerId;
+    private String managerFio;
 
     private String reason;
     private String organization;
+    private Integer organizationId;
 
     private ServiceWorkTotalResponse serviceWork;
     private ServiceGoodsAddonTotalResponse serviceGoodsAddon;
@@ -72,6 +75,21 @@ public class DocumentResponse {
 
         }
 
+        Manager manager = documentOutHeader.getManager();
+        if ( manager != null ) {
+            OrganizationStructure organizationStructure = manager.getOrganizationStructure();
+
+            if ( organizationStructure != null ) {
+                Employee employee = organizationStructure.getEmployee();
+
+                if ( employee != null ) {
+                    managerId = manager.getId();
+                    managerFio = employee.getShortName();
+                }
+            }
+
+        }
+
         DocumentOut documentOut = documentOutHeader.getDocumentOut();
         if ( documentOut == null ) return;
 
@@ -80,10 +98,13 @@ public class DocumentResponse {
         goodsOutClient = new GoodsOutClientTotalResponse(documentOut);
 
         Client client = documentOut.getClient();
-        if ( client != null ) this.client = client.getShortName();
+        if ( client != null ) this.client = client.getFullName();
 
         Organization organization = documentOut.getOrganization();
-        if ( organization != null ) this.organization = organization.getFullName();
+        if ( organization != null ) {
+            this.organization = organization.getFullName();
+            this.organizationId = organization.getId();
+        }
     }
 
     public void incrementSum(Double sum) {

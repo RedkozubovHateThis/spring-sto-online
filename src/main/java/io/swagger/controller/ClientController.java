@@ -56,18 +56,20 @@ public class ClientController {
         User currentUser = userRepository.findCurrentUser();
         List<Client> clients;
 
-        if ( UserHelper.hasRole( currentUser, "ADMIN" ) )
+        if ( UserHelper.isAdmin( currentUser ) )
             clients = clientRepository.findAll();
-        else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
+        else if ( UserHelper.isModerator( currentUser ) ) {
             List<Integer> clientIds = userRepository.collectClientIds( currentUser.getId() );
             if ( clientIds.size() == 0 )
                 return ResponseEntity.status(404).build();
 
             clients = clientRepository.findClientsByIds( clientIds );
         }
-        else if ( UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) &&
-                currentUser.getOrganizationId() != null && currentUser.getIsApproved() )
+        else if ( UserHelper.isServiceLeader( currentUser ) && currentUser.isServiceLeaderValid() )
             clients = clientRepository.findClientsByOrganizationId( currentUser.getOrganizationId() );
+        else if ( UserHelper.isFreelancer( currentUser ) && currentUser.isFreelancerValid() )
+            clients = clientRepository.findClientsByOrganizationIdAndManagerId( currentUser.getOrganizationId(),
+                    currentUser.getManagerId() );
         else
             return ResponseEntity.status(404).build();
 

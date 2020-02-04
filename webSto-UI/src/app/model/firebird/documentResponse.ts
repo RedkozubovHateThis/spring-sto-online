@@ -17,10 +17,13 @@ export class DocumentResponse {
   client: string;
   vehicle: VehicleResponse;
   sum: number;
+  managerId: number;
+  managerFio: string;
   userId: number;
   userFio: string;
   reason:string;
   organization:string;
+  organizationId: number;
   serviceWork: ServiceWorkTotalResponse;
   serviceGoodsAddon: ServiceGoodsAddonTotalResponse;
   goodsOutClient: GoodsOutClientTotalResponse;

@@ -34,16 +34,16 @@ public class EventMessageSpecificationBuilder {
                         cb.equal( toUserJoin.get( User_.enabled ), true )
                 );
 
-                if ( UserHelper.hasRole( currentUser, "ADMIN" ) ) {
+                if ( UserHelper.isAdmin( currentUser ) ) {
                     predicates.add( cb.equal( root.get( EventMessage_.messageType ), MessageType.DOCUMENT_CHANGE ) );
                 }
-                else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
+                else if ( UserHelper.isModerator( currentUser ) ) {
                     predicates.add(
                             cb.equal( toUserJoin.get( User_.id ), currentUser.getId() )
                     );
                 }
-                else if ( UserHelper.hasRole( currentUser, "CLIENT" ) ||
-                        UserHelper.hasRole( currentUser, "SERVICE_LEADER" ) ) {
+                else if ( UserHelper.isClient( currentUser ) ||
+                        UserHelper.isServiceLeaderOrFreelancer( currentUser ) ) {
                     predicates.add(
                         cb.or(
                                 cb.equal( root.get( EventMessage_.messageType ), MessageType.USER_APPROVE ),

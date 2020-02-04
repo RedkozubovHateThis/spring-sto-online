@@ -26,6 +26,11 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long>, 
             "WHERE ur.name = :roleName")
     List<User> findUsersByRoleName(@Param("roleName") String roleName);
 
+    @Query("SELECT DISTINCT u FROM User AS u " +
+            "INNER JOIN u.roles AS ur " +
+            "WHERE ur.name IN ( :roleNames )")
+    List<User> findUsersByRoleNames(@Param("roleNames") List<String> roleNames);
+
     @Query(nativeQuery = true, value = "SELECT u.* FROM users AS u " +
             "WHERE u.enabled = TRUE AND u.organization_id = :organizationId " +
             "LIMIT 1")
@@ -35,6 +40,11 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long>, 
             "INNER JOIN u.roles AS ur " +
             "WHERE ur.name = :roleName")
     Long countUsersByRoleName(@Param("roleName") String roleName);
+
+    @Query("SELECT COUNT(DISTINCT u.id) FROM User AS u " +
+            "INNER JOIN u.roles AS ur " +
+            "WHERE ur.name IN ( :roleNames )")
+    Long countUsersByRoleNames(@Param("roleNames") List<String> roleNames);
 
     @Query("SELECT DISTINCT u.id FROM User AS u " +
             "INNER JOIN u.roles AS ur " +

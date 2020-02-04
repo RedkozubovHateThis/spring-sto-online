@@ -27,7 +27,7 @@ public class UserSpecificationBuilder {
                 Join<User, UserRole> userRoleJoin = root.join( User_.roles );
                 Join<User, User> moderatorJoin = root.join( User_.moderator, JoinType.LEFT );
 
-                if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
+                if ( UserHelper.isModerator( currentUser ) ) {
                     predicates.add(
                             cb.or(
                                     cb.and(
@@ -51,7 +51,8 @@ public class UserSpecificationBuilder {
                     predicates.add(
                             cb.or(
                                     cb.equal( userRoleJoin.get( UserRole_.name ), "CLIENT" ),
-                                    cb.equal( userRoleJoin.get( UserRole_.name ), "SERVICE_LEADER" )
+                                    cb.equal( userRoleJoin.get( UserRole_.name ), "SERVICE_LEADER" ),
+                                    cb.equal( userRoleJoin.get( UserRole_.name ), "FREELANCER" )
                             )
                     );
                 }
@@ -62,7 +63,8 @@ public class UserSpecificationBuilder {
                     predicates.add(
                             cb.or(
                                     cb.equal( userRoleJoin.get( UserRole_.name ), "CLIENT" ),
-                                    cb.equal( userRoleJoin.get( UserRole_.name ), "SERVICE_LEADER" )
+                                    cb.equal( userRoleJoin.get( UserRole_.name ), "SERVICE_LEADER" ),
+                                    cb.equal( userRoleJoin.get( UserRole_.name ), "FREELANCER" )
                             )
                     );
                 }

@@ -30,9 +30,9 @@
               <div class="row">
                 <div class="col-md-5 mb-3">
 
-                  <div class="row" *ngIf="userService.isNotClient(); else staticText">
+                  <div class="row mb-1" *ngIf="userService.isNotClient(); else staticText">
                     <div class="col-auto col-lg-5">
-                      <h2 *ngIf="model != null">{{model.documentNumber}}</h2>
+                      <h2 class="mb-0" *ngIf="model != null">{{model.documentNumber}}</h2>
                     </div>
                     <div class="col col-lg-7">
                       <div class="input-group input-group-sm" *ngIf="model != null">
@@ -50,26 +50,51 @@
                       </div>
                     </div>
                   </div>
-                  <div class="row" *ngIf="userService.isModeratorOrAdmin()">
-                    <div class="col-auto col-lg-5 font-weight-bold">
-                      Оформил(-а):
-                    </div>
-                    <div class="col col-lg-7">
-                      <div class="input-group input-group-sm" *ngIf="model != null">
-                        <select class="form-control form-control-sm" [(ngModel)]="model.userId">
-                          <option *ngFor="let user of firebirdUsers" [ngValue]="user.id">
-                            {{ user.shortName }}
-                          </option>
-                        </select>
-                        <div class="input-group-append">
-                          <button class="btn btn-buro-blue" type="button" (click)="updateUser(model, model.userId)"
-                                  [disabled]="isUpdating">
-                            <i class="fas fa-check"></i>
-                          </button>
+
+                  <ng-container *ngIf="userService.isModeratorOrAdmin()">
+                    <div class="row mb-1">
+                      <div class="col-auto col-lg-5 font-weight-bold">
+                        Оформил(-а):
+                      </div>
+                      <div class="col col-lg-7">
+                        <div class="input-group input-group-sm" *ngIf="model != null">
+                          <select class="form-control form-control-sm" [(ngModel)]="model.userId">
+                            <option *ngFor="let user of firebirdUsers" [ngValue]="user.id">
+                              {{ user.shortName }}
+                            </option>
+                          </select>
+                          <div class="input-group-append">
+                            <button class="btn btn-buro-blue" type="button" (click)="updateUser(model, model.userId)"
+                                    [disabled]="isUpdating">
+                              <i class="fas fa-check"></i>
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+
+                    <div class="row mb-1">
+                      <div class="col-auto col-lg-5 font-weight-bold">
+                        Менеджер:
+                      </div>
+                      <div class="col col-lg-7">
+                        <div class="input-group input-group-sm" *ngIf="model != null">
+                          <select class="form-control form-control-sm" [(ngModel)]="model.managerId">
+                            <option *ngFor="let manager of managers" [ngValue]="manager.id">
+                              {{manager.shortName}}
+                            </option>
+                          </select>
+                          <div class="input-group-append">
+                            <button class="btn btn-buro-blue" type="button" (click)="updateManager(model, model.managerId)"
+                                    [disabled]="isUpdating">
+                              <i class="fas fa-check"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+
                   <ng-template #staticText>
                     <div class="row">
                       <div class="col-lg-12">

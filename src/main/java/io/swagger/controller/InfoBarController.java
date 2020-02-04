@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -52,7 +53,7 @@ public class InfoBarController {
     public ResponseEntity getClientInfo() {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.hasRole(currentUser, "CLIENT") ||
+        if ( !UserHelper.isClient( currentUser ) ||
                 currentUser.getClientId() == null || !currentUser.getIsApproved() )
             return ResponseEntity.notFound().build();
 
@@ -72,8 +73,12 @@ public class InfoBarController {
     public ResponseEntity getServiceLeaderInfo() {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.hasRole(currentUser, "SERVICE_LEADER") ||
-                currentUser.getOrganizationId() == null || !currentUser.getIsApproved() )
+        if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) )
+            return ResponseEntity.notFound().build();
+
+        if ( UserHelper.isServiceLeader( currentUser ) && !currentUser.isServiceLeaderValid() )
+            return ResponseEntity.notFound().build();
+        else if ( UserHelper.isFreelancer( currentUser ) && !currentUser.isFreelancerValid() )
             return ResponseEntity.notFound().build();
 
         ServiceLeaderInfo serviceLeaderInfo = new ServiceLeaderInfo();
@@ -82,9 +87,14 @@ public class InfoBarController {
 
         if ( subscription != null ) {
 
-            Integer documentsCount =
-                    documentsRepository.countDocumentsByOrganizationIdAndDates( currentUser.getOrganizationId(),
+            Integer documentsCount = null;
+
+            if ( UserHelper.isServiceLeader( currentUser ) )
+                    documentsCount = documentsRepository.countDocumentsByOrganizationIdAndDates( currentUser.getOrganizationId(),
                             subscription.getStartDate(), subscription.getEndDate() );
+            else if ( UserHelper.isFreelancer( currentUser ) )
+                    documentsCount = documentsRepository.countDocumentsByOrganizationIdAndDatesAndManagerId( currentUser.getOrganizationId(),
+                            subscription.getStartDate(), subscription.getEndDate(), currentUser.getManagerId() );
 
             serviceLeaderInfo.setDocumentsRemains( Math.max( subscription.getDocumentsCount() - documentsCount, 0 ) );
             serviceLeaderInfo.setTotalDocuments( subscription.getDocumentsCount() );
@@ -121,12 +131,11 @@ public class InfoBarController {
     public ResponseEntity getModeratorInfo(@RequestParam(value = "organizationId", required = false) Integer organizationId) {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.hasRole(currentUser, "MODERATOR") &&
-                !UserHelper.hasRole(currentUser, "ADMIN") )
+        if ( !UserHelper.isAdminOrModerator( currentUser ) )
             return ResponseEntity.notFound().build();
 
         ModeratorInfo moderatorInfo = new ModeratorInfo();
-        moderatorInfo.setServicesCount( userRepository.countUsersByRoleName("SERVICE_LEADER") );
+        moderatorInfo.setServicesCount( userRepository.countUsersByRoleNames( Arrays.asList( "SERVICE_LEADER", "FREELANCER" ) ) );
         moderatorInfo.setModeratorsCount( userRepository.countUsersByRoleName("MODERATOR") );
 
         if ( organizationId != null ) {
@@ -178,7 +187,7 @@ public class InfoBarController {
             int totalDocumentsAll = 0;
             double balanceAll = 0.0;
 
-            List<User> serviceLeaders = userRepository.findUsersByRoleName("SERVICE_LEADER");
+            List<User> serviceLeaders = userRepository.findUsersByRoleNames( Arrays.asList( "SERVICE_LEADER", "FREELANCER" ) );
             for (User serviceLeader : serviceLeaders) {
 
                 if ( serviceLeader.getOrganizationId() == null || !serviceLeader.getIsApproved() )
@@ -231,109 +240,5 @@ public class InfoBarController {
 
             return totalSum;
         } ).sum();
-    }
-
-    @GetMapping("/documents/count")
-    public ResponseEntity count() {
-
-        User currentUser = userRepository.findCurrentUser();
-        if ( currentUser == null ) return ResponseEntity.status(401).build();
-
-        Integer result = null;
-
-        if ( UserHelper.hasRole(currentUser, "ADMIN") )
-            result = documentsRepository.countAll();
-        else if ( ( UserHelper.hasRole(currentUser, "MODERATOR") ) ) {
-
-            List<Integer> clientIds = userRepository.collectClientIds( currentUser.getId() );
-            if ( clientIds.size() == 0 )
-                result = 0;
-            else
-                result = documentsRepository.countByClientIds( clientIds );
-
-        }
-        else if ( UserHelper.hasRole(currentUser, "CLIENT") ) {
-
-            if ( currentUser.getClientId() == null || !currentUser.getIsApproved() ) result = null;
-            else result = documentsRepository.countByClientId( currentUser.getClientId() );
-
-        }
-        else if ( UserHelper.hasRole(currentUser, "SERVICE_LEADER") ) {
-
-            if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ) result = null;
-            else result = documentsRepository.countByOrganizationId( currentUser.getOrganizationId() );
-
-        }
-
-        if ( result == null ) return ResponseEntity.ok(0);
-
-        return ResponseEntity.ok( result );
-
-    }
-
-    @GetMapping("/documents/count/state")
-    public ResponseEntity countByState(@RequestParam("state") Integer state) {
-
-        User currentUser = userRepository.findCurrentUser();
-        if ( currentUser == null ) return ResponseEntity.status(401).build();
-
-        Integer result = null;
-
-        if ( UserHelper.hasRole(currentUser, "ADMIN") )
-            result = documentsRepository.countByState(state);
-        else if ( ( UserHelper.hasRole(currentUser, "MODERATOR") ) ) {
-
-            List<Integer> clientIds = userRepository.collectClientIds( currentUser.getId() );
-            if ( clientIds.size() == 0 )
-                result = 0;
-            else
-                result = documentsRepository.countByClientIdsAndState( clientIds, state );
-
-        }
-        else if ( UserHelper.hasRole(currentUser, "CLIENT") ) {
-
-            if ( currentUser.getClientId() == null || !currentUser.getIsApproved() ) result = null;
-            else result = documentsRepository.countByClientIdAndState( currentUser.getClientId(), state );
-
-        }
-        else if ( UserHelper.hasRole(currentUser, "SERVICE_LEADER") ) {
-
-            if ( currentUser.getOrganizationId() == null || !currentUser.getIsApproved() ) result = null;
-            else result = documentsRepository.countByOrganizationIdAndState( currentUser.getOrganizationId(), state );
-
-        }
-
-        if ( result == null ) return ResponseEntity.ok(0);
-
-        return ResponseEntity.ok( result );
-
-    }
-
-    @GetMapping("/users/count")
-    public ResponseEntity count(@RequestParam("notApprovedOnly") Boolean notApprovedOnly) {
-
-        User currentUser = userRepository.findCurrentUser();
-
-        if ( currentUser == null ) return ResponseEntity.status(401).build();
-
-        Long result = null;
-
-        if ( UserHelper.hasRole( currentUser, "ADMIN" ) ) {
-            if ( notApprovedOnly )
-                result = userRepository.countAllNotApproved();
-            else
-                result = userRepository.countAll();
-        }
-        else if ( UserHelper.hasRole( currentUser, "MODERATOR" ) ) {
-            if ( notApprovedOnly )
-                result = userRepository.countAllNotApprovedByModeratorId(currentUser.getId());
-            else
-                result = userRepository.countAllByModeratorId(currentUser.getId());
-        }
-
-        if ( result == null ) return ResponseEntity.ok(0);
-
-        return ResponseEntity.ok(result);
-
     }
 }

@@ -10,6 +10,8 @@ import { ToastrService } from 'ngx-toastr';
 import {Location} from '@angular/common';
 import {UserResponse} from '../../model/firebird/userResponse';
 import {PaymentService} from '../../api/payment.service';
+import {ManagerResponse} from '../../model/firebird/managerResponse';
+import {OrganizationResponseService} from '../../api/organizationResponse.service';
 
 @Component({
   selector: 'app-documents',
@@ -20,6 +22,7 @@ export class DocumentComponent extends ModelTransfer<DocumentResponse, number> i
 
   private isLoading: boolean = false;
   private firebirdUsers: UserResponse[] = [];
+  private managers: ManagerResponse[] = [];
   private price: number;
   private isUpdating: boolean = false;
   private states = [
@@ -35,7 +38,7 @@ export class DocumentComponent extends ModelTransfer<DocumentResponse, number> i
 
   constructor(private documentResponseService: DocumentResponseService, protected route: ActivatedRoute, private toastrService: ToastrService,
               private serviceWorkResponseService: ServiceWorkResponseService, private userService: UserService, private httpClient: HttpClient,
-              private location: Location, private paymentService: PaymentService) {
+              private location: Location, private paymentService: PaymentService, private organizationResponseService: OrganizationResponseService) {
     super(documentResponseService, route);
   }
 
@@ -44,6 +47,7 @@ export class DocumentComponent extends ModelTransfer<DocumentResponse, number> i
     this.documentResponseService.getOne(this.id).subscribe( data => {
       this.model = data as DocumentResponse;
       this.isLoading = false;
+      this.findManagers();
     }, error => {
       this.isLoading = false;
     } );
@@ -51,12 +55,19 @@ export class DocumentComponent extends ModelTransfer<DocumentResponse, number> i
   }
 
   onTransferComplete() {
+    this.findManagers();
     this.findFirebirdUsers();
   }
 
   findFirebirdUsers() {
     this.documentResponseService.getFirebirdUsers().subscribe( data => {
       this.firebirdUsers = data as UserResponse[];
+    } );
+  }
+
+  findManagers() {
+    this.organizationResponseService.getAllManagers(this.model.organizationId).subscribe( managers => {
+      this.managers = managers;
     } );
   }
 
@@ -125,6 +136,23 @@ export class DocumentComponent extends ModelTransfer<DocumentResponse, number> i
       }, () => {
         this.isUpdating = false;
         this.toastrService.error('Ошибка изменения оформителя заказ-наряда! Возможно, заказ-наряд открыт в системе АвтоДилер.', 'Внимание!');
+      } );
+  }
+
+  updateManager(documentResponse, managerId) {
+
+    if ( documentResponse == null || managerId == null ) return;
+
+    this.isUpdating = true;
+
+    this.serviceWorkResponseService.updateManager(documentResponse.id, documentResponse.documentOutHeaderId, managerId)
+      .subscribe( data => {
+          this.model = data as DocumentResponse;
+          this.isUpdating = false;
+          this.toastrService.success('Менеджер заказ-наряда успешно изменен(-а)');
+      }, () => {
+        this.isUpdating = false;
+        this.toastrService.error('Ошибка изменения менеджера заказ-наряда! Возможно, заказ-наряд открыт в системе АвтоДилер.', 'Внимание!');
       } );
   }
 }

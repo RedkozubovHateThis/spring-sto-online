@@ -33,7 +33,7 @@
       </select>
     </div>
 
-    <div class="form-group" *ngIf="!userService.isServiceLeader()">
+    <div class="form-group" *ngIf="!userService.isServiceLeaderOrFreelancer()">
       <label class="form-control-label" for="organization-select">Предприятие</label>
       <select id="organization-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.organization" (change)="organizationChange()">
         <option [selected]="null === filter.organization" [ngValue]="null">
