@@ -35,7 +35,7 @@
                       <h2 class="mb-0" *ngIf="model != null">{{model.documentNumber}}</h2>
                     </div>
                     <div class="col col-lg-7">
-                      <div class="input-group input-group-sm" *ngIf="model != null">
+                      <div class="input-group input-group-alternative input-group-sm" *ngIf="model != null">
                         <select class="form-control form-control-sm" [(ngModel)]="model.state">
                           <option *ngFor="let state of states" [ngValue]="state.id">
                             {{ state.name }}
@@ -57,7 +57,7 @@
                         Оформил(-а):
                       </div>
                       <div class="col col-lg-7">
-                        <div class="input-group input-group-sm" *ngIf="model != null">
+                        <div class="input-group input-group-alternative input-group-sm" *ngIf="model != null">
                           <select class="form-control form-control-sm" [(ngModel)]="model.userId">
                             <option *ngFor="let user of firebirdUsers" [ngValue]="user.id">
                               {{ user.shortName }}
@@ -78,7 +78,7 @@
                         Менеджер:
                       </div>
                       <div class="col col-lg-7">
-                        <div class="input-group input-group-sm" *ngIf="model != null">
+                        <div class="input-group input-group-alternative input-group-sm" *ngIf="model != null">
                           <select class="form-control form-control-sm" [(ngModel)]="model.managerId">
                             <option *ngFor="let manager of managers" [ngValue]="manager.id">
                               {{manager.shortName}}
@@ -247,7 +247,7 @@
                       <ng-template #byPriceNorm>
                         <div>{{work.priceNorm | number:'.2':'ru'}} р.</div>
                       </ng-template>
-<!--                      <div class="input-group input-group-sm" *ngIf="work.byPrice; else byPriceNorm">-->
+<!--                      <div class="input-group input-group-alternative input-group-sm" *ngIf="work.byPrice; else byPriceNorm">-->
 <!--                        <input type="number" class="form-control" (keyup.enter)="updatePrice(model, work, work.price)"-->
 <!--                               [(ngModel)]="work.price" [placeholder]="work.price"/>-->
 <!--                        <div class="input-group-append">-->
@@ -258,7 +258,7 @@
 <!--                        </div>-->
 <!--                      </div>-->
 <!--                      <ng-template #byPriceNorm>-->
-<!--                        <div class="input-group input-group-sm">-->
+<!--                        <div class="input-group input-group-alternative input-group-sm">-->
 <!--                          <input type="number" class="form-control" (keyup.enter)="updatePrice(model, work, work.priceNorm)"-->
 <!--                                 [(ngModel)]="work.priceNorm" [placeholder]="work.priceNorm"/>-->
 <!--                          <div class="input-group-append">-->
@@ -334,7 +334,7 @@
 <!--                      {{addon.notes}}-->
 <!--                    </th>-->
                     <th *ngIf="userService.isNotClient()">
-                      <div class="input-group input-group-sm">
+                      <div class="input-group input-group-alternative input-group-sm">
                         <input type="number" class="form-control" (keyup.enter)="updateCost(model, addon, addon.cost)"
                                [(ngModel)]="addon.cost" [placeholder]="addon.cost"/>
                         <div class="input-group-append">

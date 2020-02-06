@@ -20,6 +20,7 @@ import {DeleteButtonComponent} from './delete-button/delete-button.component';
 import {LoadingBarComponent} from './loading-bar/loading-bar.component';
 import {LinkPreviewComponent} from './link-preview/link-preview.component';
 import {ShareButtonComponent} from './share-button/share-button.component';
+import {RoleChangeButtonComponent} from './role-change-button/role-change-button.component';
 
 @NgModule({
   imports: [
@@ -45,7 +46,8 @@ import {ShareButtonComponent} from './share-button/share-button.component';
     DeleteButtonComponent,
     LoadingBarComponent,
     LinkPreviewComponent,
-    ShareButtonComponent
+    ShareButtonComponent,
+    RoleChangeButtonComponent
   ],
   exports: [
     FooterComponent,
@@ -62,7 +64,8 @@ import {ShareButtonComponent} from './share-button/share-button.component';
     DeleteButtonComponent,
     LoadingBarComponent,
     LinkPreviewComponent,
-    ShareButtonComponent
+    ShareButtonComponent,
+    RoleChangeButtonComponent
   ]
 })
 export class ComponentsModule { }

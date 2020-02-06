@@ -17,6 +17,11 @@
                       (click)="userService.saveUser( model, 'Пользователь успешно сохранен!' )">
                 Сохранить
               </button>
+              <ng-container *ngIf="model != null">
+                <app-role-change-button [model]="model" [currentUser]="userService.currentUser"
+                                        (onRoleChange)="requestData()"
+                                        *ngIf="( userService.isSameUser(model) && !userService.isModeratorOrAdmin() ) || userService.isAdmin()"></app-role-change-button>
+              </ng-container>
             </div>
           </div>
         </div>
@@ -293,7 +298,7 @@
               <div class="form-group" *ngIf="model.userClient">
 
                 <label class="form-control-label" for="vin-number">VIN - номер</label>
-                <div class="input-group mb-3">
+                <div class="input-group input-group-alternative mb-3">
                   <input type="text" id="vin-number" class="form-control" placeholder="VIN - номер" [disabled]="model.isApproved"
                          [(ngModel)]="model.vin" name="vinNumber">
                   <div class="input-group-append">
@@ -309,7 +314,7 @@
               <div class="form-group" *ngIf="model.userServiceLeader">
 
                 <label class="form-control-label" for="vin-number">ИНН</label>
-                <div class="input-group mb-3">
+                <div class="input-group input-group-alternative mb-3">
                   <input type="text" id="inn" class="form-control" placeholder="ИНН" [disabled]="model.isApproved"
                          [(ngModel)]="model.inn" name="inn">
                   <div class="input-group-append">

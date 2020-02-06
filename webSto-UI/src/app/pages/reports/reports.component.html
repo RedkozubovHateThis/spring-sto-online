@@ -201,7 +201,7 @@
 
           <div class="form-group">
             <label class="form-control-label" for="input-year">Год</label>
-            <div class="input-group input-group-sm">
+            <div class="input-group input-group-alternative input-group-sm">
               <input type="number" id="input-year" class="form-control" placeholder="Введите год..."
                      [disabled]="userService.isServiceLeaderWithRestrictedAccess()"
                      [(ngModel)]="selectedYear" (keyup.enter)="requestReportData()">

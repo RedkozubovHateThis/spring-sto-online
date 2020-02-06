@@ -60,7 +60,7 @@
 
     <div class="form-group" *ngIf="userService.isNotClient()">
       <label class="form-control-label" for="client-select-ahead">Клиент (поиск)</label>
-      <div class="input-group input-group-sm">
+      <div class="input-group input-group-alternative input-group-sm">
         <input id="client-select-ahead" type="text" class="form-control form-control-sm" [disabled]="disabled"
                (selectItem)="setClient($event)" [(ngModel)]="selectedClient" [ngbTypeahead]="search"
                [resultTemplate]="rt" [inputFormatter]="formatter"/>
@@ -77,7 +77,7 @@
 
     <div class="form-group">
       <label class="form-control-label" for="model-input">VIN-номер</label>
-      <div class="input-group input-group-sm">
+      <div class="input-group input-group-alternative input-group-sm">
         <input id="model-input" class="form-control" placeholder="VIN-номер"
                [disabled]="disabled" [(ngModel)]="filter.vinNumber" (keyup.enter)="emitChange()">
         <div class="input-group-append">
@@ -90,7 +90,7 @@
 
     <div class="form-group">
       <label class="form-control-label" for="vin-input">Рег. номер</label>
-      <div class="input-group input-group-sm">
+      <div class="input-group input-group-alternative input-group-sm">
         <input id="vin-input" class="form-control" placeholder="Рег. номер"
                [disabled]="disabled" [(ngModel)]="filter.vehicle" (keyup.enter)="emitChange()">
         <div class="input-group-append">

@@ -6,9 +6,11 @@ import io.swagger.postgres.model.EventMessage;
 import io.swagger.postgres.model.enums.MessageType;
 import io.swagger.postgres.model.payment.Subscription;
 import io.swagger.postgres.model.security.User;
+import io.swagger.postgres.model.security.UserRole;
 import io.swagger.postgres.repository.EventMessageRepository;
 import io.swagger.postgres.repository.SubscriptionRepository;
 import io.swagger.postgres.repository.UserRepository;
+import io.swagger.postgres.repository.UserRoleRepository;
 import io.swagger.response.api.ApiResponse;
 import io.swagger.response.api.EventMessageStatus;
 import io.swagger.response.firebird.UserResponse;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 @RequestMapping("/secured/users")
@@ -32,6 +35,9 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserRoleRepository userRoleRepository;
 
     @Autowired
     private io.swagger.firebird.repository.UserRepository firebirdUserRepository;
@@ -350,6 +356,54 @@ public class UserController {
 
     private boolean isPasswordEquals(User user, String oldPass) {
         return userPasswordEncoder.matches( oldPass, user.getPassword() );
+    }
+
+    @PostMapping(value = "/{id}/role/change")
+    public ResponseEntity changeRole(@PathVariable("id") Long id,
+                                     @RequestParam("role") String role) {
+
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( UserHelper.isAdmin( currentUser ) || currentUser.getId().equals( id ) ) {
+
+            User user;
+
+            if ( currentUser.getId().equals( id ) )
+                user = currentUser;
+            else
+                user = userRepository.findOne(id);
+
+            if ( user == null )
+                return ResponseEntity.status(404).body( new ApiResponse("Пользователь не найден!") );
+
+            UserRole userRole = userRoleRepository.findByName(role);
+            if ( userRole == null )
+                return ResponseEntity.status(404).body( new ApiResponse("Роль не найдена!") );
+
+            if ( !UserHelper.isAdmin( currentUser ) &&
+                    ( userRole.getName().equals("ADMIN") || userRole.getName().equals("MODERATOR") ) )
+                return ResponseEntity.status(400).body( new ApiResponse("Вам запрещено выбирать данную роль!") );
+
+            boolean isSameRole = user.getRoles().stream().anyMatch(ur -> ur.getId().equals( userRole.getId() ) );
+            if ( isSameRole )
+                return ResponseEntity.status(400).body( new ApiResponse("Роль уже выбрана!") );
+
+            if ( !UserHelper.isAdminOrModerator( user ) ) {
+                user.setClientId( null );
+                user.setOrganizationId( null );
+                user.setManagerId( null );
+                user.setIsApproved( false );
+            }
+
+            user.getRoles().clear();
+            user.getRoles().add( userRole );
+
+            userRepository.save( user );
+
+            return ResponseEntity.status(200).build();
+        }
+        else
+            return ResponseEntity.status(400).body( new ApiResponse("Вам запрещено изменять роль этого пользователя!") );
     }
 
     @GetMapping("/findAll")

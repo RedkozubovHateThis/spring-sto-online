@@ -1,0 +1,41 @@
+<button class="btn btn-sm btn-buro-blue" [disabled]="isChanging" (click)="open(content)">
+  Изменить роль
+  <span *ngIf="isChanging">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+</button>
+
+<!-- Modal -->
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">Изменение роли</h3>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col">
+        <div class="form-group">
+          <label class="form-control-label" for="role-select">Роль</label>
+          <select id="role-select" class="form-control form-control-alternative"
+                  [(ngModel)]="selectedRole">
+            <ng-container *ngFor="let role of roles">
+              <option [ngValue]="role.id" [disabled]="isContains(role.id)"
+                      *ngIf="userService.isAdmin() || !role.onlyAdmin">
+                {{role.name}}
+              </option>
+            </ng-container>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <h3>Внимание! При изменении роли, все привязки к системе АвтоДилер будут удалены!</h3>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-buro-blue" (click)="changeRole()">Изменить</button>
+    <button type="button" class="btn btn-sm btn-buro-blue" (click)="modal.dismiss()">Закрыть</button>
+  </div>
+</ng-template>
