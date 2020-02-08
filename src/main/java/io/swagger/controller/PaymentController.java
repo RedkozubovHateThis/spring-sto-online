@@ -255,6 +255,39 @@ public class PaymentController {
 
     }
 
+    @PutMapping("/subscriptions/gift")
+    public ResponseEntity giftSubscription(@RequestParam("serviceLeaderId") Long serviceLeaderId) {
+
+        User currentUser = userRepository.findCurrentUser();
+        if ( !UserHelper.isAdmin( currentUser ) )
+            return ResponseEntity.status(404).body( new ApiResponse("У вас отсутсвуют необходимые права для выдачи тарифа!") );
+
+        User serviceLeader = userRepository.findOne( serviceLeaderId );
+
+        if ( serviceLeader == null || !UserHelper.isServiceLeaderOrFreelancer( serviceLeader ) )
+            return ResponseEntity.status(404).body( new ApiResponse("Нельзя выдать тариф этому пользователю!") );
+
+        SubscriptionType subscriptionType = subscriptionTypeRepository.findFreeSubscription();
+        if ( subscriptionType == null )
+            return ResponseEntity.status(404).body( new ApiResponse("Тариф не найден!") );
+
+        try {
+            Subscription subscription = paymentService.buySubscription( subscriptionType.getId(), serviceLeader );
+
+            return ResponseEntity.ok( new SubscriptionResponse(
+                    subscription, countDocumentsRemains( currentUser, subscription)
+            ) );
+        }
+        catch ( PaymentException pe ) {
+            return ResponseEntity.status(500).body( new ApiResponse( pe.getMessage() ) );
+        }
+        catch ( Exception e ) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body( new ApiResponse("Ошибка оформления тарифа! Попробуйте повторить покупку позже.") );
+        }
+
+    }
+
     @PutMapping("/subscriptions/addon/buy")
     public ResponseEntity buySubscriptionAddon(@RequestParam("subscriptionId") Long subscriptionId,
                                                @RequestParam("documentsCount") Integer documentsCount) {

@@ -10,6 +10,8 @@ import {OrganizationResponseService} from '../../api/organizationResponse.servic
 import {Location} from '@angular/common';
 import {Shops} from '../../variables/shops';
 import {ManagerResponse} from '../../model/firebird/managerResponse';
+import {PaymentService} from '../../api/payment.service';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-user',
@@ -28,8 +30,8 @@ export class UserComponent extends ModelTransfer<User, number> implements OnInit
   private shops: ShopInterface[] = [];
 
   constructor(private userService: UserService, protected route: ActivatedRoute, private location: Location,
-              private clientResponseService: ClientResponseService, private router: Router,
-              private organizationResponseService: OrganizationResponseService) {
+              private clientResponseService: ClientResponseService, private router: Router, private toastrService: ToastrService,
+              private organizationResponseService: OrganizationResponseService, private paymentService: PaymentService) {
     super(userService, route);
     this.shops = Shops.shops;
   }
@@ -120,6 +122,22 @@ export class UserComponent extends ModelTransfer<User, number> implements OnInit
     this.clientResponse = null;
     this.organizationResponse = null;
     this.userService.saveUser(user, `Привязка успешно удалена!`);
+  }
+
+  private giftSubscription() {
+    this.isLoading = true;
+
+    this.paymentService.giftSubscription(this.model.id).subscribe( subscriptionResponse => {
+      this.isLoading = false;
+      this.toastrService.success('Тариф успешно выдан!');
+    }, error => {
+      this.isLoading = false;
+
+      if ( error.error.responseText )
+        this.toastrService.error(error.error.responseText, 'Внимание!');
+      else
+        this.toastrService.error('Ошибка выдачи тарифа!', 'Внимание!');
+    } );
   }
 
 }

@@ -123,6 +123,17 @@ export class PaymentService {
     );
   }
 
+  giftSubscription(serviceLeaderId: number): Observable<SubscriptionResponse> {
+    const headers = this.userService.getHeaders();
+    const params = {
+      serviceLeaderId: serviceLeaderId != null ? serviceLeaderId.toString() : ''
+    };
+
+    return this.http.put<SubscriptionResponse>(
+      `${this.userService.getApiUrl()}secured/payment/subscriptions/gift`, {}, {headers, params}
+    );
+  }
+
   buySubscriptionAddon(subscriptionId: number, documentsCount: number): Observable<void> {
     const headers = this.userService.getHeaders();
     const params = {
