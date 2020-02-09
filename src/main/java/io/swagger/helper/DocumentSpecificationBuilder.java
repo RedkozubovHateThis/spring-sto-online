@@ -8,6 +8,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class DocumentSpecificationBuilder {
@@ -63,8 +64,19 @@ public class DocumentSpecificationBuilder {
 
                 }
                 else if ( UserHelper.isClient( currentUser ) ) {
-                    predicates.add( cb.equal( clientJoin.get( Client_.id ), currentUser.getClientId() ) );
+                    if ( currentUser.getVinNumbers() != null && currentUser.getVinNumbers().length > 0 ) {
+                        predicates.add(
+                                cb.or(
+                                        mdJoin.get( ModelDetail_.vinNumber ).in( Arrays.asList( currentUser.getVinNumbers() ) ),
+                                        cb.equal( clientJoin.get( Client_.id ), currentUser.getClientId() )
+                                )
+                        );
+                    }
+                    else {
+                        predicates.add( cb.equal( clientJoin.get( Client_.id ), currentUser.getClientId() ) );
+                    }
                     predicates.add( cb.equal( dohJoin.get( DocumentOutHeader_.state ), (short) 4 ) );
+
                 }
                 else if ( UserHelper.isServiceLeaderOrFreelancer( currentUser ) ) {
                     predicates.add( cb.equal( orgJoin.get( Organization_.id ), currentUser.getOrganizationId() ) );

@@ -12,6 +12,7 @@ import {Shops} from '../../variables/shops';
 import {ManagerResponse} from '../../model/firebird/managerResponse';
 import {PaymentService} from '../../api/payment.service';
 import {ToastrService} from 'ngx-toastr';
+import {VehicleResponse} from '../../model/firebird/vehicleResponse';
 
 @Component({
   selector: 'app-user',
@@ -28,6 +29,7 @@ export class UserComponent extends ModelTransfer<User, number> implements OnInit
   private title: string = "Данные пользователя";
   private showBack: boolean = true;
   private shops: ShopInterface[] = [];
+  private vehicles: VehicleResponse[] = [];
 
   constructor(private userService: UserService, protected route: ActivatedRoute, private location: Location,
               private clientResponseService: ClientResponseService, private router: Router, private toastrService: ToastrService,
@@ -42,8 +44,10 @@ export class UserComponent extends ModelTransfer<User, number> implements OnInit
       this.model = data as User;
       this.isLoading = false;
 
-      if ( this.model.userClient )
+      if ( this.model.userClient ) {
         this.requestClient();
+        this.requestVehicles();
+      }
       else if ( this.model.userServiceLeaderOrFreelancer )
         this.requestOrganization();
 
@@ -68,6 +72,23 @@ export class UserComponent extends ModelTransfer<User, number> implements OnInit
     }, () => {
       this.isADLoading = false;
     } );
+  }
+
+  requestVehicles() {
+    this.isLoading = true;
+
+    this.userService.getVehicles(this.model.id).subscribe( data => {
+      this.vehicles = data;
+      this.isLoading = false;
+    }, () => {
+      this.isLoading = false;
+    } );
+  }
+
+  getVehicle(vinNumber: string): VehicleResponse {
+    if ( this.vehicles.length === 0 ) return null;
+
+    return this.vehicles.find( vehicle => vehicle.vinNumber.toLowerCase() === vinNumber.toLowerCase() );
   }
 
   requestOrganization() {
@@ -99,8 +120,10 @@ export class UserComponent extends ModelTransfer<User, number> implements OnInit
   }
 
   onTransferComplete() {
-    if ( this.model.userClient )
+    if ( this.model.userClient ) {
       this.requestClient();
+      this.requestVehicles();
+    }
     else if ( this.model.userServiceLeaderOrFreelancer )
       this.requestOrganization();
   }

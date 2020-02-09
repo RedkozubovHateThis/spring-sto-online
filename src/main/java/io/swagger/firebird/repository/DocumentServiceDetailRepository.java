@@ -41,6 +41,17 @@ public interface DocumentServiceDetailRepository extends PagingAndSortingReposit
     @Query("SELECT DISTINCT dsd FROM DocumentServiceDetail AS dsd " +
             "INNER JOIN dsd.documentOutHeader AS doh " +
             "INNER JOIN doh.documentOut AS do " +
+            "INNER JOIN do.client AS c " +
+            "INNER JOIN dsd.modelLink AS ml " +
+            "INNER JOIN ml.modelDetail AS md " +
+            "WHERE dsd.id = :documentId AND ( c.id = :clientId OR md.vinNumber IN ( :vinNumbers ) )")
+    DocumentServiceDetail findOneByClientIdOrVinNumbers(@Param("documentId") Integer documentId,
+                                                        @Param("clientId") Integer clientId,
+                                                        @Param("vinNumbers") List<String> vinNumbers);
+
+    @Query("SELECT DISTINCT dsd FROM DocumentServiceDetail AS dsd " +
+            "INNER JOIN dsd.documentOutHeader AS doh " +
+            "INNER JOIN doh.documentOut AS do " +
             "INNER JOIN do.organization AS o " +
             "WHERE dsd.id = :documentId AND o.id = :organizationId")
     DocumentServiceDetail findOneByOrganizationId(@Param("documentId") Integer documentId,

@@ -36,6 +36,7 @@ export class User {
   isBalanceInvalid: boolean;
   isAccessRestricted: boolean;
   subscriptionTypeId: number;
+  vinNumbers: string[];
 
   // TODO: подключить js-data-angular и переделать на computed property
   userAdmin: boolean;

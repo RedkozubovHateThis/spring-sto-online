@@ -9,6 +9,7 @@ import {ChatMessageResponseService} from './chatMessageResponse.service';
 import {ToastrService} from 'ngx-toastr';
 import {UsersFilter} from '../model/usersFilter';
 import {RestService} from './rest.service';
+import {VehicleResponse} from '../model/firebird/vehicleResponse';
 
 @Injectable()
 export class UserService implements TransferService<User>, RestService<User> {
@@ -269,6 +270,18 @@ export class UserService implements TransferService<User>, RestService<User> {
     const headers = this.getHeaders();
 
     return this.http.get( `${this.getApiUrl()}secured/users/${id}`, {headers} );
+  }
+
+  getVehicles(id: number): Observable<VehicleResponse[]> {
+    const headers = this.getHeaders();
+
+    return this.http.get<VehicleResponse[]>( `${this.getApiUrl()}secured/users/${id}/vehicles`, {headers} );
+  }
+
+  getVehicle(vinNumber: string): Observable<VehicleResponse> {
+    const headers = this.getHeaders();
+
+    return this.http.get<VehicleResponse>( `${this.getApiUrl()}secured/users/vehicles/${vinNumber}`, {headers} );
   }
 
   getOpponents() {

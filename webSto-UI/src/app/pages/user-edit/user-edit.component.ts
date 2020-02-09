@@ -13,6 +13,8 @@ import { Shops } from './../../variables/shops';
 import {PaymentService} from '../../api/payment.service';
 import {SubscriptionTypeResponse} from '../../model/payment/subscriptionTypeResponse';
 import {ManagerResponse} from '../../model/firebird/managerResponse';
+import {VehicleResponse} from '../../model/firebird/vehicleResponse';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-user-edit',
@@ -33,10 +35,12 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
   private subscriptionTypes: SubscriptionTypeResponse[] = [];
   private organizations: OrganizationResponse[] = [];
   private managers: ManagerResponse[] = [];
+  private vehicles: VehicleResponse[] = [];
   private isTypesLoading: boolean = false;
+  private vinNumber: string;
 
   constructor(private userService: UserService, protected route: ActivatedRoute, private location: Location,
-              private clientResponseService: ClientResponseService, private router: Router,
+              private clientResponseService: ClientResponseService, private router: Router, private toastrService: ToastrService,
               private organizationResponseService: OrganizationResponseService, private paymentService: PaymentService) {
     super(userService, route);
     this.shops = Shops.shops;
@@ -48,8 +52,10 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
       this.model = data as User;
       this.isLoading = false;
 
-      if ( this.model.userClient )
+      if ( this.model.userClient ) {
         this.requestClient();
+        this.requestVehicles();
+      }
       else if ( this.model.userServiceLeader )
         this.requestOrganization();
 
@@ -122,6 +128,66 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
       this.isADLoading = false;
     }, () => {
       this.isADLoading = false;
+    } );
+
+  }
+
+  requestVehicles() {
+    this.isLoading = true;
+
+    this.userService.getVehicles(this.model.id).subscribe( data => {
+      this.vehicles = data;
+      this.isLoading = false;
+    }, () => {
+      this.isLoading = false;
+    } );
+  }
+
+  getVehicle(vinNumber: string): VehicleResponse {
+    if ( this.vehicles.length === 0 ) return null;
+
+    return this.vehicles.find( vehicle => vehicle.vinNumber.toLowerCase() === vinNumber.toLowerCase() );
+  }
+
+  removeVehicle(vinNumber: string) {
+
+    const vinIndex = this.model.vinNumbers.indexOf(vinNumber);
+
+    if ( vinIndex > -1 )
+      this.model.vinNumbers.splice(vinIndex, 1);
+
+  }
+
+  findVehicle() {
+
+    if ( this.vinNumber == null || this.vinNumber.length === 0 ) return;
+
+    let isExists = false;
+
+    this.model.vinNumbers.forEach( vinNum => {
+      if ( vinNum.toLowerCase() === this.vinNumber.toLowerCase() )
+        isExists = true;
+    } );
+
+    if ( isExists ) {
+      this.toastrService.warning('Автомобиль с таким VIN-номером уже добавлен!');
+      return;
+    }
+
+    this.isLoading = true;
+
+    this.userService.getVehicle(this.vinNumber).subscribe( vehicleResponse => {
+      this.isLoading = false;
+
+      this.vehicles.push( vehicleResponse );
+      this.model.vinNumbers.push( vehicleResponse.vinNumber );
+    }, error => {
+      this.isLoading = false;
+
+      if ( error.error.responseText )
+        this.toastrService.error( error.error.responseText, 'Внимание!' );
+      else
+        this.toastrService.error( 'Ошибка поиска автомобиля!', 'Внимание!' );
     } );
 
   }
@@ -212,8 +278,10 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
   }
 
   onTransferComplete() {
-    if ( this.model.userClient )
+    if ( this.model.userClient ) {
       this.requestClient();
+      this.requestVehicles();
+    }
     else if ( this.model.userServiceLeader )
       this.requestOrganization();
 

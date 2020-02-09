@@ -1,5 +1,8 @@
 package io.swagger.controller;
 
+import io.swagger.firebird.model.ModelLink;
+import io.swagger.firebird.repository.ModelDetailRepository;
+import io.swagger.firebird.repository.ModelLinkRepository;
 import io.swagger.helper.UserHelper;
 import io.swagger.helper.UserSpecificationBuilder;
 import io.swagger.postgres.model.EventMessage;
@@ -14,6 +17,7 @@ import io.swagger.postgres.repository.UserRoleRepository;
 import io.swagger.response.api.ApiResponse;
 import io.swagger.response.api.EventMessageStatus;
 import io.swagger.response.firebird.UserResponse;
+import io.swagger.response.firebird.VehicleResponse;
 import io.swagger.service.EventMessageService;
 import io.swagger.service.UserService;
 import lombok.Data;
@@ -24,10 +28,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RequestMapping("/secured/users")
 @RestController
@@ -41,6 +43,12 @@ public class UserController {
 
     @Autowired
     private io.swagger.firebird.repository.UserRepository firebirdUserRepository;
+
+    @Autowired
+    private ModelLinkRepository modelLinkRepository;
+
+    @Autowired
+    private ModelDetailRepository modelDetailRepository;
 
     @Autowired
     private WebSocketController webSocketController;
@@ -465,6 +473,40 @@ public class UserController {
             return ResponseEntity.status(403).build();
     }
 
+    @GetMapping("/{id}/vehicles")
+    public ResponseEntity findVehicles(@PathVariable("id") Long id) {
+
+        User user = userRepository.findOne(id);
+
+        if ( user == null )
+            return ResponseEntity.status(404).build();
+
+        if ( user.getVinNumbers() == null || user.getVinNumbers().length == 0 )
+            return ResponseEntity.status(404).build();
+
+        List<ModelLink> modelLinks = modelLinkRepository.findByVinNumbers( Arrays.asList( user.getVinNumbers() ) );
+
+        List<VehicleResponse> responses = modelLinks.stream().map(VehicleResponse::new).collect( Collectors.toList() );
+
+        return ResponseEntity.ok( responses );
+    }
+
+    @GetMapping("/vehicles/{vinNumber}")
+    public ResponseEntity findVehicle(@PathVariable("vinNumber") String vinNumber) {
+
+        if ( vinNumber == null || vinNumber.length() == 0 )
+            return ResponseEntity.status(400).body( new ApiResponse( "VIN-номер автомобиля не может быть пустым!" ) );
+
+        List<ModelLink> modelLinks = modelLinkRepository.findByVinNumber( vinNumber );
+
+        if ( modelLinks.size() == 0 )
+            return ResponseEntity.status(400).body( new ApiResponse( "Автомобиль с данным VIN-номером не найден!" ) );
+
+        VehicleResponse response = new VehicleResponse( modelLinks.get(0) );
+
+        return ResponseEntity.ok( response );
+    }
+
     @GetMapping("/eventMessages/fromUsers")
     public ResponseEntity findEventMessagesFromUsers() {
 
@@ -518,6 +560,36 @@ public class UserController {
         }
 
         return ResponseEntity.ok( responses );
+    }
+
+    @Deprecated
+    @PostMapping("/fillVehicles")
+    public ResponseEntity fillVehicles() {
+
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( !UserHelper.isAdmin( currentUser ) )
+            return ResponseEntity.status(403).build();
+
+        List<User> clients = userRepository.findUsersByRoleName("CLIENT");
+        Map<Long, String[]> response = new HashMap<>();
+
+        for (User client : clients) {
+
+            if ( !client.isClientValid() ) continue;
+
+            String[] vinNumbers = modelDetailRepository.findVinNumbers( client.getClientId() );
+
+            if ( vinNumbers.length == 0 ) continue;
+
+            client.setVinNumbers( vinNumbers );
+            userRepository.save( client );
+
+            response.put( client.getId(), vinNumbers );
+
+        }
+
+        return ResponseEntity.ok(response);
     }
 
     @Data

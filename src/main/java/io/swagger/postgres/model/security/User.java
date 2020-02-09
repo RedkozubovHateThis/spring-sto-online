@@ -56,6 +56,9 @@ public class User implements UserDetails, Serializable {
     private Boolean isAutoRegistered;
 //    private Long replacementModeratorId;
 
+    @Type(type ="io.swagger.config.database.StringArrayUserType")
+    private String[] vinNumbers;
+
     @JsonIgnore
     private boolean accountExpired;
     @JsonIgnore

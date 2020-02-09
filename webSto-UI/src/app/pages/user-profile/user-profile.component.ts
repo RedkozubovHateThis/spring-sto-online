@@ -11,6 +11,7 @@ import {HttpClient} from '@angular/common/http';
 import {ToastrService} from 'ngx-toastr';
 import {Shops} from '../../variables/shops';
 import {ManagerResponse} from '../../model/firebird/managerResponse';
+import {VehicleResponse} from '../../model/firebird/vehicleResponse';
 
 @Component({
   selector: 'app-user-profile',
@@ -19,6 +20,7 @@ import {ManagerResponse} from '../../model/firebird/managerResponse';
 })
 export class UserProfileComponent implements OnInit {
 
+  private isLoading: boolean = false;
   private model: User;
   private clientResponse: ClientResponse;
   private organizationResponse: OrganizationResponse;
@@ -27,6 +29,7 @@ export class UserProfileComponent implements OnInit {
   private title: string = "Профиль";
   private showBack: boolean = false;
   private shops: ShopInterface[] = [];
+  private vehicles: VehicleResponse[] = [];
 
   constructor(private userService: UserService, private clientResponseService: ClientResponseService,
               private router: Router, private organizationResponseService: OrganizationResponseService, private httpClient: HttpClient,
@@ -49,8 +52,10 @@ export class UserProfileComponent implements OnInit {
 
     this.model = this.userService.currentUser;
 
-    if ( this.model.userClient )
+    if ( this.model.userClient ) {
       this.requestClient();
+      this.requestVehicles();
+    }
     else if ( this.model.userServiceLeaderOrFreelancer )
       this.requestOrganization();
 
@@ -72,6 +77,23 @@ export class UserProfileComponent implements OnInit {
     }, () => {
       this.isADLoading = false;
     } );
+  }
+
+  requestVehicles() {
+    this.isLoading = true;
+
+    this.userService.getVehicles(this.model.id).subscribe( data => {
+      this.vehicles = data;
+      this.isLoading = false;
+    }, () => {
+      this.isLoading = false;
+    } );
+  }
+
+  getVehicle(vinNumber: string): VehicleResponse {
+    if ( this.vehicles.length === 0 ) return null;
+
+    return this.vehicles.find( vehicle => vehicle.vinNumber.toLowerCase() === vinNumber.toLowerCase() );
   }
 
   containsShop(user: User, shopId: number): boolean {

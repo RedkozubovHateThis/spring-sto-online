@@ -25,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -172,7 +173,10 @@ public class DocumentDetailServiceController {
         if ( UserHelper.isClient( currentUser ) ) {
             if ( currentUser.getClientId() == null || !currentUser.getIsApproved() ) return ResponseEntity.status(403).build();
 
-            result = documentsRepository.findOneByClientId( id, currentUser.getClientId() );
+            if ( currentUser.getVinNumbers() != null && currentUser.getVinNumbers().length > 0 )
+                result = documentsRepository.findOneByClientIdOrVinNumbers( id, currentUser.getClientId(), Arrays.asList( currentUser.getVinNumbers() ) );
+            else
+                result = documentsRepository.findOneByClientId( id, currentUser.getClientId() );
         }
         else if ( UserHelper.isServiceLeader( currentUser ) ) {
 
