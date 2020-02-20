@@ -281,14 +281,14 @@ public class PaymentServiceImpl implements PaymentService {
                     throw new PaymentException("Текущий тариф еще не истек и имеет доступные заказ-наряды!");
                 else {
                     subscription.setStartDate(
-                            generateStartDate( now, false )
+                            generateStartDate( now, true )
                     );
                     subscription.setEndDate(
                             generateEndDate( now, subscriptionType.getDurationDays(), false )
                     );
 
                     currentSubscription.setEndDate(
-                            generateEndDate( now, -1, false )
+                            generateEndDate( now, 0, false )
                     );
                     currentSubscription.setIsClosedEarly(true);
                     isCurrentSubscriptionChanged = true;
