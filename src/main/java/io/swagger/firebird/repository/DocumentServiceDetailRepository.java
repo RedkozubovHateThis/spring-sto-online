@@ -189,7 +189,7 @@ public interface DocumentServiceDetailRepository extends PagingAndSortingReposit
             "INNER JOIN DOCUMENT_OUT_HEADER AS doh ON doh.DOCUMENT_OUT_HEADER_ID = dsd.DOCUMENT_OUT_HEADER_ID\n" +
             "INNER JOIN DOCUMENT_OUT AS do ON do.DOCUMENT_OUT_ID = doh.DOCUMENT_OUT_ID\n" +
             "INNER JOIN ORGANIZATION AS o ON do.ORGANIZATION_ID = o.ORGANIZATION_ID\n" +
-            "WHERE CAST(dsd.DATE_START AS DATE) BETWEEN :fromDate AND :toDate\n" +
+            "WHERE dsd.DATE_START BETWEEN :fromDate AND :toDate\n" +
             "AND o.ORGANIZATION_ID = :organizationId")
     Integer countDocumentsByOrganizationIdAndDates(@Param("organizationId") Integer organizationId,
                                                    @Param("fromDate") Date fromDate,
@@ -199,7 +199,7 @@ public interface DocumentServiceDetailRepository extends PagingAndSortingReposit
             "INNER JOIN DOCUMENT_OUT_HEADER AS doh ON doh.DOCUMENT_OUT_HEADER_ID = dsd.DOCUMENT_OUT_HEADER_ID\n" +
             "INNER JOIN DOCUMENT_OUT AS do ON do.DOCUMENT_OUT_ID = doh.DOCUMENT_OUT_ID\n" +
             "INNER JOIN ORGANIZATION AS o ON do.ORGANIZATION_ID = o.ORGANIZATION_ID\n" +
-            "WHERE CAST(dsd.DATE_START AS DATE) BETWEEN :fromDate AND :toDate\n" +
+            "WHERE dsd.DATE_START BETWEEN :fromDate AND :toDate\n" +
             "AND o.ORGANIZATION_ID = :organizationId AND doh.MANAGER_ID = :managerId")
     Integer countDocumentsByOrganizationIdAndDatesAndManagerId(@Param("organizationId") Integer organizationId,
                                                                @Param("fromDate") Date fromDate,
@@ -210,7 +210,7 @@ public interface DocumentServiceDetailRepository extends PagingAndSortingReposit
             "INNER JOIN DOCUMENT_OUT_HEADER AS doh ON doh.DOCUMENT_OUT_HEADER_ID = dsd.DOCUMENT_OUT_HEADER_ID\n" +
             "INNER JOIN DOCUMENT_OUT AS do ON do.DOCUMENT_OUT_ID = doh.DOCUMENT_OUT_ID\n" +
             "INNER JOIN ORGANIZATION AS o ON do.ORGANIZATION_ID = o.ORGANIZATION_ID\n" +
-            "WHERE CAST(dsd.DATE_START AS DATE) BETWEEN :fromDate AND :toDate\n" +
+            "WHERE dsd.DATE_START BETWEEN :fromDate AND :toDate\n" +
             "AND o.ORGANIZATION_ID = :organizationId\n" +
             "ORDER BY dsd.DATE_START")
     List<Integer> collectPaidDocumentsByOrganizationIdAndDates(@Param("paidDocumentsCount") Integer paidDocumentsCount,
@@ -222,7 +222,7 @@ public interface DocumentServiceDetailRepository extends PagingAndSortingReposit
             "INNER JOIN DOCUMENT_OUT_HEADER AS doh ON doh.DOCUMENT_OUT_HEADER_ID = dsd.DOCUMENT_OUT_HEADER_ID\n" +
             "INNER JOIN DOCUMENT_OUT AS do ON do.DOCUMENT_OUT_ID = doh.DOCUMENT_OUT_ID\n" +
             "INNER JOIN ORGANIZATION AS o ON do.ORGANIZATION_ID = o.ORGANIZATION_ID\n" +
-            "WHERE CAST(dsd.DATE_START AS DATE) BETWEEN :fromDate AND :toDate\n" +
+            "WHERE dsd.DATE_START BETWEEN :fromDate AND :toDate\n" +
             "AND o.ORGANIZATION_ID = :organizationId\n" +
             "AND doh.MANAGER_ID = :managerId\n" +
             "ORDER BY dsd.DATE_START")
@@ -236,7 +236,7 @@ public interface DocumentServiceDetailRepository extends PagingAndSortingReposit
             "INNER JOIN DOCUMENT_OUT_HEADER AS doh ON doh.DOCUMENT_OUT_HEADER_ID = dsd.DOCUMENT_OUT_HEADER_ID\n" +
             "INNER JOIN DOCUMENT_OUT AS do ON do.DOCUMENT_OUT_ID = doh.DOCUMENT_OUT_ID\n" +
             "INNER JOIN ORGANIZATION AS o ON do.ORGANIZATION_ID = o.ORGANIZATION_ID\n" +
-            "WHERE CAST(dsd.DATE_START AS DATE) <= :date\n" +
+            "WHERE dsd.DATE_START <= :date\n" +
             "AND o.ORGANIZATION_ID = :organizationId\n" +
             "ORDER BY dsd.DATE_START")
     List<Integer> collectPaidDocumentsByOrganizationIdAndBefore(@Param("organizationId") Integer organizationId,
@@ -246,7 +246,7 @@ public interface DocumentServiceDetailRepository extends PagingAndSortingReposit
             "INNER JOIN DOCUMENT_OUT_HEADER AS doh ON doh.DOCUMENT_OUT_HEADER_ID = dsd.DOCUMENT_OUT_HEADER_ID\n" +
             "INNER JOIN DOCUMENT_OUT AS do ON do.DOCUMENT_OUT_ID = doh.DOCUMENT_OUT_ID\n" +
             "INNER JOIN ORGANIZATION AS o ON do.ORGANIZATION_ID = o.ORGANIZATION_ID\n" +
-            "WHERE CAST(dsd.DATE_START AS DATE) <= :date\n" +
+            "WHERE dsd.DATE_START <= :date\n" +
             "AND o.ORGANIZATION_ID = :organizationId\n" +
             "AND doh.MANAGER_ID = :managerId\n" +
             "ORDER BY dsd.DATE_START")

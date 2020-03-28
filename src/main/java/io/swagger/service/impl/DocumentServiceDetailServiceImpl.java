@@ -63,9 +63,11 @@ public class DocumentServiceDetailServiceImpl implements DocumentServiceDetailSe
 
             }
 
+            Date firstSubscriptionDate = getFirstSubscriptionDate(currentUser);
+
             paidDocumentIds.addAll( documentsRepository.collectPaidDocumentsByOrganizationIdAndBefore(
                     currentUser.getOrganizationId(),
-                    getFirstSubscriptionDate(currentUser)
+                    firstSubscriptionDate
             ) );
 
         }
@@ -80,9 +82,11 @@ public class DocumentServiceDetailServiceImpl implements DocumentServiceDetailSe
 
             }
 
+            Date firstSubscriptionDate = getFirstSubscriptionDate(currentUser);
+
             paidDocumentIds.addAll( documentsRepository.collectPaidDocumentsByOrganizationIdAndBeforeAndManagerId(
                     currentUser.getOrganizationId(),
-                    getFirstSubscriptionDate(currentUser),
+                    firstSubscriptionDate,
                     currentUser.getManagerId()
             ) );
 

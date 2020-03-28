@@ -281,15 +281,25 @@ public class PaymentServiceImpl implements PaymentService {
                     throw new PaymentException("Текущий тариф еще не истек и имеет доступные заказ-наряды!");
                 else {
                     subscription.setStartDate(
-                            generateStartDate( now, true )
+                            generateStartDate( now, false )
                     );
                     subscription.setEndDate(
                             generateEndDate( now, subscriptionType.getDurationDays(), false )
                     );
 
-                    currentSubscription.setEndDate(
-                            generateEndDate( now, 0, false )
-                    );
+                    Date newEndDate = generateEndDate( now, -1, false );
+
+                    if ( newEndDate.before( currentSubscription.getStartDate() ) ) {
+                        currentSubscription.setEndDate(
+                                currentSubscription.getStartDate()
+                        );
+                    }
+                    else {
+                        currentSubscription.setEndDate(
+                                newEndDate
+                        );
+                    }
+
                     currentSubscription.setIsClosedEarly(true);
                     isCurrentSubscriptionChanged = true;
                 }
@@ -299,7 +309,7 @@ public class PaymentServiceImpl implements PaymentService {
                         generateStartDate( currentSubscription.getEndDate(), true )
                 );
                 subscription.setEndDate(
-                        generateEndDate( currentSubscription.getEndDate(), subscriptionType.getDurationDays(), false )
+                        generateEndDate( currentSubscription.getEndDate(), subscriptionType.getDurationDays() + 1, false )
                 );
             }
 
