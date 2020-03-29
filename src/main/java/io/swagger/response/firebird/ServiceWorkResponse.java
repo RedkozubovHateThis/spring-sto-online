@@ -12,6 +12,7 @@ public class ServiceWorkResponse {
     private Double price;
     private Double total;
     private Double priceNorm;
+    private Double timeValue;
     private Integer quantity;
     private Boolean byPrice = false;
 
@@ -27,6 +28,7 @@ public class ServiceWorkResponse {
         quantity = serviceWork.getQuantity();
         price = serviceWork.getPrice();
         priceNorm = serviceWork.getPriceNorm();
+        timeValue = serviceWork.getTimeValue();
 
     }
 

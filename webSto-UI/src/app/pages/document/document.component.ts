@@ -12,6 +12,7 @@ import {UserResponse} from '../../model/firebird/userResponse';
 import {PaymentService} from '../../api/payment.service';
 import {ManagerResponse} from '../../model/firebird/managerResponse';
 import {OrganizationResponseService} from '../../api/organizationResponse.service';
+import {ServiceWorkResponse} from '../../model/firebird/serviceWorkResponse';
 
 @Component({
   selector: 'app-documents',
@@ -86,6 +87,18 @@ export class DocumentComponent extends ModelTransfer<DocumentResponse, number> i
         this.isUpdating = false;
         this.toastrService.error('Ошибка изменения стоимости работы!');
       } );
+  }
+
+  updatePriceView(serviceWork: ServiceWorkResponse) {
+
+    const count = serviceWork.quantity || 1;
+
+    if ( serviceWork.byPrice ) {
+      serviceWork.total = serviceWork.price * count;
+    }
+    else {
+      serviceWork.total = serviceWork.priceNorm * serviceWork.timeValue * count;
+    }
   }
 
   updateCost(documentResponse, serviceGoodsAddon, cost) {
