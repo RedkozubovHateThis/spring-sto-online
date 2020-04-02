@@ -306,10 +306,10 @@ public class PaymentServiceImpl implements PaymentService {
             }
             else if ( currentSubscription.getEndDate().before( now ) ) {
                 subscription.setStartDate(
-                        generateStartDate( currentSubscription.getEndDate(), true )
+                        generateStartDate( now, false )
                 );
                 subscription.setEndDate(
-                        generateEndDate( currentSubscription.getEndDate(), subscriptionType.getDurationDays() + 1, false )
+                        generateEndDate( now, subscriptionType.getDurationDays(), false )
                 );
             }
 

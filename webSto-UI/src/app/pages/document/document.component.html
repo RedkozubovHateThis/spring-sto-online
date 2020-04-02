@@ -220,12 +220,17 @@
                         Фиксированная цена, руб.
                       </div>
                     </th>
-                    <th scope="col" style="text-align: right; width: 175px;" *ngIf="userService.isNotClient()">
-                      Стоимость нормы времени /
+                    <th scope="col" style="text-align: right; width: 175px;" *ngIf="userService.isNotClient(); else onlyPriceNorm">
+                      Стоимость нормы времени, руб. /
                       <div>
-                        Фиксированная цена
+                        Фиксированная цена, руб.
                       </div>
                     </th>
+                    <ng-template #onlyPriceNorm>
+                      <th scope="col" style="text-align: right; width: 175px;">
+                        Стоимость нормы времени, руб.
+                      </th>
+                    </ng-template>
                     <th scope="col" style="text-align: right; width: 175px;">
                       Стоимость работ
                       <div class="text-muted">
@@ -239,7 +244,7 @@
                     <th>
                       {{work.number}}
                     </th>
-                    <th>
+                    <th class="wrap-column">
                       {{work.name}}
                       <app-share-button *ngIf="model != null && userService.isNotClient()" [isLink]="true"
                                         [disabled]="userService.isServiceLeaderWithExpiredSubscription() ||
@@ -251,10 +256,10 @@
                         <div>{{work.price | number:'.2':'ru'}} р.</div>
                       </ng-container>
                       <ng-template #byPriceNorm>
-                        <div>{{work.priceNorm | number:'.2':'ru'}} р.</div>
+                        <div>{{work.timeValue | number:'.2':'ru'}} ч./ч.</div>
                       </ng-template>
                     </th>
-                    <th *ngIf="userService.isNotClient()">
+                    <th *ngIf="userService.isNotClient(); else viewFields">
                       <div class="input-group input-group-sm" *ngIf="work.byPrice; else byPriceNorm">
                         <input type="number" class="form-control" (keyup.enter)="updatePrice(model, work, work.price)"
                                (change)="updatePriceView(work)" (keyup)="updatePriceView(work)"
@@ -280,6 +285,11 @@
                         </div>
                       </ng-template>
                     </th>
+                    <ng-template #viewFields>
+                      <th style="text-align: right;">
+                        <div *ngIf="!work.byPrice">{{work.priceNorm | number:'.2':'ru'}} р.</div>
+                      </th>
+                    </ng-template>
                     <th style="text-align: right;">
                       <div>{{work.total | number:'.2':'ru'}} р.</div>
                       <div class="text-muted" *ngIf="work.quantity != null && work.quantity > 1">{{work.quantity}}</div>
@@ -333,7 +343,7 @@
                     <th>
                       {{addon.number}}
                     </th>
-                    <th class="wrap-column-500">
+                    <th class="wrap-column">
                       {{addon.fullName}}
                       <app-share-button *ngIf="model != null && userService.isNotClient()" [isLink]="true"
                                         [disabled]="userService.isServiceLeaderWithExpiredSubscription() ||
@@ -394,7 +404,7 @@
                     <th>
                       {{addon.number}}
                     </th>
-                    <th class="wrap-column-500">
+                    <th class="wrap-column">
                       {{addon.fullName}}
                       <app-share-button *ngIf="model != null && userService.isNotClient()" [isLink]="true"
                                         [disabled]="userService.isServiceLeaderWithExpiredSubscription() ||

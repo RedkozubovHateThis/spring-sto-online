@@ -3,6 +3,7 @@ package io.swagger.controller;
 import io.swagger.firebird.model.ModelLink;
 import io.swagger.firebird.repository.ModelDetailRepository;
 import io.swagger.firebird.repository.ModelLinkRepository;
+import io.swagger.helper.DateHelper;
 import io.swagger.helper.UserHelper;
 import io.swagger.helper.UserSpecificationBuilder;
 import io.swagger.postgres.model.EventMessage;
@@ -560,6 +561,37 @@ public class UserController {
         }
 
         return ResponseEntity.ok( responses );
+    }
+
+    @GetMapping("/subscribers/expired")
+    public ResponseEntity findUsersWithExpiredSubscriptions() {
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( !UserHelper.isModerator(currentUser) )
+            return ResponseEntity.status(404).build();
+
+        List<User> users = userRepository.findAllByModeratorId( currentUser.getId() );
+        List<Map<String, String>> usersWithExpiredSubscriptions = new ArrayList<>();
+
+        Date now = new Date();
+
+        users.forEach(user -> {
+            Subscription currentSubscription = user.getCurrentSubscription();
+
+            if ( currentSubscription != null && currentSubscription.getEndDate().before( now ) ) {
+                Map<String, String> expired = new HashMap<>();
+
+                expired.put( "fio", user.getFio() );
+                expired.put( "date", DateHelper.formatDate( currentSubscription.getEndDate() ) );
+
+                usersWithExpiredSubscriptions.add( expired );
+            }
+        });
+
+        if ( usersWithExpiredSubscriptions.size() > 0 )
+            return ResponseEntity.status(200).body( usersWithExpiredSubscriptions );
+
+        return ResponseEntity.status(404).build();
     }
 
     @Deprecated

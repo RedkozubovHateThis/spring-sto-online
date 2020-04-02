@@ -10,6 +10,7 @@ import {ToastrService} from 'ngx-toastr';
 import {UsersFilter} from '../model/usersFilter';
 import {RestService} from './rest.service';
 import {VehicleResponse} from '../model/firebird/vehicleResponse';
+import {ExpiredInfo} from '../model/expiredInfo';
 
 @Injectable()
 export class UserService implements TransferService<User>, RestService<User> {
@@ -161,6 +162,9 @@ export class UserService implements TransferService<User>, RestService<User> {
       this.setCurrentUserData( data as User );
       localStorage.setItem('isAuthenticated', 'true');
 
+      if ( this.isModerator() )
+        this.getExpiredUsers();
+
       const redirectUrl: string = localStorage.getItem('redirectUrl');
 
       if ( redirectUrl != null && redirectUrl.length > 0 ) {
@@ -185,6 +189,21 @@ export class UserService implements TransferService<User>, RestService<User> {
       this.currentUserIsLoaded.next( this.currentUser );
     }, () => {
       this.logout();
+    } );
+
+  }
+
+  getExpiredUsers() {
+    const headers = this.getHeaders();
+
+    this.http.get<ExpiredInfo[]>( this.getApiUrl() + 'secured/users/subscribers/expired', {headers} ).subscribe( data => {
+      console.log(data);
+      data.forEach( expired => {
+        const message = `У пользователя "${expired.fio}" ${expired.date} истекла подписка!"`;
+
+        this.toastrService.warning(message, 'Внимание!');
+      } );
+    }, () => {
     } );
 
   }
