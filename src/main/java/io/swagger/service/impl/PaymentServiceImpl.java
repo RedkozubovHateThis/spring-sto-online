@@ -264,6 +264,7 @@ public class PaymentServiceImpl implements PaymentService {
         Date now = new Date();
 
         Subscription subscription = new Subscription( subscriptionType );
+        boolean isSubscriptionChanged = false;
 
         Subscription currentSubscription = user.getCurrentSubscription();
         boolean isCurrentSubscriptionChanged = false;
@@ -280,25 +281,10 @@ public class PaymentServiceImpl implements PaymentService {
                 if ( availableDocuments > 0 )
                     throw new PaymentException("Текущий тариф еще не истек и имеет доступные заказ-наряды!");
                 else {
-                    subscription.setStartDate(
-                            generateStartDate( now, false )
-                    );
-                    subscription.setEndDate(
+                    currentSubscription.setEndDate(
                             generateEndDate( now, subscriptionType.getDurationDays(), false )
                     );
-
-                    Date newEndDate = generateEndDate( now, -1, false );
-
-                    if ( newEndDate.before( currentSubscription.getStartDate() ) ) {
-                        currentSubscription.setEndDate(
-                                currentSubscription.getStartDate()
-                        );
-                    }
-                    else {
-                        currentSubscription.setEndDate(
-                                newEndDate
-                        );
-                    }
+                    currentSubscription.updateDocumentsCount( subscriptionType );
 
                     currentSubscription.setIsClosedEarly(true);
                     isCurrentSubscriptionChanged = true;
@@ -311,28 +297,36 @@ public class PaymentServiceImpl implements PaymentService {
                 subscription.setEndDate(
                         generateEndDate( now, subscriptionType.getDurationDays(), false )
                 );
+                isSubscriptionChanged = true;
             }
 
         }
         else {
             subscription.setStartDate( generateStartDate( now, false ) );
             subscription.setEndDate( generateEndDate( now, subscriptionType.getDurationDays(), false ) );
+            isSubscriptionChanged = true;
         }
 
-        subscription.setUser( user );
+        if ( isSubscriptionChanged ) {
+            subscription.setUser( user );
 
-        subscriptionRepository.save( subscription );
-        user.setCurrentSubscription( subscription );
+            subscriptionRepository.save( subscription );
+            user.setCurrentSubscription( subscription );
 
-        if ( isCurrentSubscriptionChanged )
+            if ( !subscription.getType().getIsFree() && user.getSubscriptionTypeId() == null )
+                user.setSubscriptionTypeId( subscription.getType().getId() );
+
+            generatePaymentRecord( user, subscription, null, now );
+
+            return subscription;
+        }
+        else if ( isCurrentSubscriptionChanged ) {
             subscriptionRepository.save( currentSubscription );
+            generatePaymentRecord( user, currentSubscription, null, now );
+            return currentSubscription;
+        }
 
-        if ( !subscription.getType().getIsFree() && user.getSubscriptionTypeId() == null )
-            user.setSubscriptionTypeId( subscription.getType().getId() );
-
-        generatePaymentRecord( user, subscription, null, now );
-
-        return subscription;
+        throw new PaymentException("Ошибка покупки тарифа!");
 
     }
 

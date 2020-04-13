@@ -72,4 +72,8 @@ public class Subscription implements Serializable {
     public void applyAddon(SubscriptionAddon addon) {
         this.documentsCount += addon.getDocumentsCount();
     }
+
+    public void updateDocumentsCount(SubscriptionType subscriptionType) {
+        this.documentsCount += subscriptionType.getDocumentsCount();
+    }
 }
