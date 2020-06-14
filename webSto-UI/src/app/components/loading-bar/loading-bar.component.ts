@@ -1,4 +1,4 @@
-import {Component, OnInit, OnChanges, SimpleChanges, Input} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 
 @Component({
   selector: 'app-loading-bar',
@@ -6,7 +6,7 @@ import {Component, OnInit, OnChanges, SimpleChanges, Input} from '@angular/core'
   styleUrls: ['./loading-bar.component.scss'],
 })
 export class LoadingBarComponent implements OnInit, OnChanges {
-  
+
   @Input()
   private isLoading: boolean = false;
   @Input()

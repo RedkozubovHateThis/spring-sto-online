@@ -40,7 +40,7 @@ export class ReportButtonComponent implements OnInit {
     const headers = this.userService.getHeaders();
 
     this.isDownloading = true;
-    this.httpClient.get(`${this.userService.getApiUrl()}secured/reports/${this.model.id}/${reportType}/${printStamp}`,
+    this.httpClient.get(`${this.userService.getApiUrl()}reports/${this.model.id}/${reportType}/${printStamp}`,
       {headers, responseType: 'blob'} ).subscribe( response => {
 
       this.isDownloading = false;

@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {UserService} from "../../api/user.service";
+import {Component, OnInit} from '@angular/core';
+import {UserService} from '../../api/user.service';
 import {ToastrService} from 'ngx-toastr';
 import {HttpParams} from '@angular/common/http';
 

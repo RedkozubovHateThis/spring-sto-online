@@ -21,7 +21,7 @@
       </div>
     </div>
 
-    <div class="form-group" *ngIf="userService.isModeratorOrAdmin()">
+    <div class="form-group" *ngIf="userService.isAdmin()">
       <label class="form-control-label" for="state-select">Состояние</label>
       <select id="state-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.state" (change)="emitChange()">
         <option [selected]="null === filter.state" [ngValue]="null">
@@ -33,7 +33,7 @@
       </select>
     </div>
 
-    <div class="form-group" *ngIf="!userService.isServiceLeaderOrFreelancer()">
+    <div class="form-group" *ngIf="!userService.isServiceLeader()">
       <label class="form-control-label" for="organization-select">Предприятие</label>
       <select id="organization-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.organization" (change)="organizationChange()">
         <option [selected]="null === filter.organization" [ngValue]="null">

@@ -1,21 +1,18 @@
 import {Injectable} from '@angular/core';
 import {UserService} from './user.service';
-import { Client } from '@stomp/stompjs';
+import {Client} from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import {Subject, Subscription} from 'rxjs';
 import {ToastrService} from 'ngx-toastr';
-import {ChatMessageResponse} from '../model/postgres/chatMessageResponse';
 import {EventMessageResponseService} from './eventMessageResponse.service';
 import {EventMessageResponse} from '../model/postgres/eventMessageResponse';
 import {DatePipe} from '@angular/common';
-import {ChatMessageResponseService} from './chatMessageResponse.service';
 import {Router} from '@angular/router';
 
 @Injectable()
 export class WebSocketService {
 
   constructor(private userService: UserService, private toastrService: ToastrService, private router: Router,
-              private chatMessageResponseService: ChatMessageResponseService,
               private eventMessageResponseService: EventMessageResponseService, private datePipe: DatePipe) { }
 
   public clientIsConnected: Subject<Client> = new Subject<Client>();
@@ -71,39 +68,12 @@ export class WebSocketService {
 
     const me = this;
 
-    this.client.subscribe('/topic/message/' + this.userService.currentUser.id, message => {
-      const chatMessage = JSON.parse( message.body ) as ChatMessageResponse;
-
-      let bubble;
-      if ( chatMessage.chatMessageType === 'TEXT' )
-        bubble = me.toastrService.success( chatMessage.messageText, `${chatMessage.fromFio} написал(-а):` );
-      else if ( chatMessage.chatMessageType === 'FILE' )
-        bubble = me.toastrService.success( chatMessage.uploadFileName, `${chatMessage.fromFio} отправил(-а) файл:` );
-      else if ( chatMessage.chatMessageType === 'DOCUMENT' )
-        bubble = me.toastrService.success( chatMessage.documentNumber, `${chatMessage.fromFio} поделился(-лась) ссылкой на заказ-наряд:` );
-      else if ( chatMessage.chatMessageType === 'SERVICE_WORK' )
-        bubble = me.toastrService.success( chatMessage.serviceWorkName, `${chatMessage.fromFio} поделился(-лась) ссылкой на работы:` );
-      else if ( chatMessage.chatMessageType === 'SERVICE_GOODS_ADDON' )
-        bubble = me.toastrService.success( chatMessage.serviceGoodsAddonName, `${chatMessage.fromFio} поделился(-лась) ссылкой на товар:` );
-      else if ( chatMessage.chatMessageType === 'CLIENT_GOODS_OUT' )
-        bubble = me.toastrService.success( chatMessage.clientGoodsOutName, `${chatMessage.fromFio} поделился(-лась) ссылкой на товар клиента:` );
-
-      bubble.onTap.subscribe(() => {
-        me.opponentId = chatMessage.fromId;
-        me.router.navigate(['/chat']);
-      });
-    });
-
     this.eventMessageResponseService.getLast5();
     this.client.subscribe('/topic/event/' + this.userService.currentUser.id, message => {
       const eventMessage: EventMessageResponse = JSON.parse( message.body );
       this.eventMessageResponseService.addMessage( eventMessage );
       me.buildMessage( eventMessage );
     });
-
-    if ( localStorage.getItem('demoDomain') != null && localStorage.getItem('demoDomain') !== 'null' ) {
-      this.chatMessageResponseService.createGreetMessage();
-    }
 
   }
 

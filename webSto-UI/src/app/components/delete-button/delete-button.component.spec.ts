@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { DeleteButtonComponent } from './delete-button.component';
+import {DeleteButtonComponent} from './delete-button.component';
 
 describe('DeleteButtonComponent', () => {
   let component: DeleteButtonComponent;

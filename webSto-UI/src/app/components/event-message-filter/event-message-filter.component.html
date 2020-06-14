@@ -14,19 +14,7 @@
       </div>
     </div>
 
-    <div class="form-group" *ngIf="userService.isModerator()">
-      <label class="form-control-label" for="message-type-select">Тип уведомления</label>
-      <select id="message-type-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.messageType" (change)="emitChange()">
-        <option [selected]="null === filter.messageType" [ngValue]="null">
-          Без фильтра
-        </option>
-        <option [selected]="messageType.id === filter.messageType" *ngFor="let messageType of messageTypes" [ngValue]="messageType.id">
-          {{ messageType.name }}
-        </option>
-      </select>
-    </div>
-
-    <div class="form-group" *ngIf="userService.isModeratorOrAdmin()">
+    <div class="form-group" *ngIf="userService.isAdmin()">
       <label class="form-control-label" for="user-from-select">Инициатор</label>
       <select id="user-from-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.fromId" (change)="emitChange()">
         <option [selected]="null === filter.fromId" [ngValue]="null">
@@ -50,7 +38,7 @@
       </select>
     </div>
 
-    <div class="form-group" *ngIf="userService.isModeratorOrAdmin()">
+    <div class="form-group" *ngIf="userService.isAdmin()">
       <label class="form-control-label" for="vehicle-select">Документ</label>
       <select id="vehicle-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.documentId" (change)="emitChange()">
         <option [selected]="null === filter.documentId" [ngValue]="null">

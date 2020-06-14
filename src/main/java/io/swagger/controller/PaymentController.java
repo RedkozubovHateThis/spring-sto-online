@@ -1,6 +1,5 @@
 package io.swagger.controller;
 
-import io.swagger.firebird.repository.DocumentServiceDetailRepository;
 import io.swagger.helper.DateHelper;
 import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.payment.PaymentRecord;
@@ -11,12 +10,12 @@ import io.swagger.postgres.repository.PaymentRecordRepository;
 import io.swagger.postgres.repository.SubscriptionRepository;
 import io.swagger.postgres.repository.SubscriptionTypeRepository;
 import io.swagger.postgres.repository.UserRepository;
-import io.swagger.response.payment.PromisedAvailableResponse;
-import io.swagger.response.payment.SubscriptionResponse;
-import io.swagger.response.payment.SubscriptionTypeResponse;
 import io.swagger.response.api.ApiResponse;
 import io.swagger.response.exception.PaymentException;
 import io.swagger.response.payment.PaymentResponse;
+import io.swagger.response.payment.PromisedAvailableResponse;
+import io.swagger.response.payment.SubscriptionResponse;
+import io.swagger.response.payment.SubscriptionTypeResponse;
 import io.swagger.service.PaymentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/secured/payment")
+@RequestMapping("/payment")
 public class PaymentController {
 
     private final static Logger logger = LoggerFactory.getLogger( PaymentController.class );
@@ -46,14 +45,12 @@ public class PaymentController {
     private SubscriptionRepository subscriptionRepository;
     @Autowired
     private SubscriptionTypeRepository subscriptionTypeRepository;
-    @Autowired
-    private DocumentServiceDetailRepository documentsRepository;
 
     @PutMapping("/registerRequest")
     public ResponseEntity registerRequest(@RequestParam("amount") Integer amount) {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) )
+        if ( !UserHelper.isServiceLeader( currentUser ) )
             return ResponseEntity.status(403).body( new ApiResponse("Пополнение баланса доступно только для Автосервиса!") );
 
         try {
@@ -71,7 +68,7 @@ public class PaymentController {
     public ResponseEntity registerPromisedRequest(@RequestParam("amount") Integer amount) {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) )
+        if ( !UserHelper.isServiceLeader( currentUser ) )
             return ResponseEntity.status(403).body( new ApiResponse("Пополнение баланса доступно только для Автосервиса!") );
 
         try {
@@ -101,7 +98,7 @@ public class PaymentController {
     public ResponseEntity registerPromisedRequest() {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) )
+        if ( !UserHelper.isServiceLeader( currentUser ) )
             return ResponseEntity.status(403).body( new ApiResponse("Запрос статуса обещанного платежа доступен только для Автосервиса!") );
 
         try {
@@ -117,7 +114,7 @@ public class PaymentController {
     public ResponseEntity updateRequestExtended(@RequestParam("orderId") String orderId) {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) )
+        if ( !UserHelper.isServiceLeader( currentUser ) )
             return ResponseEntity.status(403).body( new ApiResponse("Пополнение баланса доступно только для Автосервиса!") );
 
         try {
@@ -137,7 +134,7 @@ public class PaymentController {
                                   @RequestParam("toDate") @DateTimeFormat(pattern = "dd.MM.yyyy") Date toDate) {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) )
+        if ( !UserHelper.isServiceLeader( currentUser ) )
             return ResponseEntity.status(404).build();
 
         List<PaymentRecord> paymentRecords = paymentRecordRepository.findAllByUserId( currentUser.getId(), fromDate, toDate );
@@ -165,7 +162,7 @@ public class PaymentController {
     public ResponseEntity findAllSubscriptionTypes() {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) && !UserHelper.isAdmin( currentUser ) )
+        if ( !UserHelper.isServiceLeader( currentUser ) && !UserHelper.isAdmin( currentUser ) )
             return ResponseEntity.status(404).build();
 
         List<SubscriptionTypeResponse> subscriptionTypeResponses = new ArrayList<>();
@@ -190,11 +187,7 @@ public class PaymentController {
     public ResponseEntity findAllSubscriptions() {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) )
-            return ResponseEntity.status(404).build();
-        if ( UserHelper.isServiceLeader( currentUser ) && !currentUser.isServiceLeaderValid() )
-            return ResponseEntity.status(404).build();
-        else if ( UserHelper.isFreelancer( currentUser ) && !currentUser.isFreelancerValid() )
+        if ( !UserHelper.isServiceLeader( currentUser ) )
             return ResponseEntity.status(404).build();
 
         List<Subscription> subscriptions = subscriptionRepository.findAllByUserId( currentUser.getId() );
@@ -213,7 +206,7 @@ public class PaymentController {
     public ResponseEntity findCurrentSubscription() {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) )
+        if ( !UserHelper.isServiceLeader( currentUser ) )
             return ResponseEntity.status(404).build();
 
         Subscription subscription = currentUser.getCurrentSubscription();
@@ -231,11 +224,7 @@ public class PaymentController {
     public ResponseEntity buySubscription(@RequestParam("subscriptionTypeId") Long subscriptionTypeId) {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) )
-            return ResponseEntity.status(404).build();
-        if ( UserHelper.isServiceLeader( currentUser ) && !currentUser.isServiceLeaderValid() )
-            return ResponseEntity.status(404).build();
-        else if ( UserHelper.isFreelancer( currentUser ) && !currentUser.isFreelancerValid() )
+        if ( !UserHelper.isServiceLeader( currentUser ) )
             return ResponseEntity.status(404).build();
 
         try {
@@ -262,9 +251,9 @@ public class PaymentController {
         if ( !UserHelper.isAdmin( currentUser ) )
             return ResponseEntity.status(404).body( new ApiResponse("У вас отсутсвуют необходимые права для выдачи тарифа!") );
 
-        User serviceLeader = userRepository.findOne( serviceLeaderId );
+        User serviceLeader = userRepository.findById( serviceLeaderId ).orElse( null );
 
-        if ( serviceLeader == null || !UserHelper.isServiceLeaderOrFreelancer( serviceLeader ) )
+        if ( serviceLeader == null || !UserHelper.isServiceLeader( serviceLeader ) )
             return ResponseEntity.status(404).body( new ApiResponse("Нельзя выдать тариф этому пользователю!") );
 
         SubscriptionType subscriptionType = subscriptionTypeRepository.findFreeSubscription();
@@ -293,7 +282,7 @@ public class PaymentController {
                                                @RequestParam("documentsCount") Integer documentsCount) {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) )
+        if ( !UserHelper.isServiceLeader( currentUser ) )
             return ResponseEntity.status(404).build();
 
         try {
@@ -315,7 +304,7 @@ public class PaymentController {
     public ResponseEntity updateRenewalSubscription(@RequestParam("subscriptionTypeId") Long subscriptionTypeId) {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) )
+        if ( !UserHelper.isServiceLeader( currentUser ) )
             return ResponseEntity.status(404).build();
 
         try {
@@ -343,7 +332,7 @@ public class PaymentController {
         if ( subscriptionTypeResponse == null )
             return ResponseEntity.status(404).body( new ApiResponse( "Тариф не найден!" ) );
 
-        SubscriptionType subscriptionType = subscriptionTypeRepository.findOne( subscriptionTypeResponse.getId() );
+        SubscriptionType subscriptionType = subscriptionTypeRepository.findById( subscriptionTypeResponse.getId() ).orElse( null );
         if ( subscriptionType == null )
             return ResponseEntity.status(404).body( new ApiResponse( "Тариф не найден!" ) );
 
@@ -374,26 +363,17 @@ public class PaymentController {
     }
 
     private Integer countDocumentsRemains(User user, Subscription subscription) {
-        if ( !UserHelper.isServiceLeaderOrFreelancer( user ) || subscription == null ) return null;
+        if ( !UserHelper.isServiceLeader( user ) || subscription == null ) return null;
 
-        if ( UserHelper.isServiceLeader( user ) && !user.isServiceLeaderValid() ) return null;
-        else if ( UserHelper.isFreelancer( user ) && !user.isFreelancerValid() ) return null;
-
-        Integer count = null;
-
-        if ( UserHelper.isServiceLeader( user ) )
-            count = documentsRepository.countDocumentsByOrganizationIdAndDates(
-                    user.getOrganizationId(),
-                    subscription.getStartDate(),
-                    subscription.getEndDate()
-            );
-        else if ( UserHelper.isFreelancer( user ) )
-            count = documentsRepository.countDocumentsByOrganizationIdAndDatesAndManagerId(
-                    user.getOrganizationId(),
-                    subscription.getStartDate(),
-                    subscription.getEndDate(),
-                    user.getManagerId()
-            );
+        Integer count = 0;
+//        Integer count = null;
+//
+//        if ( UserHelper.isServiceLeader( user ) )
+//            count = documentsRepository.countDocumentsByOrganizationIdAndDates(
+//                    user.getOrganizationId(),
+//                    subscription.getStartDate(),
+//                    subscription.getEndDate()
+//            );
 
         return Math.max( subscription.getDocumentsCount() - count, 0 );
     }

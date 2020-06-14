@@ -1,7 +1,7 @@
-import { OnInit } from '@angular/core';
-import {TransferService} from "../api/transfer.service";
-import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import {OnInit} from '@angular/core';
+import {TransferService} from '../api/transfer.service';
+import {ActivatedRoute} from '@angular/router';
+import {Subscription} from 'rxjs';
 
 export abstract class ModelTransfer<M, I> implements OnInit {
 

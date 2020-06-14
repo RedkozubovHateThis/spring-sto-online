@@ -1,12 +1,8 @@
 package io.swagger.helper;
 
 import io.swagger.postgres.model.security.User;
-import io.swagger.postgres.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 public class UserHelper {
 
@@ -52,44 +48,12 @@ public class UserHelper {
         return hasRole( user, "ADMIN" );
     }
 
-    public static Boolean isAdminOrModerator() {
-        return hasRole("ADMIN") || hasRole("MODERATOR");
-    }
-
-    public static Boolean isAdminOrModerator(User user) {
-        return hasRole( user, "ADMIN" ) || hasRole( user, "MODERATOR" );
-    }
-
-    public static Boolean isModerator() {
-        return hasRole("MODERATOR");
-    }
-
-    public static Boolean isModerator(User user) {
-        return hasRole( user, "MODERATOR" );
-    }
-
     public static Boolean isServiceLeader() {
         return hasRole("SERVICE_LEADER");
     }
 
     public static Boolean isServiceLeader(User user) {
         return hasRole( user, "SERVICE_LEADER" );
-    }
-
-    public static Boolean isFreelancer() {
-        return hasRole("FREELANCER");
-    }
-
-    public static Boolean isFreelancer(User user) {
-        return hasRole( user, "FREELANCER" );
-    }
-
-    public static Boolean isServiceLeaderOrFreelancer() {
-        return hasRole("FREELANCER") || hasRole("SERVICE_LEADER");
-    }
-
-    public static Boolean isServiceLeaderOrFreelancer(User user) {
-        return hasRole( user, "FREELANCER" ) || hasRole( user, "SERVICE_LEADER" );
     }
 
 }

@@ -1,7 +1,7 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
-import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
-import { Router } from '@angular/router';
-import {UserService} from "../../api/user.service";
+import {Component, ElementRef, OnInit} from '@angular/core';
+import {Location} from '@angular/common';
+import {Router} from '@angular/router';
+import {UserService} from '../../api/user.service';
 import {EventMessageResponseService} from '../../api/eventMessageResponse.service';
 
 @Component({

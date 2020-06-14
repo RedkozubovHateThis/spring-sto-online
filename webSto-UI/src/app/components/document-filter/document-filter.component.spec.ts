@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { DocumentFilterComponent } from './document-filter.component';
+import {DocumentFilterComponent} from './document-filter.component';
 
 describe('InfobarComponent', () => {
   let component: DocumentFilterComponent;

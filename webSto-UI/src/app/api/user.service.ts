@@ -1,16 +1,14 @@
-import {Injectable, Input, Output, EventEmitter} from '@angular/core';
+import {Injectable, Output} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable, Subject} from 'rxjs';
 import {User} from '../model/postgres/auth/user';
 import {Router} from '@angular/router';
 import {TransferService} from './transfer.service';
 import {environment} from '../../environments/environment';
-import {ChatMessageResponseService} from './chatMessageResponse.service';
 import {ToastrService} from 'ngx-toastr';
 import {UsersFilter} from '../model/usersFilter';
 import {RestService} from './rest.service';
 import {VehicleResponse} from '../model/firebird/vehicleResponse';
-import {ExpiredInfo} from '../model/expiredInfo';
 
 @Injectable()
 export class UserService implements TransferService<User>, RestService<User> {
@@ -157,13 +155,10 @@ export class UserService implements TransferService<User>, RestService<User> {
 
     const headers = this.getHeaders();
 
-    this.http.get( this.getApiUrl() + 'secured/users/currentUser', {headers} ).subscribe( data => {
+    this.http.get( this.getApiUrl() + 'users/currentUser', {headers} ).subscribe( data => {
 
       this.setCurrentUserData( data as User );
       localStorage.setItem('isAuthenticated', 'true');
-
-      if ( this.isModerator() )
-        this.getExpiredUsers();
 
       const redirectUrl: string = localStorage.getItem('redirectUrl');
 
@@ -171,10 +166,7 @@ export class UserService implements TransferService<User>, RestService<User> {
         this.router.navigate([redirectUrl]);
         localStorage.removeItem('redirectUrl');
       }
-      else if ( this.currentUser.userClient )
-        this.router.navigate(['/documents']);
-      else
-        this.router.navigate(['/dashboard']);
+      this.router.navigate(['/documents']);
 
     } );
 
@@ -184,26 +176,11 @@ export class UserService implements TransferService<User>, RestService<User> {
 
     const headers = this.getHeaders();
 
-    this.http.get( this.getApiUrl() + 'secured/users/currentUser', {headers} ).subscribe( data => {
+    this.http.get( this.getApiUrl() + 'users/currentUser', {headers} ).subscribe( data => {
       this.setCurrentUserData( data as User );
       this.currentUserIsLoaded.next( this.currentUser );
     }, () => {
       this.logout();
-    } );
-
-  }
-
-  getExpiredUsers() {
-    const headers = this.getHeaders();
-
-    this.http.get<ExpiredInfo[]>( this.getApiUrl() + 'secured/users/subscribers/expired', {headers} ).subscribe( data => {
-      console.log(data);
-      data.forEach( expired => {
-        const message = `У пользователя "${expired.fio}" ${expired.date} истекла подписка!"`;
-
-        this.toastrService.warning(message, 'Внимание!');
-      } );
-    }, () => {
     } );
 
   }
@@ -219,7 +196,7 @@ export class UserService implements TransferService<User>, RestService<User> {
   delete(user: User) {
     const headers = this.getHeaders();
 
-    return this.http.delete(`${this.getApiUrl()}/secured/users/${user.id}`, {headers});
+    return this.http.delete(`${this.getApiUrl()}/users/${user.id}`, {headers});
   }
 
   createDemoUser() {
@@ -231,7 +208,7 @@ export class UserService implements TransferService<User>, RestService<User> {
     const headers = this.getHeaders();
     this.isSaving = true;
 
-    return this.http.put( this.getApiUrl() + `secured/users/${user.id}`, user,{headers} ).subscribe( data => {
+    return this.http.put( this.getApiUrl() + `users/${user.id}`, user,{headers} ).subscribe( data => {
 
       user = data as User;
 
@@ -270,43 +247,43 @@ export class UserService implements TransferService<User>, RestService<User> {
       fio: filter.fio != null ? filter.fio : ''
     };
 
-    return this.http.get( `${this.getApiUrl()}secured/users/findAll`, {headers, params} );
+    return this.http.get( `${this.getApiUrl()}users/findAll`, {headers, params} );
   }
 
   getReplacementModerators() {
     const headers = this.getHeaders();
 
-    return this.http.get( `${this.getApiUrl()}secured/users/findReplacementModerators`, {headers} );
+    return this.http.get( `${this.getApiUrl()}users/findReplacementModerators`, {headers} );
   }
 
   getModerators() {
     const headers = this.getHeaders();
 
-    return this.http.get( `${this.getApiUrl()}secured/users/findModerators`, {headers} );
+    return this.http.get( `${this.getApiUrl()}users/findModerators`, {headers} );
   }
 
   getOne(id: number) {
     const headers = this.getHeaders();
 
-    return this.http.get( `${this.getApiUrl()}secured/users/${id}`, {headers} );
+    return this.http.get( `${this.getApiUrl()}users/${id}`, {headers} );
   }
 
   getVehicles(id: number): Observable<VehicleResponse[]> {
     const headers = this.getHeaders();
 
-    return this.http.get<VehicleResponse[]>( `${this.getApiUrl()}secured/users/${id}/vehicles`, {headers} );
+    return this.http.get<VehicleResponse[]>( `${this.getApiUrl()}users/${id}/vehicles`, {headers} );
   }
 
   getVehicle(vinNumber: string): Observable<VehicleResponse> {
     const headers = this.getHeaders();
 
-    return this.http.get<VehicleResponse>( `${this.getApiUrl()}secured/users/vehicles/${vinNumber}`, {headers} );
+    return this.http.get<VehicleResponse>( `${this.getApiUrl()}users/vehicles/${vinNumber}`, {headers} );
   }
 
   getOpponents() {
     const headers = this.getHeaders();
 
-    return this.http.get( `${this.getApiUrl()}secured/chat/opponents`, {headers} );
+    return this.http.get( `${this.getApiUrl()}chat/opponents`, {headers} );
   }
 
   getShareOpponents(documentId: number) {
@@ -316,19 +293,19 @@ export class UserService implements TransferService<User>, RestService<User> {
       documentId: documentId != null ? documentId.toString() : ''
     };
 
-    return this.http.get( `${this.getApiUrl()}secured/chat/share/opponents`, {headers, params} );
+    return this.http.get( `${this.getApiUrl()}chat/share/opponents`, {headers, params} );
   }
 
   getEventMessageFromUsers() {
     const headers = this.getHeaders();
 
-    return this.http.get( `${this.getApiUrl()}secured/users/eventMessages/fromUsers`, {headers} );
+    return this.http.get( `${this.getApiUrl()}users/eventMessages/fromUsers`, {headers} );
   }
 
   getEventMessageToUsers() {
     const headers = this.getHeaders();
 
-    return this.http.get( `${this.getApiUrl()}secured/users/eventMessages/toUsers`, {headers} );
+    return this.http.get( `${this.getApiUrl()}users/eventMessages/toUsers`, {headers} );
   }
 
   getTransferModel() {
@@ -344,56 +321,19 @@ export class UserService implements TransferService<User>, RestService<User> {
   }
 
   isNotClient(): boolean {
-    return this.currentUser != null && ( this.currentUser.userAdmin || this.currentUser.userServiceLeaderOrFreelancer || this.currentUser.userModerator );
+    return this.currentUser != null && ( this.currentUser.userAdmin || this.currentUser.userServiceLeader );
   }
 
   isClient(): boolean {
     return this.currentUser != null && this.currentUser.userClient;
   }
 
-  isModerator(): boolean {
-    return this.currentUser != null && this.currentUser.userModerator;
-  }
-
   isServiceLeader(): boolean {
     return this.currentUser != null && this.currentUser.userServiceLeader;
   }
 
-  isFreelancer(): boolean {
-    return this.currentUser != null && this.currentUser.userFreelancer;
-  }
-
-  isServiceLeaderOrFreelancer(): boolean {
-    return this.currentUser != null && this.currentUser.userServiceLeaderOrFreelancer;
-  }
-
-  isServiceLeaderWithEmptySubscription(): boolean {
-    return this.currentUser != null && this.currentUser.userServiceLeaderOrFreelancer && this.currentUser.isCurrentSubscriptionEmpty;
-  }
-
-  isServiceLeaderWithInvalidBalance(): boolean {
-    return this.currentUser != null && this.currentUser.userServiceLeaderOrFreelancer && this.currentUser.isBalanceInvalid;
-  }
-
-  isServiceLeaderWithRestrictedAccess(): boolean {
-    return this.currentUser != null && this.currentUser.userServiceLeaderOrFreelancer &&
-      ( this.currentUser.isCurrentSubscriptionEmpty || this.currentUser.isBalanceInvalid );
-  }
-
-  isServiceLeaderWithExpiredSubscription(): boolean {
-    return this.currentUser != null && this.currentUser.userServiceLeaderOrFreelancer && this.currentUser.isCurrentSubscriptionExpired;
-  }
-
   isAdmin(): boolean {
     return this.currentUser != null && this.currentUser.userAdmin;
-  }
-
-  isModeratorOrAdmin(): boolean {
-    return this.currentUser != null && ( this.currentUser.userAdmin || this.currentUser.userModerator );
-  }
-
-  isClientOrServiceLeader(): boolean {
-    return this.currentUser != null && ( this.currentUser.userClient || this.currentUser.userServiceLeaderOrFreelancer );
   }
 
   isSameUser(model: User) {

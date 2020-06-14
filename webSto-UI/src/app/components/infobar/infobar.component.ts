@@ -1,14 +1,13 @@
-import {Component, OnInit, ElementRef, Input} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {UserService} from '../../api/user.service';
 import {User} from '../../model/postgres/auth/user';
 import {Subscription} from 'rxjs';
 import {StompSubscription} from '@stomp/stompjs';
-import {ChatMessageResponse} from '../../model/postgres/chatMessageResponse';
 import {WebSocketService} from '../../api/webSocket.service';
 import {InfobarService} from '../../api/infobar.service';
 import {ClientInfo} from '../../model/info/clientInfo';
 import {ServiceLeaderInfo} from '../../model/info/serviceLeaderInfo';
-import {ModeratorInfo} from '../../model/info/moderatorInfo';
+import {AdminInfo} from '../../model/info/adminInfo';
 import {DocumentResponseController} from '../../controller/document-response.controller';
 
 @Component({
@@ -19,7 +18,7 @@ import {DocumentResponseController} from '../../controller/document-response.con
 export class InfobarComponent implements OnInit {
 
   constructor(private infobarService: InfobarService, private userService: UserService,
-              private webSocketService: WebSocketService, private documentResponseController: DocumentResponseController) {}
+              private webSocketService: WebSocketService/*, private documentResponseController: DocumentResponseController*/) {}
 
   private currentUser: User;
   private subscription: StompSubscription;
@@ -27,7 +26,7 @@ export class InfobarComponent implements OnInit {
 
   private clientInfo: ClientInfo;
   private serviceLeaderInfo: ServiceLeaderInfo;
-  private moderatorInfo: ModeratorInfo;
+  private moderatorInfo: AdminInfo;
   private isLoading: boolean = false;
 
   private readonly daysRemainsWarn = 1000 * 60 * 60 * 24 * 3;
@@ -53,10 +52,10 @@ export class InfobarComponent implements OnInit {
 
     this.subscribe();
 
-    if ( this.currentUser.userModerator || this.currentUser.userAdmin )
-      this.documentResponseController.organizationChange.subscribe( () => {
-        this.getModeratorData();
-      } );
+    // if ( this.currentUser.userAdmin )
+    //   this.documentResponseController.organizationChange.subscribe( () => {
+    //     this.getAdminData();
+    //   } );
   }
 
   subscribe() {
@@ -76,10 +75,10 @@ export class InfobarComponent implements OnInit {
 
     if ( this.currentUser.userClient )
       this.getClientData();
-    else if ( this.currentUser.userServiceLeaderOrFreelancer )
+    else if ( this.currentUser.userServiceLeader )
       this.getServiceLeaderData();
-    else if ( this.currentUser.userModerator || this.currentUser.userAdmin )
-      this.getModeratorData();
+    else if ( this.currentUser.userAdmin )
+      this.getAdminData();
   }
 
   private getClientData() {
@@ -102,10 +101,10 @@ export class InfobarComponent implements OnInit {
     } );
   }
 
-  private getModeratorData() {
+  private getAdminData() {
     this.isLoading = true;
     this.infobarService.getModeratorInfo( this.documentResponseController.filter.organization ).subscribe( data => {
-      this.moderatorInfo = data as ModeratorInfo;
+      this.moderatorInfo = data as AdminInfo;
       this.isLoading = false;
     }, () => {
       this.isLoading = false;

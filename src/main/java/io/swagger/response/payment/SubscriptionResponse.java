@@ -3,7 +3,6 @@ package io.swagger.response.payment;
 import io.swagger.postgres.model.payment.Subscription;
 import lombok.Data;
 
-import javax.persistence.Column;
 import java.util.Date;
 
 @Data

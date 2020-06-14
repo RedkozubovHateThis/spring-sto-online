@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { SubscriptionComponent } from './subscription.component';
+import {SubscriptionComponent} from './subscription.component';
 
 describe('SubscriptionComponent', () => {
   let component: SubscriptionComponent;

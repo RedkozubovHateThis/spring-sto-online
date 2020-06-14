@@ -16,9 +16,6 @@
                                  [model]="model" [withPrint]="false"></app-report-button>
               <app-report-button *ngIf="userService.currentUser != null" [printDisabled]="model != null && model.state !== 4"
                                  [model]="model"></app-report-button>
-              <app-share-button *ngIf="model != null && userService.isNotClient()" [document]="model"
-                                [disabled]="userService.isServiceLeaderWithExpiredSubscription() ||
-                                paymentService.isServiceLeaderWithExpiredSubscription()"></app-share-button>
             </div>
           </div>
         </div>
@@ -51,7 +48,7 @@
                     </div>
                   </div>
 
-                  <ng-container *ngIf="userService.isModeratorOrAdmin()">
+                  <ng-container *ngIf="userService.isAdmin()">
                     <div class="row mb-1">
                       <div class="col-auto col-lg-5 font-weight-bold">
                         Оформил(-а):
@@ -246,10 +243,6 @@
                     </th>
                     <th class="wrap-column">
                       {{work.name}}
-                      <app-share-button *ngIf="model != null && userService.isNotClient()" [isLink]="true"
-                                        [disabled]="userService.isServiceLeaderWithExpiredSubscription() ||
-                                        paymentService.isServiceLeaderWithExpiredSubscription()"
-                                        [document]="model" [serviceWork]="work"></app-share-button>
                     </th>
                     <th style="text-align: right;">
                       <ng-container *ngIf="work.byPrice; else byPriceNorm">
@@ -345,10 +338,6 @@
                     </th>
                     <th class="wrap-column">
                       {{addon.fullName}}
-                      <app-share-button *ngIf="model != null && userService.isNotClient()" [isLink]="true"
-                                        [disabled]="userService.isServiceLeaderWithExpiredSubscription() ||
-                                        paymentService.isServiceLeaderWithExpiredSubscription()"
-                                        [document]="model" [serviceGoodsAddon]="addon"></app-share-button>
                     </th>
 <!--                    <th class="wrap-column">-->
 <!--                      {{addon.notes}}-->
@@ -406,10 +395,6 @@
                     </th>
                     <th class="wrap-column">
                       {{addon.fullName}}
-                      <app-share-button *ngIf="model != null && userService.isNotClient()" [isLink]="true"
-                                        [disabled]="userService.isServiceLeaderWithExpiredSubscription() ||
-                                        paymentService.isServiceLeaderWithExpiredSubscription()"
-                                        [document]="model" [clientGoodsOut]="addon"></app-share-button>
                     </th>
                     <th style="text-align: right;">
                       {{addon.goodsCount}}

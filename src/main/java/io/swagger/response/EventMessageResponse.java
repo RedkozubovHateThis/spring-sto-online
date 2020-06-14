@@ -1,8 +1,6 @@
 package io.swagger.response;
 
-import io.swagger.postgres.model.ChatMessage;
 import io.swagger.postgres.model.EventMessage;
-import io.swagger.postgres.model.UploadFile;
 import io.swagger.postgres.model.enums.MessageType;
 import io.swagger.postgres.model.security.User;
 import lombok.Data;

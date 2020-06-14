@@ -1,10 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {UserService} from '../../api/user.service';
-import {HttpClient} from '@angular/common/http';
-import {DocumentResponse} from '../../model/firebird/documentResponse';
 import {ToastrService} from 'ngx-toastr';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {User} from '../../model/postgres/auth/user';
 import {RestService} from '../../api/rest.service';
 
 @Component({

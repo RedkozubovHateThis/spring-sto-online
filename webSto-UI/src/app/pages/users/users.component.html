@@ -35,10 +35,8 @@
                 <th scope="col">Телефон</th>
                 <th scope="col">Email</th>
                 <th scope="col">Роли</th>
-                <th scope="col">Утвержден</th>
                 <th scope="col">
                   Авторегистрация
-                  <div class="small">Из системы АвтоДилер</div>
                 </th>
               </tr>
             </thead>
@@ -53,11 +51,6 @@
                 <span *ngFor="let userRole of user.roles">
                   {{userRole.nameRus}}&nbsp;
                 </span>
-              </th>
-              <th>
-                <ng-container *ngIf="user.userClient || user.userServiceLeaderOrFreelancer">
-                  {{user.isApproved ? 'Да' : 'Нет'}}
-                </ng-container>
               </th>
               <th>
                 <ng-container *ngIf="user.userClient">

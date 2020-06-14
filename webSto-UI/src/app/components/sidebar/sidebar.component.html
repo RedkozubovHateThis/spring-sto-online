@@ -6,7 +6,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <!-- Brand -->
-    <a class="navbar-brand pt-0" routerLinkActive="active" [routerLink]="['/dashboard']">
+    <a class="navbar-brand pt-0" routerLinkActive="active" [routerLink]="['/documents']">
       <img src="./assets/img/brand/buromotors.png" class="navbar-brand-img" alt="...">
     </a>
     <!-- User -->
@@ -83,7 +83,7 @@
       <div class="navbar-collapse-header d-md-none">
         <div class="row">
           <div class="col-6 collapse-brand">
-            <a  routerLinkActive="active" [routerLink]="['/dashboard']">
+            <a  routerLinkActive="active" [routerLink]="['/documents']">
               <img src="./assets/img/brand/buromotors.png">
             </a>
           </div>
@@ -97,14 +97,6 @@
       </div>
       <!-- Navigation -->
       <ul class="navbar-nav">
-        <a routerLinkActive="active" [routerLink]="['/dashboard']" class="nav-link"
-           *ngIf="userService.isNotClient()">
-            <i class="fas fa-tv text-buro-blue"></i> Главная
-        </a>
-        <a routerLinkActive="active" [routerLink]="['/chat']" class="nav-link"
-           *ngIf="userService.isNotClient()">
-            <i class="fas fa-comments text-buro-blue"></i> Чат
-        </a>
         <a routerLinkActive="active" [routerLink]="['/documents']" class="nav-link">
             <i class="fas fa-list text-buro-blue"></i> Заказ-наряды
         </a>
@@ -112,7 +104,7 @@
             <i class="fas fa-user text-buro-blue"></i> Профиль
         </a>
         <a routerLinkActive="active" [routerLink]="['/users']" class="nav-link"
-           *ngIf="userService.isModeratorOrAdmin()">
+           *ngIf="userService.isAdmin()">
             <i class="fas fa-users text-buro-blue"></i> Пользователи
         </a>
         <a routerLinkActive="active" [routerLink]="['/reports']" class="nav-link"
@@ -123,11 +115,11 @@
           <i class="fas fa-bell text-buro-blue"></i> Уведомления
         </a>
         <a routerLinkActive="active" [routerLink]="['/balance']" class="nav-link"
-           *ngIf="userService.isServiceLeaderOrFreelancer()">
+           *ngIf="userService.isServiceLeader()">
           <i class="fas fa-ruble-sign text-buro-blue"></i> Баланс
         </a>
         <a routerLinkActive="active" [routerLink]="['/subscription']" class="nav-link"
-           *ngIf="userService.isServiceLeaderOrFreelancer() || userService.isAdmin()">
+           *ngIf="userService.isServiceLeader() || userService.isAdmin()">
           <i class="fas fa-book text-buro-blue"></i> Тарифы
         </a>
       </ul>

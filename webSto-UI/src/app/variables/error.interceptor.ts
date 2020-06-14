@@ -1,10 +1,10 @@
-import { Observable, throwError } from 'rxjs';
-import { HttpErrorResponse, HttpEvent, HttpHandler,HttpInterceptor, HttpRequest } from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
 
-import { Injectable } from '@angular/core';
-import { catchError } from 'rxjs/operators';
-import {UserService} from "../api/user.service";
-import { Router } from '@angular/router';
+import {Injectable} from '@angular/core';
+import {catchError} from 'rxjs/operators';
+import {UserService} from '../api/user.service';
+import {Router} from '@angular/router';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {

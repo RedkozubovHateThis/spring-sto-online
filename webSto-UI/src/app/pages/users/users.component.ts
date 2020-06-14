@@ -1,11 +1,9 @@
-import { Component } from '@angular/core';
-import {ActivatedRoute, Params, Router} from '@angular/router';
-import {Pageable} from "../../model/pageable";
-import { Subscription } from 'rxjs';
-import {Pagination} from "../pagination";
-import {User} from "../../model/postgres/auth/user";
-import {UserService} from "../../api/user.service";
-import {UsersFilter} from '../../model/usersFilter';
+import {Component} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Pageable} from '../../model/pageable';
+import {Pagination} from '../pagination';
+import {User} from '../../model/postgres/auth/user';
+import {UserService} from '../../api/user.service';
 import {UserController} from '../../controller/user.controller';
 
 @Component({

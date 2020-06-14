@@ -13,38 +13,22 @@ export class User {
   email: string;
   enabled: boolean;
   roles: UserRole[];
-  clientId: number;
-  organizationId: number;
-  managerId: number;
-  moderatorId: number;
-  moderatorFio: string;
-  isApproved: boolean;
   isAutoRegistered: boolean;
-  inVacation: boolean;
   inn: string;
   vin: string;
-  replacementModeratorId: number;
-  replacementModeratorFio: string;
   currentSubscriptionId: number;
-  partShops: number[];
-  allowSms: boolean;
   serviceWorkPrice: number;
   serviceGoodsCost: number;
   balance: number;
   isCurrentSubscriptionExpired: boolean;
   isCurrentSubscriptionEmpty: boolean;
   isBalanceInvalid: boolean;
-  isAccessRestricted: boolean;
   subscriptionTypeId: number;
   vinNumbers: string[];
 
   // TODO: подключить js-data-angular и переделать на computed property
   userAdmin: boolean;
   userClient: boolean;
-  userGuest: boolean;
   userServiceLeader: boolean;
-  userServiceLeaderOrFreelancer: boolean;
-  userModerator: boolean;
-  userFreelancer: boolean;
 
 }

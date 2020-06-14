@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { PasswordChangeButtonComponent } from './password-change-button.component';
+import {PasswordChangeButtonComponent} from './password-change-button.component';
 
 describe('PasswordChangeButtonComponent', () => {
   let component: PasswordChangeButtonComponent;

@@ -2,9 +2,12 @@ package io.swagger.postgres.model.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.crnk.core.resource.annotations.JsonApiId;
+import io.crnk.core.resource.annotations.JsonApiRelation;
+import io.crnk.core.resource.annotations.JsonApiResource;
+import io.crnk.core.resource.annotations.SerializeType;
 import io.swagger.helper.UserHelper;
-import io.swagger.postgres.model.ChatMessage;
-import io.swagger.postgres.model.DocumentUserState;
+import io.swagger.postgres.model.BaseEntity;
 import io.swagger.postgres.model.EventMessage;
 import io.swagger.postgres.model.UploadFile;
 import io.swagger.postgres.model.payment.Subscription;
@@ -14,8 +17,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
-import org.springframework.core.annotation.Order;
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
@@ -28,13 +30,10 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 @Data
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(callSuper = true)
 @Where(clause = "enabled=true")
-public class User implements UserDetails, Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@JsonApiResource(type = "user", resourcePath = "users")
+public class User extends BaseEntity implements UserDetails, Serializable {
 
     @Column(unique = true)
     private String username;
@@ -47,14 +46,7 @@ public class User implements UserDetails, Serializable {
     private String email;
     private String inn;
     private String vin;
-    private Integer clientId;
-    private Integer organizationId;
-    private Integer managerId;
-    private Boolean isApproved;
-    private Date lastUserAcceptDate;
-    private Boolean inVacation;
     private Boolean isAutoRegistered;
-//    private Long replacementModeratorId;
 
     @Type(type ="io.swagger.config.database.StringArrayUserType")
     private String[] vinNumbers;
@@ -73,61 +65,30 @@ public class User implements UserDetails, Serializable {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_role_id", referencedColumnName = "id"))
     @OrderBy("name")
+    @JsonApiRelation(serialize = SerializeType.EAGER)
     private Set<UserRole> roles = new HashSet<>();
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "fromUser")
-    @OrderBy("messageDate")
-    private Set<ChatMessage> messagesAsFrom = new HashSet<>();
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "toUser")
-    @OrderBy("messageDate")
-    private Set<ChatMessage> messagesAsTo = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "uploadUser")
     @OrderBy("uploadDate")
     private Set<UploadFile> uploadFiles = new HashSet<>();
 
-    @JsonIgnore
-    @ManyToOne
-    @NotFound(action = NotFoundAction.IGNORE)
-    private User replacementModerator;
-    @JsonIgnore
-    @ManyToOne
-    @NotFound(action = NotFoundAction.IGNORE)
-    private User moderator;
-
-    @JsonIgnore
     @OneToOne
     @NotFound(action = NotFoundAction.IGNORE)
+    @JsonApiRelation
     private Subscription currentSubscription;
-    @JsonIgnore
+
     @OrderBy("startDate desc")
     @OneToMany(mappedBy = "user")
+    @JsonApiRelation(mappedBy = "user")
     private Set<Subscription> allSubscriptions = new HashSet<>();
 
-    @Transient
-    private Long replacementModeratorId;
-    @Transient
-    private Long moderatorId;
     @Transient
     private Long currentSubscriptionId;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "replacementModerator")
-    @OrderBy("lastName")
-    @Where(clause = "enabled=true")
-    private Set<User> replacedBy = new HashSet<>();
-
-    @JsonIgnore
     @Transient
-    private Collection<? extends GrantedAuthority> authorities;
-
-    @JsonIgnore
-    @OneToOne(mappedBy = "user")
-    private DocumentUserState documentUserState;
+    private Collection<SimpleGrantedAuthority> authorities;
 
     @JsonIgnore
     @OneToMany(mappedBy = "sendUser")
@@ -138,11 +99,6 @@ public class User implements UserDetails, Serializable {
     @OneToMany(mappedBy = "targetUser")
     @OrderBy("messageDate desc")
     private Set<EventMessage> messagesAsTargetUser = new HashSet<>();
-
-    @Type(type ="io.swagger.config.database.GenericArrayUserType")
-    private Integer[] partShops;
-
-    private Boolean allowSms;
 
     private Double serviceWorkPrice;
     private Double serviceGoodsCost;
@@ -190,18 +146,6 @@ public class User implements UserDetails, Serializable {
         return UserHelper.isServiceLeader( this );
     }
 
-    public Boolean isUserModerator() {
-        return UserHelper.isModerator( this );
-    }
-
-    public Boolean isUserFreelancer() {
-        return UserHelper.isFreelancer( this );
-    }
-
-    public Boolean isUserServiceLeaderOrFreelancer() {
-        return UserHelper.isServiceLeaderOrFreelancer( this );
-    }
-
     @JsonIgnore
     public String getPassword() {
         return password;
@@ -212,49 +156,11 @@ public class User implements UserDetails, Serializable {
         this.password = password;
     }
 
-    public String getReplacementModeratorFio() {
-        if ( replacementModerator != null )
-            return replacementModerator.getFio();
-
-        return null;
-    }
-
-    public Long getReplacementModeratorId() {
-        if ( replacementModerator != null )
-            return replacementModerator.getId();
-
-        return null;
-    }
-
-    public String getModeratorFio() {
-        if ( moderator != null )
-            return moderator.getFio();
-
-        return null;
-    }
-
-    public Long getModeratorId() {
-        if ( moderator != null )
-            return moderator.getId();
-
-        return null;
-    }
-
     public Long getCurrentSubscriptionId() {
         if ( currentSubscription != null )
             return currentSubscription.getId();
 
         return null;
-    }
-
-    @JsonIgnore
-    public Long getCurrentReplacementModeratorId() {
-        return replacementModeratorId;
-    }
-
-    @JsonIgnore
-    public Long getCurrentModeratorId() {
-        return moderatorId;
     }
 
     @JsonIgnore
@@ -267,32 +173,14 @@ public class User implements UserDetails, Serializable {
         return balance;
     }
 
-    public Boolean getIsCurrentSubscriptionEmpty() {
+    public Boolean isCurrentSubscriptionEmpty() {
         return currentSubscription == null;
     }
-    public Boolean getIsBalanceInvalid() {
+    public Boolean isBalanceInvalid() {
         return balance != null && balance < 0;
     }
-    public Boolean getIsAccessRestricted() {
-        return getIsCurrentSubscriptionEmpty() || getIsBalanceInvalid();
-    }
 
-    public Boolean getIsCurrentSubscriptionExpired() {
+    public Boolean isCurrentSubscriptionExpired() {
         return currentSubscription != null && currentSubscription.getEndDate().before( new Date() );
-    }
-
-    @JsonIgnore
-    public Boolean isServiceLeaderValid() {
-        return organizationId != null && isApproved;
-    }
-
-    @JsonIgnore
-    public Boolean isFreelancerValid() {
-        return organizationId != null && managerId != null && isApproved;
-    }
-
-    @JsonIgnore
-    public Boolean isClientValid() {
-        return clientId != null && isApproved;
     }
 }

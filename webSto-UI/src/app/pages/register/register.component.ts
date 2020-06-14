@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {UserService} from "../../api/user.service";
-import {Router} from "@angular/router";
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {UserService} from '../../api/user.service';
+import {Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
 
 @Component({
@@ -19,9 +19,7 @@ export class RegisterComponent implements OnInit {
   private selectedRole = 'CLIENT';
   private roles = [
     { name: 'Клиент', id: 'CLIENT' },
-    { name: 'Руководитель сервиса', id: 'SERVICE_LEADER' },
-    { name: 'Самозанятый', id: 'FREELANCER' },
-    // { name: 'Модератор', id: 'MODERATOR' },
+    { name: 'Руководитель сервиса', id: 'SERVICE_LEADER' }
   ];
 
   ngOnInit() {

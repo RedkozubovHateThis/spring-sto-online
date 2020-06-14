@@ -1,10 +1,6 @@
 package io.swagger.helper;
 
-import io.swagger.controller.EventMessageController;
 import io.swagger.controller.UserController;
-import io.swagger.postgres.model.EventMessage;
-import io.swagger.postgres.model.EventMessage_;
-import io.swagger.postgres.model.enums.MessageType;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.model.security.UserRole;
 import io.swagger.postgres.model.security.UserRole_;
@@ -25,35 +21,10 @@ public class UserSpecificationBuilder {
 
                 List<Predicate> predicates = new ArrayList<>();
                 Join<User, UserRole> userRoleJoin = root.join( User_.roles );
-                Join<User, User> moderatorJoin = root.join( User_.moderator, JoinType.LEFT );
-
-                if ( UserHelper.isModerator( currentUser ) ) {
-                    predicates.add(
-                            cb.or(
-                                    cb.and(
-                                            cb.equal( moderatorJoin.get( User_.enabled ), true ),
-                                            cb.equal( moderatorJoin.get( User_.id ), currentUser.getId() )
-                                    ),
-                                    cb.equal( root.get( User_.id ), currentUser.getId() )
-                            )
-                    );
-                }
 
                 if ( filterPayload.getRole() != null && filterPayload.getRole().length() > 0 ) {
                     predicates.add(
                             cb.equal( userRoleJoin.get( UserRole_.name ), filterPayload.getRole() )
-                    );
-                }
-                if ( filterPayload.getIsApproved() != null ) {
-                    predicates.add(
-                            cb.equal( root.get( User_.isApproved ), filterPayload.getIsApproved() )
-                    );
-                    predicates.add(
-                            cb.or(
-                                    cb.equal( userRoleJoin.get( UserRole_.name ), "CLIENT" ),
-                                    cb.equal( userRoleJoin.get( UserRole_.name ), "SERVICE_LEADER" ),
-                                    cb.equal( userRoleJoin.get( UserRole_.name ), "FREELANCER" )
-                            )
                     );
                 }
                 if ( filterPayload.getIsAutoRegistered() != null ) {
@@ -63,8 +34,7 @@ public class UserSpecificationBuilder {
                     predicates.add(
                             cb.or(
                                     cb.equal( userRoleJoin.get( UserRole_.name ), "CLIENT" ),
-                                    cb.equal( userRoleJoin.get( UserRole_.name ), "SERVICE_LEADER" ),
-                                    cb.equal( userRoleJoin.get( UserRole_.name ), "FREELANCER" )
+                                    cb.equal( userRoleJoin.get( UserRole_.name ), "SERVICE_LEADER" )
                             )
                     );
                 }

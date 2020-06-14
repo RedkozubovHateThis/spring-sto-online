@@ -1,7 +1,6 @@
-import {ActivatedRoute, Params, Router} from '@angular/router';
-import { OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
-import {Pageable} from '../model/pageable';
+import {ActivatedRoute, Router} from '@angular/router';
+import {OnInit} from '@angular/core';
+import {Subscription} from 'rxjs';
 import {PaginationController} from '../controller/pagination.controller';
 
 export abstract class Pagination implements OnInit {

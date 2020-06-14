@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { UserFilterComponent } from './user-filter.component';
+import {UserFilterComponent} from './user-filter.component';
 
 describe('UserFilterComponent', () => {
   let component: UserFilterComponent;

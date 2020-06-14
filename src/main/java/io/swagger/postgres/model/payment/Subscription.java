@@ -1,11 +1,14 @@
 package io.swagger.postgres.model.payment;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.crnk.core.resource.annotations.JsonApiId;
+import io.crnk.core.resource.annotations.JsonApiRelation;
+import io.crnk.core.resource.annotations.JsonApiResource;
+import io.crnk.core.resource.annotations.SerializeType;
 import io.swagger.postgres.model.security.User;
 import lombok.Data;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,15 +18,18 @@ import java.util.Set;
 
 @Entity
 @Data
+@JsonApiResource(type = "subscription", resourcePath = "subscriptions")
 public class Subscription implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonApiId
     private Long id;
 
     @ManyToOne
     @NotFound(action = NotFoundAction.IGNORE)
     @JoinColumn(name = "subscription_type_id")
+    @JsonApiRelation(serialize = SerializeType.EAGER)
     private SubscriptionType type;
 
     @Column(nullable = false)
@@ -42,19 +48,23 @@ public class Subscription implements Serializable {
     @Column(nullable = false)
     private Integer documentsCount;
 
-    @OneToOne(mappedBy = "currentSubscription")
-    @NotFound(action = NotFoundAction.IGNORE)
-    private User asCurrentUser;
+//    @OneToOne(mappedBy = "currentSubscription")
+//    @NotFound(action = NotFoundAction.IGNORE)
+//    @JsonApiRelation
+//    private User asCurrentUser;
 
     @ManyToOne
     @NotFound(action = NotFoundAction.IGNORE)
+    @JsonApiRelation
     private User user;
 
     @OneToOne(mappedBy = "subscription")
     @NotFound(action = NotFoundAction.IGNORE)
+    @JsonIgnore
     private PaymentRecord paymentRecord;
 
     @OneToMany(mappedBy = "subscription")
+    @JsonIgnore
     private Set<SubscriptionAddon> addons = new HashSet<>();
 
     private Boolean isClosedEarly;

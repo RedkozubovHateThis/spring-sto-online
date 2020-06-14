@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { RoleChangeButtonComponent } from './role-change-button.component';
+import {RoleChangeButtonComponent} from './role-change-button.component';
 
 describe('RoleChangeButtonComponent', () => {
   let component: RoleChangeButtonComponent;

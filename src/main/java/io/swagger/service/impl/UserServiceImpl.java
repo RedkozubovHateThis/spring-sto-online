@@ -1,8 +1,6 @@
 package io.swagger.service.impl;
 
 import io.swagger.controller.WebSocketController;
-import io.swagger.postgres.model.EventMessage;
-import io.swagger.postgres.model.enums.MessageType;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.EventMessageRepository;
 import io.swagger.postgres.repository.UserRepository;
@@ -11,9 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
-import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -28,74 +23,6 @@ public class UserServiceImpl implements UserService {
     private WebSocketController webSocketController;
     @Autowired
     private UserRepository userRepository;
-
-    @Override
-    public User setModerator(User user) {
-
-        User userModerator = null;
-
-        if ( user.getModeratorId() != null ) {
-            userModerator = userRepository.findOne( user.getModeratorId() );
-        }
-
-        if ( userModerator == null ) {
-
-            List<User> moderators = userRepository.findUsersByRoleName("MODERATOR");
-
-            for (User moderator : moderators) {
-
-                if ( userModerator == null )
-                    userModerator = moderator;
-                else {
-
-                    if ( moderator.getLastUserAcceptDate() == null ) {
-                        userModerator = moderator;
-                        break;
-                    }
-                    else if ( userModerator.getLastUserAcceptDate() == null ) {
-                        break;
-                    }
-                    else if ( moderator.getLastUserAcceptDate().before( userModerator.getLastUserAcceptDate() ) ) {
-                        userModerator = moderator;
-                    }
-
-                }
-
-            }
-
-        }
-
-        if ( userModerator != null ) {
-            logger.info( "Got moderator \"{}\" for user \"{}\"", userModerator.getFio(), user.getFio() );
-            user.setModerator( userModerator );
-            webSocketController.sendCounterRefreshMessage( userModerator, false, true );
-
-            userModerator.setLastUserAcceptDate( new Date() );
-            userRepository.save( userModerator );
-
-            return userModerator;
-        }
-        else {
-            logger.error("Moderator not found");
-            return null;
-        }
-
-    }
-
-    @Override
-    public void buildRegistrationEventMessage(User targetUser, User sendUser) {
-
-        EventMessage eventMessage = new EventMessage();
-        eventMessage.setSendUser( sendUser );
-        eventMessage.setTargetUser( targetUser );
-        eventMessage.setMessageType( MessageType.USER_REGISTER );
-        eventMessage.setMessageDate( new Date() );
-
-        eventMessageRepository.save(eventMessage);
-
-        webSocketController.sendEventMessage( eventMessage, targetUser.getId() );
-
-    }
 
     @Override
     public String preparePhone(String phone) {

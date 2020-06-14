@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {UserService} from "../../api/user.service";
+import {Component, OnInit} from '@angular/core';
+import {UserService} from '../../api/user.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
 

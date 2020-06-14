@@ -18,8 +18,6 @@ export class RoleChangeButtonComponent implements OnInit {
   private roles = [
     { name: 'Автовладелец', id: 'CLIENT', onlyAdmin: false },
     { name: 'Автосервис', id: 'SERVICE_LEADER', onlyAdmin: false },
-    { name: 'Самозанятый', id: 'FREELANCER', onlyAdmin: false },
-    { name: 'Модератор', id: 'MODERATOR', onlyAdmin: true },
     { name: 'Администратор', id: 'ADMIN', onlyAdmin: true }
   ];
 
@@ -51,7 +49,7 @@ export class RoleChangeButtonComponent implements OnInit {
       .set('role', this.selectedRole);
 
     this.isChanging = true;
-    this.httpClient.post(`${this.userService.getApiUrl()}secured/users/${this.model.id}/role/change`,
+    this.httpClient.post(`${this.userService.getApiUrl()}users/${this.model.id}/role/change`,
       body, {headers} ).subscribe( response => {
       this.isChanging = false;
       this.onRoleChange.emit();

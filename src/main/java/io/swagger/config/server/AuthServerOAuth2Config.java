@@ -3,7 +3,6 @@ package io.swagger.config.server;
 
 import io.swagger.config.authentication.UniqueAuthenticationKeyGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -29,7 +28,6 @@ import javax.sql.DataSource;
 public class AuthServerOAuth2Config extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
-    @Qualifier("postgresDataSource")
     private DataSource dataSource;
 
     @Autowired

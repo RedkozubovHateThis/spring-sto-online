@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { EventMessageFilterComponent } from './event-message-filter.component';
+import {EventMessageFilterComponent} from './event-message-filter.component';
 
 describe('event-message-filter', () => {
   let component: EventMessageFilterComponent;

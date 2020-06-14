@@ -1,9 +1,5 @@
 package io.swagger.controller;
 
-import io.swagger.firebird.model.Client;
-import io.swagger.firebird.model.Organization;
-import io.swagger.firebird.repository.ClientRepository;
-import io.swagger.firebird.repository.OrganizationRepository;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.model.security.UserRole;
 import io.swagger.postgres.repository.UserRepository;
@@ -22,7 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @RequestMapping("/oauth")
 @RestController
@@ -41,12 +39,6 @@ public class oAuthController {
 
     @Autowired
     private PasswordGenerationService passwordGenerationService;
-
-    @Autowired
-    private OrganizationRepository organizationRepository;
-
-    @Autowired
-    private ClientRepository clientRepository;
 
     @Autowired
     private UserService userService;
@@ -108,9 +100,6 @@ public class oAuthController {
             user.setUsername( UUID.randomUUID().toString() );
 
         user.setEnabled(true);
-        user.setIsApproved(false);
-        user.setInVacation(false);
-        user.setAllowSms(false);
         user.setIsAutoRegistered(false);
         user.setPassword( userPasswordEncoder.encode( user.getPassword() ) );
 
@@ -119,22 +108,12 @@ public class oAuthController {
         if ( clientRole != null )
             user.getRoles().add(clientRole);
 
-        User userModerator = null;
-
         if ( roleName.equals("CLIENT") ) {
-
             if ( user.getVin() == null || user.getVin().isEmpty() )
                 return ResponseEntity.status(400).body("VIN-номер не может быть пустым!");
 
             if ( userRepository.isUserExistsVin( user.getVin() ) )
                 return ResponseEntity.status(400).body("Пользователь с таким VIN-номером уже существует!");
-
-            Client client = clientRepository.findClientByVinNumber( user.getVin() );
-
-            if ( client != null )
-                user.setClientId( client.getId() );
-
-            userModerator = userService.setModerator(user);
         }
 
         else if ( roleName.equals("SERVICE_LEADER") ) {
@@ -143,19 +122,9 @@ public class oAuthController {
 
             if ( userRepository.isUserExistsInn( user.getInn() ) )
                 return ResponseEntity.status(400).body("Пользователь с таким ИНН уже существует!");
-
-            Organization organization = organizationRepository.findOrganizationByInn( user.getInn() );
-
-            if ( organization != null )
-                user.setOrganizationId( organization.getId() );
-
-            userModerator = userService.setModerator(user);
         }
 
         userRepository.save(user);
-
-        if ( userModerator != null )
-            userService.buildRegistrationEventMessage( userModerator, user );
 
         return ResponseEntity.ok().build();
 
@@ -258,8 +227,6 @@ public class oAuthController {
             user.setUsername( UUID.randomUUID().toString() );
 
         user.setEnabled(true);
-        user.setInVacation(false);
-        user.setAllowSms(false);
         user.setIsAutoRegistered(false);
         user.setPassword( userPasswordEncoder.encode( user.getPassword() ) );
         user.setBalance(25000.0);
@@ -268,16 +235,6 @@ public class oAuthController {
 
         if ( clientRole != null )
             user.getRoles().add(clientRole);
-
-        Organization organization = organizationRepository.findOne(1);
-
-        if ( organization != null ) {
-            user.setInn( organization.getInn() );
-            user.setOrganizationId( organization.getId() );
-            user.setIsApproved(true);
-        }
-
-        userService.setModerator(user);
 
         userRepository.save(user);
 

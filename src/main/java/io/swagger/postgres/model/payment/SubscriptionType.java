@@ -1,22 +1,23 @@
 package io.swagger.postgres.model.payment;
 
-import io.swagger.postgres.model.security.User;
+import io.crnk.core.resource.annotations.JsonApiId;
+import io.crnk.core.resource.annotations.JsonApiRelation;
+import io.crnk.core.resource.annotations.JsonApiResource;
+import io.crnk.core.resource.annotations.SerializeType;
 import lombok.Data;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Data
+@JsonApiResource(type = "subscriptionType", resourcePath = "subscriptionTypes")
 public class SubscriptionType implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonApiId
     private Long id;
 
     @Column(nullable = false)
@@ -35,6 +36,8 @@ public class SubscriptionType implements Serializable {
     private Integer durationDays;
 
     @OneToMany(mappedBy = "type")
+    @JsonApiRelation(mappedBy = "type", serialize = SerializeType.LAZY)
+//    @JsonIgnore
     private Set<Subscription> subscriptions;
 
 }

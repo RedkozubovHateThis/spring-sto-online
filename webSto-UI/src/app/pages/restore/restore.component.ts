@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import {HttpParams} from "@angular/common/http";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {UserService} from "../../api/user.service";
+import {Component, OnInit} from '@angular/core';
+import {HttpParams} from '@angular/common/http';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {UserService} from '../../api/user.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
 

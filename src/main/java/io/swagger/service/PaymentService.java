@@ -6,7 +6,6 @@ import io.swagger.postgres.model.security.User;
 import io.swagger.response.exception.PaymentException;
 import io.swagger.response.payment.PaymentResponse;
 import io.swagger.response.payment.PromisedAvailableResponse;
-import io.swagger.response.payment.request.ExtendedResponse;
 import io.swagger.response.payment.request.RegisterResponse;
 
 public interface PaymentService {

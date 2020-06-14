@@ -1,12 +1,9 @@
-import {Injectable, OnInit} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Router} from '@angular/router';
-import { UserService } from './user.service';
-import {User} from '../model/postgres/auth/user';
-import {OpponentResponse} from '../model/postgres/opponentResponse';
+import {UserService} from './user.service';
 import {EventMessageResponse} from '../model/postgres/eventMessageResponse';
 import {Pageable} from '../model/pageable';
-import {DocumentsFilter} from '../model/documentsFilter';
 import {EventMessagesFilter} from '../model/eventMessagesFilter';
 
 @Injectable()
@@ -52,7 +49,7 @@ export class EventMessageResponseService {
       documentIds: documentId != null ? documentId.toString() : ''
     };
 
-    return this.http.get( `${this.userService.getApiUrl()}secured/eventMessages/findAll`, {headers, params} );
+    return this.http.get( `${this.userService.getApiUrl()}eventMessages/findAll`, {headers, params} );
   }
 
   addMessage(eventMessage: EventMessageResponse) {

@@ -70,7 +70,7 @@
                   </div>
                 </div>
               </div>
-              <div class="row" *ngIf="addForm.controls.selectedRole.value === 'SERVICE_LEADER' || addForm.controls.selectedRole.value === 'FREELANCER'">
+              <div class="row" *ngIf="addForm.controls.selectedRole.value === 'SERVICE_LEADER'">
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="input-service-work-price">Стоимость работа по н/ч</label>
@@ -92,30 +92,6 @@
                     <label class="form-control-label" for="input-inn">ИНН</label>
                     <input type="text" id="input-inn" class="form-control form-control-alternative" placeholder="ИНН"
                            name="inn" formControlName="inn">
-                  </div>
-                </div>
-              </div>
-              <div class="row" *ngIf="addForm.controls.selectedRole.value === 'FREELANCER'">
-                <div class="col-lg-6">
-                  <div class="form-group">
-                    <label class="form-control-label" for="organization-select">Организация</label>
-                    <select id="organization-select" class="form-control form-control-alternative"
-                            (change)="requestManagers($event.target.value)" formControlName="organizationId">
-                      <option [value]="organization.id" *ngFor="let organization of organizations">
-                        {{organization.fullName}}
-                      </option>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-lg-6">
-                  <div class="form-group">
-                    <label class="form-control-label" for="manager-select">Менеджер</label>
-                    <select id="manager-select" class="form-control form-control-alternative"
-                            formControlName="managerId">
-                      <option [value]="manager.id" *ngFor="let manager of managers">
-                        {{manager.fullName}}
-                      </option>
-                    </select>
                   </div>
                 </div>
               </div>
@@ -156,19 +132,6 @@
                       </option>
                       <option *ngFor="let role of roles" [value]="role.id">
                         {{ role.name }}
-                      </option>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-lg-6" *ngIf="addForm.controls.selectedRole.value === 'SERVICE_LEADER' || addForm.controls.selectedRole.value === 'FREELANCER'">
-                  <div class="form-group">
-                    <label class="form-control-label" for="moderator-select">Модератор</label>
-                    <select id="moderator-select" class="form-control form-control-alternative" formControlName="moderatorId">
-                      <option disabled [value]="null">
-                        Выберите модератора
-                      </option>
-                      <option *ngFor="let moderator of moderators" [value]="moderator.id">
-                        {{ moderator.fio }}
                       </option>
                     </select>
                   </div>

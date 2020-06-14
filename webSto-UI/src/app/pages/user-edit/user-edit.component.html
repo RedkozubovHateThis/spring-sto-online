@@ -1,6 +1,6 @@
 <div class="container-fluid mt--7">
   <div class="row">
-    <div class="col-xl-8 mb-5 mb-xl-0" [ngClass]="{ 'col-xl-12': model != null && ( model.userAdmin || model.userModerator ) }">
+    <div class="col-xl-12 mb-5 mb-xl-0">
       <div class="card bg-secondary shadow">
         <div class="card-header bg-white border-0">
           <app-loading-bar [isLoading]="isLoading || userService.isSaving"></app-loading-bar>
@@ -20,7 +20,7 @@
               <ng-container *ngIf="model != null">
                 <app-role-change-button [model]="model" [currentUser]="userService.currentUser"
                                         (onRoleChange)="requestData()"
-                                        *ngIf="( userService.isSameUser(model) && !userService.isModeratorOrAdmin() ) || userService.isAdmin()"></app-role-change-button>
+                                        *ngIf="( userService.isSameUser(model) && !userService.isAdmin() ) || userService.isAdmin()"></app-role-change-button>
               </ng-container>
             </div>
           </div>
@@ -61,31 +61,7 @@
                   </div>
                 </div>
               </div>
-              <div class="row" *ngIf="model.userModerator && userService.isSameUser( model )">
-                <div class="col-lg-6">
-                  <div class="form-group">
-                    <div class="form-check">
-                      <input type="checkbox" id="check-vacation" class="form-check-input"
-                             [(ngModel)]="model.inVacation" name="inVacation">
-                      <label class="form-control-label" for="check-vacation">В отпуске</label>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-6">
-                  <label class="form-control-label" for="replacement-moderator-select">Замещающий модератор</label>
-                  <select id="replacement-moderator-select" class="form-control form-control-sm form-control-alternative"
-                          [(ngModel)]="model.replacementModeratorId" [ngModelOptions]="{standalone: true}">
-                    <option [selected]="model.replacementModeratorId === null" [ngValue]="null">
-                      Не указан
-                    </option>
-                    <option [selected]="model.replacementModeratorId != null && model.replacementModeratorId === moderator.id" [ngValue]="moderator.id"
-                            *ngFor="let moderator of replaceModerators">
-                      {{moderator.fio}}
-                    </option>
-                  </select>
-                </div>
-              </div>
-              <div class="row" *ngIf="model.userServiceLeaderOrFreelancer">
+              <div class="row" *ngIf="model.userServiceLeader">
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="input-service-work-price">Стоимость работа по н/ч</label>
@@ -122,18 +98,6 @@
                   </div>
                 </div>
               </div>
-              <div class="row" *ngIf="model.userClient && userService.isSameUser( model )">
-                <div class="col-lg-6"></div>
-                <div class="col-lg-6">
-                  <div class="form-group">
-                    <div class="form-check">
-                      <input type="checkbox" id="check-allow-sms" class="form-check-input"
-                             [(ngModel)]="model.allowSms" name="allowSms">
-                      <label class="form-control-label" for="check-allow-sms">Разрешение на отправку SMS-уведомлений</label>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
             <!-- Roles -->
             <h6 class="heading-small text-muted mb-4">Роли</h6>
@@ -145,22 +109,9 @@
                     {{role.nameRus}}
                   </span>
                 </div>
-                <div class="col-lg-6" *ngIf="userService.isAdmin() && ( model.userClient || model.userServiceLeaderOrFreelancer )">
-                  <div class="form-group">
-                    <label class="form-control-label" for="moderator-select">Модератор</label>
-                    <select id="moderator-select" class="form-control form-control-alternative" [(ngModel)]="model.moderatorId" [ngModelOptions]="{standalone: true}">
-                      <option [selected]="model.moderatorId === null" [ngValue]="null">
-                        Без модератора
-                      </option>
-                      <option [selected]="model.moderatorId === moderator.id" *ngFor="let moderator of moderators" [ngValue]="moderator.id" >
-                        {{ moderator.fio }}
-                      </option>
-                    </select>
-                  </div>
-                </div>
               </div>
             </div>
-            <ng-container *ngIf="userService.isSameUser( model ) && model.userServiceLeaderOrFreelancer">
+            <ng-container *ngIf="userService.isSameUser( model ) && model.userServiceLeader">
               <hr class="my-4" />
               <!-- Subscriptions -->
               <h6 class="heading-small text-muted mb-4">Тариф по умолчанию</h6>
@@ -306,142 +257,6 @@
 <!--            </ng-container>-->
           </form>
         </div>
-      </div>
-    </div>
-    <div class="col-xl-4" *ngIf="model != null && ( model.userClient || model.userServiceLeaderOrFreelancer )">
-      <div class="card bg-secondary shadow">
-
-        <div class="card-header bg-white border-0">
-          <app-loading-bar [isLoading]="isADLoading || userService.isSaving"></app-loading-bar>
-          <div class="row align-items-center">
-            <div class="col-md mb-3">
-              <h3 class="mb-0">АвтоДилер</h3>
-            </div>
-            <div class="col-auto text-right" *ngIf="userService.isSameUser( model )">
-
-              <button class="btn btn-sm btn-buro-blue" *ngIf="model.userClient"
-                      [disabled]="model.isApproved || userService.isSaving || clientResponse == null || ( clientResponse.id == model.clientId )"
-                      (click)="linkClient(model)">
-                Привязать
-              </button>
-
-              <button class="btn btn-sm btn-buro-blue" *ngIf="model.userServiceLeader"
-                      [disabled]="model.isApproved || userService.isSaving || organizationResponse == null || ( organizationResponse.id == model.organizationId )"
-                      (click)="linkOrganization(model)">
-                Привязать
-              </button>
-
-              <button class="btn btn-sm btn-buro-blue" *ngIf="model.userFreelancer"
-                      [disabled]="model.isApproved || userService.isSaving || model.organizationId == null ||
-                      model.managerId == null"
-                      (click)="linkManager(model)">
-                Привязать
-              </button>
-
-              <button class="btn btn-sm btn-danger" (click)="removeLink( model )" [disabled]="model.clientId == null && model.organizationId == null">
-                Удалить
-              </button>
-
-            </div>
-          </div>
-        </div>
-
-        <div class="card-body">
-
-          <div class="row">
-            <div class="col-lg-12" *ngIf="userService.isSameUser( model )">
-
-              <div class="form-group" *ngIf="model.userClient">
-
-                <label class="form-control-label" for="vin-number">VIN - номер</label>
-                <div class="input-group input-group-alternative mb-3">
-                  <input type="text" id="vin-number" class="form-control" placeholder="VIN - номер" [disabled]="model.isApproved"
-                         [(ngModel)]="model.vin" name="vinNumber">
-                  <div class="input-group-append">
-                    <button class="btn btn-buro-blue" type="button" (click)="findClientByVin()"
-                            [disabled]="model.isApproved || model.vin == null || model.vin.length == 0 || isADLoading">
-                      Найти
-                    </button>
-                  </div>
-                </div>
-
-              </div>
-
-              <div class="form-group" *ngIf="model.userServiceLeader">
-
-                <label class="form-control-label" for="vin-number">ИНН</label>
-                <div class="input-group input-group-alternative mb-3">
-                  <input type="text" id="inn" class="form-control" placeholder="ИНН" [disabled]="model.isApproved"
-                         [(ngModel)]="model.inn" name="inn">
-                  <div class="input-group-append">
-                    <button class="btn btn-buro-blue" type="button" (click)="findOrganizationByInn()"
-                            [disabled]="model.isApproved || model.inn == null || model.inn.length == 0 || isADLoading">
-                      Найти
-                    </button>
-                  </div>
-                </div>
-
-              </div>
-
-              <div class="form-group" *ngIf="model.userFreelancer">
-
-                <div class="row form-group">
-                  <div class="col">
-                    <label class="form-control-label" for="organization-select">Организация</label>
-                    <select id="organization-select" class="form-control form-control-sm form-control-alternative"
-                            (ngModelChange)="requestManagers($event, true)" [disabled]="model.isApproved"
-                            [ngModel]="model.organizationId">
-                      <option [selected]="model.organizationId != null && model.organizationId === organization.id" [ngValue]="organization.id"
-                              *ngFor="let organization of organizations">
-                        {{organization.fullName}}
-                      </option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="row form-group">
-                  <div class="col">
-                    <label class="form-control-label" for="manager-select">Менеджер</label>
-                    <select id="manager-select" class="form-control form-control-sm form-control-alternative"
-                            [disabled]="model.isApproved"
-                            [(ngModel)]="model.managerId">
-                      <option [selected]="model.managerId != null && model.managerId === manager.id" [ngValue]="manager.id"
-                              *ngFor="let manager of managers">
-                        {{manager.fullName}}
-                      </option>
-                    </select>
-                  </div>
-                </div>
-
-              </div>
-
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-lg-12" *ngIf="model != null">
-
-              <div class="form-group" *ngIf="model.userClient && clientResponse != null">
-                <label class="form-control-label" for="client-full-name">Имя клиента</label>
-                <input type="text" id="client-full-name" class="form-control form-control-alternative" placeholder="Имя клиента"
-                       disabled [value]="clientResponse.fullName" name="clientFullName">
-              </div>
-
-              <div class="form-group" *ngIf="model.userServiceLeader && organizationResponse != null">
-                <label class="form-control-label" for="organization-full-name">Наименование предприятия</label>
-                <input type="text" id="organization-full-name" class="form-control form-control-alternative" placeholder="Наименование предприятия"
-                       disabled [value]="organizationResponse.fullName" name="organizationFullName">
-              </div>
-
-              <div class="form-group" *ngIf="( model.userServiceLeaderOrFreelancer && model.organizationId == null ) ||
-              ( model.userFreelancer && model.managerId == null ) || ( model.userClient && model.clientId == null )">
-                <span class="form-control form-control-alternative">Необходимо выполнить привязку к системе АвтоДилер</span>
-              </div>
-
-            </div>
-          </div>
-        </div>
-
       </div>
     </div>
   </div>

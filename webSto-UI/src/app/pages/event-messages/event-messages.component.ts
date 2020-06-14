@@ -1,13 +1,9 @@
-import { Component } from '@angular/core';
-import {DocumentResponse} from '../../model/firebird/documentResponse';
-import {DocumentResponseService} from '../../api/documentResponse.service';
-import {ActivatedRoute, Params, Router} from '@angular/router';
+import {Component} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Pageable} from '../../model/pageable';
 import {Pagination} from '../pagination';
-import { DocumentsFilter } from 'src/app/model/documentsFilter';
 import {EventMessageResponseService} from '../../api/eventMessageResponse.service';
 import {EventMessageResponse} from '../../model/postgres/eventMessageResponse';
-import {EventMessagesFilter} from '../../model/eventMessagesFilter';
 import {EventMessageController} from '../../controller/event-message.controller';
 
 @Component({

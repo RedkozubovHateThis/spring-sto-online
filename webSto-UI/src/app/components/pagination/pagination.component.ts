@@ -1,5 +1,4 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
-import {Pageable} from '../../model/pageable';
 
 @Component({
   selector: 'app-pagination',

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import { UserService } from './user.service';
+import {UserService} from './user.service';
 
 @Injectable()
 export class InfobarService {
@@ -10,13 +10,13 @@ export class InfobarService {
   getClientInfo() {
     const headers = this.userService.getHeaders();
 
-    return this.http.get( `${this.userService.getApiUrl()}secured/infoBar/client`, {headers} );
+    return this.http.get( `${this.userService.getApiUrl()}infoBar/client`, {headers} );
   }
 
   getServiceLeaderInfo() {
     const headers = this.userService.getHeaders();
 
-    return this.http.get( `${this.userService.getApiUrl()}secured/infoBar/serviceLeader`, {headers} );
+    return this.http.get( `${this.userService.getApiUrl()}infoBar/serviceLeader`, {headers} );
   }
 
   getModeratorInfo(organizationId: number) {
@@ -26,7 +26,7 @@ export class InfobarService {
       organizationId: organizationId != null ? organizationId.toString() : ''
     };
 
-    return this.http.get( `${this.userService.getApiUrl()}secured/infoBar/moderator`, {headers, params} );
+    return this.http.get( `${this.userService.getApiUrl()}infoBar/moderator`, {headers, params} );
   }
 
 }

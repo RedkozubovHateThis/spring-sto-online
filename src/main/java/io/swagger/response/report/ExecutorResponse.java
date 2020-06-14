@@ -1,6 +1,5 @@
 package io.swagger.response.report;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.util.ArrayList;

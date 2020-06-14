@@ -1,7 +1,6 @@
 package io.swagger.service.impl;
 
 import io.swagger.controller.WebSocketController;
-import io.swagger.firebird.repository.DocumentServiceDetailRepository;
 import io.swagger.postgres.model.enums.PaymentState;
 import io.swagger.postgres.model.enums.PaymentType;
 import io.swagger.postgres.model.payment.PaymentRecord;
@@ -26,7 +25,10 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -49,8 +51,6 @@ public class PaymentServiceImpl implements PaymentService {
     private SubscriptionTypeRepository subscriptionTypeRepository;
     @Autowired
     private SubscriptionAddonRepository subscriptionAddonRepository;
-    @Autowired
-    private DocumentServiceDetailRepository documentsRepository;
 
     @Value("${sb.api.username}")
     private String sbUsername;
@@ -254,7 +254,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public Subscription buySubscription(Long subscriptionTypeId, User user) throws PaymentException {
 
-        SubscriptionType subscriptionType = subscriptionTypeRepository.findOne( subscriptionTypeId );
+        SubscriptionType subscriptionType = subscriptionTypeRepository.findById( subscriptionTypeId ).orElse( null );
         if ( subscriptionType == null )
             throw new PaymentException("Тариф не найден!");
 
@@ -272,9 +272,10 @@ public class PaymentServiceImpl implements PaymentService {
         if ( currentSubscription != null ) {
             if ( currentSubscription.getEndDate().after( now ) ) {
 
-                int documentsCount = documentsRepository.countDocumentsByOrganizationIdAndDates(
-                        user.getOrganizationId(), currentSubscription.getStartDate(), currentSubscription.getEndDate()
-                );
+//                int documentsCount = documentsRepository.countDocumentsByOrganizationIdAndDates(
+//                        user.getOrganizationId(), currentSubscription.getStartDate(), currentSubscription.getEndDate()
+//                );
+                int documentsCount = 0;
 
                 int availableDocuments = Math.max( currentSubscription.getDocumentsCount() - documentsCount, 0 );
 
@@ -333,7 +334,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public void buySubscriptionAddon(Long subscriptionId, Integer documentsCount, User user) throws PaymentException {
 
-        Subscription subscription = subscriptionRepository.findOne( subscriptionId );
+        Subscription subscription = subscriptionRepository.findById( subscriptionId ).orElse( null );
 
         if ( subscription == null )
             throw new PaymentException("Выбранный тариф не найден!");
@@ -358,14 +359,14 @@ public class PaymentServiceImpl implements PaymentService {
 
         generateAddonPaymentRecord( user, subscriptionAddon, now );
 
-        webSocketController.sendCounterRefreshMessage( user, true, true );
+        webSocketController.sendCounterRefreshMessage( user, true );
 
     }
 
     @Override
     public void updateRenewalSubscription(Long subscriptionTypeId, User user) throws PaymentException {
 
-        SubscriptionType subscriptionType = subscriptionTypeRepository.findOne( subscriptionTypeId );
+        SubscriptionType subscriptionType = subscriptionTypeRepository.findById( subscriptionTypeId ).orElse( null );
         if ( subscriptionType == null )
             throw new PaymentException("Тариф не найден!");
 
@@ -386,7 +387,7 @@ public class PaymentServiceImpl implements PaymentService {
 
             userRepository.save( user );
 
-            webSocketController.sendCounterRefreshMessage( user, true, true );
+            webSocketController.sendCounterRefreshMessage( user, true );
         }
         else
             throw new PaymentException("Текущий тариф не найден/истек!");
@@ -525,7 +526,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         userRepository.save( paymentUser );
 
-        webSocketController.sendCounterRefreshMessage( paymentUser, true, true );
+        webSocketController.sendCounterRefreshMessage( paymentUser, true );
 
     }
 

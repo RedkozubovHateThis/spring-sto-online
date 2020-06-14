@@ -1,14 +1,10 @@
 package io.swagger.helper;
 
-import io.swagger.controller.DocumentDetailServiceController;
 import io.swagger.controller.EventMessageController;
-import io.swagger.firebird.model.*;
 import io.swagger.postgres.model.EventMessage;
 import io.swagger.postgres.model.EventMessage_;
-import io.swagger.postgres.model.enums.MessageType;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.model.security.User_;
-import io.swagger.postgres.repository.UserRepository;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.*;
@@ -34,26 +30,21 @@ public class EventMessageSpecificationBuilder {
                         cb.equal( toUserJoin.get( User_.enabled ), true )
                 );
 
-                if ( UserHelper.isAdmin( currentUser ) ) {
-                    predicates.add( cb.equal( root.get( EventMessage_.messageType ), MessageType.DOCUMENT_CHANGE ) );
-                }
-                else if ( UserHelper.isModerator( currentUser ) ) {
-                    predicates.add(
-                            cb.equal( toUserJoin.get( User_.id ), currentUser.getId() )
-                    );
-                }
-                else if ( UserHelper.isClient( currentUser ) ||
-                        UserHelper.isServiceLeaderOrFreelancer( currentUser ) ) {
-                    predicates.add(
-                        cb.or(
-                                cb.equal( root.get( EventMessage_.messageType ), MessageType.USER_APPROVE ),
-                                cb.equal( root.get( EventMessage_.messageType ), MessageType.USER_REJECT )
-                        )
-                    );
-                    predicates.add(
-                            cb.equal( toUserJoin.get( User_.id ), currentUser.getId() )
-                    );
-                }
+//                if ( UserHelper.isAdmin( currentUser ) ) {
+//                    predicates.add( cb.equal( root.get( EventMessage_.messageType ), MessageType.DOCUMENT_CHANGE ) );
+//                }
+//                else if ( UserHelper.isClient( currentUser ) ||
+//                        UserHelper.isServiceLeader( currentUser ) ) {
+//                    predicates.add(
+//                        cb.or(
+//                                cb.equal( root.get( EventMessage_.messageType ), MessageType.USER_APPROVE ),
+//                                cb.equal( root.get( EventMessage_.messageType ), MessageType.USER_REJECT )
+//                        )
+//                    );
+//                    predicates.add(
+//                            cb.equal( toUserJoin.get( User_.id ), currentUser.getId() )
+//                    );
+//                }
 
                 if ( filterPayload.getMessageTypes() != null && filterPayload.getMessageTypes().size() > 0 ) {
                     predicates.add( root.get( EventMessage_.messageType ).in( filterPayload.getMessageTypes() ) );

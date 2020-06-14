@@ -2,13 +2,11 @@ package io.swagger.controller;
 
 import io.swagger.postgres.model.UploadFile;
 import io.swagger.postgres.model.security.User;
-import io.swagger.postgres.repository.ChatMessageRepository;
 import io.swagger.postgres.repository.UploadFileRepository;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.response.UploadFileResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.InvalidMediaTypeException;
 import org.springframework.http.MediaType;
@@ -19,16 +17,13 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Date;
 import java.util.UUID;
 
-@RequestMapping("/secured/files")
+@RequestMapping("/files")
 @RestController
 public class FileController {
 

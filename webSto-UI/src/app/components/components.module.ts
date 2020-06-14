@@ -1,15 +1,15 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { SidebarComponent } from './sidebar/sidebar.component';
-import { NavbarComponent } from './navbar/navbar.component';
-import { FooterComponent } from './footer/footer.component';
-import { RouterModule } from '@angular/router';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import {InfobarComponent} from "./infobar/infobar.component";
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {SidebarComponent} from './sidebar/sidebar.component';
+import {NavbarComponent} from './navbar/navbar.component';
+import {FooterComponent} from './footer/footer.component';
+import {RouterModule} from '@angular/router';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {InfobarComponent} from './infobar/infobar.component';
 import {ImgPreviewComponent} from './img-preview/img-preview.component';
-import {DocumentFilterComponent} from './document-filter/document-filter.component';
+// import {DocumentFilterComponent} from './document-filter/document-filter.component';
 import {FormsModule} from '@angular/forms';
-import { EventMessageFilterComponent } from './event-message-filter/event-message-filter.component';
+import {EventMessageFilterComponent} from './event-message-filter/event-message-filter.component';
 import {ReportButtonComponent} from './report-button/report-button.component';
 import {PdfViewerModule} from 'ng2-pdf-viewer';
 import {PasswordChangeButtonComponent} from './password-change-button/password-change-button.component';
@@ -19,7 +19,6 @@ import {PaginationComponent} from './pagination/pagination.component';
 import {DeleteButtonComponent} from './delete-button/delete-button.component';
 import {LoadingBarComponent} from './loading-bar/loading-bar.component';
 import {LinkPreviewComponent} from './link-preview/link-preview.component';
-import {ShareButtonComponent} from './share-button/share-button.component';
 import {RoleChangeButtonComponent} from './role-change-button/role-change-button.component';
 
 @NgModule({
@@ -37,7 +36,7 @@ import {RoleChangeButtonComponent} from './role-change-button/role-change-button
     SidebarComponent,
     InfobarComponent,
     ImgPreviewComponent,
-    DocumentFilterComponent,
+    // DocumentFilterComponent,
     EventMessageFilterComponent,
     ReportButtonComponent,
     PasswordChangeButtonComponent,
@@ -46,7 +45,6 @@ import {RoleChangeButtonComponent} from './role-change-button/role-change-button
     DeleteButtonComponent,
     LoadingBarComponent,
     LinkPreviewComponent,
-    ShareButtonComponent,
     RoleChangeButtonComponent
   ],
   exports: [
@@ -55,7 +53,7 @@ import {RoleChangeButtonComponent} from './role-change-button/role-change-button
     SidebarComponent,
     InfobarComponent,
     ImgPreviewComponent,
-    DocumentFilterComponent,
+    // DocumentFilterComponent,
     EventMessageFilterComponent,
     ReportButtonComponent,
     PasswordChangeButtonComponent,
@@ -64,7 +62,6 @@ import {RoleChangeButtonComponent} from './role-change-button/role-change-button
     DeleteButtonComponent,
     LoadingBarComponent,
     LinkPreviewComponent,
-    ShareButtonComponent,
     RoleChangeButtonComponent
   ]
 })

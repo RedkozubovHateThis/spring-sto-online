@@ -1,13 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {UserService} from '../../api/user.service';
-import { Location } from '@angular/common';
+import {Location} from '@angular/common';
 import {Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {User} from '../../model/postgres/auth/user';
-import {OrganizationResponse} from '../../model/firebird/organizationResponse';
-import {ManagerResponse} from '../../model/firebird/managerResponse';
-import {OrganizationResponseService} from '../../api/organizationResponse.service';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-user-add',
@@ -16,11 +12,8 @@ import {OrganizationResponseService} from '../../api/organizationResponse.servic
 })
 export class UserAddComponent implements OnInit {
 
-  private organizations: OrganizationResponse[] = [];
-  private managers: ManagerResponse[] = [];
-
   constructor(private formBuilder: FormBuilder, private userService: UserService, private location: Location, private router: Router,
-              private toastrService: ToastrService, private organizationResponseService: OrganizationResponseService) {}
+              private toastrService: ToastrService) {}
 
   private addForm: FormGroup = this.formBuilder.group({
     email: [null],
@@ -32,42 +25,17 @@ export class UserAddComponent implements OnInit {
     lastName: ['', Validators.required],
     middleName: ['', Validators.required],
     username: [''],
-    moderatorId: [null],
-    organizationId: [null],
-    managerId: [null],
     serviceWorkPrice: [null],
     serviceGoodsCost: [null],
     selectedRole: [null, Validators.required]
   });
   private isRegistering: boolean = false;
   private roles = [
-    { name: 'Модератор', id: 'MODERATOR' },
     { name: 'Администратор', id: 'ADMIN' },
-    { name: 'Автосервис', id: 'SERVICE_LEADER' },
-    { name: 'Самозанятый', id: 'FREELANCER' }
+    { name: 'Автосервис', id: 'SERVICE_LEADER' }
   ];
-  private moderators: User[] = [];
 
   ngOnInit() {
-    // TODO: добавить проверку на админа
-    this.userService.getModerators().subscribe( moderators => {
-      this.moderators = moderators as User[];
-    } );
-    this.requestOrganizations();
-  }
-
-  requestOrganizations() {
-    this.organizationResponseService.getAll().subscribe( data => {
-      this.organizations = data as OrganizationResponse[];
-    }, () => {
-    } );
-  }
-
-  requestManagers(organizationId: number) {
-    this.organizationResponseService.getAllManagers( organizationId ).subscribe( managers => {
-      this.managers = managers;
-    }, () => {
-    } );
   }
 
   resetNotSharedFields() {
@@ -75,18 +43,10 @@ export class UserAddComponent implements OnInit {
 
     if ( selectedRole == null ) return;
 
-    if ( selectedRole !== 'FREELANCER' && selectedRole !== 'SERVICE_LEADER' ) {
-      this.addForm.controls.moderatorId.setValue(null);
+    if ( selectedRole !== 'SERVICE_LEADER' ) {
       this.addForm.controls.serviceWorkPrice.setValue(null);
       this.addForm.controls.serviceGoodsCost.setValue(null);
-
-      if ( selectedRole !== 'FREELANCER' ) {
-        this.addForm.controls.managerId.setValue(null);
-        this.addForm.controls.organizationId.setValue(null);
-      }
-      else if ( selectedRole !== 'SERVICE_LEADER' ) {
-        this.addForm.controls.inn.setValue(null);
-      }
+      this.addForm.controls.inn.setValue(null);
     }
   }
 

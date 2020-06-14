@@ -1,11 +1,10 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import { UserService } from './user.service';
+import {HttpClient} from '@angular/common/http';
+import {UserService} from './user.service';
 import {RegisterResponse} from '../model/payment/registerResponse';
-import {environment} from '../../environments/environment';
 import {Observable, Subscription} from 'rxjs';
 import {PaymentResponse} from '../model/payment/paymentResponse';
-import { SubscriptionTypeResponse } from '../model/payment/subscriptionTypeResponse';
+import {SubscriptionTypeResponse} from '../model/payment/subscriptionTypeResponse';
 import {SubscriptionResponse} from '../model/payment/subscriptionResponse';
 import {PromisedAvailableResponse} from '../model/payment/promisedAvailableResponse';
 
@@ -22,7 +21,7 @@ export class PaymentService {
 
     this.subscription = this.userService.currentUserIsLoaded.subscribe( currentUser => {
 
-      if ( currentUser.userServiceLeaderOrFreelancer ) {
+      if ( currentUser.userServiceLeader ) {
         this.requestCurrentSubscription();
       }
 
@@ -45,15 +44,11 @@ export class PaymentService {
     } );
   }
 
-  isServiceLeaderWithExpiredSubscription() {
-    return this.userService.isServiceLeaderOrFreelancer() && this.currentSubscription != null && this.currentSubscription.documentsRemains === 0;
-  }
-
   sendRegisterRequest(amount: number): Observable<RegisterResponse> {
     const headers = this.userService.getHeaders();
 
     return this.http.put<RegisterResponse>(
-      `${this.userService.getApiUrl()}secured/payment/registerRequest?amount=${amount}`, {}, {headers}
+      `${this.userService.getApiUrl()}payment/registerRequest?amount=${amount}`, {}, {headers}
       );
   }
 
@@ -61,7 +56,7 @@ export class PaymentService {
     const headers = this.userService.getHeaders();
 
     return this.http.put<RegisterResponse>(
-      `${this.userService.getApiUrl()}secured/payment/registerRequest/promised?amount=${amount}`, {}, {headers}
+      `${this.userService.getApiUrl()}payment/registerRequest/promised?amount=${amount}`, {}, {headers}
       );
   }
 
@@ -69,14 +64,14 @@ export class PaymentService {
     const headers = this.userService.getHeaders();
 
     return this.http.get<PromisedAvailableResponse>(
-      `${this.userService.getApiUrl()}secured/payment/registerRequest/promised/isAvailable`, {headers}
+      `${this.userService.getApiUrl()}payment/registerRequest/promised/isAvailable`, {headers}
       );
   }
 
   sendUpdateRequestExtended(orderId: string): Observable<PaymentResponse> {
     const headers = this.userService.getHeaders();
 
-    return this.http.put<PaymentResponse>(`${this.userService.getApiUrl()}secured/payment/updateRequest/extended?orderId=${orderId}`,
+    return this.http.put<PaymentResponse>(`${this.userService.getApiUrl()}payment/updateRequest/extended?orderId=${orderId}`,
       {}, {headers});
   }
 
@@ -84,7 +79,7 @@ export class PaymentService {
     const headers = this.userService.getHeaders();
 
     return this.http.get<PaymentResponse[]>(
-      `${this.userService.getApiUrl()}secured/payment/findAll?fromDate=${fromDate}&toDate=${toDate}`, {headers}
+      `${this.userService.getApiUrl()}payment/findAll?fromDate=${fromDate}&toDate=${toDate}`, {headers}
     );
   }
 
@@ -92,7 +87,7 @@ export class PaymentService {
     const headers = this.userService.getHeaders();
 
     return this.http.get<SubscriptionTypeResponse[]>(
-      `${this.userService.getApiUrl()}secured/payment/subscriptions/types/findAll`, {headers}
+      `${this.userService.getApiUrl()}payment/subscriptions/types/findAll`, {headers}
     );
   }
 
@@ -100,7 +95,7 @@ export class PaymentService {
     const headers = this.userService.getHeaders();
 
     return this.http.get<SubscriptionResponse[]>(
-      `${this.userService.getApiUrl()}secured/payment/subscriptions/findAll`, {headers}
+      `${this.userService.getApiUrl()}payment/subscriptions/findAll`, {headers}
     );
   }
 
@@ -108,7 +103,7 @@ export class PaymentService {
     const headers = this.userService.getHeaders();
 
     return this.http.get<SubscriptionResponse>(
-      `${this.userService.getApiUrl()}secured/payment/subscriptions/currentSubscription`, {headers}
+      `${this.userService.getApiUrl()}payment/subscriptions/currentSubscription`, {headers}
     );
   }
 
@@ -119,7 +114,7 @@ export class PaymentService {
     };
 
     return this.http.put<SubscriptionResponse>(
-      `${this.userService.getApiUrl()}secured/payment/subscriptions/buy`, {}, {headers, params}
+      `${this.userService.getApiUrl()}payment/subscriptions/buy`, {}, {headers, params}
     );
   }
 
@@ -130,7 +125,7 @@ export class PaymentService {
     };
 
     return this.http.put<SubscriptionResponse>(
-      `${this.userService.getApiUrl()}secured/payment/subscriptions/gift`, {}, {headers, params}
+      `${this.userService.getApiUrl()}payment/subscriptions/gift`, {}, {headers, params}
     );
   }
 
@@ -142,7 +137,7 @@ export class PaymentService {
     };
 
     return this.http.put<void>(
-      `${this.userService.getApiUrl()}secured/payment/subscriptions/addon/buy`, {}, {headers, params}
+      `${this.userService.getApiUrl()}payment/subscriptions/addon/buy`, {}, {headers, params}
     );
   }
 
@@ -153,7 +148,7 @@ export class PaymentService {
     };
 
     return this.http.put<void>(
-      `${this.userService.getApiUrl()}secured/payment/subscriptions/updateRenewal`, {}, {headers, params}
+      `${this.userService.getApiUrl()}payment/subscriptions/updateRenewal`, {}, {headers, params}
     );
   }
 
@@ -161,7 +156,7 @@ export class PaymentService {
     const headers = this.userService.getHeaders();
 
     return this.http.post<void>(
-      `${this.userService.getApiUrl()}secured/payment/subscriptions/types/update`, subscriptionType, {headers}
+      `${this.userService.getApiUrl()}payment/subscriptions/types/update`, subscriptionType, {headers}
     );
   }
 

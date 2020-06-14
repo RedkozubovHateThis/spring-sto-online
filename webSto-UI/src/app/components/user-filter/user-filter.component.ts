@@ -1,17 +1,6 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {UserService} from '../../api/user.service';
-import {OrganizationResponseService} from '../../api/organizationResponse.service';
-import {OrganizationResponse} from '../../model/firebird/organizationResponse';
-import {VehicleResponse} from '../../model/firebird/vehicleResponse';
-import {DocumentsFilter} from '../../model/documentsFilter';
-import {Router} from '@angular/router';
-import {DocumentResponse} from '../../model/firebird/documentResponse';
-import {ClientResponse} from '../../model/firebird/clientResponse';
-import * as moment from 'moment';
-import {Observable} from 'rxjs';
-import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 import {UsersFilter} from '../../model/usersFilter';
-import {UserRole} from '../../model/postgres/auth/userRole';
 
 @Component({
   selector: 'app-user-filter',

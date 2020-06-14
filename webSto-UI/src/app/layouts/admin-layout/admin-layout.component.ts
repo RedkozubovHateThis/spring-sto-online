@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import {Router, NavigationEnd} from "@angular/router";
-import {UserService} from "../../api/user.service";
+import {Component, OnInit} from '@angular/core';
+import {NavigationEnd, Router} from '@angular/router';
+import {UserService} from '../../api/user.service';
 import {WebSocketService} from '../../api/webSocket.service';
 import {PaymentService} from '../../api/payment.service';
 

@@ -1,11 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import * as moment from 'moment';
-import {DocumentResponseService} from '../../api/documentResponse.service';
 import {ToastrService} from 'ngx-toastr';
 import {UserService} from '../../api/user.service';
 import {HttpClient} from '@angular/common/http';
-import {OrganizationResponse} from '../../model/firebird/organizationResponse';
-import {OrganizationResponseService} from '../../api/organizationResponse.service';
 
 @Component({
   selector: 'app-reports',
@@ -87,7 +84,7 @@ export class ReportsComponent implements OnInit {
     };
 
     this.isDownloading = true;
-    this.httpClient.get(`${this.userService.getApiUrl()}secured/reports/${this.reportType}/PDF`,
+    this.httpClient.get(`${this.userService.getApiUrl()}reports/${this.reportType}/PDF`,
       {headers, params, responseType: 'blob'} ).subscribe( blob => {
 
       this.isDownloading = false;
@@ -132,7 +129,7 @@ export class ReportsComponent implements OnInit {
     };
 
     this.isLoading = true;
-    this.httpClient.get(`${this.userService.getApiUrl()}secured/reports/${this.reportType}`,
+    this.httpClient.get(`${this.userService.getApiUrl()}reports/${this.reportType}`,
       {headers, params} ).subscribe( reportData => {
 
       this.reportData = reportData as object[];

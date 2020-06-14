@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import {UserService} from "../../api/user.service";
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {UserService} from '../../api/user.service';
 import {EventMessageResponseService} from '../../api/eventMessageResponse.service';
 
 @Component({

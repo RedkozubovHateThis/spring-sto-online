@@ -33,7 +33,7 @@
               </div>
             </div>
 
-            <div class="card-body" *ngIf="userService.isServiceLeaderOrFreelancer()">
+            <div class="card-body" *ngIf="userService.isServiceLeader()">
               <div class="row mb-1">
                 <div class="col">
                   <h5 class="card-title text-uppercase text-muted mb-0">Остаток оплаченных заказ-нарядов</h5>
@@ -58,7 +58,7 @@
               </div>
             </div>
 
-            <div class="card-body" *ngIf="userService.isModeratorOrAdmin()">
+            <div class="card-body" *ngIf="userService.isAdmin()">
               <div class="row mb-1">
                 <div class="col">
                   <h5 class="card-title text-uppercase text-muted mb-0">Всего автосервисов</h5>
@@ -93,7 +93,7 @@
               </div>
             </div>
 
-            <div class="card-body" *ngIf="userService.isServiceLeaderOrFreelancer()">
+            <div class="card-body" *ngIf="userService.isServiceLeader()">
               <div class="row mb-1">
                 <div class="col">
                   <h5 class="card-title text-uppercase text-muted mb-0">Наименование тарифа</h5>
@@ -118,7 +118,7 @@
               </div>
             </div>
 
-            <div class="card-body" *ngIf="userService.isModeratorOrAdmin()">
+            <div class="card-body" *ngIf="userService.isAdmin()">
               <div class="row mb-1">
                 <div class="col">
                   <h5 class="card-title text-uppercase text-muted mb-0">Остаток оплаченных заказ-нарядов</h5>
@@ -157,7 +157,7 @@
               </div>
             </div>
 
-            <div class="card-body" *ngIf="userService.isServiceLeaderOrFreelancer()">
+            <div class="card-body" *ngIf="userService.isServiceLeader()">
               <div class="row mb-1">
                 <div class="col">
                   <h5 class="card-title text-uppercase text-muted mb-0">Текущий баланс</h5>
@@ -180,7 +180,7 @@
               </div>
             </div>
 
-            <div class="card-body" *ngIf="userService.isModeratorOrAdmin()">
+            <div class="card-body" *ngIf="userService.isAdmin()">
               <div class="row mb-1">
                 <div class="col">
                   <h5 class="card-title text-uppercase text-muted mb-0">
@@ -222,7 +222,7 @@
               </div>
             </div>
 
-            <div class="card-body" *ngIf="userService.isServiceLeaderOrFreelancer()">
+            <div class="card-body" *ngIf="userService.isServiceLeader()">
               <div class="row mb-1">
                 <div class="col-auto">
                   <h5 class="card-title text-uppercase text-muted mb-0">Модератор</h5>
@@ -241,7 +241,7 @@
               </div>
             </div>
 
-            <div class="card-body" *ngIf="userService.isModeratorOrAdmin()">
+            <div class="card-body" *ngIf="userService.isAdmin()">
               <div class="row mb-1">
                 <div class="col">
                   <h5 class="card-title text-uppercase text-muted mb-0">Заказ-нарядов в статусе "Черновик"</h5>

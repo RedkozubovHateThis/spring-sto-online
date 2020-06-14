@@ -1,9 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {Component, OnInit} from '@angular/core';
 import {PaymentService} from '../../api/payment.service';
 import {ToastrService} from 'ngx-toastr';
-import {PaymentResponse} from '../../model/payment/paymentResponse';
-import * as moment from 'moment';
 import {SubscriptionTypeResponse} from '../../model/payment/subscriptionTypeResponse';
 import {UserService} from '../../api/user.service';
 import {SubscriptionResponse} from '../../model/payment/subscriptionResponse';
