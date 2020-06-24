@@ -152,7 +152,7 @@
                 <div class="col-auto">
                   <button class="btn btn-sm btn-buro-blue btn-block" (click)="buySubscriptionAddon()"
                           [disabled]="selectedSubscription == null || documentsCount == null || documentsCount == 0 ||
-                      cost == null || cost === 0 || userService.currentUser.balance < cost || isLoading">
+                      cost == null || cost === 0 || userService.currentUser.attributes.balance < cost || isLoading">
                     Дополнить
                   </button>
                 </div>
@@ -251,7 +251,7 @@
 <!--                  <ng-container *ngIf="isBuyAvailable(); else updateBlock">-->
                   <ng-container *ngIf="true; else updateBlock">
                     <button class="btn btn-buro-blue btn-block" (click)="buySubscription(subscriptionType.id)"
-                            [disabled]="subscriptionType.isInactive || userService.currentUser.balance < subscriptionType.cost">
+                            [disabled]="subscriptionType.isInactive || userService.currentUser.attributes.balance < subscriptionType.cost">
                       Купить
                     </button>
                   </ng-container>

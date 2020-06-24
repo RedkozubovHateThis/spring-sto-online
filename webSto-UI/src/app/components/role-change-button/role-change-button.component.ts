@@ -4,6 +4,7 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {ToastrService} from 'ngx-toastr';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {User} from '../../model/postgres/auth/user';
+import {UserResource} from '../../model/resource/user.resource.service';
 
 @Component({
   selector: 'app-role-change-button',
@@ -22,9 +23,9 @@ export class RoleChangeButtonComponent implements OnInit {
   ];
 
   @Input()
-  private model: User;
+  private model: UserResource;
   @Input()
-  private currentUser: User;
+  private currentUser: UserResource;
   @Output()
   private onRoleChange: EventEmitter<void> = new EventEmitter();
   @ViewChild('content', {static: false}) private content;
@@ -33,12 +34,11 @@ export class RoleChangeButtonComponent implements OnInit {
               private modalService: NgbModal) { }
 
   ngOnInit() {
-    console.log(this.model);
-    this.selectedRole = this.model.roles[0].name;
+    this.selectedRole = this.model.relationships.roles.data[0].attributes.name;
   }
 
   isContains(role) {
-    const containedRole = this.model.roles.find( r => r.name === role );
+    const containedRole = this.model.relationships.roles.data.find( r => r.attributes.name === role );
     return containedRole != null;
   }
 

@@ -1,5 +1,10 @@
 package io.swagger.postgres.model.payment;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.crnk.core.resource.annotations.JsonApiId;
+import io.crnk.core.resource.annotations.JsonApiRelation;
+import io.crnk.core.resource.annotations.JsonApiResource;
+import io.swagger.postgres.model.BaseEntity;
 import io.swagger.postgres.model.enums.PaymentState;
 import io.swagger.postgres.model.enums.PaymentType;
 import io.swagger.postgres.model.security.User;
@@ -7,6 +12,7 @@ import io.swagger.response.payment.request.ExtendedResponse;
 import io.swagger.response.payment.request.embed.CardAuthInfo;
 import io.swagger.response.payment.request.embed.PaymentAmountInfo;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
@@ -14,13 +20,11 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-public class PaymentRecord implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@JsonApiResource(type = "paymentRecord", resourcePath = "paymentRecords", deletable = false, postable = false)
+public class PaymentRecord extends BaseEntity implements Serializable {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -60,22 +64,27 @@ public class PaymentRecord implements Serializable {
     private String maskedPan;
 
     @ManyToOne
+    @JsonApiRelation
     private User user;
 
     @OneToOne
     @NotFound(action = NotFoundAction.IGNORE)
+    @JsonIgnore
     private Subscription subscription;
 
     @OneToOne
     @NotFound(action = NotFoundAction.IGNORE)
+    @JsonIgnore
     private SubscriptionAddon subscriptionAddon;
 
     @OneToOne
     @NotFound(action = NotFoundAction.IGNORE)
+    @JsonIgnore
     private PaymentRecord promisedRecord;
 
     @OneToOne(mappedBy = "promisedRecord")
     @NotFound(action = NotFoundAction.IGNORE)
+    @JsonIgnore
     private PaymentRecord paymentRecord;
 
     public void updateRecord(ExtendedResponse extendedResponse) {

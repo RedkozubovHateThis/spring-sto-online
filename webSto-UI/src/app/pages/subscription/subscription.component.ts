@@ -4,6 +4,7 @@ import {ToastrService} from 'ngx-toastr';
 import {SubscriptionTypeResponse} from '../../model/payment/subscriptionTypeResponse';
 import {UserService} from '../../api/user.service';
 import {SubscriptionResponse} from '../../model/payment/subscriptionResponse';
+import {SubscriptionTypeResource} from '../../model/resource/subscription-type.resource.service';
 
 @Component({
   selector: 'app-subscription',
@@ -80,7 +81,7 @@ export class SubscriptionComponent implements OnInit {
 
   buySubscriptionAddon() {
     if ( this.selectedSubscription == null || this.documentsCount == null || this.documentsCount === 0 ||
-      this.userService.currentUser.balance < this.cost ) return;
+      this.userService.currentUser.attributes.balance < this.cost ) return;
 
     this.isLoading = true;
 
@@ -104,19 +105,18 @@ export class SubscriptionComponent implements OnInit {
     } );
   }
 
-  updateRenewalSubscription(subscription: SubscriptionTypeResponse) {
+  updateRenewalSubscription(subscription: SubscriptionTypeResource) {
     this.paymentService.isSubscriptionLoading = true;
 
-    const isSame = this.userService.currentUser.subscriptionTypeId === subscription.id;
+    const isSame = this.userService.currentUser.relationships.currentSubscription.data.id === subscription.id;
 
     this.paymentService.updateRenewalSubscription( subscription.id ).subscribe( () => {
       this.paymentService.isSubscriptionLoading = false;
 
       if ( isSame )
-        this.toastrService.success(`Тариф "${subscription.name}" успешно отменен как тариф по умолчанию!`);
+        this.toastrService.success(`Тариф "${subscription.attributes.name}" успешно отменен как тариф по умолчанию!`);
       else
-        this.toastrService.success(`Тариф "${subscription.name}" успешно установлен как тариф по умолчанию!`);
-      this.paymentService.requestCurrentSubscription();
+        this.toastrService.success(`Тариф "${subscription.attributes.name}" успешно установлен как тариф по умолчанию!`);
       this.userService.getCurrentUser();
     }, error => {
       this.paymentService.isSubscriptionLoading = false;

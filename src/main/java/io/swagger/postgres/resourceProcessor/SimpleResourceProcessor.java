@@ -7,6 +7,8 @@ import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
 import io.swagger.postgres.model.BaseEntity;
 import org.hibernate.collection.internal.PersistentSet;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -15,35 +17,41 @@ import java.util.*;
 
 public abstract class SimpleResourceProcessor<E extends BaseEntity> {
 
-    public Map<String, Object> toResource(E entity, List<String> includes) throws Exception {
+    public JsonApiEntity toResource(E entity, List<String> includes) throws Exception {
         if ( !entity.getClass().isAnnotationPresent(JsonApiResource.class) )
             throw new Exception("Not the entity resource class!");
 
-        Map<String, Object> resource = new HashMap<>();
-        List<Map<String, Object>> included = new ArrayList<>();
+        JsonApiEntity resource = new JsonApiEntity();
         List<Method> methods = collectAllMethods(entity);
-        resource.put( "data", buildAttributes(entity, methods, includes, included, false) );
-        if ( included.size() > 0 )
-            resource.put( "included", included );
+        resource.setData( buildAttributes(entity, methods, includes, resource.getIncluded(), false) );
 
         return resource;
     }
 
-//    public Map<String, Object> toResourceList(List<E> entity, Integer totalElements) throws Exception {
-//        Map<String, Object> resourceList = new HashMap<>();
-//        if ( !entity.getClass().isAnnotationPresent(JsonApiResource.class) )
-//            throw new Exception("Not the entity resource class!");
-//
-//        Map<String, Object> resource = new HashMap<>();
-//        List<Method> methods = collectAllMethods(entity);
-//
-//        return resourceList;
-//    }
+    public JsonApiEntityList toResourceList(List<E> entities, List<String> includes, Long totalElements, Pageable pageable) throws Exception {
+        JsonApiEntityList resourceList = new JsonApiEntityList();
+        resourceList.getMeta().setTotalResources(totalElements);
 
-    private Map<String, Object> buildAttributes(Object entity, List<Method> methods, List<String> includes, List<Map<String, Object>> included, Boolean onlyDataAndType) throws Exception {
-        Map<String, Object> data = new HashMap<>();
-        Map<String, Object> attributes = new HashMap<>();
-        Map<String, Object> relationships = new HashMap<>();
+        if ( entities == null || entities.size() == 0 )
+            return resourceList;
+
+        for ( E entity : entities ) {
+            if ( !entity.getClass().isAnnotationPresent(JsonApiResource.class) )
+                throw new Exception("Not the entity resource class!");
+
+            List<Method> methods = collectAllMethods(entity);
+            resourceList.addData( buildAttributes(entity, methods, includes, resourceList.getIncluded(), false) );
+        }
+
+        return resourceList;
+    }
+
+    public JsonApiEntityList toResourcePage(Page<E> entities, List<String> includes, Long totalElements, Pageable pageable) throws Exception {
+        return toResourceList(entities.getContent(), includes, totalElements, pageable);
+    }
+
+    private JsonApiData buildAttributes(Object entity, List<Method> methods, List<String> includes, List<JsonApiData> apiEntity, Boolean onlyDataAndType) throws Exception {
+        JsonApiData data = new JsonApiData();
 
         JsonApiResource jsonApiResource;
         String type;
@@ -54,7 +62,7 @@ public abstract class SimpleResourceProcessor<E extends BaseEntity> {
                 throw new Exception("Entity type not specified!");
 
             type = jsonApiResource.type();
-            data.put( "type", type );
+            data.setType( type );
         }
         else
             throw new Exception("Not the entity resource class!");
@@ -68,15 +76,13 @@ public abstract class SimpleResourceProcessor<E extends BaseEntity> {
             idField.setAccessible(true);
             id = idField.get(entity);
             idField.setAccessible(false);
-            data.put( "id", id.toString() );
+            data.setId( id.toString() );
 
             if ( !onlyDataAndType ) {
-                Map<String, String> links = new HashMap<>();
                 if ( jsonApiResource.resourcePath().length() > 0 )
-                    links.put("self", String.format("%s/%s/%s", getDomainName(), jsonApiResource.resourcePath(), id));
+                    data.putLink("self", String.format("%s/%s/%s", getDomainName(), jsonApiResource.resourcePath(), id));
                 else
-                    links.put("self", String.format("%s/%s/%s", getDomainName(), jsonApiResource.type(), id));
-                data.put("links", links);
+                    data.putLink("self", String.format("%s/%s/%s", getDomainName(), jsonApiResource.type(), id));
             }
         } catch (IllegalAccessException e) {
             e.printStackTrace();
@@ -95,7 +101,7 @@ public abstract class SimpleResourceProcessor<E extends BaseEntity> {
             if ( field == null ) {
                 // Если поле не найдено, то считаем это геттером для json
                 try {
-                    attributes.put( fieldName, method.invoke(entity) );
+                    data.putAttribute( fieldName, method.invoke(entity) );
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
@@ -105,13 +111,13 @@ public abstract class SimpleResourceProcessor<E extends BaseEntity> {
                 if ( field.isAnnotationPresent(JsonIgnore.class) ) continue;
                 if ( field.isAnnotationPresent(JsonApiRelation.class) ) {
                     JsonApiRelation jsonApiRelation = field.getAnnotation(JsonApiRelation.class);
-                    buildRelation(entity, jsonApiResource.resourcePath().length() > 0 ? jsonApiResource.resourcePath() : type, id, relationships, method, jsonApiRelation.serialize().equals(SerializeType.EAGER), fieldName, includes, included);
+                    buildRelation(entity, jsonApiResource.resourcePath().length() > 0 ? jsonApiResource.resourcePath() : type, id, data.getRelationships(), method, jsonApiRelation.serialize().equals(SerializeType.EAGER), fieldName, includes, apiEntity);
                     continue;
                 }
                 if ( field.isAnnotationPresent(JsonApiId.class) ) continue;
 
                 try {
-                    attributes.put( fieldName, method.invoke(entity) );
+                    data.putAttribute( fieldName, method.invoke(entity) );
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
@@ -119,46 +125,37 @@ public abstract class SimpleResourceProcessor<E extends BaseEntity> {
 
         }
 
-        data.put("attributes", attributes);
-        if ( relationships.size() > 0 )
-            data.put("relationships", relationships);
         return data;
     }
 
     private void buildRelation(Object entity, String type, Object id, Map<String, Object> relationships, Method method,
-                               Boolean isEager, String fieldName, List<String> includes, List<Map<String, Object>> included) throws Exception {
-        Map<String, Object> relationData = new HashMap<>();
-        Map<String, Object> links = new HashMap<>();
+                               Boolean isEager, String fieldName, List<String> includes, List<JsonApiData> apiEntity) throws Exception {
+        JsonApiRelationEntity relationData = new JsonApiRelationEntity();
 
-        links.put("self", String.format("%s/%s/%s/relationships/%s", getDomainName(), type, id, fieldName));
-        links.put("related", String.format("%s/%s/%s/%s", getDomainName(), type, id, fieldName));
-        relationData.put("links", links);
+        relationData.putLink("self", String.format("%s/%s/%s/relationships/%s", getDomainName(), type, id, fieldName));
+        relationData.putLink("related", String.format("%s/%s/%s/%s", getDomainName(), type, id, fieldName));
 
-        if ( includes.contains(fieldName) || isEager ) {
+        if ( ( includes != null && includes.contains(fieldName) ) || isEager ) {
             Object fieldValue = method.invoke(entity);
 
-            if (fieldValue.getClass().equals(PersistentSet.class)) {
-                PersistentSet set = (PersistentSet) fieldValue;
+            if ( fieldValue != null ) {
+                if (fieldValue.getClass().equals(PersistentSet.class)) {
+                    PersistentSet set = (PersistentSet) fieldValue;
 
-                List<Map<String, Object>> data = new ArrayList<>();
-                List<Map<String, Object>> includedData = new ArrayList<>();
-                for (Object relation : set) {
-                    data.add( buildAttributes(relation, null, null, null, true) );
-                    includedData.add( buildAttributes(relation, collectAllMethods(relation), new ArrayList<>(), included, false) );
+                    List<JsonApiData> data = new ArrayList<>();
+                    for (Object relation : set) {
+                        data.add( buildAttributes(relation, null, null, null, true) );
+                        addIncluded( apiEntity, buildAttributes(relation, collectAllMethods(relation), new ArrayList<>(), apiEntity, false) );
+                    }
+
+                    if ( data.size() > 0 )
+                        relationData.setData(data);
+
                 }
-
-                if ( data.size() > 0 )
-                    relationData.put("data", data);
-                if ( includedData.size() > 0 )
-                    included.addAll(includedData);
-
-            }
-            else {
-                Map<String, Object> data = buildAttributes(fieldValue, null, null, null, true);
-                Map<String, Object> includedData = buildAttributes(fieldValue, collectAllMethods(fieldValue), new ArrayList<>(), included, false);
-
-                relationData.put("data", data);
-                included.add(includedData);
+                else {
+                    relationData.setData( buildAttributes(fieldValue, null, null, null, true) );
+                    addIncluded( apiEntity, buildAttributes(fieldValue, collectAllMethods(fieldValue), new ArrayList<>(), apiEntity, false) );
+                }
             }
         }
 
@@ -227,6 +224,18 @@ public abstract class SimpleResourceProcessor<E extends BaseEntity> {
             baseFieldName = baseFieldName.replaceFirst("is", "");
 
         return baseFieldName.replaceFirst( String.valueOf( baseFieldName.charAt(0) ), String.valueOf( baseFieldName.charAt(0) ).toLowerCase() );
+    }
+
+    private void addIncluded(List<JsonApiData> included, JsonApiData includedData) {
+        if ( included.size() == 0 || included.stream().noneMatch( data -> data.isSame( includedData ) ) ) {
+            included.add( includedData );
+        }
+    }
+
+    public void addIncludes(List<JsonApiData> included, List<JsonApiData> includedData) {
+        for (JsonApiData includedDatum : includedData) {
+            addIncluded( included, includedDatum );
+        }
     }
 
     public abstract String getDomainName();

@@ -14,15 +14,18 @@ import io.swagger.response.api.ApiResponse;
 import io.swagger.service.UserService;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-@RequestMapping("/external/users/")
+@RequestMapping("/external/users")
 @RestController
 public class UserController {
 
@@ -47,29 +50,18 @@ public class UserController {
     @Autowired
     private UserResourceProcessor userResourceProcessor;
 
-    @GetMapping("/buildTest")
-    public ResponseEntity getTest() throws Exception {
-
-        User currentUser = userRepository.findById(4L).orElse(null);
-
-        if ( currentUser == null ) return ResponseEntity.status(401).build();
-
-        return ResponseEntity.ok( userResourceProcessor.toResource( currentUser, Collections.singletonList("currentSubscription") ) );
-
-    }
-
     @GetMapping("/currentUser")
-    public ResponseEntity getCurrentUser() {
+    public ResponseEntity getCurrentUser(@RequestParam(value = "include", required = false) List<String> includes) throws Exception {
 
         User currentUser = userRepository.findCurrentUser();
 
         if ( currentUser == null ) return ResponseEntity.status(401).build();
 
-        return ResponseEntity.ok( currentUser );
+        return ResponseEntity.ok( userResourceProcessor.toResource( currentUser, includes ) );
 
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public ResponseEntity saveExistingUser(@RequestBody User user,
                                            @PathVariable("id") Long id) {
 
@@ -257,8 +249,8 @@ public class UserController {
             return ResponseEntity.status(400).body( new ApiResponse("Вам запрещено изменять роль этого пользователя!") );
     }
 
-    @GetMapping("/findAll")
-    public ResponseEntity findAll(Pageable pageable, FilterPayload filterPayload) {
+    @GetMapping
+    public ResponseEntity findAll(JsonApiParams params) throws Exception {
 
         User currentUser = userRepository.findCurrentUser();
 
@@ -267,9 +259,16 @@ public class UserController {
         if ( !UserHelper.isAdmin( currentUser ) )
             return ResponseEntity.status(403).build();
 
+        FilterPayload filterPayload = params.getFilterPayload();
+        Pageable pageable = params.getPageable();
+
         Specification<User> specification = UserSpecificationBuilder.buildSpecification( currentUser, filterPayload );
 
-        return ResponseEntity.ok( userRepository.findAll(specification, pageable) );
+        return ResponseEntity.ok(
+                userResourceProcessor.toResourcePage(
+                        userRepository.findAll(specification, pageable), params.getInclude(), userRepository.count(specification), pageable
+                )
+        );
     }
 
     @GetMapping("/{id}")
@@ -358,6 +357,59 @@ public class UserController {
         private String fio;
         private String inn;
 
+    }
+
+    @Data
+    public static class JsonApiParams {
+        private Map<String, List<String>> filter;
+        private List<String> sort;
+        private List<String> include;
+        private Map<String, Integer> page;
+
+        public FilterPayload getFilterPayload() {
+            FilterPayload filterPayload = new FilterPayload();
+
+            if ( filter == null )
+                return filterPayload;
+
+            if ( filter.containsKey("role") && filter.get("role").size() > 0 )
+                filterPayload.setRole( filter.get("role").get(0) );
+            if ( filter.containsKey("isAutoRegistered") && filter.get("isAutoRegistered").size() > 0 )
+                filterPayload.setIsAutoRegistered( Boolean.valueOf( filter.get("isAutoRegistered").get(0) ) );
+            if ( filter.containsKey("phone") && filter.get("phone").size() > 0 )
+                filterPayload.setPhone( filter.get("phone").get(0) );
+            if ( filter.containsKey("email") && filter.get("email").size() > 0 )
+                filterPayload.setEmail( filter.get("email").get(0) );
+            if ( filter.containsKey("fio") && filter.get("fio").size() > 0 )
+                filterPayload.setFio( filter.get("fio").get(0) );
+            if ( filter.containsKey("inn") && filter.get("inn").size() > 0 )
+                filterPayload.setInn( filter.get("inn").get(0) );
+
+            return filterPayload;
+        }
+
+        public PageRequest getPageable() {
+            int number;
+            int size = page.getOrDefault("size", 20);
+
+            if ( !page.containsKey("number") )
+                number = 0;
+            else
+                number = page.get("number") - 1;
+
+            if ( sort == null || sort.size() == 0 )
+                return PageRequest.of(number, size);
+
+            String firstField = sort.get(0);
+            Sort sortDomain;
+
+            if (firstField.startsWith("-"))
+                sortDomain = Sort.by(Sort.Direction.DESC, sort.toArray( new String[ sort.size() ] ));
+            else
+                sortDomain = Sort.by(Sort.Direction.ASC, sort.toArray( new String[ sort.size() ] ));
+
+            return PageRequest.of(number, size, sortDomain);
+        }
     }
 
 }

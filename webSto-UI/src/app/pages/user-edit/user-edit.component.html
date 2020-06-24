@@ -34,14 +34,14 @@
                   <div class="form-group">
                     <label class="form-control-label" for="input-username">Логин</label>
                     <input type="text" id="input-username" class="form-control form-control-alternative" placeholder="Логин"
-                           disabled="true" [value]="model.username" name="username">
+                           disabled="true" [value]="model.attributes.username" name="username">
                   </div>
                 </div>
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="input-first-name">Имя</label>
                     <input type="email" id="input-first-name" class="form-control form-control-alternative" placeholder="Имя"
-                           [(ngModel)]="model.firstName" name="firstName">
+                           [(ngModel)]="model.attributes.firstName" name="firstName">
                   </div>
                 </div>
               </div>
@@ -50,30 +50,30 @@
                   <div class="form-group">
                     <label class="form-control-label" for="input-last-name">Фамилия</label>
                     <input type="text" id="input-last-name" class="form-control form-control-alternative" placeholder="Фамилия"
-                           [(ngModel)]="model.lastName" name="lastName">
+                           [(ngModel)]="model.attributes.lastName" name="lastName">
                   </div>
                 </div>
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="input-middle-name">Отчество</label>
                     <input type="text" id="input-middle-name" class="form-control form-control-alternative" placeholder="Отчество"
-                           [(ngModel)]="model.middleName" name="middleName">
+                           [(ngModel)]="model.attributes.middleName" name="middleName">
                   </div>
                 </div>
               </div>
-              <div class="row" *ngIf="model.userServiceLeader">
+              <div class="row" *ngIf="model.attributes.userServiceLeader">
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="input-service-work-price">Стоимость работа по н/ч</label>
                     <input type="number" step="100" min="0" id="input-service-work-price" class="form-control form-control-alternative" placeholder="Стоимость работа по Н/Ч"
-                           [(ngModel)]="model.serviceWorkPrice" name="serviceWorkPrice">
+                           [(ngModel)]="model.attributes.serviceWorkPrice" name="serviceWorkPrice">
                   </div>
                 </div>
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="input-service-goods-cost">Наценка на з/ч, %</label>
                     <input type="number" step="0.1" min="0" id="input-service-goods-cost" class="form-control form-control-alternative" placeholder="Наценка на з/ч, %"
-                           [(ngModel)]="model.serviceGoodsCost" name="serviceGoodsCost">
+                           [(ngModel)]="model.attributes.serviceGoodsCost" name="serviceGoodsCost">
                   </div>
                 </div>
               </div>
@@ -87,14 +87,14 @@
                   <div class="form-group">
                     <label class="form-control-label" for="input-email">Email</label>
                     <input type="text" id="input-email" class="form-control form-control-alternative" placeholder="Email (не обязательно к заполнению)"
-                           [(ngModel)]="model.email" name="email">
+                           [(ngModel)]="model.attributes.email" name="email">
                   </div>
                 </div>
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="input-phone">Телефон</label>
                     <input type="text" id="input-phone" class="form-control form-control-alternative" placeholder="Телефон"
-                           [(ngModel)]="model.phone" name="phone">
+                           [(ngModel)]="model.attributes.phone" name="phone">
                   </div>
                 </div>
               </div>
@@ -105,13 +105,13 @@
               <div class="row">
                 <div class="col-lg-6">
                   <label class="form-control-label">Роль</label>
-                  <span class="form-control form-control-alternative" *ngFor="let role of model.roles">
-                    {{role.nameRus}}
+                  <span class="form-control form-control-alternative" *ngFor="let role of model.relationships.roles.data">
+                    {{role.attributes.nameRus}}
                   </span>
                 </div>
               </div>
             </div>
-            <ng-container *ngIf="userService.isSameUser( model ) && model.userServiceLeader">
+            <ng-container *ngIf="userService.isSameUser( model ) && model.attributes.userServiceLeader">
               <hr class="my-4" />
               <!-- Subscriptions -->
               <h6 class="heading-small text-muted mb-4">Тариф по умолчанию</h6>
@@ -164,10 +164,10 @@
                             </div>
                           </div>
 
-                          <button class="btn btn-buro-blue btn-block" (click)="model.subscriptionTypeId = subscriptionType.id"
-                                  [disabled]="model.subscriptionTypeId === subscriptionType.id">
-                            <span *ngIf="model.subscriptionTypeId === subscriptionType.id">Выбран</span>
-                            <span *ngIf="model.subscriptionTypeId !== subscriptionType.id">Выбрать</span>
+                          <button class="btn btn-buro-blue btn-block" (click)="model.attributes.subscriptionTypeId = subscriptionType.id"
+                                  [disabled]="model.attributes.subscriptionTypeId === subscriptionType.id">
+                            <span *ngIf="model.attributes.subscriptionTypeId === subscriptionType.id">Выбран</span>
+                            <span *ngIf="model.attributes.subscriptionTypeId !== subscriptionType.id">Выбрать</span>
                           </button>
 
                         </div>
@@ -178,61 +178,61 @@
               </div>
             </ng-container>
             <!-- Garage -->
-            <ng-container *ngIf="model != null && model.userClient && ( userService.isSameUser(model) || userService.isAdmin() )">
-              <hr class="my-4" />
-              <h6 class="heading-small text-muted mb-4">Автомобили</h6>
-              <div class="pl-lg-4">
-                <div class="row">
-                  <div class="col">
-                    <label class="form-control-label" for="vin-number-search">Поиск автомобиля по VIN-номеру</label>
-                    <div class="input-group input-group-alternative mb-3">
-                      <input type="text" id="vin-number-search" class="form-control" placeholder="VIN-номер"
-                             [(ngModel)]="vinNumber" name="vinNumber">
-                      <div class="input-group-append">
-                        <button class="btn btn-buro-blue" type="button" (click)="findVehicle()"
-                                [disabled]="vinNumber == null || vinNumber.length === 0 || isLoading">
-                          Найти
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <ng-container *ngFor="let vinNumber of model.vinNumbers">
-                    <div class="col-lg-6 col-sm-12 mb-2">
-                      <div class="card">
-                        <div class="card-header">
-                          <div class="row">
-                            <div class="col">
-                              <h2 class="mb-0">{{vinNumber}}</h2>
-                            </div>
-                            <div class="col-auto">
-                              <span style="cursor: pointer" (click)="removeVehicle(vinNumber)">
-                                <i class="fa fa-times"></i>
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        <ng-container *ngIf="getVehicle(vinNumber) as vehicle">
-                          <div class="card-body">
-                            <div class="row mb-1">
-                              <div class="col">
-                                Наименование: {{vehicle.name}}
-                              </div>
-                            </div>
-                            <div class="row">
-                              <div class="col">
-                                Рег. номер: {{vehicle.regNumber}}
-                              </div>
-                            </div>
-                          </div>
-                        </ng-container>
-                      </div>
-                    </div>
-                  </ng-container>
-                </div>
-              </div>
-            </ng-container>
+<!--            <ng-container *ngIf="model != null && model.attributes.userClient && ( userService.isSameUser(model) || userService.isAdmin() )">-->
+<!--              <hr class="my-4" />-->
+<!--              <h6 class="heading-small text-muted mb-4">Автомобили</h6>-->
+<!--              <div class="pl-lg-4">-->
+<!--                <div class="row">-->
+<!--                  <div class="col">-->
+<!--                    <label class="form-control-label" for="vin-number-search">Поиск автомобиля по VIN-номеру</label>-->
+<!--                    <div class="input-group input-group-alternative mb-3">-->
+<!--                      <input type="text" id="vin-number-search" class="form-control" placeholder="VIN-номер"-->
+<!--                             [(ngModel)]="vinNumber" name="vinNumber">-->
+<!--                      <div class="input-group-append">-->
+<!--                        <button class="btn btn-buro-blue" type="button" (click)="findVehicle()"-->
+<!--                                [disabled]="vinNumber == null || vinNumber.length === 0 || isLoading">-->
+<!--                          Найти-->
+<!--                        </button>-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <div class="row">-->
+<!--                  <ng-container *ngFor="let vinNumber of model.vinNumbers">-->
+<!--                    <div class="col-lg-6 col-sm-12 mb-2">-->
+<!--                      <div class="card">-->
+<!--                        <div class="card-header">-->
+<!--                          <div class="row">-->
+<!--                            <div class="col">-->
+<!--                              <h2 class="mb-0">{{vinNumber}}</h2>-->
+<!--                            </div>-->
+<!--                            <div class="col-auto">-->
+<!--                              <span style="cursor: pointer" (click)="removeVehicle(vinNumber)">-->
+<!--                                <i class="fa fa-times"></i>-->
+<!--                              </span>-->
+<!--                            </div>-->
+<!--                          </div>-->
+<!--                        </div>-->
+<!--                        <ng-container *ngIf="getVehicle(vinNumber) as vehicle">-->
+<!--                          <div class="card-body">-->
+<!--                            <div class="row mb-1">-->
+<!--                              <div class="col">-->
+<!--                                Наименование: {{vehicle.name}}-->
+<!--                              </div>-->
+<!--                            </div>-->
+<!--                            <div class="row">-->
+<!--                              <div class="col">-->
+<!--                                Рег. номер: {{vehicle.regNumber}}-->
+<!--                              </div>-->
+<!--                            </div>-->
+<!--                          </div>-->
+<!--                        </ng-container>-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                  </ng-container>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </ng-container>-->
 <!--            <ng-container *ngIf="userService.isSameUser( model ) && model.userServiceLeaderOrFreelancer">-->
 <!--              <hr class="my-4" />-->
 <!--              &lt;!&ndash; Shops &ndash;&gt;-->

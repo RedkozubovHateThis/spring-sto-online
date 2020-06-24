@@ -41,20 +41,20 @@
               </tr>
             </thead>
             <tbody *ngIf="userController.all != null">
-            <tr *ngFor="let user of userController.all.content, let i = index" [attr.data-index]="i" style="cursor: pointer;" (click)="navigate(user)">
-              <th>{{user.lastName}}</th>
-              <th>{{user.firstName}}</th>
-              <th>{{user.middleName}}</th>
-              <th>{{user.phone}}</th>
-              <th>{{user.email}}</th>
+            <tr *ngFor="let user of userController.all.data, let i = index" [attr.data-index]="i" style="cursor: pointer;" (click)="navigate(user)">
+              <th>{{user.attributes.lastName}}</th>
+              <th>{{user.attributes.firstName}}</th>
+              <th>{{user.attributes.middleName}}</th>
+              <th>{{user.attributes.phone}}</th>
+              <th>{{user.attributes.email}}</th>
               <th>
-                <span *ngFor="let userRole of user.roles">
-                  {{userRole.nameRus}}&nbsp;
+                <span *ngFor="let userRole of user.relationships.roles.data">
+                  {{userRole.attributes.nameRus}}&nbsp;
                 </span>
               </th>
               <th>
-                <ng-container *ngIf="user.userClient">
-                  {{user.isAutoRegistered ? 'Да' : 'Нет'}}
+                <ng-container *ngIf="user.attributes.userClient">
+                  {{user.attributes.isAutoRegistered ? 'Да' : 'Нет'}}
                 </ng-container>
               </th>
             </tr>
@@ -64,9 +64,7 @@
         <div class="card-footer py-4 table-responsive">
           <app-loading-bar [isLoading]="isLoading" [atTop]="true"></app-loading-bar>
           <app-pagination *ngIf="userController.all != null"
-                          [totalPages]="userController.all.totalPages"
-                          [isFirst]="userController.all.first"
-                          [isLast]="userController.all.last"
+                          [totalRecords]="userController.all.page.total_resources"
                           [page]="userController.filter.page"
                           [size]="userController.filter.size"
                           [disabled]="isLoading"

@@ -17,33 +17,6 @@ export class PaymentService {
 
   constructor(private http: HttpClient, private userService: UserService) { }
 
-  subscribeToUserLoaded() {
-
-    this.subscription = this.userService.currentUserIsLoaded.subscribe( currentUser => {
-
-      if ( currentUser.userServiceLeader ) {
-        this.requestCurrentSubscription();
-      }
-
-    } );
-
-    this.userService.currentUserIsLoggedOut.subscribe( () => {
-      if ( this.subscription != null )
-        this.subscription.unsubscribe();
-    } );
-  }
-
-  requestCurrentSubscription() {
-    this.isSubscriptionLoading = true;
-
-    this.getCurrentSubscription().subscribe( subscription => {
-      this.currentSubscription = subscription;
-      this.isSubscriptionLoading = false;
-    }, () => {
-      this.isSubscriptionLoading = false;
-    } );
-  }
-
   sendRegisterRequest(amount: number): Observable<RegisterResponse> {
     const headers = this.userService.getHeaders();
 
@@ -118,10 +91,10 @@ export class PaymentService {
     );
   }
 
-  giftSubscription(serviceLeaderId: number): Observable<SubscriptionResponse> {
+  giftSubscription(serviceLeaderId: string): Observable<SubscriptionResponse> {
     const headers = this.userService.getHeaders();
     const params = {
-      serviceLeaderId: serviceLeaderId != null ? serviceLeaderId.toString() : ''
+      serviceLeaderId: serviceLeaderId != null ? serviceLeaderId : ''
     };
 
     return this.http.put<SubscriptionResponse>(
@@ -141,10 +114,10 @@ export class PaymentService {
     );
   }
 
-  updateRenewalSubscription(subscriptionTypeId: number): Observable<void> {
+  updateRenewalSubscription(subscriptionTypeId: string): Observable<void> {
     const headers = this.userService.getHeaders();
     const params = {
-      subscriptionTypeId: subscriptionTypeId != null ? subscriptionTypeId.toString() : ''
+      subscriptionTypeId: subscriptionTypeId != null ? subscriptionTypeId : ''
     };
 
     return this.http.put<void>(

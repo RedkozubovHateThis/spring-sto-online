@@ -20,12 +20,19 @@ import localeRu from '@angular/common/locales/ru';
 import {ErrorInterceptor} from './variables/error.interceptor';
 import {WebSocketService} from './api/webSocket.service';
 import {ToastrModule} from 'ngx-toastr';
-import {EventMessageResponseService} from './api/eventMessageResponse.service';
+import {EventMessageService} from './api/event-message.service';
 // import {DocumentResponseController} from './controller/document-response.controller';
 import {EventMessageController} from './controller/event-message.controller';
 import {UserController} from './controller/user.controller';
 import {InfobarService} from './api/infobar.service';
 import {PaymentService} from './api/payment.service';
+import { UserResourceService } from './model/resource/user.resource.service';
+import {UserRoleResourceService} from './model/resource/user-role.resource.service';
+import {NgxJsonapiModule} from 'ngx-jsonapi';
+import {SubscriptionResourceService} from './model/resource/subscription.resource.service';
+import {SubscriptionTypeResourceService} from './model/resource/subscription-type.resource.service';
+import {PaymentRecordResourceService} from './model/resource/payment-record.resource.service';
+import {EventMessageResourceService} from './model/resource/event-message.resource.service';
 
 registerLocaleData(localeRu, 'ru');
 
@@ -45,6 +52,9 @@ registerLocaleData(localeRu, 'ru');
     HttpClientModule,
     ToastrModule.forRoot({
       timeOut: 3000
+    }),
+    NgxJsonapiModule.forRoot({
+      url: 'https://local.buromotors.ru:8080/api/'
     })
   ],
   declarations: [
@@ -58,13 +68,19 @@ registerLocaleData(localeRu, 'ru');
   providers: [
     DatePipe,
     UserService,
-    EventMessageResponseService,
+    EventMessageService,
     WebSocketService,
     // DocumentResponseController,
     EventMessageController,
     UserController,
     InfobarService,
     PaymentService,
+    UserResourceService,
+    UserRoleResourceService,
+    SubscriptionResourceService,
+    SubscriptionTypeResourceService,
+    PaymentRecordResourceService,
+    EventMessageResourceService,
     {
       provide: HTTP_INTERCEPTORS,
       useFactory(userService: UserService, router: Router) {

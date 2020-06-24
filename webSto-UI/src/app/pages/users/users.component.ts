@@ -5,6 +5,7 @@ import {Pagination} from '../pagination';
 import {User} from '../../model/postgres/auth/user';
 import {UserService} from '../../api/user.service';
 import {UserController} from '../../controller/user.controller';
+import {UserResource} from '../../model/resource/user.resource.service';
 
 @Component({
   selector: 'app-users',
@@ -24,7 +25,7 @@ export class UsersComponent extends Pagination {
   requestData() {
     this.isLoading = true;
     this.userService.getAll(this.userController.filter).subscribe( data => {
-      this.userController.all = data as Pageable<User>;
+      this.userController.all = data;
 
       this.isLoading = false;
     }, error => {
@@ -32,7 +33,7 @@ export class UsersComponent extends Pagination {
     } );
   }
 
-  private navigate(user: User) {
+  private navigate(user: UserResource) {
     this.userService.setTransferModel( user );
     this.router.navigate(['/users', user.id]);
   }

@@ -9,6 +9,7 @@ import {ClientInfo} from '../../model/info/clientInfo';
 import {ServiceLeaderInfo} from '../../model/info/serviceLeaderInfo';
 import {AdminInfo} from '../../model/info/adminInfo';
 import {DocumentResponseController} from '../../controller/document-response.controller';
+import {UserResource} from '../../model/resource/user.resource.service';
 
 @Component({
   selector: 'app-infobar',
@@ -20,7 +21,7 @@ export class InfobarComponent implements OnInit {
   constructor(private infobarService: InfobarService, private userService: UserService,
               private webSocketService: WebSocketService/*, private documentResponseController: DocumentResponseController*/) {}
 
-  private currentUser: User;
+  private currentUser: UserResource;
   private subscription: StompSubscription;
   private onConnect: Subscription;
 
@@ -73,11 +74,11 @@ export class InfobarComponent implements OnInit {
   private getData() {
     if ( this.currentUser == null ) return;
 
-    if ( this.currentUser.userClient )
+    if ( this.currentUser.attributes.userClient )
       this.getClientData();
-    else if ( this.currentUser.userServiceLeader )
+    else if ( this.currentUser.attributes.userServiceLeader )
       this.getServiceLeaderData();
-    else if ( this.currentUser.userAdmin )
+    else if ( this.currentUser.attributes.userAdmin )
       this.getAdminData();
   }
 
@@ -102,13 +103,13 @@ export class InfobarComponent implements OnInit {
   }
 
   private getAdminData() {
-    this.isLoading = true;
-    this.infobarService.getModeratorInfo( this.documentResponseController.filter.organization ).subscribe( data => {
-      this.moderatorInfo = data as AdminInfo;
-      this.isLoading = false;
-    }, () => {
-      this.isLoading = false;
-    } );
+    // this.isLoading = true;
+    // this.infobarService.getModeratorInfo( this.documentResponseController.filter.organization ).subscribe( data => {
+    //   this.moderatorInfo = data as AdminInfo;
+    //   this.isLoading = false;
+    // }, () => {
+    //   this.isLoading = false;
+    // } );
   }
 
   private isLessThen3DaysRemains(endDate: any): boolean {

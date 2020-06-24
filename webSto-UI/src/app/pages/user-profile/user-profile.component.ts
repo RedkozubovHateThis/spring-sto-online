@@ -5,6 +5,7 @@ import {Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
 import {ToastrService} from 'ngx-toastr';
 import {Shops} from '../../variables/shops';
+import {UserResource} from '../../model/resource/user.resource.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -14,7 +15,7 @@ import {Shops} from '../../variables/shops';
 export class UserProfileComponent implements OnInit {
 
   private isLoading: boolean = false;
-  private model: User;
+  private model: UserResource;
   private title: string = "Профиль";
   private showBack: boolean = false;
   private shops: ShopInterface[] = [];
@@ -41,7 +42,7 @@ export class UserProfileComponent implements OnInit {
     this.model = this.userService.currentUser;
   }
 
-  private navigate(user: User) {
+  private navigate(user: UserResource) {
     this.userService.setTransferModel( user );
     this.router.navigate(['/users', user.id, 'edit']);
   }

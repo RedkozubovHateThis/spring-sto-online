@@ -2,7 +2,7 @@ import {Component, ElementRef, OnInit} from '@angular/core';
 import {Location} from '@angular/common';
 import {Router} from '@angular/router';
 import {UserService} from '../../api/user.service';
-import {EventMessageResponseService} from '../../api/eventMessageResponse.service';
+import {EventMessageService} from '../../api/event-message.service';
 
 @Component({
   selector: 'app-navbar',
@@ -14,7 +14,7 @@ export class NavbarComponent implements OnInit {
   public listTitles: any[];
   public location: Location;
   constructor(location: Location,  private element: ElementRef, private router: Router, private userService: UserService,
-              private eventMessageResponseService: EventMessageResponseService) {
+              private eventMessageResponseService: EventMessageService) {
     this.location = location;
   }
 

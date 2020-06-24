@@ -3,6 +3,7 @@ import {NavigationEnd, Router} from '@angular/router';
 import {UserService} from '../../api/user.service';
 import {WebSocketService} from '../../api/webSocket.service';
 import {PaymentService} from '../../api/payment.service';
+import {UserResourceService} from '../../model/resource/user.resource.service';
 
 @Component({
   selector: 'app-admin-layout',
@@ -18,7 +19,9 @@ export class AdminLayoutComponent implements OnInit {
     if ( splashScreen )
       splashScreen.remove();
 
-    paymentService.subscribeToUserLoaded();
+    // this.requestCurrentUser();
+
+    // paymentService.subscribeToUserLoaded();
 
     router.events.subscribe(val => {
 
@@ -31,7 +34,7 @@ export class AdminLayoutComponent implements OnInit {
           if ( !userService.isAuthenticated() ) {
 
             if ( userService.isTokenExists() )
-              userService.getCurrentUser();
+              this.requestCurrentUser();
             else {
               localStorage.setItem('redirectUrl', val.url);
               router.navigate(['login']);
@@ -39,7 +42,7 @@ export class AdminLayoutComponent implements OnInit {
 
           }
           else if ( userService.isAuthenticated() )
-            userService.getCurrentUser();
+            this.requestCurrentUser();
 
         }
 
@@ -49,6 +52,10 @@ export class AdminLayoutComponent implements OnInit {
 
   ngOnInit() {
     this.webSocketService.connect();
+  }
+
+  requestCurrentUser() {
+    this.userService.getCurrentUser();
   }
 
 }

@@ -6,10 +6,10 @@ import {Subscription} from 'rxjs';
 export abstract class ModelTransfer<M, I> implements OnInit {
 
   protected model: M;
-  protected routeSub:Subscription;
-  protected id:I;
+  protected routeSub: Subscription;
+  protected id: I;
 
-  protected constructor(private transferService:TransferService<M>, protected route:ActivatedRoute) {}
+  protected constructor(private transferService: TransferService<M>, protected route: ActivatedRoute) {}
 
   ngOnInit() {
 

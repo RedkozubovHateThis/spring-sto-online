@@ -8,11 +8,9 @@ import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges
 export class PaginationComponent implements OnInit, OnChanges {
 
   @Input()
-  private totalPages: number;
-  @Input()
-  private isFirst: boolean;
-  @Input()
-  private isLast: boolean;
+  private totalRecords: number;
+  private isFirst = false;
+  private isLast = false;
   @Input()
   private page: number;
   @Input()
@@ -32,17 +30,20 @@ export class PaginationComponent implements OnInit, OnChanges {
   }
 
   private setPageData() {
-    const pageInfo = this.page + 1;
+    const pageInfo = this.page;
 
-    if ( this.totalPages != null ) {
+    if ( this.totalRecords != null ) {
+      const totalPages = Math.ceil( this.totalRecords / this.size );
+      this.isFirst = pageInfo === 1;
+      this.isLast = pageInfo === totalPages;
 
       this.pagesInfo = [];
-      // for ( let p:number = 1; p <= this.totalPages; p++ ) {
+      // for ( let p:number = 1; p <= totalPages; p++ ) {
       //   this.pagesInfo.push(p);
       // }
 
-      if (this.totalPages <= 6) {
-        for (let p: number = 1; p <= this.totalPages; p++) {
+      if (totalPages <= 6) {
+        for (let p: number = 1; p <= totalPages; p++) {
           this.pagesInfo.push(p);
         }
       }
@@ -56,7 +57,7 @@ export class PaginationComponent implements OnInit, OnChanges {
         // }
 
         // special case where last page is selected...
-        if (pageInfo === this.totalPages) {
+        if (pageInfo === totalPages) {
           this.pagesInfo.push(pageInfo - 2);
         }
 
@@ -66,12 +67,12 @@ export class PaginationComponent implements OnInit, OnChanges {
         }
 
         // Print current page number button as long as it not the first or last page
-        if (pageInfo !== 1 && pageInfo !== this.totalPages) {
+        if (pageInfo !== 1 && pageInfo !== totalPages) {
           this.pagesInfo.push(pageInfo);
         }
 
         // print next number button if currentPage < lastPage - 1
-        if (pageInfo < this.totalPages - 1) {
+        if (pageInfo < totalPages - 1) {
           this.pagesInfo.push(pageInfo + 1);
         }
 
@@ -81,12 +82,12 @@ export class PaginationComponent implements OnInit, OnChanges {
         }
 
         // print "..." if currentPage is < lastPage -2
-        // if (pageInfo < this.totalPages - 2) {
+        // if (pageInfo < totalPages - 2) {
         //   this.pagesInfo.push(null);
         // }
 
         // Always print last page button if there is more than 1 page
-        this.pagesInfo.push(this.totalPages);
+        this.pagesInfo.push(totalPages);
       }
 
     }

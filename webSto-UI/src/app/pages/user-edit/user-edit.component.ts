@@ -7,13 +7,14 @@ import {ModelTransfer} from '../model.transfer';
 import {PaymentService} from '../../api/payment.service';
 import {SubscriptionTypeResponse} from '../../model/payment/subscriptionTypeResponse';
 import {ToastrService} from 'ngx-toastr';
+import {UserResource} from '../../model/resource/user.resource.service';
 
 @Component({
   selector: 'app-user-edit',
   templateUrl: './user-edit.component.html',
   styleUrls: ['./user-edit.component.scss']
 })
-export class UserEditComponent extends ModelTransfer<User, number> implements OnInit {
+export class UserEditComponent extends ModelTransfer<UserResource, string> implements OnInit {
 
   private isLoading = false;
 
@@ -30,7 +31,7 @@ export class UserEditComponent extends ModelTransfer<User, number> implements On
   requestData() {
     this.isLoading = true;
     this.userService.getOne(this.id).subscribe( data => {
-      this.model = data as User;
+      this.model = data;
       this.isLoading = false;
     }, error => {
       this.isLoading = false;

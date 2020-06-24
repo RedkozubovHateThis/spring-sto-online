@@ -7,13 +7,14 @@ import {Location} from '@angular/common';
 import {Shops} from '../../variables/shops';
 import {PaymentService} from '../../api/payment.service';
 import {ToastrService} from 'ngx-toastr';
+import {UserResource} from '../../model/resource/user.resource.service';
 
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.scss']
 })
-export class UserComponent extends ModelTransfer<User, number> implements OnInit {
+export class UserComponent extends ModelTransfer<UserResource, string> implements OnInit {
 
   private isLoading: boolean = false;
   private title: string = "Данные пользователя";
@@ -30,7 +31,7 @@ export class UserComponent extends ModelTransfer<User, number> implements OnInit
   requestData() {
     this.isLoading = true;
     this.userService.getOne(this.id).subscribe( data => {
-      this.model = data as User;
+      this.model = data;
       this.isLoading = false;
     }, error => {
       this.isLoading = false;
@@ -40,7 +41,7 @@ export class UserComponent extends ModelTransfer<User, number> implements OnInit
   onTransferComplete() {
   }
 
-  private navigate(user: User) {
+  private navigate(user: UserResource) {
     this.userService.setTransferModel( user );
     this.router.navigate(['/users', user.id, 'edit']);
   }

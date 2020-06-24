@@ -8,18 +8,27 @@ import {environment} from '../../environments/environment';
 import {ToastrService} from 'ngx-toastr';
 import {UsersFilter} from '../model/usersFilter';
 import {RestService} from './rest.service';
-import {VehicleResponse} from '../model/firebird/vehicleResponse';
+import {UserResource, UserResourceService} from '../model/resource/user.resource.service';
+import {UserRoleResourceService} from '../model/resource/user-role.resource.service';
+import {SubscriptionResourceService} from '../model/resource/subscription.resource.service';
+import {SubscriptionTypeResourceService} from '../model/resource/subscription-type.resource.service';
+import {DocumentCollection} from 'ngx-jsonapi';
 
 @Injectable()
 export class UserService implements TransferService<User>, RestService<User> {
 
-  constructor(private http: HttpClient, private router: Router, private toastrService: ToastrService) { }
-  currentUser: User;
+  constructor(private http: HttpClient, private router: Router, private toastrService: ToastrService,
+              private userResourceService: UserResourceService, private userRoleResourceService: UserRoleResourceService,
+              private subscriptionResourceService: SubscriptionResourceService,
+              private subscriptionTypeResourceService: SubscriptionTypeResourceService) {
+    userResourceService.register();
+  }
+  currentUser: UserResource;
   isSaving = false;
-  private transferModel: User;
+  private transferModel: UserResource;
 
   @Output()
-  public currentUserIsLoaded: Subject<User> = new Subject<User>();
+  public currentUserIsLoaded: Subject<UserResource> = new Subject<UserResource>();
   @Output()
   public currentUserIsLoggedOut: Subject<void> = new Subject<void>();
 
@@ -71,29 +80,29 @@ export class UserService implements TransferService<User>, RestService<User> {
 
   getUsername(): string {
     if ( this.currentUser != null ) {
-      if ( this.currentUser.fio != null )
-        return this.currentUser.fio;
-      else if ( this.currentUser.phone != null )
-        return this.currentUser.phone;
-      else if ( this.currentUser.email != null )
-        return this.currentUser.email;
+      if ( this.currentUser.attributes.fio != null )
+        return this.currentUser.attributes.fio;
+      else if ( this.currentUser.attributes.phone != null )
+        return this.currentUser.attributes.phone;
+      else if ( this.currentUser.attributes.email != null )
+        return this.currentUser.attributes.email;
       else
-        return this.currentUser.username;
+        return this.currentUser.attributes.username;
     }
     else
       return null;
   }
 
-  getModelUsername(model: User): string {
+  getModelUsername(model: UserResource): string {
     if ( model != null ) {
-      if ( model.fio != null )
-        return model.fio;
-      else if ( model.phone != null )
-        return model.phone;
-      else if ( model.email != null )
-        return model.email;
+      if ( model.attributes.fio != null )
+        return model.attributes.fio;
+      else if ( model.attributes.phone != null )
+        return model.attributes.phone;
+      else if ( model.attributes.email != null )
+        return model.attributes.email;
       else
-        return model.username;
+        return model.attributes.username;
     }
     else
       return null;
@@ -153,11 +162,10 @@ export class UserService implements TransferService<User>, RestService<User> {
 
   authenticate() {
 
-    const headers = this.getHeaders();
-
-    this.http.get( this.getApiUrl() + 'users/currentUser', {headers} ).subscribe( data => {
-
-      this.setCurrentUserData( data as User );
+    this.userResourceService.get('currentUser', {
+      beforepath: 'external'
+    }).subscribe((result) => {
+      this.setCurrentUserData( result );
       localStorage.setItem('isAuthenticated', 'true');
 
       const redirectUrl: string = localStorage.getItem('redirectUrl');
@@ -167,8 +175,7 @@ export class UserService implements TransferService<User>, RestService<User> {
         localStorage.removeItem('redirectUrl');
       }
       this.router.navigate(['/documents']);
-
-    } );
+    });
 
   }
 
@@ -176,16 +183,17 @@ export class UserService implements TransferService<User>, RestService<User> {
 
     const headers = this.getHeaders();
 
-    this.http.get( this.getApiUrl() + 'users/currentUser', {headers} ).subscribe( data => {
-      this.setCurrentUserData( data as User );
+    console.log('REQUESTING CURRENT USER!');
+    this.userResourceService.get('currentUser', {
+      beforepath: 'external'
+    }).subscribe((result) => {
+      this.setCurrentUserData( result );
       this.currentUserIsLoaded.next( this.currentUser );
-    }, () => {
-      this.logout();
-    } );
+    });
 
   }
 
-  private setCurrentUserData(user: User) {
+  private setCurrentUserData(user: UserResource) {
     this.currentUser = user;
   }
 
@@ -203,41 +211,28 @@ export class UserService implements TransferService<User>, RestService<User> {
     return this.http.get(`${this.getApiUrl()}oauth/demo/register`);
   }
 
-  saveUser(user: User, message: string) {
+  saveUser(user: UserResource, message: string) {
 
     const headers = this.getHeaders();
     this.isSaving = true;
 
-    return this.http.put( this.getApiUrl() + `users/${user.id}`, user,{headers} ).subscribe( data => {
-
-      user = data as User;
+    user.save().subscribe(savedUser => {
+      this.isSaving = false;
 
       if ( this.currentUser != null && this.currentUser.id === user.id )
-        this.setCurrentUserData( data as User );
+        this.setCurrentUserData( user );
 
       this.isSaving = false;
       this.toastrService.success(message);
-
-    }, error => {
+    }, () => {
       this.isSaving = false;
-
-      if ( error.status === 400 || error.status === 404 )
-        this.toastrService.error(error.error, 'Внимание!');
-      else
-        this.toastrService.error('Ошибка сохранения пользователя!', 'Внимание!');
-
-    } );
+      this.toastrService.error('Ошибка сохранения пользователя!', 'Внимание!');
+    });
 
   }
 
-  getAll(filter: UsersFilter) {
-    const headers = this.getHeaders();
-
+  getAll(filter: UsersFilter): Observable<DocumentCollection<UserResource>> {
     const params = {
-      sort: `${filter.sort},${filter.direction}`,
-      page: filter.page.toString(),
-      size: filter.size.toString(),
-      offset: filter.offset.toString(),
       role: filter.role != null ? filter.role : '',
       isApproved: filter.isApproved != null ? filter.isApproved : '',
       isAutoRegistered: filter.isAutoRegistered != null ? filter.isAutoRegistered : '',
@@ -247,72 +242,23 @@ export class UserService implements TransferService<User>, RestService<User> {
       fio: filter.fio != null ? filter.fio : ''
     };
 
-    return this.http.get( `${this.getApiUrl()}users/findAll`, {headers, params} );
+    return this.userResourceService.all({
+      beforepath: 'external',
+      sort: [`${filter.direction === 'desc' ? '-' : ''}${filter.sort}`],
+      page: {number: filter.page, size: filter.size},
+      remotefilter: params
+    });
   }
 
-  getReplacementModerators() {
-    const headers = this.getHeaders();
-
-    return this.http.get( `${this.getApiUrl()}users/findReplacementModerators`, {headers} );
-  }
-
-  getModerators() {
-    const headers = this.getHeaders();
-
-    return this.http.get( `${this.getApiUrl()}users/findModerators`, {headers} );
-  }
-
-  getOne(id: number) {
-    const headers = this.getHeaders();
-
-    return this.http.get( `${this.getApiUrl()}users/${id}`, {headers} );
-  }
-
-  getVehicles(id: number): Observable<VehicleResponse[]> {
-    const headers = this.getHeaders();
-
-    return this.http.get<VehicleResponse[]>( `${this.getApiUrl()}users/${id}/vehicles`, {headers} );
-  }
-
-  getVehicle(vinNumber: string): Observable<VehicleResponse> {
-    const headers = this.getHeaders();
-
-    return this.http.get<VehicleResponse>( `${this.getApiUrl()}users/vehicles/${vinNumber}`, {headers} );
-  }
-
-  getOpponents() {
-    const headers = this.getHeaders();
-
-    return this.http.get( `${this.getApiUrl()}chat/opponents`, {headers} );
-  }
-
-  getShareOpponents(documentId: number) {
-    const headers = this.getHeaders();
-
-    const params = {
-      documentId: documentId != null ? documentId.toString() : ''
-    };
-
-    return this.http.get( `${this.getApiUrl()}chat/share/opponents`, {headers, params} );
-  }
-
-  getEventMessageFromUsers() {
-    const headers = this.getHeaders();
-
-    return this.http.get( `${this.getApiUrl()}users/eventMessages/fromUsers`, {headers} );
-  }
-
-  getEventMessageToUsers() {
-    const headers = this.getHeaders();
-
-    return this.http.get( `${this.getApiUrl()}users/eventMessages/toUsers`, {headers} );
+  getOne(id: string): Observable<UserResource> {
+    return this.userResourceService.get(id.toString());
   }
 
   getTransferModel() {
     return this.transferModel;
   }
 
-  setTransferModel(user: User) {
+  setTransferModel(user: UserResource) {
     this.transferModel = user;
   }
 
@@ -321,22 +267,22 @@ export class UserService implements TransferService<User>, RestService<User> {
   }
 
   isNotClient(): boolean {
-    return this.currentUser != null && ( this.currentUser.userAdmin || this.currentUser.userServiceLeader );
+    return this.currentUser != null && ( this.currentUser.attributes.userAdmin || this.currentUser.attributes.userServiceLeader );
   }
 
   isClient(): boolean {
-    return this.currentUser != null && this.currentUser.userClient;
+    return this.currentUser != null && this.currentUser.attributes.userClient;
   }
 
   isServiceLeader(): boolean {
-    return this.currentUser != null && this.currentUser.userServiceLeader;
+    return this.currentUser != null && this.currentUser.attributes.userServiceLeader;
   }
 
   isAdmin(): boolean {
-    return this.currentUser != null && this.currentUser.userAdmin;
+    return this.currentUser != null && this.currentUser.attributes.userAdmin;
   }
 
-  isSameUser(model: User) {
+  isSameUser(model: UserResource) {
     return this.currentUser != null && model != null && this.currentUser.id === model.id;
   }
 

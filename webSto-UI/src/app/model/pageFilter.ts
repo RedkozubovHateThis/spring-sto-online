@@ -7,7 +7,7 @@ export abstract class PageFilter implements PageFilterInterface {
   offset: number;
 
   protected constructor() {
-    this.page = 0;
+    this.page = 1;
     this.size = 10;
     this.offset = -10;
   }

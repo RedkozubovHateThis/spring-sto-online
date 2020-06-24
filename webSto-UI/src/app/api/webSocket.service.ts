@@ -4,7 +4,7 @@ import {Client} from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import {Subject, Subscription} from 'rxjs';
 import {ToastrService} from 'ngx-toastr';
-import {EventMessageResponseService} from './eventMessageResponse.service';
+import {EventMessageService} from './event-message.service';
 import {EventMessageResponse} from '../model/postgres/eventMessageResponse';
 import {DatePipe} from '@angular/common';
 import {Router} from '@angular/router';
@@ -13,7 +13,7 @@ import {Router} from '@angular/router';
 export class WebSocketService {
 
   constructor(private userService: UserService, private toastrService: ToastrService, private router: Router,
-              private eventMessageResponseService: EventMessageResponseService, private datePipe: DatePipe) { }
+              private eventMessageResponseService: EventMessageService, private datePipe: DatePipe) { }
 
   public clientIsConnected: Subject<Client> = new Subject<Client>();
   public client: Client;
@@ -71,7 +71,7 @@ export class WebSocketService {
     this.eventMessageResponseService.getLast5();
     this.client.subscribe('/topic/event/' + this.userService.currentUser.id, message => {
       const eventMessage: EventMessageResponse = JSON.parse( message.body );
-      this.eventMessageResponseService.addMessage( eventMessage );
+      this.eventMessageResponseService.addMessage();
       me.buildMessage( eventMessage );
     });
 

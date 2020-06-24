@@ -34,33 +34,9 @@
               </tr>
             </thead>
             <tbody *ngIf="eventMessageController.all != null">
-            <tr *ngFor="let emResponse of eventMessageController.all.content">
-              <th>{{emResponse.messageDate | date : 'dd.MM.yyyy HH:mm'}}</th>
-              <th>{{getMessageType(emResponse.messageType)}}</th>
-              <ng-container *ngIf="emResponse.messageType === 'MODERATOR_REPLACEMENT'">
-                <th>{{emResponse.fromFio}}</th>
-                <th>{{emResponse.toFio}}</th>
-                <th></th>
-                <th></th>
-              </ng-container>
-              <ng-container *ngIf="emResponse.messageType === 'DOCUMENT_CHANGE'">
-                <th><a [routerLink]="['/users', emResponse.fromId]">{{emResponse.fromFio}}</a></th>
-                <th>{{emResponse.toFio}}</th>
-                <th><a [routerLink]="['/documents', emResponse.documentId]">{{emResponse.documentName}}</a></th>
-                <th>{{emResponse.additionalInformation}}</th>
-              </ng-container>
-              <ng-container *ngIf="emResponse.messageType === 'USER_REGISTER' || emResponse.messageType === 'USER_AUTODEALER'">
-                <th><a [routerLink]="['/users', emResponse.fromId]">{{emResponse.fromFio}}</a></th>
-                <th>{{emResponse.toFio}}</th>
-                <th></th>
-                <th></th>
-              </ng-container>
-              <ng-container *ngIf="emResponse.messageType === 'USER_APPROVE' || emResponse.messageType === 'USER_REJECT'">
-                <th>{{emResponse.fromFio}}</th>
-                <th>{{emResponse.toFio}}</th>
-                <th></th>
-                <th></th>
-              </ng-container>
+            <tr *ngFor="let eventMessage of eventMessageController.all.data">
+              <th>{{eventMessage.attributes.messageDate | date : 'dd.MM.yyyy HH:mm'}}</th>
+              <th>{{getMessageType(eventMessage.attributes.messageType)}}</th>
             </tr>
             </tbody>
           </table>
@@ -68,9 +44,7 @@
         <div class="card-footer py-4table-responsive">
           <app-loading-bar [isLoading]="isLoading" [atTop]="true"></app-loading-bar>
           <app-pagination *ngIf="eventMessageController.all != null"
-                          [totalPages]="eventMessageController.all.totalPages"
-                          [isFirst]="eventMessageController.all.first"
-                          [isLast]="eventMessageController.all.last"
+                          [totalRecords]="eventMessageController.all.page.total_resources"
                           [page]="eventMessageController.filter.page"
                           [size]="eventMessageController.filter.size"
                           [disabled]="isLoading"
@@ -80,7 +54,7 @@
       </div>
     </div>
     <div class="col-xl-3">
-      <app-event-message-filter (onChange)="applyFilter()" [filter]="eventMessageController.filter"></app-event-message-filter>
+<!--      <app-event-message-filter (onChange)="applyFilter()" [filter]="eventMessageController.filter"></app-event-message-filter>-->
     </div>
   </div>
 </div>

@@ -1,24 +1,21 @@
 package io.swagger.postgres.model.payment;
 
-import io.crnk.core.resource.annotations.JsonApiId;
 import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
+import io.swagger.postgres.model.BaseEntity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-@JsonApiResource(type = "subscriptionType", resourcePath = "subscriptionTypes")
-public class SubscriptionType implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonApiId
-    private Long id;
+@JsonApiResource(type = "subscriptionType", resourcePath = "subscriptionTypes", postable = false, deletable = false)
+public class SubscriptionType extends BaseEntity implements Serializable {
 
     @Column(nullable = false)
     private Integer sortPosition;

@@ -9,8 +9,8 @@
           </a>
         </li>
 
-        <li class="page-item" *ngFor="let pageInfo of pagesInfo" [ngClass]="{active: pageInfo == page + 1, disabled: disabled}">
-          <a class="page-link" (click)="goToPage( pageInfo - 1, $event )">{{pageInfo}}</a>
+        <li class="page-item" *ngFor="let pageInfo of pagesInfo" [ngClass]="{active: pageInfo == page, disabled: disabled}">
+          <a class="page-link" (click)="goToPage( pageInfo, $event )">{{pageInfo}}</a>
         </li>
 
         <li class="page-item" [ngClass]="{disabled: disabled || isLast}">

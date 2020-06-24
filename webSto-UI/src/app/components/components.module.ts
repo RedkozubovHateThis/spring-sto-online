@@ -6,11 +6,9 @@ import {FooterComponent} from './footer/footer.component';
 import {RouterModule} from '@angular/router';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {InfobarComponent} from './infobar/infobar.component';
-import {ImgPreviewComponent} from './img-preview/img-preview.component';
 // import {DocumentFilterComponent} from './document-filter/document-filter.component';
 import {FormsModule} from '@angular/forms';
-import {EventMessageFilterComponent} from './event-message-filter/event-message-filter.component';
-import {ReportButtonComponent} from './report-button/report-button.component';
+// import {ReportButtonComponent} from './report-button/report-button.component';
 import {PdfViewerModule} from 'ng2-pdf-viewer';
 import {PasswordChangeButtonComponent} from './password-change-button/password-change-button.component';
 import {DpDatePickerModule} from 'ng2-date-picker';
@@ -18,7 +16,6 @@ import {UserFilterComponent} from './user-filter/user-filter.component';
 import {PaginationComponent} from './pagination/pagination.component';
 import {DeleteButtonComponent} from './delete-button/delete-button.component';
 import {LoadingBarComponent} from './loading-bar/loading-bar.component';
-import {LinkPreviewComponent} from './link-preview/link-preview.component';
 import {RoleChangeButtonComponent} from './role-change-button/role-change-button.component';
 
 @NgModule({
@@ -35,16 +32,13 @@ import {RoleChangeButtonComponent} from './role-change-button/role-change-button
     NavbarComponent,
     SidebarComponent,
     InfobarComponent,
-    ImgPreviewComponent,
     // DocumentFilterComponent,
-    EventMessageFilterComponent,
-    ReportButtonComponent,
+    // ReportButtonComponent,
     PasswordChangeButtonComponent,
     UserFilterComponent,
     PaginationComponent,
     DeleteButtonComponent,
     LoadingBarComponent,
-    LinkPreviewComponent,
     RoleChangeButtonComponent
   ],
   exports: [
@@ -52,16 +46,13 @@ import {RoleChangeButtonComponent} from './role-change-button/role-change-button
     NavbarComponent,
     SidebarComponent,
     InfobarComponent,
-    ImgPreviewComponent,
     // DocumentFilterComponent,
-    EventMessageFilterComponent,
-    ReportButtonComponent,
+    // ReportButtonComponent,
     PasswordChangeButtonComponent,
     UserFilterComponent,
     PaginationComponent,
     DeleteButtonComponent,
     LoadingBarComponent,
-    LinkPreviewComponent,
     RoleChangeButtonComponent
   ]
 })

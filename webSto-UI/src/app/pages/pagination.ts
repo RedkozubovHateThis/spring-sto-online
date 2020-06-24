@@ -28,13 +28,13 @@ export abstract class Pagination implements OnInit {
 
   setSize(size: number) {
     this.paginationController.filter.size = size;
-    this.paginationController.filter.page = 0;
+    this.paginationController.filter.page = 1;
     this.paginationController.filter.calculatePagination();
     this.router.navigate([this.routeName], { queryParams: this.paginationController.filter });
   }
 
   applyFilter() {
-    this.paginationController.filter.page = 0;
+    this.paginationController.filter.page = 1;
     this.router.navigate([this.routeName], { queryParams: this.paginationController.filter });
   }
 

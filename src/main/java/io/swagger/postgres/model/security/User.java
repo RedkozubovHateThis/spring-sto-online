@@ -75,7 +75,7 @@ public class User extends BaseEntity implements UserDetails, Serializable {
 
     @OneToOne
     @NotFound(action = NotFoundAction.IGNORE)
-    @JsonApiRelation
+    @JsonApiRelation(serialize = SerializeType.EAGER)
     private Subscription currentSubscription;
 
     @OrderBy("startDate desc")

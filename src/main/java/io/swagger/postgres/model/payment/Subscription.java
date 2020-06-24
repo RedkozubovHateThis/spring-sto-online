@@ -5,8 +5,10 @@ import io.crnk.core.resource.annotations.JsonApiId;
 import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
+import io.swagger.postgres.model.BaseEntity;
 import io.swagger.postgres.model.security.User;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
@@ -16,15 +18,11 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-@JsonApiResource(type = "subscription", resourcePath = "subscriptions")
-public class Subscription implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonApiId
-    private Long id;
+@JsonApiResource(type = "subscription", resourcePath = "subscriptions", postable = false, deletable = false, patchable = false)
+public class Subscription extends BaseEntity implements Serializable {
 
     @ManyToOne
     @NotFound(action = NotFoundAction.IGNORE)

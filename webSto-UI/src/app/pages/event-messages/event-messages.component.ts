@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Pageable} from '../../model/pageable';
 import {Pagination} from '../pagination';
-import {EventMessageResponseService} from '../../api/eventMessageResponse.service';
+import {EventMessageService} from '../../api/event-message.service';
 import {EventMessageResponse} from '../../model/postgres/eventMessageResponse';
 import {EventMessageController} from '../../controller/event-message.controller';
 
@@ -16,7 +16,7 @@ export class EventMessagesComponent extends Pagination {
   private isLoading: boolean = false;
   protected routeName = '/event-messages';
 
-  constructor(private eventMessageResponseService: EventMessageResponseService, protected route: ActivatedRoute, protected router: Router,
+  constructor(private eventMessageResponseService: EventMessageService, protected route: ActivatedRoute, protected router: Router,
               protected eventMessageController: EventMessageController) {
     super(route, router, eventMessageController);
   }
@@ -24,7 +24,7 @@ export class EventMessagesComponent extends Pagination {
   requestData() {
     this.isLoading = true;
     this.eventMessageResponseService.getAll(this.eventMessageController.filter).subscribe(data => {
-      this.eventMessageController.all = data as Pageable<EventMessageResponse>;
+      this.eventMessageController.all = data;
 
       this.isLoading = false;
     }, error => {

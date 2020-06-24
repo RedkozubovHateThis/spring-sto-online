@@ -8,8 +8,8 @@ import {Subject} from 'rxjs';
 export class DocumentResponseController extends PaginationController {
 
   filter: DocumentsFilter = new DocumentsFilter();
-  all: Pageable<DocumentResponse>;
-  last5: Pageable<DocumentResponse>;
+  // all: Pageable<DocumentResponse>;
+  // last5: Pageable<DocumentResponse>;
 
   organizationChange: Subject<void> = new Subject<void>();
 

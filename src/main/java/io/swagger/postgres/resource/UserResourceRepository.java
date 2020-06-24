@@ -1,18 +1,20 @@
 package io.swagger.postgres.resource;
 
 import io.crnk.core.queryspec.QuerySpec;
+import io.crnk.core.repository.MetaRepository;
 import io.crnk.core.repository.ResourceRepository;
 import io.crnk.core.resource.list.ResourceList;
+import io.crnk.core.resource.meta.MetaInformation;
+import io.swagger.postgres.resourceProcessor.JsonApiListMeta;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.transaction.Transactional;
 import java.util.Collection;
 
 @Component
-public class UserResourceRepository implements ResourceRepository<User, Long> {
+public class UserResourceRepository implements ResourceRepository<User, Long>, MetaRepository<User> {
 
     @Autowired
     private UserRepository userRepository;
@@ -55,5 +57,10 @@ public class UserResourceRepository implements ResourceRepository<User, Long> {
             user.setEnabled( false );
             userRepository.save(user);
         }
+    }
+
+    @Override
+    public MetaInformation getMetaInformation(Collection<User> resources, QuerySpec querySpec, MetaInformation current) {
+        return new JsonApiListMeta(userRepository.count());
     }
 }
