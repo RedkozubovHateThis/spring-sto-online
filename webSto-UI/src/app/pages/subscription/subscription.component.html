@@ -23,12 +23,12 @@
 
           <div class="form-group">
             <select class="form-control form-control-sm form-control-alternative" [(ngModel)]="selectedSubscription"
-                    [disabled]="isLoading || subscriptions.length === 0">
+                    [disabled]="isLoading || subscriptions.data.length === 0">
               <option [selected]="selectedSubscription != null && subscription.id === selectedSubscription.id"
-                      *ngFor="let subscription of subscriptions" [ngValue]="subscription">
-                {{subscription.name}}:&nbsp;
-                {{ subscription.startDate | date : 'dd.MM.yyyy' }} - {{ subscription.endDate | date : 'dd.MM.yyyy' }}
-                <ng-container *ngIf="userService.currentUser != null && userService.currentUser.currentSubscriptionId === subscription.id">
+                      *ngFor="let subscription of subscriptions.data" [ngValue]="subscription">
+                {{subscription.attributes.name}}:&nbsp;
+                {{ subscription.attributes.startDate | date : 'dd.MM.yyyy' }} - {{ subscription.attributes.endDate | date : 'dd.MM.yyyy' }}
+                <ng-container *ngIf="userService.currentUser != null && userService.currentUser.relationships.currentSubscription.data.id === subscription.id">
                   &nbsp;(текущий)
                 </ng-container>
               </option>
@@ -42,7 +42,7 @@
                 Наименование
               </div>
               <div class="col-auto h3 mb-0">
-                {{selectedSubscription.name}}
+                {{selectedSubscription.attributes.name}}
               </div>
             </div>
 
@@ -51,7 +51,7 @@
                 Дата оформления
               </div>
               <div class="col-auto h3 mb-0">
-                {{selectedSubscription.startDate | date : 'dd.MM.yy'}}
+                {{selectedSubscription.attributes.startDate | date : 'dd.MM.yy'}}
               </div>
             </div>
 
@@ -60,7 +60,7 @@
                 Дата завершения
               </div>
               <div class="col-auto h3 mb-0">
-                {{selectedSubscription.endDate | date : 'dd.MM.yy'}}
+                {{selectedSubscription.attributes.endDate | date : 'dd.MM.yy'}}
               </div>
             </div>
 
@@ -78,8 +78,8 @@
                 Стоимость продления, руб.
               </div>
               <div class="col-auto h3 mb-0">
-                <span *ngIf="selectedSubscription.type.isFree">н/д</span>
-                <span *ngIf="!selectedSubscription.type.isFree">{{selectedSubscription.type.cost | number : '.2' : 'ru'}}</span>
+                <span *ngIf="selectedSubscription.relationships.type.data.attributes.isFree">н/д</span>
+                <span *ngIf="!selectedSubscription.relationships.type.data.attributes.isFree">{{selectedSubscription.relationships.type.data.attributes.cost | number : '.2' : 'ru'}}</span>
               </div>
             </div>
 
@@ -88,7 +88,7 @@
                 Количество доступных заказ-нарядов
               </div>
               <div class="col-auto h3 mb-0">
-                {{selectedSubscription.documentsCount}}
+                {{selectedSubscription.attributes.documentsCount}}
               </div>
             </div>
 
@@ -97,7 +97,7 @@
                 Остаток оплаченных заказ-нарядов
               </div>
               <div class="col-auto h3 mb-0">
-                {{selectedSubscription.documentsRemains}}
+                {{selectedSubscription.attributes.documentsRemains}}
               </div>
             </div>
 
@@ -106,12 +106,12 @@
                 Стоимость заказ-наряда, руб.
               </div>
               <div class="col-auto h3 mb-0">
-                <span *ngIf="selectedSubscription.type.isFree">н/д</span>
-                <span *ngIf="!selectedSubscription.type.isFree">{{selectedSubscription.documentCost}}</span>
+                <span *ngIf="selectedSubscription.relationships.type.data.attributes.isFree">н/д</span>
+                <span *ngIf="!selectedSubscription.relationships.type.data.attributes.isFree">{{selectedSubscription.attributes.documentCost}}</span>
               </div>
             </div>
 
-            <div class="row form-group" *ngIf="selectedSubscription.isClosedEarly">
+            <div class="row form-group" *ngIf="selectedSubscription.attributes.isClosedEarly">
               <div class="col text-muted text-center">
                 Тариф был продлен.
               </div>
@@ -122,7 +122,7 @@
 <!--              Дополнить тариф-->
 <!--            </button>-->
 
-            <ng-container *ngIf="showAddon && !selectedSubscription.type.isFree">
+            <ng-container *ngIf="showAddon && !selectedSubscription.relationships.type.data.attributes.isFree">
 
               <hr class="my-4" />
 
@@ -200,11 +200,11 @@
           </ng-template>
 
           <div class="row" *ngIf="userService.isServiceLeader()">
-            <div class="col" *ngFor="let subscriptionType of subscriptionTypes">
+            <div class="col" *ngFor="let subscriptionType of subscriptionTypes.data">
               <div class="card mb-2" style="min-width: 230px;">
                 <div class="card-header">
                   <h3 class="mb-0">
-                    {{subscriptionType.name}}
+                    {{subscriptionType.attributes.name}}
                   </h3>
                 </div>
 
@@ -215,8 +215,8 @@
                       Стоимость, руб.
                     </div>
                     <div class="col-auto h3 mb-0">
-                      <span *ngIf="subscriptionType.isFree">Бесплатно</span>
-                      <span *ngIf="!subscriptionType.isFree">{{subscriptionType.cost | number : '.2' : 'ru'}}</span>
+                      <span *ngIf="subscriptionType.attributes.isFree">Бесплатно</span>
+                      <span *ngIf="!subscriptionType.attributes.isFree">{{subscriptionType.attributes.cost | number : '.2' : 'ru'}}</span>
                     </div>
                   </div>
 
@@ -225,7 +225,7 @@
                       Количество доступных заказ-нарядов
                     </div>
                     <div class="col-auto h3 mb-0">
-                      {{subscriptionType.documentsCount}}
+                      {{subscriptionType.attributes.documentsCount}}
                     </div>
                   </div>
 
@@ -234,8 +234,8 @@
                       Стоимость заказ-наряда, руб.
                     </div>
                     <div class="col-auto h3 mb-0">
-                      <span *ngIf="subscriptionType.isFree">н/д</span>
-                      <span *ngIf="!subscriptionType.isFree">{{subscriptionType.documentCost}}</span>
+                      <span *ngIf="subscriptionType.attributes.isFree">н/д</span>
+                      <span *ngIf="!subscriptionType.attributes.isFree">{{subscriptionType.attributes.documentCost}}</span>
                     </div>
                   </div>
 
@@ -244,23 +244,23 @@
                       Длительность, дней
                     </div>
                     <div class="col-auto h3 mb-0">
-                      {{subscriptionType.durationDays}}
+                      {{subscriptionType.attributes.durationDays}}
                     </div>
                   </div>
 
 <!--                  <ng-container *ngIf="isBuyAvailable(); else updateBlock">-->
                   <ng-container *ngIf="true; else updateBlock">
                     <button class="btn btn-buro-blue btn-block" (click)="buySubscription(subscriptionType.id)"
-                            [disabled]="subscriptionType.isInactive || userService.currentUser.attributes.balance < subscriptionType.cost">
+                            [disabled]="subscriptionType.attributes.isInactive || userService.currentUser.attributes.balance < subscriptionType.attributes.cost">
                       Купить
                     </button>
                   </ng-container>
                   <ng-template #updateBlock>
                     <button class="btn btn-buro-blue btn-block" (click)="updateRenewalSubscription(subscriptionType)"
-                            [disabled]="subscriptionType.isInactive ||
-                            userService.currentUser.subscriptionTypeId === subscriptionType.id">
-                      <span *ngIf="userService.currentUser.subscriptionTypeId === subscriptionType.id">Выбран</span>
-                      <span *ngIf="userService.currentUser.subscriptionTypeId !== subscriptionType.id">
+                            [disabled]="subscriptionType.attributes.isInactive ||
+                            userService.currentUser.attributes.subscriptionTypeId === subscriptionType.id">
+                      <span *ngIf="userService.currentUser.attributes.subscriptionTypeId === subscriptionType.id">Выбран</span>
+                      <span *ngIf="userService.currentUser.attributes.subscriptionTypeId !== subscriptionType.id">
                         Выбрать
                       </span>
                     </button>
@@ -300,11 +300,11 @@
         <div class="card-body">
 
           <div class="row">
-            <div class="col" *ngFor="let subscriptionType of subscriptionTypes">
+            <div class="col" *ngFor="let subscriptionType of subscriptionTypes.data">
               <div class="card mb-2" style="min-width: 230px;">
                 <div class="card-header">
                   <h3 class="mb-0">
-                    {{subscriptionType.name}}
+                    {{subscriptionType.attributes.name}}
                   </h3>
                 </div>
 
@@ -315,8 +315,8 @@
                       Стоимость, руб.
                     </div>
                     <div class="col-auto h3 mb-0">
-                      <span *ngIf="subscriptionType.isFree">Бесплатно</span>
-                      <span *ngIf="!subscriptionType.isFree">{{subscriptionType.cost | number : '.2' : 'ru'}}</span>
+                      <span *ngIf="subscriptionType.attributes.isFree">Бесплатно</span>
+                      <span *ngIf="!subscriptionType.attributes.isFree">{{subscriptionType.attributes.cost | number : '.2' : 'ru'}}</span>
                     </div>
                   </div>
 
@@ -328,7 +328,7 @@
                       <input class="form-control form-control-sm form-control-alternative" type="number" min="0"
                              (change)="calculateSubscriptionCost(subscriptionType)"
                              (keyup)="calculateSubscriptionCost(subscriptionType)"
-                             style="width: 100px;" [(ngModel)]="subscriptionType.documentsCount">
+                             style="width: 100px;" [(ngModel)]="subscriptionType.attributes.documentsCount">
                     </div>
                   </div>
 
@@ -337,12 +337,12 @@
                       Стоимость заказ-наряда, руб.
                     </div>
                     <div class="col-auto h3 mb-0">
-                      <span *ngIf="subscriptionType.isFree">н/д</span>
-                      <span *ngIf="!subscriptionType.isFree">
+                      <span *ngIf="subscriptionType.attributes.isFree">н/д</span>
+                      <span *ngIf="!subscriptionType.attributes.isFree">
                         <input class="form-control form-control-sm form-control-alternative" type="number" min="0"
                                (change)="calculateSubscriptionCost(subscriptionType)"
                                (keyup)="calculateSubscriptionCost(subscriptionType)"
-                               style="width: 100px;" [(ngModel)]="subscriptionType.documentCost">
+                               style="width: 100px;" [(ngModel)]="subscriptionType.attributes.documentCost">
                       </span>
                     </div>
                   </div>
@@ -353,7 +353,7 @@
                     </div>
                     <div class="col-auto h3 mb-0">
                       <input class="form-control form-control-sm form-control-alternative" type="number" min="0"
-                             style="width: 100px;" [(ngModel)]="subscriptionType.durationDays">
+                             style="width: 100px;" [(ngModel)]="subscriptionType.attributes.durationDays">
                     </div>
                   </div>
 

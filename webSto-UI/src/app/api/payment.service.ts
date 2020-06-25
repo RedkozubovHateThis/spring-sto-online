@@ -7,6 +7,9 @@ import {PaymentResponse} from '../model/payment/paymentResponse';
 import {SubscriptionTypeResponse} from '../model/payment/subscriptionTypeResponse';
 import {SubscriptionResponse} from '../model/payment/subscriptionResponse';
 import {PromisedAvailableResponse} from '../model/payment/promisedAvailableResponse';
+import {SubscriptionTypeResource, SubscriptionTypeResourceService} from '../model/resource/subscription-type.resource.service';
+import {SubscriptionResource, SubscriptionResourceService} from '../model/resource/subscription.resource.service';
+import {DocumentCollection} from 'ngx-jsonapi';
 
 @Injectable()
 export class PaymentService {
@@ -15,7 +18,11 @@ export class PaymentService {
   isSubscriptionLoading: boolean = false;
   private subscription: Subscription;
 
-  constructor(private http: HttpClient, private userService: UserService) { }
+  constructor(private http: HttpClient, private userService: UserService, private subscriptionResourceService: SubscriptionResourceService,
+              private subscriptionTypeResourceService: SubscriptionTypeResourceService) {
+    subscriptionResourceService.register();
+    subscriptionTypeResourceService.register();
+  }
 
   sendRegisterRequest(amount: number): Observable<RegisterResponse> {
     const headers = this.userService.getHeaders();
@@ -56,31 +63,19 @@ export class PaymentService {
     );
   }
 
-  getAllSubscriptionTypes(): Observable<SubscriptionTypeResponse[]> {
-    const headers = this.userService.getHeaders();
-
-    return this.http.get<SubscriptionTypeResponse[]>(
-      `${this.userService.getApiUrl()}payment/subscriptions/types/findAll`, {headers}
-    );
+  getAllSubscriptionTypes(): Observable<DocumentCollection<SubscriptionTypeResource>> {
+    return this.subscriptionTypeResourceService.all({
+      beforepath: 'payment'
+    });
   }
 
-  getAllSubscriptions(): Observable<SubscriptionResponse[]> {
-    const headers = this.userService.getHeaders();
-
-    return this.http.get<SubscriptionResponse[]>(
-      `${this.userService.getApiUrl()}payment/subscriptions/findAll`, {headers}
-    );
+  getAllSubscriptions(): Observable<DocumentCollection<SubscriptionResource>> {
+    return this.subscriptionResourceService.all({
+      beforepath: 'payment'
+    });
   }
 
-  getCurrentSubscription(): Observable<SubscriptionResponse> {
-    const headers = this.userService.getHeaders();
-
-    return this.http.get<SubscriptionResponse>(
-      `${this.userService.getApiUrl()}payment/subscriptions/currentSubscription`, {headers}
-    );
-  }
-
-  buySubscription(subscriptionTypeId: number): Observable<SubscriptionResponse> {
+  buySubscription(subscriptionTypeId: string): Observable<SubscriptionResponse> {
     const headers = this.userService.getHeaders();
     const params = {
       subscriptionTypeId: subscriptionTypeId != null ? subscriptionTypeId.toString() : ''
@@ -102,10 +97,10 @@ export class PaymentService {
     );
   }
 
-  buySubscriptionAddon(subscriptionId: number, documentsCount: number): Observable<void> {
+  buySubscriptionAddon(subscriptionId: string, documentsCount: number): Observable<void> {
     const headers = this.userService.getHeaders();
     const params = {
-      subscriptionId: subscriptionId != null ? subscriptionId.toString() : '',
+      subscriptionId: subscriptionId != null ? subscriptionId : '',
       documentsCount: documentsCount != null ? documentsCount.toString() : ''
     };
 
@@ -125,12 +120,10 @@ export class PaymentService {
     );
   }
 
-  updateSubscription(subscriptionType: SubscriptionTypeResponse): Observable<void> {
+  updateSubscription(subscriptionType: SubscriptionTypeResource): Observable<object> {
     const headers = this.userService.getHeaders();
 
-    return this.http.post<void>(
-      `${this.userService.getApiUrl()}payment/subscriptions/types/update`, subscriptionType, {headers}
-    );
+    return subscriptionType.save();
   }
 
 }

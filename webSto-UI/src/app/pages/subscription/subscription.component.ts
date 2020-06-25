@@ -5,6 +5,8 @@ import {SubscriptionTypeResponse} from '../../model/payment/subscriptionTypeResp
 import {UserService} from '../../api/user.service';
 import {SubscriptionResponse} from '../../model/payment/subscriptionResponse';
 import {SubscriptionTypeResource} from '../../model/resource/subscription-type.resource.service';
+import {DocumentCollection} from 'ngx-jsonapi';
+import {SubscriptionResource} from '../../model/resource/subscription.resource.service';
 
 @Component({
   selector: 'app-subscription',
@@ -13,14 +15,14 @@ import {SubscriptionTypeResource} from '../../model/resource/subscription-type.r
 })
 export class SubscriptionComponent implements OnInit {
 
-  private isTypesLoading: boolean = false;
-  private isLoading: boolean = false;
-  private subscriptionTypes: SubscriptionTypeResponse[] = [];
-  private subscriptions: SubscriptionResponse[] = [];
-  private selectedSubscription: SubscriptionResponse;
+  private isTypesLoading = false;
+  private isLoading = false;
+  private subscriptionTypes: DocumentCollection<SubscriptionTypeResource>;
+  private subscriptions: DocumentCollection<SubscriptionResource>;
+  private selectedSubscription: SubscriptionResource;
   private documentsCount: number = null;
   private cost: number;
-  private showAddon: boolean = false;
+  private showAddon = false;
 
   constructor(private userService: UserService, private paymentService: PaymentService, private toastrService: ToastrService) { }
 
@@ -46,12 +48,11 @@ export class SubscriptionComponent implements OnInit {
     this.paymentService.getAllSubscriptions().subscribe(subscriptions => {
       this.subscriptions = subscriptions;
 
-      if ( this.subscriptions.length > 0 ) {
+      if ( this.subscriptions.data.length > 0 )
         if ( this.selectedSubscription != null )
-          this.selectedSubscription = this.subscriptions.find( subscription => subscription.id === this.selectedSubscription.id );
+          this.selectedSubscription = this.subscriptions.data.find( subscription => subscription.id === this.selectedSubscription.id );
         else
-          this.selectedSubscription = this.subscriptions[ this.subscriptions.length - 1 ];
-      }
+          this.selectedSubscription = this.subscriptions.data[ this.subscriptions.data.length - 1 ];
 
       this.isLoading = false;
     }, () => {
@@ -59,7 +60,7 @@ export class SubscriptionComponent implements OnInit {
     } );
   }
 
-  buySubscription(subscriptionTypeId: number) {
+  buySubscription(subscriptionTypeId: string) {
     this.paymentService.isSubscriptionLoading = true;
 
     this.paymentService.buySubscription( subscriptionTypeId ).subscribe( subscription => {
@@ -128,7 +129,7 @@ export class SubscriptionComponent implements OnInit {
     } );
   }
 
-  updateSubscription(subscriptionType: SubscriptionTypeResponse) {
+  updateSubscription(subscriptionType: SubscriptionTypeResource) {
     if ( !this.userService.isAdmin() ) return;
 
     this.isTypesLoading = true;
@@ -136,7 +137,7 @@ export class SubscriptionComponent implements OnInit {
     this.paymentService.updateSubscription( subscriptionType ).subscribe( () => {
       this.isTypesLoading = false;
       this.requestAllSubscriptionTypes();
-      this.toastrService.success( `Тариф "${subscriptionType.name}" успешно изменен!` );
+      this.toastrService.success( `Тариф "${subscriptionType.attributes.name}" успешно изменен!` );
     }, error => {
       this.isTypesLoading = false;
 
@@ -144,16 +145,16 @@ export class SubscriptionComponent implements OnInit {
         this.toastrService.error( error.error.responseText, 'Внимание!' );
       else
         this.toastrService.error( 'Ошибка изменения тарифа!', 'Внимание!' );
-    } )
+    } );
   }
 
   isBuyAvailable(): boolean {
-    if ( this.paymentService.currentSubscription == null )
+    if ( this.userService.currentUser.relationships.currentSubscription.loaded )
       return true;
     else {
       const now: Date = new Date();
 
-      return this.paymentService.currentSubscription.endDate < now;
+      return this.userService.currentUser.relationships.currentSubscription.data.attributes.endDate < now;
     }
   }
 
@@ -170,34 +171,35 @@ export class SubscriptionComponent implements OnInit {
     if ( this.selectedSubscription == null )
       this.cost = null;
     else
-      this.cost = this.documentsCount * this.selectedSubscription.documentCost;
+      this.cost = this.documentsCount * this.selectedSubscription.attributes.documentCost;
   }
 
-  calculateSubscriptionCost(subscriptionType: SubscriptionTypeResponse) {
+  calculateSubscriptionCost(subscriptionType: SubscriptionTypeResource) {
 
-    if ( subscriptionType.isFree ) return;
+    if ( subscriptionType.attributes.isFree ) return;
 
-    if ( subscriptionType.documentsCount == null || subscriptionType.documentCost == null ) {
-      subscriptionType.cost = null;
+    if ( subscriptionType.attributes.documentsCount == null || subscriptionType.attributes.documentCost == null ) {
+      subscriptionType.attributes.cost = null;
       return;
     }
 
-    if ( subscriptionType.documentsCount < 0 ) subscriptionType.documentsCount = 0;
-    if ( !Number.isInteger(subscriptionType.documentsCount) )
-      subscriptionType.documentsCount = Math.floor( subscriptionType.documentsCount );
+    if ( subscriptionType.attributes.documentsCount < 0 ) subscriptionType.attributes.documentsCount = 0;
+    if ( !Number.isInteger(subscriptionType.attributes.documentsCount) )
+      subscriptionType.attributes.documentsCount = Math.floor( subscriptionType.attributes.documentsCount );
 
-    if ( subscriptionType.documentCost < 0 ) subscriptionType.documentCost = 0;
-    if ( !Number.isInteger(subscriptionType.documentCost) )
-      subscriptionType.documentCost = Math.floor( subscriptionType.documentCost );
+    if ( subscriptionType.attributes.documentCost < 0 ) subscriptionType.attributes.documentCost = 0;
+    if ( !Number.isInteger(subscriptionType.attributes.documentCost) )
+      subscriptionType.attributes.documentCost = Math.floor( subscriptionType.attributes.documentCost );
 
-    subscriptionType.cost = subscriptionType.documentsCount * subscriptionType.documentCost;
+    subscriptionType.attributes.cost = subscriptionType.attributes.documentsCount * subscriptionType.attributes.documentCost;
   }
 
-  isNotValid(subscriptionType: SubscriptionTypeResponse) {
+  isNotValid(subscriptionType: SubscriptionTypeResource) {
 
-    const isFreeOrCostValid = subscriptionType.isFree || ( subscriptionType.cost > 0 && subscriptionType.documentCost > 0 );
-    const isDocumentsValid = subscriptionType.documentsCount > 0;
-    const isDaysValid = subscriptionType.durationDays > 0;
+    const isFreeOrCostValid = subscriptionType.attributes.isFree
+      || ( subscriptionType.attributes.cost > 0 && subscriptionType.attributes.documentCost > 0 );
+    const isDocumentsValid = subscriptionType.attributes.documentsCount > 0;
+    const isDaysValid = subscriptionType.attributes.durationDays > 0;
 
     return !isFreeOrCostValid || !isDocumentsValid || !isDaysValid;
 

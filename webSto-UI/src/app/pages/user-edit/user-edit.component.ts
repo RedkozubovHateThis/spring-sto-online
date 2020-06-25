@@ -8,6 +8,8 @@ import {PaymentService} from '../../api/payment.service';
 import {SubscriptionTypeResponse} from '../../model/payment/subscriptionTypeResponse';
 import {ToastrService} from 'ngx-toastr';
 import {UserResource} from '../../model/resource/user.resource.service';
+import {DocumentCollection} from 'ngx-jsonapi';
+import {SubscriptionTypeResource} from '../../model/resource/subscription-type.resource.service';
 
 @Component({
   selector: 'app-user-edit',
@@ -18,7 +20,7 @@ export class UserEditComponent extends ModelTransfer<UserResource, string> imple
 
   private isLoading = false;
 
-  private subscriptionTypes: SubscriptionTypeResponse[] = [];
+  private subscriptionTypes: DocumentCollection<SubscriptionTypeResource>;
   private isTypesLoading = false;
   private vinNumber: string;
 

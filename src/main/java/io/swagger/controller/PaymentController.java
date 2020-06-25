@@ -10,6 +10,8 @@ import io.swagger.postgres.repository.PaymentRecordRepository;
 import io.swagger.postgres.repository.SubscriptionRepository;
 import io.swagger.postgres.repository.SubscriptionTypeRepository;
 import io.swagger.postgres.repository.UserRepository;
+import io.swagger.postgres.resourceProcessor.SubscriptionResourceProcessor;
+import io.swagger.postgres.resourceProcessor.SubscriptionTypeResourceProcessor;
 import io.swagger.response.api.ApiResponse;
 import io.swagger.response.exception.PaymentException;
 import io.swagger.response.payment.PaymentResponse;
@@ -45,6 +47,10 @@ public class PaymentController {
     private SubscriptionRepository subscriptionRepository;
     @Autowired
     private SubscriptionTypeRepository subscriptionTypeRepository;
+    @Autowired
+    private SubscriptionResourceProcessor subscriptionResourceProcessor;
+    @Autowired
+    private SubscriptionTypeResourceProcessor subscriptionTypeResourceProcessor;
 
     @PutMapping("/registerRequest")
     public ResponseEntity registerRequest(@RequestParam("amount") Integer amount) {
@@ -158,33 +164,38 @@ public class PaymentController {
 
     }
 
-    @GetMapping("/subscriptions/types/findAll")
-    public ResponseEntity findAllSubscriptionTypes() {
+    @GetMapping("/subscriptionTypes")
+    public ResponseEntity findAllSubscriptionTypes() throws Exception {
 
         User currentUser = userRepository.findCurrentUser();
         if ( !UserHelper.isServiceLeader( currentUser ) && !UserHelper.isAdmin( currentUser ) )
             return ResponseEntity.status(404).build();
 
-        List<SubscriptionTypeResponse> subscriptionTypeResponses = new ArrayList<>();
         List<SubscriptionType> subscriptionTypes = subscriptionTypeRepository.findAllAndOrderBySortPosition();
+        List<SubscriptionType> filteredSubscriptionTypes = new ArrayList<>();
 
         for ( SubscriptionType type : subscriptionTypes ) {
-            SubscriptionTypeResponse subscriptionTypeResponse = new SubscriptionTypeResponse( type );
-
             if ( type.getIsFree() ) {
                 Boolean isAnyFormed = subscriptionRepository.isAnyIsFormed( currentUser.getId() );
                 if ( isAnyFormed ) continue;
             }
 
-            subscriptionTypeResponses.add( subscriptionTypeResponse );
+            filteredSubscriptionTypes.add( type );
         }
 
-        return ResponseEntity.ok(subscriptionTypeResponses);
+        return ResponseEntity.ok(
+                subscriptionTypeResourceProcessor.toResourceList(
+                        filteredSubscriptionTypes,
+                        new ArrayList<>(),
+                        ( (Integer) filteredSubscriptionTypes.size() ).longValue(),
+                        null
+                )
+        );
 
     }
 
-    @GetMapping("/subscriptions/findAll")
-    public ResponseEntity findAllSubscriptions() {
+    @GetMapping("/subscriptions")
+    public ResponseEntity findAllSubscriptions() throws Exception {
 
         User currentUser = userRepository.findCurrentUser();
         if ( !UserHelper.isServiceLeader( currentUser ) )
@@ -192,31 +203,14 @@ public class PaymentController {
 
         List<Subscription> subscriptions = subscriptionRepository.findAllByUserId( currentUser.getId() );
 
-        List<SubscriptionResponse> responses = subscriptions.stream().map( subscription -> {
-            return new SubscriptionResponse(
-                    subscription, countDocumentsRemains( currentUser, subscription )
-            );
-        } ).collect( Collectors.toList() );
-
-        return ResponseEntity.ok(responses);
-
-    }
-
-    @GetMapping("/subscriptions/currentSubscription")
-    public ResponseEntity findCurrentSubscription() {
-
-        User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.isServiceLeader( currentUser ) )
-            return ResponseEntity.status(404).build();
-
-        Subscription subscription = currentUser.getCurrentSubscription();
-
-        if ( subscription == null )
-            return ResponseEntity.status(404).build();
-
-        return ResponseEntity.ok( new SubscriptionResponse(
-                subscription, countDocumentsRemains( currentUser, subscription)
-        ) );
+        return ResponseEntity.ok(
+                subscriptionResourceProcessor.toResourceList(
+                        subscriptions,
+                        new ArrayList<>(),
+                        ( (Integer) subscriptions.size() ).longValue(),
+                        null
+                )
+        );
 
     }
 
