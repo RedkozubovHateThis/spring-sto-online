@@ -9,7 +9,7 @@ import org.hibernate.annotations.NotFoundAction;
 import javax.persistence.*;
 import java.util.Date;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(of = "id", callSuper = true)
 @Entity
 @Data
 public class UploadFile extends BaseEntity {

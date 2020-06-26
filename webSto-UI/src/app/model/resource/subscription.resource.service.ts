@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { Autoregister, Service, Resource, DocumentCollection, DocumentResource } from 'ngx-jsonapi';
+import {Injectable} from '@angular/core';
+import {Autoregister, DocumentResource, Resource, Service} from 'ngx-jsonapi';
 import {UserResource} from './user.resource.service';
 import {SubscriptionTypeResource} from './subscription-type.resource.service';
 

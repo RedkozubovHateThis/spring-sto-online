@@ -3,7 +3,7 @@ import {PageFilter} from './pageFilter';
 
 export class DocumentsFilter extends PageFilter {
 
-  state: number;
+  state: string;
   organization: number;
   vehicle: string;
   vinNumber: string;
@@ -22,7 +22,7 @@ export class DocumentsFilter extends PageFilter {
     this.vinNumber = null;
     this.fromDate = null;
     this.toDate = null;
-    this.sort = 'dateStart';
+    this.sort = 'startDate';
     this.direction = 'desc';
   }
 
@@ -30,7 +30,7 @@ export class DocumentsFilter extends PageFilter {
     if ( queryParams.sort ) this.sort = queryParams.sort;
     if ( queryParams.direction ) this.direction = queryParams.direction;
 
-    if ( queryParams.state ) this.state = parseInt(queryParams.state, 10);
+    if ( queryParams.state ) this.state = queryParams.state;
     // else this.state = null;
 
     if ( queryParams.organization ) this.organization = parseInt(queryParams.organization, 10);

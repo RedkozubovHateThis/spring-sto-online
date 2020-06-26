@@ -15,7 +15,7 @@ import {SubscriptionTypeResourceService} from '../model/resource/subscription-ty
 import {DocumentCollection} from 'ngx-jsonapi';
 
 @Injectable()
-export class UserService implements TransferService<User>, RestService<User> {
+export class UserService implements TransferService<UserResource>, RestService<UserResource> {
 
   constructor(private http: HttpClient, private router: Router, private toastrService: ToastrService,
               private userResourceService: UserResourceService, private userRoleResourceService: UserRoleResourceService,
@@ -201,7 +201,7 @@ export class UserService implements TransferService<User>, RestService<User> {
     return this.http.post(`${this.getApiUrl()}oauth/register/${selectedRole}`, user);
   }
 
-  delete(user: User) {
+  delete(user: UserResource) {
     const headers = this.getHeaders();
 
     return this.http.delete(`${this.getApiUrl()}/users/${user.id}`, {headers});

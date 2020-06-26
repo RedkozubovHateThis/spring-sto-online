@@ -2,8 +2,6 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Router} from '@angular/router';
 import {UserService} from './user.service';
-import {EventMessageResponse} from '../model/postgres/eventMessageResponse';
-import {Pageable} from '../model/pageable';
 import {EventMessagesFilter} from '../model/eventMessagesFilter';
 import {EventMessageResource, EventMessageResourceService} from '../model/resource/event-message.resource.service';
 import {UserResourceService} from '../model/resource/user.resource.service';

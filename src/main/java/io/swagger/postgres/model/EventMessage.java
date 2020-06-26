@@ -13,7 +13,7 @@ import org.hibernate.annotations.NotFoundAction;
 import javax.persistence.*;
 import java.util.Date;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(of = "id", callSuper = true)
 @Entity
 @Data
 @JsonApiResource(type = "eventMessage", resourcePath = "eventMessages", deletable = false, postable = false, patchable = false)

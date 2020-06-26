@@ -1,15 +1,15 @@
 import {Injectable} from '@angular/core';
 import {PaginationController} from './pagination.controller';
 import {DocumentsFilter} from '../model/documentsFilter';
-import {Pageable} from '../model/pageable';
 import {Subject} from 'rxjs';
+import {DocumentCollection} from 'ngx-jsonapi';
+import {ServiceDocumentResource} from '../model/resource/service-document.resource.service';
 
 @Injectable()
-export class DocumentResponseController extends PaginationController {
+export class DocumentController extends PaginationController {
 
   filter: DocumentsFilter = new DocumentsFilter();
-  // all: Pageable<DocumentResponse>;
-  // last5: Pageable<DocumentResponse>;
+  all: DocumentCollection<ServiceDocumentResource>;
 
   organizationChange: Subject<void> = new Subject<void>();
 

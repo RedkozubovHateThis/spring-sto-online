@@ -3,7 +3,6 @@ import {NavigationEnd, Router} from '@angular/router';
 import {UserService} from '../../api/user.service';
 import {WebSocketService} from '../../api/webSocket.service';
 import {PaymentService} from '../../api/payment.service';
-import {UserResourceService} from '../../model/resource/user.resource.service';
 
 @Component({
   selector: 'app-admin-layout',

@@ -20,7 +20,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(of = "id", callSuper = true)
 @Entity
 @Data
 @JsonApiResource(type = "paymentRecord", resourcePath = "paymentRecords", deletable = false, postable = false)

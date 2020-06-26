@@ -11,7 +11,7 @@ import java.io.Serializable;
 
 @Entity
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(of = "id", callSuper = true)
 @JsonApiResource(type = "userRole", resourcePath = "userRoles", deletable = false, postable = false, patchable = false)
 public class UserRole extends BaseEntity implements Serializable {
 

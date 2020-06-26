@@ -30,7 +30,7 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(of = "id", callSuper = true)
 @Where(clause = "enabled=true")
 @JsonApiResource(type = "user", resourcePath = "users")
 public class User extends BaseEntity implements UserDetails, Serializable {

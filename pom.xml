@@ -177,6 +177,12 @@
             <version>3.2.20200419165537</version>
         </dependency>
 
+        <dependency>
+            <groupId>io.crnk</groupId>
+            <artifactId>crnk-operations</artifactId>
+            <version>3.2.20200419165537</version>
+        </dependency>
+
 <!--        <dependency>-->
 <!--            <groupId>io.crnk</groupId>-->
 <!--            <artifactId>crnk-data-jpa</artifactId>-->

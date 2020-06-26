@@ -1,9 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {PaymentService} from '../../api/payment.service';
 import {ToastrService} from 'ngx-toastr';
-import {SubscriptionTypeResponse} from '../../model/payment/subscriptionTypeResponse';
 import {UserService} from '../../api/user.service';
-import {SubscriptionResponse} from '../../model/payment/subscriptionResponse';
 import {SubscriptionTypeResource} from '../../model/resource/subscription-type.resource.service';
 import {DocumentCollection} from 'ngx-jsonapi';
 import {SubscriptionResource} from '../../model/resource/subscription.resource.service';

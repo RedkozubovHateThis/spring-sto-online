@@ -32,4 +32,9 @@ public class Vehicle extends BaseEntity {
     @NotFound(action = NotFoundAction.IGNORE)
     @JsonApiRelation
     private Set<VehicleMileage> vehicleMileages = new HashSet<>();
+
+    @OneToMany(mappedBy = "vehicle")
+    @NotFound(action = NotFoundAction.IGNORE)
+    @JsonApiRelation
+    private Set<ServiceDocument> documents = new HashSet<>();
 }

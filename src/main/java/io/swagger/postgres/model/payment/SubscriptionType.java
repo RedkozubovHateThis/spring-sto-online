@@ -11,7 +11,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(of = "id", callSuper = true)
 @Entity
 @Data
 @JsonApiResource(type = "subscriptionType", resourcePath = "subscriptionTypes", postable = false, deletable = false)

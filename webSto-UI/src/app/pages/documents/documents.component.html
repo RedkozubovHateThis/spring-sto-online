@@ -36,63 +36,37 @@
                 <th scope="col">Сумма, руб.</th>
               </tr>
             </thead>
-            <tbody *ngIf="documentResponseController.all != null">
-            <ng-container *ngFor="let fbResponse of documentResponseController.all.content, let i = index" [attr.data-index]="i">
-
-              <ng-container *ngIf="fbResponse.isInactive; else activeRow">
-                <tr class="text-muted" [ngbTooltip]="'Заказ-наряд выходит за рамки доступных заказ-нарядов по тарифу'">
-                  <th scope="row">
-                    {{fbResponse.documentNumber}}
-                  </th>
-                  <th>{{fbResponse.startDate}}</th>
-                  <th>{{fbResponse.endDate}}</th>
-                  <th>
-                    <span class="badge badge-dot">
-                      <i class="bg-{{fbResponse.style}}"></i>{{fbResponse.stateRus}}
-                    </span>
-                  </th>
-                  <th class="wrap-column">{{fbResponse.client}}</th>
-                  <th>{{fbResponse.vehicle.name}}</th>
-                  <th>{{fbResponse.vehicle.regNumber}}</th>
-                  <th>{{fbResponse.sum | number:'.2':'ru'}}</th>
-                </tr>
-              </ng-container>
-
-              <ng-template #activeRow>
-                <tr>
-                  <th scope="row" style="cursor: pointer;" (click)="select(fbResponse)">
-                    {{fbResponse.documentNumber}}
-                    &nbsp;
-                    <i class="far fa-check-circle" *ngIf="selected === fbResponse"></i>
-                    <i class="far fa-circle" *ngIf="selected !== fbResponse"></i>
-                  </th>
-                  <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.startDate}}</th>
-                  <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.endDate}}</th>
-                  <th style="cursor: pointer;" (click)="navigate(fbResponse)">
-                <span class="badge badge-dot">
-                  <i class="bg-{{fbResponse.style}}"></i>{{fbResponse.stateRus}}
-                </span>
-                  </th>
-                  <th style="cursor: pointer;" class="wrap-column" (click)="navigate(fbResponse)">{{fbResponse.client}}</th>
-                  <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.vehicle.name}}</th>
-                  <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.vehicle.regNumber}}</th>
-                  <th style="cursor: pointer;" (click)="navigate(fbResponse)">{{fbResponse.sum | number:'.2':'ru'}}</th>
-                </tr>
-
-              </ng-template>
-
+            <tbody *ngIf="documentController.all != null">
+            <ng-container *ngFor="let serviceDocument of documentController.all.data, let i = index" [attr.data-index]="i">
+              <tr>
+                <th scope="row" style="cursor: pointer;" (click)="select(serviceDocument)">
+                  {{serviceDocument.attributes.number}}
+                  &nbsp;
+                  <i class="far fa-check-circle" *ngIf="selected === serviceDocument"></i>
+                  <i class="far fa-circle" *ngIf="selected !== serviceDocument"></i>
+                </th>
+                <th style="cursor: pointer;" (click)="navigate(serviceDocument)">{{serviceDocument.attributes.startDate | date : 'dd.MM.yyyy HH:mm'}}</th>
+                <th style="cursor: pointer;" (click)="navigate(serviceDocument)">{{serviceDocument.attributes.endDate | date : 'dd.MM.yyyy HH:mm'}}</th>
+                <th style="cursor: pointer;" (click)="navigate(serviceDocument)">
+              <span class="badge badge-dot">
+                <i class="bg-green"></i>{{serviceDocument.attributes.status}}
+              </span>
+                </th>
+                <th style="cursor: pointer;" class="wrap-column" (click)="navigate(serviceDocument)">{{serviceDocument.relationships.client.data.attributes.fio}}</th>
+                <th style="cursor: pointer;" (click)="navigate(serviceDocument)">{{serviceDocument.relationships.vehicle.data.attributes.modelName}}</th>
+                <th style="cursor: pointer;" (click)="navigate(serviceDocument)">{{serviceDocument.relationships.vehicle.data.attributes.regNumber}}</th>
+                <th style="cursor: pointer;" (click)="navigate(serviceDocument)">{{serviceDocument.attributes.cost | number:'.2':'ru'}}</th>
+              </tr>
             </ng-container>
             </tbody>
           </table>
         </div>
         <div class="card-footer py-4 table-responsive">
           <app-loading-bar [isLoading]="isLoading" [atTop]="true"></app-loading-bar>
-          <app-pagination *ngIf="documentResponseController.all != null"
-                          [totalPages]="documentResponseController.all.totalPages"
-                          [isFirst]="documentResponseController.all.first"
-                          [isLast]="documentResponseController.all.last"
-                          [page]="documentResponseController.filter.page"
-                          [size]="documentResponseController.filter.size"
+          <app-pagination *ngIf="documentController.all != null"
+                          [totalRecords]="documentController.all.page.total_resources"
+                          [page]="documentController.filter.page"
+                          [size]="documentController.filter.size"
                           [disabled]="isLoading"
                           (onSizeChange)="setSize($event)"
                           (onPageChange)="goToPage($event)"></app-pagination>
@@ -100,10 +74,10 @@
       </div>
     </div>
     <div class="col-xl-3">
-      <app-document-filter (onChange)="applyFilter()"
-                           [filter]="documentResponseController.filter"
-                           [document]="selected"
-                           (onOrganizationChange)="documentResponseController.emitOrganizationChange()"></app-document-filter>
+<!--      <app-document-filter (onChange)="applyFilter()"-->
+<!--                           [filter]="documentResponseController.filter"-->
+<!--                           [document]="selected"-->
+<!--                           (onOrganizationChange)="documentResponseController.emitOrganizationChange()"></app-document-filter>-->
     </div>
   </div>
 </div>

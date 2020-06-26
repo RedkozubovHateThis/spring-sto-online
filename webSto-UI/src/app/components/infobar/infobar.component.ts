@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from '../../api/user.service';
-import {User} from '../../model/postgres/auth/user';
 import {Subscription} from 'rxjs';
 import {StompSubscription} from '@stomp/stompjs';
 import {WebSocketService} from '../../api/webSocket.service';
@@ -8,7 +7,7 @@ import {InfobarService} from '../../api/infobar.service';
 import {ClientInfo} from '../../model/info/clientInfo';
 import {ServiceLeaderInfo} from '../../model/info/serviceLeaderInfo';
 import {AdminInfo} from '../../model/info/adminInfo';
-import {DocumentResponseController} from '../../controller/document-response.controller';
+import {DocumentController} from '../../controller/document.controller';
 import {UserResource} from '../../model/resource/user.resource.service';
 
 @Component({
@@ -19,7 +18,7 @@ import {UserResource} from '../../model/resource/user.resource.service';
 export class InfobarComponent implements OnInit {
 
   constructor(private infobarService: InfobarService, private userService: UserService,
-              private webSocketService: WebSocketService/*, private documentResponseController: DocumentResponseController*/) {}
+              private webSocketService: WebSocketService, private documentController: DocumentController) {}
 
   private currentUser: UserResource;
   private subscription: StompSubscription;
@@ -53,10 +52,10 @@ export class InfobarComponent implements OnInit {
 
     this.subscribe();
 
-    // if ( this.currentUser.userAdmin )
-    //   this.documentResponseController.organizationChange.subscribe( () => {
-    //     this.getAdminData();
-    //   } );
+    if ( this.currentUser.attributes.userAdmin )
+      this.documentController.organizationChange.subscribe( () => {
+        this.getAdminData();
+      } );
   }
 
   subscribe() {

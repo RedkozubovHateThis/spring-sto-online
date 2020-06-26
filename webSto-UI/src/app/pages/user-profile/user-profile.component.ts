@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from '../../api/user.service';
-import {User} from '../../model/postgres/auth/user';
 import {Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
 import {ToastrService} from 'ngx-toastr';

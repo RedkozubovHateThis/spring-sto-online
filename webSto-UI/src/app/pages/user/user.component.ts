@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {UserService} from '../../api/user.service';
-import {User} from '../../model/postgres/auth/user';
 import {ModelTransfer} from '../model.transfer';
 import {Location} from '@angular/common';
 import {Shops} from '../../variables/shops';

@@ -1,7 +1,6 @@
-import { Injectable } from '@angular/core';
-import { Autoregister, Service, Resource, DocumentCollection, DocumentResource } from 'ngx-jsonapi';
+import {Injectable} from '@angular/core';
+import {Autoregister, DocumentCollection, DocumentResource, Resource, Service} from 'ngx-jsonapi';
 import {UserRoleResource} from './user-role.resource.service';
-import {UserRole} from '../postgres/auth/userRole';
 import {SubscriptionResource} from './subscription.resource.service';
 
 export class UserResource extends Resource {

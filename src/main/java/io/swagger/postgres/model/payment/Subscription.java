@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(of = "id", callSuper = true)
 @Entity
 @Data
 @JsonApiResource(type = "subscription", resourcePath = "subscriptions", postable = false, deletable = false, patchable = false)

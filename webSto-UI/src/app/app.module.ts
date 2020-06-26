@@ -21,18 +21,24 @@ import {ErrorInterceptor} from './variables/error.interceptor';
 import {WebSocketService} from './api/webSocket.service';
 import {ToastrModule} from 'ngx-toastr';
 import {EventMessageService} from './api/event-message.service';
-// import {DocumentResponseController} from './controller/document-response.controller';
 import {EventMessageController} from './controller/event-message.controller';
 import {UserController} from './controller/user.controller';
 import {InfobarService} from './api/infobar.service';
 import {PaymentService} from './api/payment.service';
-import { UserResourceService } from './model/resource/user.resource.service';
+import {UserResourceService} from './model/resource/user.resource.service';
 import {UserRoleResourceService} from './model/resource/user-role.resource.service';
 import {NgxJsonapiModule} from 'ngx-jsonapi';
 import {SubscriptionResourceService} from './model/resource/subscription.resource.service';
 import {SubscriptionTypeResourceService} from './model/resource/subscription-type.resource.service';
 import {PaymentRecordResourceService} from './model/resource/payment-record.resource.service';
 import {EventMessageResourceService} from './model/resource/event-message.resource.service';
+import {DocumentController} from './controller/document.controller';
+import {DocumentService} from './api/document-service.service';
+import {ServiceDocumentResourceService} from './model/resource/service-document.resource.service';
+import {ServiceWorkResourceService} from './model/resource/service-work.resource.service';
+import {ServiceAddonResourceService} from './model/resource/service-addon.resource.service';
+import {VehicleResourceService} from './model/resource/vehicle.resource.service';
+import {VehicleMileageResourceService} from './model/resource/vehicle-mileage.resource.service';
 
 registerLocaleData(localeRu, 'ru');
 
@@ -70,7 +76,8 @@ registerLocaleData(localeRu, 'ru');
     UserService,
     EventMessageService,
     WebSocketService,
-    // DocumentResponseController,
+    DocumentController,
+    DocumentService,
     EventMessageController,
     UserController,
     InfobarService,
@@ -81,6 +88,11 @@ registerLocaleData(localeRu, 'ru');
     SubscriptionTypeResourceService,
     PaymentRecordResourceService,
     EventMessageResourceService,
+    ServiceDocumentResourceService,
+    ServiceWorkResourceService,
+    ServiceAddonResourceService,
+    VehicleResourceService,
+    VehicleMileageResourceService,
     {
       provide: HTTP_INTERCEPTORS,
       useFactory(userService: UserService, router: Router) {

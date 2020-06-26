@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import {Service, Resource, DocumentCollection, DocumentResource, Autoregister} from 'ngx-jsonapi';
+import {Injectable} from '@angular/core';
+import {Autoregister, DocumentCollection, Resource, Service} from 'ngx-jsonapi';
 import {UserResource} from './user.resource.service';
 
 export class UserRoleResource extends Resource {

@@ -1,9 +1,7 @@
 import {Component} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Pageable} from '../../model/pageable';
 import {Pagination} from '../pagination';
 import {EventMessageService} from '../../api/event-message.service';
-import {EventMessageResponse} from '../../model/postgres/eventMessageResponse';
 import {EventMessageController} from '../../controller/event-message.controller';
 
 @Component({

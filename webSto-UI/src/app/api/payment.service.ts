@@ -4,7 +4,6 @@ import {UserService} from './user.service';
 import {RegisterResponse} from '../model/payment/registerResponse';
 import {Observable, Subscription} from 'rxjs';
 import {PaymentResponse} from '../model/payment/paymentResponse';
-import {SubscriptionTypeResponse} from '../model/payment/subscriptionTypeResponse';
 import {SubscriptionResponse} from '../model/payment/subscriptionResponse';
 import {PromisedAvailableResponse} from '../model/payment/promisedAvailableResponse';
 import {SubscriptionTypeResource, SubscriptionTypeResourceService} from '../model/resource/subscription-type.resource.service';
