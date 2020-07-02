@@ -70,45 +70,28 @@ public class UserController {
         if ( existingUser == null )
             return ResponseEntity.status(404).body("Пользователь не найден!");
 
-        if ( user.getPhone() == null || user.getPhone().isEmpty() )
-            return ResponseEntity.status(400).body("Телефон не может быть пустым!");
+//        if ( user.getPhone() == null || user.getPhone().isEmpty() )
+//            return ResponseEntity.status(400).body("Телефон не может быть пустым!");
 
-        if ( !userService.isPhoneValid( user.getPhone() ) )
-            return ResponseEntity.status(400).body("Неверный номер телефона!");
+//        if ( !userService.isPhoneValid( user.getPhone() ) )
+//            return ResponseEntity.status(400).body("Неверный номер телефона!");
 
-        if ( user.getEmail() != null && user.getEmail().length() == 0 )
-            user.setEmail(null);
+//        if ( user.getEmail() != null && user.getEmail().length() == 0 )
+//            user.setEmail(null);
 
-        if ( userRepository.isUserExistsPhoneNotSelf( user.getPhone(), existingUser.getId() ) )
-            return ResponseEntity.status(400).body("Данный телефон уже указан у другого пользователя!");
-        if ( user.getEmail() != null && user.getEmail().length() > 0 &&
-                userRepository.isUserExistsEmailNotSelf( user.getEmail(), existingUser.getId() ) )
-            return ResponseEntity.status(400).body("Данная почта уже указана у другого пользователя!");
+//        if ( userRepository.isUserExistsPhoneNotSelf( user.getPhone(), existingUser.getId() ) )
+//            return ResponseEntity.status(400).body("Данный телефон уже указан у другого пользователя!");
+//        if ( user.getEmail() != null && user.getEmail().length() > 0 &&
+//                userRepository.isUserExistsEmailNotSelf( user.getEmail(), existingUser.getId() ) )
+//            return ResponseEntity.status(400).body("Данная почта уже указана у другого пользователя!");
 
-        if ( UserHelper.isClient( user ) ) {
-            if ( user.getVin() != null && user.getVin().length() > 0 &&
-                    userRepository.isUserExistsVinNotSelf( user.getVin(), existingUser.getId() ) )
-                return ResponseEntity.status(400).body("Данный VIN-номер уже указан у другого пользователя!");
-        }
-        if ( UserHelper.isServiceLeader( user ) ) {
-            if ( user.getInn() != null && user.getInn().length() > 0 &&
-                    userRepository.isUserExistsInnNotSelf( user.getInn(), existingUser.getId() ) )
-                return ResponseEntity.status(400).body("Данный ИНН уже указан у другого пользователя!");
-        }
+//        if ( UserHelper.isServiceLeader( user ) ) {
+//            if ( user.getInn() != null && user.getInn().length() > 0 &&
+//                    userRepository.isUserExistsInnNotSelf( user.getInn(), existingUser.getId() ) )
+//                return ResponseEntity.status(400).body("Данный ИНН уже указан у другого пользователя!");
+//        }
 
-        userService.processPhone(user);
-
-        //TODO: переделать на JSON API
-        Long currentSubscriptionId = user.getCurrentCurrentSubscriptionId();
-        if ( currentSubscriptionId != null ) {
-
-            Subscription origCurrentSubscription = subscriptionRepository.findById( currentSubscriptionId ).orElse( null );
-            if ( origCurrentSubscription != null )
-                user.setCurrentSubscription( origCurrentSubscription );
-            else
-                user.setCurrentSubscription( null );
-
-        }
+//        userService.processPhone(user);
 
         user.setPassword( existingUser.getPassword() );
         user.setAccountExpired( existingUser.isAccountExpired() );

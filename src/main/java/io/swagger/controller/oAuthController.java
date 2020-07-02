@@ -70,31 +70,31 @@ public class oAuthController {
         if ( user.getPassword().length() < 6 )
             return ResponseEntity.status(400).body("Пароль не может содержать менее 6 символов!");
 
-        if ( user.getEmail() != null && user.getEmail().length() == 0 )
-            user.setEmail(null);
+//        if ( user.getEmail() != null && user.getEmail().length() == 0 )
+//            user.setEmail(null);
 
-        if ( user.getEmail() != null && user.getEmail().length() > 0 &&
-                !userService.isEmailValid( user.getEmail() ) )
-            return ResponseEntity.status(400).body("Неверный формат почты!");
+//        if ( user.getEmail() != null && user.getEmail().length() > 0 &&
+//                !userService.isEmailValid( user.getEmail() ) )
+//            return ResponseEntity.status(400).body("Неверный формат почты!");
 
-        if ( user.getPhone() == null || user.getPhone().isEmpty() )
-            return ResponseEntity.status(400).body("Телефон не может быть пустым!");
+//        if ( user.getPhone() == null || user.getPhone().isEmpty() )
+//            return ResponseEntity.status(400).body("Телефон не может быть пустым!");
 
-        if ( !userService.isPhoneValid( user.getPhone() ) )
-            return ResponseEntity.status(400).body("Неверный номер телефона!");
+//        if ( !userService.isPhoneValid( user.getPhone() ) )
+//            return ResponseEntity.status(400).body("Неверный номер телефона!");
 
-        userService.processPhone(user);
+//        userService.processPhone(user);
 
         if ( user.getUsername() != null && user.getUsername().length() > 0 &&
                 userRepository.isUserExistsUsername( user.getUsername() ) )
             return ResponseEntity.status(400).body("Пользователь с таким логином уже существует!");
 
-        if ( userRepository.isUserExistsPhone( user.getPhone() ) )
-            return ResponseEntity.status(400).body("Пользователь с таким телефоном уже существует!");
+//        if ( userRepository.isUserExistsPhone( user.getPhone() ) )
+//            return ResponseEntity.status(400).body("Пользователь с таким телефоном уже существует!");
 
-        if ( user.getEmail() != null && user.getEmail().length() > 0 &&
-                userRepository.isUserExistsEmail( user.getEmail() ) )
-            return ResponseEntity.status(400).body("Пользователь с такой почтой уже существует!");
+//        if ( user.getEmail() != null && user.getEmail().length() > 0 &&
+//                userRepository.isUserExistsEmail( user.getEmail() ) )
+//            return ResponseEntity.status(400).body("Пользователь с такой почтой уже существует!");
 
         if ( user.getUsername() == null || user.getUsername().isEmpty() )
             user.setUsername( UUID.randomUUID().toString() );
@@ -108,21 +108,13 @@ public class oAuthController {
         if ( clientRole != null )
             user.getRoles().add(clientRole);
 
-        if ( roleName.equals("CLIENT") ) {
-            if ( user.getVin() == null || user.getVin().isEmpty() )
-                return ResponseEntity.status(400).body("VIN-номер не может быть пустым!");
-
-            if ( userRepository.isUserExistsVin( user.getVin() ) )
-                return ResponseEntity.status(400).body("Пользователь с таким VIN-номером уже существует!");
-        }
-
-        else if ( roleName.equals("SERVICE_LEADER") ) {
-            if ( user.getInn() == null || user.getInn().isEmpty() )
-                return ResponseEntity.status(400).body("ИНН не может быть пустым!");
-
-            if ( userRepository.isUserExistsInn( user.getInn() ) )
-                return ResponseEntity.status(400).body("Пользователь с таким ИНН уже существует!");
-        }
+//        else if ( roleName.equals("SERVICE_LEADER") ) {
+//            if ( user.getInn() == null || user.getInn().isEmpty() )
+//                return ResponseEntity.status(400).body("ИНН не может быть пустым!");
+//
+//            if ( userRepository.isUserExistsInn( user.getInn() ) )
+//                return ResponseEntity.status(400).body("Пользователь с таким ИНН уже существует!");
+//        }
 
         userRepository.save(user);
 
@@ -220,8 +212,8 @@ public class oAuthController {
         user.setFirstName("Пользователь");
         user.setLastName("Демонстрационный");
         user.setPassword( password );
-        user.setEmail( email );
-        user.setPhone( buildDemoPhone( usersCount ) );
+//        user.setEmail( email );
+//        user.setPhone( buildDemoPhone( usersCount ) );
 
         if ( user.getUsername() == null || user.getUsername().isEmpty() )
             user.setUsername( UUID.randomUUID().toString() );

@@ -43,6 +43,7 @@ public class VehicleMileageResourceRepository implements ResourceRepository<Vehi
 
     @Override
     public <S extends VehicleMileage> S create(S s) {
+        s.setDeleted(false);
         return save( s );
     }
 

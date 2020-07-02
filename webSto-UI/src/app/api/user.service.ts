@@ -13,6 +13,7 @@ import {UserRoleResourceService} from '../model/resource/user-role.resource.serv
 import {SubscriptionResourceService} from '../model/resource/subscription.resource.service';
 import {SubscriptionTypeResourceService} from '../model/resource/subscription-type.resource.service';
 import {DocumentCollection} from 'ngx-jsonapi';
+import {ProfileResourceService} from '../model/resource/profile.resource.service';
 
 @Injectable()
 export class UserService implements TransferService<UserResource>, RestService<UserResource> {
@@ -20,7 +21,8 @@ export class UserService implements TransferService<UserResource>, RestService<U
   constructor(private http: HttpClient, private router: Router, private toastrService: ToastrService,
               private userResourceService: UserResourceService, private userRoleResourceService: UserRoleResourceService,
               private subscriptionResourceService: SubscriptionResourceService,
-              private subscriptionTypeResourceService: SubscriptionTypeResourceService) {
+              private subscriptionTypeResourceService: SubscriptionTypeResourceService,
+              private profileResourceService: ProfileResourceService) {
     userResourceService.register();
   }
   currentUser: UserResource;
@@ -82,10 +84,10 @@ export class UserService implements TransferService<UserResource>, RestService<U
     if ( this.currentUser != null ) {
       if ( this.currentUser.attributes.fio != null )
         return this.currentUser.attributes.fio;
-      else if ( this.currentUser.attributes.phone != null )
-        return this.currentUser.attributes.phone;
-      else if ( this.currentUser.attributes.email != null )
-        return this.currentUser.attributes.email;
+      // else if ( this.currentUser.attributes.phone != null )
+      //   return this.currentUser.attributes.phone;
+      // else if ( this.currentUser.attributes.email != null )
+      //   return this.currentUser.attributes.email;
       else
         return this.currentUser.attributes.username;
     }
@@ -97,10 +99,10 @@ export class UserService implements TransferService<UserResource>, RestService<U
     if ( model != null ) {
       if ( model.attributes.fio != null )
         return model.attributes.fio;
-      else if ( model.attributes.phone != null )
-        return model.attributes.phone;
-      else if ( model.attributes.email != null )
-        return model.attributes.email;
+      // else if ( model.attributes.phone != null )
+      //   return model.attributes.phone;
+      // else if ( model.attributes.email != null )
+      //   return model.attributes.email;
       else
         return model.attributes.username;
     }
@@ -216,25 +218,30 @@ export class UserService implements TransferService<UserResource>, RestService<U
     const headers = this.getHeaders();
     this.isSaving = true;
 
-    user.save().subscribe(savedUser => {
-      this.isSaving = false;
+    const profile = user.relationships.profile.data;
 
-      if ( this.currentUser != null && this.currentUser.id === user.id )
-        this.setCurrentUserData( user );
+    profile.save().subscribe( (savedProfile) => {
+      user.save().subscribe(savedUser => {
+        this.isSaving = false;
 
-      this.isSaving = false;
-      this.toastrService.success(message);
+        if ( this.currentUser != null && this.currentUser.id === user.id )
+          this.setCurrentUserData( user );
+
+        this.isSaving = false;
+        this.toastrService.success(message);
+      }, () => {
+        this.isSaving = false;
+        this.toastrService.error('Ошибка сохранения пользователя!', 'Внимание!');
+      });
     }, () => {
       this.isSaving = false;
       this.toastrService.error('Ошибка сохранения пользователя!', 'Внимание!');
-    });
-
+    } );
   }
 
   getAll(filter: UsersFilter): Observable<DocumentCollection<UserResource>> {
     const params = {
       role: filter.role != null ? filter.role : '',
-      isApproved: filter.isApproved != null ? filter.isApproved : '',
       isAutoRegistered: filter.isAutoRegistered != null ? filter.isAutoRegistered : '',
       phone: filter.phone != null ? filter.phone : '',
       email: filter.email != null ? filter.email : '',

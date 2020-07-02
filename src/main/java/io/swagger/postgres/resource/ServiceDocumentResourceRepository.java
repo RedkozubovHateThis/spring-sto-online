@@ -46,6 +46,7 @@ public class ServiceDocumentResourceRepository implements ResourceRepository<Ser
 
     @Override
     public <S extends ServiceDocument> S create(S s) {
+        s.setDeleted(false);
         return save( s );
     }
 

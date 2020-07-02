@@ -12,6 +12,10 @@
               <button class="btn btn-sm btn-buro-blue" (click)="location.back()">
                 Назад
               </button>
+              <button class="btn btn-sm btn-buro-blue" (click)="navigate( model )"
+                      *ngIf="userService.isAdmin() || userService.isServiceLeader()">
+                Редактировать
+              </button>
 <!--              <app-report-button *ngIf="userService.currentUser != null" [disabled]="model != null"-->
 <!--                                 [model]="model" [withPrint]="false"></app-report-button>-->
 <!--              <app-report-button *ngIf="userService.currentUser != null" [printDisabled]="model != null"-->
@@ -29,7 +33,7 @@
 
                   <div class="row">
                     <div class="col-lg-12">
-                      <h2 *ngIf="model != null">{{model.attributes.number}} {{model.attributes.status}}</h2>
+                      <h2 *ngIf="model != null">{{model.attributes.number}} {{model.statusRus()}}</h2>
                     </div>
                   </div>
                   <div class="row">
@@ -57,7 +61,7 @@
                   <div class="row">
                     <div class="col-lg-12">
 
-                      <h2 *ngIf="model != null">{{model.relationships.vehicle.data.attributes.modelName}}</h2>
+                      <h2 *ngIf="model != null && model.relationships.vehicle.data">{{model.relationships.vehicle.data.attributes.modelName}}</h2>
 
                     </div>
                   </div>
@@ -65,7 +69,7 @@
                   <div class="row">
                     <div class="col-lg-12">
 
-                      <span class="font-weight-bold">Гос. номер:</span>&nbsp;<span *ngIf="model != null">{{model.relationships.vehicle.data.attributes.regNumber}}</span>
+                      <span class="font-weight-bold">Гос. номер:</span>&nbsp;<span *ngIf="model != null && model.relationships.vehicle.data">{{model.relationships.vehicle.data.attributes.regNumber}}</span>
 
                     </div>
                   </div>
@@ -73,7 +77,7 @@
                   <div class="row">
                     <div class="col-lg-12">
 
-                      <span class="font-weight-bold">VIN:</span>&nbsp;<span *ngIf="model != null">{{model.relationships.vehicle.data.attributes.vinNumber}}</span>
+                      <span class="font-weight-bold">VIN:</span>&nbsp;<span *ngIf="model != null && model.relationships.vehicle.data">{{model.relationships.vehicle.data.attributes.vinNumber}}</span>
 
                     </div>
                   </div>
@@ -96,13 +100,13 @@
                   <td class="font-weight-bold">
                     Предприятие:&nbsp;
                   </td>
-                  <td *ngIf="model != null">{{model.relationships.executor.data.attributes.fio}}</td>
+                  <td *ngIf="model != null && model.relationships.executor.data">{{model.relationships.executor.data.attributes.name}}</td>
                 </tr>
                 <tr>
                   <td class="font-weight-bold">
                     Клиент:&nbsp;
                   </td>
-                  <td *ngIf="model != null">{{model.relationships.client.data.attributes.fio}}</td>
+                  <td *ngIf="model != null && model.relationships.client.data">{{model.relationships.client.data.attributes.name}}</td>
                 </tr>
                 </tbody>
               </table>
@@ -164,7 +168,7 @@
                   </tr>
                   </thead>
                   <tbody *ngIf="model != null">
-                  <tr *ngFor="let serviceWork of model.relationships.serviceWorks.data">
+                  <tr *ngFor="let serviceWork of serviceWorks.data">
                     <th>
                       {{serviceWork.attributes.number}}
                     </th>
@@ -231,7 +235,7 @@
                   </tr>
                   </thead>
                   <tbody *ngIf="model != null">
-                  <tr *ngFor="let addon of model.relationships.serviceAddons.data">
+                  <tr *ngFor="let addon of serviceAddons.data">
                     <th>
                       {{addon.attributes.number}}
                     </th>

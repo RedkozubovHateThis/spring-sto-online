@@ -43,6 +43,7 @@ public class ServiceWorkResourceRepository implements ResourceRepository<Service
 
     @Override
     public <S extends ServiceWork> S create(S s) {
+        s.setDeleted(false);
         return save( s );
     }
 

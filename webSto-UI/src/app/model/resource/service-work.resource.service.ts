@@ -7,7 +7,7 @@ export class ServiceWorkResource extends Resource {
     count: null,
     priceNorm: null,
     price: null,
-    byPrice: null,
+    byPrice: false,
     timeValue: null,
     name: null,
     number: null,
@@ -15,7 +15,7 @@ export class ServiceWorkResource extends Resource {
   };
 
   public relationships = {
-    serviceDocument: new DocumentResource<ServiceDocumentResource>()
+    document: new DocumentResource<ServiceDocumentResource>()
   };
 }
 

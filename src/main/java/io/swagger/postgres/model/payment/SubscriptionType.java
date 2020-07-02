@@ -4,11 +4,13 @@ import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
 import io.swagger.postgres.model.BaseEntity;
+import io.swagger.postgres.model.security.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 @EqualsAndHashCode(of = "id", callSuper = true)
@@ -34,7 +36,10 @@ public class SubscriptionType extends BaseEntity implements Serializable {
 
     @OneToMany(mappedBy = "type")
     @JsonApiRelation(mappedBy = "type", serialize = SerializeType.LAZY)
-//    @JsonIgnore
-    private Set<Subscription> subscriptions;
+    private Set<Subscription> subscriptions = new HashSet<>();
+
+    @OneToMany(mappedBy = "subscriptionType")
+    @JsonApiRelation(mappedBy = "subscriptionType", serialize = SerializeType.LAZY)
+    private Set<User> users = new HashSet<>();
 
 }

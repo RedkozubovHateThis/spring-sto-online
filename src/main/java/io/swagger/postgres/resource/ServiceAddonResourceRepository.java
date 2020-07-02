@@ -43,6 +43,7 @@ public class ServiceAddonResourceRepository implements ResourceRepository<Servic
 
     @Override
     public <S extends ServiceAddon> S create(S s) {
+        s.setDeleted(false);
         return save( s );
     }
 

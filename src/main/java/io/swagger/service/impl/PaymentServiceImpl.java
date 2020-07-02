@@ -314,8 +314,8 @@ public class PaymentServiceImpl implements PaymentService {
             subscriptionRepository.save( subscription );
             user.setCurrentSubscription( subscription );
 
-            if ( !subscription.getType().getIsFree() && user.getSubscriptionTypeId() == null )
-                user.setSubscriptionTypeId( subscription.getType().getId() );
+            if ( !subscription.getType().getIsFree() && user.getSubscriptionType() == null )
+                user.setSubscriptionType( subscription.getType() );
 
             generatePaymentRecord( user, subscription, null, now );
 
@@ -379,11 +379,11 @@ public class PaymentServiceImpl implements PaymentService {
 
         if ( currentSubscription != null && currentSubscription.getEndDate().after( now ) ) {
 
-            if ( user.getSubscriptionTypeId() != null &&
-                    user.getSubscriptionTypeId().equals( subscriptionType.getId() ) )
-                user.setSubscriptionTypeId( null );
+            if ( user.getSubscriptionType() != null &&
+                    user.getSubscriptionType().getId().equals( subscriptionType.getId() ) )
+                user.setSubscriptionType( null );
             else
-                user.setSubscriptionTypeId( subscriptionType.getId() );
+                user.setSubscriptionType( subscriptionType );
 
             userRepository.save( user );
 

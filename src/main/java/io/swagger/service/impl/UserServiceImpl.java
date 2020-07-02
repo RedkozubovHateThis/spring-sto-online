@@ -1,6 +1,7 @@
 package io.swagger.service.impl;
 
 import io.swagger.controller.WebSocketController;
+import io.swagger.postgres.model.security.Profile;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.EventMessageRepository;
 import io.swagger.postgres.repository.UserRepository;
@@ -65,14 +66,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void processPhone(User user) {
-        String originalPhone = user.getPhone();
+    public void processPhone(Profile profile) {
+        String originalPhone = profile.getPhone();
 
         if ( originalPhone.charAt(0) == '+' ) {
-            user.setPhone( originalPhone.replaceAll("\\+7", "8") );
+            profile.setPhone( originalPhone.replaceAll("\\+7", "8") );
         }
         else if ( originalPhone.charAt(0) == '7' ) {
-            user.setPhone( originalPhone.replaceFirst("7", "8") );
+            profile.setPhone( originalPhone.replaceFirst("7", "8") );
         }
     }
 

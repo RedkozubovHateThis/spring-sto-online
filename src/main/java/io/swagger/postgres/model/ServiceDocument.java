@@ -4,6 +4,7 @@ import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
 import io.swagger.postgres.model.enums.ServiceDocumentStatus;
+import io.swagger.postgres.model.security.Profile;
 import io.swagger.postgres.model.security.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -48,20 +49,20 @@ public class ServiceDocument extends BaseEntity {
     @ManyToOne
     @NotFound(action = NotFoundAction.IGNORE)
     @JsonApiRelation(serialize = SerializeType.EAGER)
-    private User executor;
+    private Profile executor;
 
     @ManyToOne
     @NotFound(action = NotFoundAction.IGNORE)
     @JsonApiRelation(serialize = SerializeType.EAGER)
-    private User client;
+    private Profile client;
 
     @ManyToOne
     @NotFound(action = NotFoundAction.IGNORE)
     @JsonApiRelation(serialize = SerializeType.EAGER)
     private Vehicle vehicle;
 
-    @OneToOne(mappedBy = "document")
+    @OneToOne
     @NotFound(action = NotFoundAction.IGNORE)
-    @JsonApiRelation
+    @JsonApiRelation(serialize = SerializeType.EAGER)
     private VehicleMileage vehicleMileage;
 }

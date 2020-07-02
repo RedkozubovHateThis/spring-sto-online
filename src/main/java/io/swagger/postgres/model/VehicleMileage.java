@@ -25,11 +25,11 @@ public class VehicleMileage extends BaseEntity {
 
     @ManyToOne
     @NotFound(action = NotFoundAction.IGNORE)
-    @JsonApiRelation(serialize = SerializeType.EAGER)
+    @JsonApiRelation
     private Vehicle vehicle;
 
-    @OneToOne
+    @OneToOne(mappedBy = "vehicleMileage")
     @NotFound(action = NotFoundAction.IGNORE)
-    @JsonApiRelation(serialize = SerializeType.EAGER)
+    @JsonApiRelation
     private ServiceDocument document;
 }

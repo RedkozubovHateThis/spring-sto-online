@@ -24,7 +24,6 @@ export class UserFilterComponent implements OnInit {
 
   resetFilters() {
     this.filter.role = null;
-    this.filter.isApproved = null;
     this.filter.isAutoRegistered = null;
     this.filter.phone = null;
     this.filter.email = null;

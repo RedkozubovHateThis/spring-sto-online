@@ -56,21 +56,24 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 
     @Query("SELECT DISTINCT user FROM User user " +
             "LEFT JOIN FETCH user.roles AS role " +
+            "INNER JOIN user.profile AS p " +
             "WHERE ( user.username = :username " +
-            "OR user.phone = :username " +
-            "OR user.email = :username ) " +
+            "OR p.phone = :username " +
+            "OR p.email = :username ) " +
             "AND user.enabled = true")
     User findByUsername(@Param("username") String username);
 
     @Query("SELECT DISTINCT user FROM User user " +
             "LEFT JOIN FETCH user.roles AS role " +
-            "WHERE user.phone = :phone " +
+            "INNER JOIN user.profile AS p " +
+            "WHERE p.phone = :phone " +
             "AND user.enabled = true")
     User findByPhone(@Param("phone") String phone);
 
     @Query("SELECT DISTINCT user FROM User user " +
             "LEFT JOIN FETCH user.roles AS role " +
-            "WHERE user.email = :email " +
+            "INNER JOIN user.profile AS p " +
+            "WHERE p.email = :email " +
             "AND user.enabled = true")
     User findByEmail(@Param("email") String email);
 
@@ -81,41 +84,32 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
             "WHERE u.username = :username )")
     Boolean isUserExistsUsername(@Param("username") String username);
 
-    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT u.id FROM users AS u " +
-            "WHERE u.phone = :phone )")
-    Boolean isUserExistsPhone(@Param("phone") String phone);
+//    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT u.id FROM users AS u " +
+//            "WHERE u.phone = :phone )")
+//    Boolean isUserExistsPhone(@Param("phone") String phone);
 
-    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT u.id FROM users AS u " +
-            "WHERE u.email = :email )")
-    Boolean isUserExistsEmail(@Param("email") String email);
+//    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT u.id FROM users AS u " +
+//            "WHERE u.email = :email )")
+//    Boolean isUserExistsEmail(@Param("email") String email);
 
-    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT u.id FROM users AS u " +
-            "WHERE u.inn = :inn )")
-    Boolean isUserExistsInn(@Param("inn") String inn);
+//    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT u.id FROM users AS u " +
+//            "WHERE u.inn = :inn )")
+//    Boolean isUserExistsInn(@Param("inn") String inn);
 
-    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT u.id FROM users AS u " +
-            "WHERE u.vin = :vin )")
-    Boolean isUserExistsVin(@Param("vin") String vin);
+//    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT u.id FROM users AS u " +
+//            "WHERE u.inn = :inn AND u.id <> :userId )")
+//    Boolean isUserExistsInnNotSelf(@Param("inn") String inn,
+//                                   @Param("userId") Long userId);
 
-    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT u.id FROM users AS u " +
-            "WHERE u.inn = :inn AND u.id <> :userId )")
-    Boolean isUserExistsInnNotSelf(@Param("inn") String inn,
-                                   @Param("userId") Long userId);
+//    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT u.id FROM users AS u " +
+//            "WHERE u.phone = :phone AND u.id <> :userId )")
+//    Boolean isUserExistsPhoneNotSelf(@Param("phone") String phone,
+//                              @Param("userId") Long userId);
 
-    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT u.id FROM users AS u " +
-            "WHERE u.vin = :vin AND u.id <> :userId )")
-    Boolean isUserExistsVinNotSelf(@Param("vin") String vin,
-                                   @Param("userId") Long userId);
-
-    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT u.id FROM users AS u " +
-            "WHERE u.phone = :phone AND u.id <> :userId )")
-    Boolean isUserExistsPhoneNotSelf(@Param("phone") String phone,
-                              @Param("userId") Long userId);
-
-    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT u.id FROM users AS u " +
-            "WHERE u.email = :email AND u.id <> :userId )")
-    Boolean isUserExistsEmailNotSelf(@Param("email") String email,
-                              @Param("userId") Long userId);
+//    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT u.id FROM users AS u " +
+//            "WHERE u.email = :email AND u.id <> :userId )")
+//    Boolean isUserExistsEmailNotSelf(@Param("email") String email,
+//                              @Param("userId") Long userId);
 
     @Query("SELECT u FROM User AS u WHERE u.username <> ?#{principal.username} ORDER BY u.lastName")
     List<User> findAllExceptSelf();

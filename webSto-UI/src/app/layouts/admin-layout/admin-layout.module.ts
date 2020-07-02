@@ -24,6 +24,8 @@ import {BalanceComponent} from '../../pages/balance/balance.component';
 import {SubscriptionComponent} from '../../pages/subscription/subscription.component';
 import {DocumentsComponent} from '../../pages/documents/documents.component';
 import {DocumentComponent} from '../../pages/document/document.component';
+import {DocumentEditComponent} from '../../pages/document-edit/document-edit.component';
+import {DocumentAddComponent} from '../../pages/document-add/document-add.component';
 
 @NgModule({
   imports: [
@@ -42,6 +44,8 @@ import {DocumentComponent} from '../../pages/document/document.component';
     UserProfileComponent,
     DocumentsComponent,
     DocumentComponent,
+    DocumentEditComponent,
+    DocumentAddComponent,
     IconsComponent,
     MapsComponent,
     UsersComponent,

@@ -8,6 +8,7 @@ import {ToastrService} from 'ngx-toastr';
 import {UserResource} from '../../model/resource/user.resource.service';
 import {DocumentCollection} from 'ngx-jsonapi';
 import {SubscriptionTypeResource} from '../../model/resource/subscription-type.resource.service';
+import {ProfileResourceService} from '../../model/resource/profile.resource.service';
 
 @Component({
   selector: 'app-user-edit',
@@ -24,7 +25,7 @@ export class UserEditComponent extends ModelTransfer<UserResource, string> imple
 
   constructor(private userService: UserService, protected route: ActivatedRoute, private location: Location,
               private router: Router, private toastrService: ToastrService,
-              private paymentService: PaymentService) {
+              private paymentService: PaymentService, private profileResourceService: ProfileResourceService) {
     super(userService, route);
   }
 
@@ -33,11 +34,17 @@ export class UserEditComponent extends ModelTransfer<UserResource, string> imple
     this.userService.getOne(this.id).subscribe( data => {
       this.model = data;
       this.isLoading = false;
+      this.checkRelations();
     }, error => {
       this.isLoading = false;
     } );
 
     this.requestAllSubscriptionTypes();
+  }
+
+  checkRelations() {
+    if ( !this.model.relationships.profile.data )
+      this.model.addRelationship( this.profileResourceService.new(), 'profile' );
   }
 
   requestAllSubscriptionTypes() {
@@ -52,6 +59,7 @@ export class UserEditComponent extends ModelTransfer<UserResource, string> imple
   }
 
   onTransferComplete() {
+    this.checkRelations();
     this.requestAllSubscriptionTypes();
   }
 

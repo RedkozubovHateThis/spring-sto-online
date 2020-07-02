@@ -1,10 +1,7 @@
 package io.swagger.helper;
 
 import io.swagger.controller.UserController;
-import io.swagger.postgres.model.security.User;
-import io.swagger.postgres.model.security.UserRole;
-import io.swagger.postgres.model.security.UserRole_;
-import io.swagger.postgres.model.security.User_;
+import io.swagger.postgres.model.security.*;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.*;
@@ -21,6 +18,9 @@ public class UserSpecificationBuilder {
 
                 List<Predicate> predicates = new ArrayList<>();
                 Join<User, UserRole> userRoleJoin = root.join( User_.roles );
+                Join<User, Profile> profileJoin = root.join( User_.profile, JoinType.INNER );
+
+                predicates.add( cb.equal( profileJoin.get( Profile_.deleted ), false ) );
 
                 if ( filterPayload.getRole() != null && filterPayload.getRole().length() > 0 ) {
                     predicates.add(
@@ -40,12 +40,12 @@ public class UserSpecificationBuilder {
                 }
                 if ( filterPayload.getEmail() != null && filterPayload.getEmail().length() > 0 ) {
                     predicates.add(
-                            cb.like( root.get( User_.email ), "%" + filterPayload.getEmail() + "%" )
+                            cb.like( profileJoin.get( Profile_.email ), "%" + filterPayload.getEmail() + "%" )
                     );
                 }
                 if ( filterPayload.getPhone() != null && filterPayload.getPhone().length() > 0 ) {
                     predicates.add(
-                            cb.like( root.get( User_.phone ), "%" + filterPayload.getPhone() + "%" )
+                            cb.like( profileJoin.get( Profile_.phone ), "%" + filterPayload.getPhone() + "%" )
                     );
                 }
                 if ( filterPayload.getFio() != null && filterPayload.getFio().length() > 0 ) {
@@ -59,7 +59,7 @@ public class UserSpecificationBuilder {
                 }
                 if ( filterPayload.getInn() != null && filterPayload.getInn().length() > 0 ) {
                     predicates.add(
-                            cb.like( root.get( User_.inn ), "%" + filterPayload.getInn() + "%" )
+                            cb.like( profileJoin.get( Profile_.inn ), "%" + filterPayload.getInn() + "%" )
                     );
                 }
 

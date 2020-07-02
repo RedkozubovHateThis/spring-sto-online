@@ -5,13 +5,25 @@ import {ServiceWorkResource} from './service-work.resource.service';
 import {ServiceAddonResource} from './service-addon.resource.service';
 import {VehicleResource} from './vehicle.resource.service';
 import {VehicleMileageResource} from './vehicle-mileage.resource.service';
+import {ProfileResource} from './profile.resource.service';
+
+const statuses: IStatus[] = [
+    {
+      name: 'Черновик',
+      id: 'CREATED'
+    },
+    {
+      name: 'Оформлен',
+      id: 'COMPLETED'
+    }
+];
 
 export class ServiceDocumentResource extends Resource {
   public attributes = {
     number: null,
-    startDate: null,
+    startDate: new Date().getTime(),
     endDate: null,
-    status: null,
+    status: 'CREATED',
     deleted: false,
     cost: null,
     reason: null
@@ -20,11 +32,26 @@ export class ServiceDocumentResource extends Resource {
   public relationships = {
     serviceWorks: new DocumentCollection<ServiceWorkResource>(),
     serviceAddons: new DocumentCollection<ServiceAddonResource>(),
-    executor: new DocumentResource<UserResource>(),
-    client: new DocumentResource<UserResource>(),
+    executor: new DocumentResource<ProfileResource>(),
+    client: new DocumentResource<ProfileResource>(),
     vehicle: new DocumentResource<VehicleResource>(),
     vehicleMileage: new DocumentResource<VehicleMileageResource>(),
   };
+
+  public statusRus = (): string => {
+    const { status } = this.attributes;
+
+    if ( !status ) return '';
+    const currentStatus = statuses.find( (eachStatus) => eachStatus.id === status );
+    if ( currentStatus )
+      return currentStatus.name;
+
+    return '';
+  }
+
+  public getStatuses = (): IStatus[] => {
+    return statuses;
+  }
 }
 
 @Injectable()

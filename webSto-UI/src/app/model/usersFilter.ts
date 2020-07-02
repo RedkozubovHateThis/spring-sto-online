@@ -4,7 +4,6 @@ import {PageFilter} from './pageFilter';
 export class UsersFilter extends PageFilter {
 
   role: string;
-  isApproved: string;
   isAutoRegistered: string;
   phone: string;
   email: string;
@@ -16,7 +15,6 @@ export class UsersFilter extends PageFilter {
   constructor() {
     super();
     this.role = null;
-    this.isApproved = null;
     this.isAutoRegistered = null;
     this.phone = null;
     this.email = null;
@@ -32,9 +30,6 @@ export class UsersFilter extends PageFilter {
 
     if ( queryParams.role ) this.role = queryParams.role;
     // else this.role = null;
-
-    if ( queryParams.isApproved ) this.isApproved = queryParams.isApproved;
-    // else this.isApproved = null;
 
     if ( queryParams.isAutoRegistered ) this.isAutoRegistered = queryParams.isAutoRegistered;
     // else this.isAutoRegistered = null;

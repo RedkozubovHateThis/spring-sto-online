@@ -2,6 +2,8 @@ import {Injectable} from '@angular/core';
 import {Autoregister, DocumentCollection, DocumentResource, Resource, Service} from 'ngx-jsonapi';
 import {UserRoleResource} from './user-role.resource.service';
 import {SubscriptionResource} from './subscription.resource.service';
+import {ProfileResource} from './profile.resource.service';
+import {SubscriptionTypeResource} from './subscription-type.resource.service';
 
 export class UserResource extends Resource {
   public attributes = {
@@ -11,20 +13,14 @@ export class UserResource extends Resource {
     lastName: null,
     middleName: null,
     fio: null,
-    phone: null,
-    email: null,
     enabled: null,
     isAutoRegistered: null,
-    inn: null,
-    vin: null,
     serviceWorkPrice: null,
     serviceGoodsCost: null,
     balance: null,
     isCurrentSubscriptionExpired: null,
     isCurrentSubscriptionEmpty: null,
     isBalanceInvalid: null,
-    subscriptionTypeId: null,
-    vinNumbers: [],
 
     userAdmin: null,
     userClient: null,
@@ -33,7 +29,9 @@ export class UserResource extends Resource {
 
   public relationships = {
     roles: new DocumentCollection<UserRoleResource>(),
-    currentSubscription: new DocumentResource<SubscriptionResource>()
+    currentSubscription: new DocumentResource<SubscriptionResource>(),
+    profile: new DocumentResource<ProfileResource>(),
+    subscriptionType: new DocumentResource<SubscriptionTypeResource>()
   };
 }
 

@@ -11,6 +11,7 @@ import io.swagger.postgres.model.BaseEntity;
 import io.swagger.postgres.model.EventMessage;
 import io.swagger.postgres.model.UploadFile;
 import io.swagger.postgres.model.payment.Subscription;
+import io.swagger.postgres.model.payment.SubscriptionType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.NotFound;
@@ -42,14 +43,7 @@ public class User extends BaseEntity implements UserDetails, Serializable {
     private String firstName;
     private String lastName;
     private String middleName;
-    private String phone;
-    private String email;
-    private String inn;
-    private String vin;
     private Boolean isAutoRegistered;
-
-    @Type(type ="io.swagger.config.database.StringArrayUserType")
-    private String[] vinNumbers;
 
     @JsonIgnore
     private boolean accountExpired;
@@ -83,9 +77,6 @@ public class User extends BaseEntity implements UserDetails, Serializable {
     @JsonApiRelation(mappedBy = "user")
     private Set<Subscription> allSubscriptions = new HashSet<>();
 
-    @Transient
-    private Long currentSubscriptionId;
-
     @JsonIgnore
     @Transient
     private Collection<SimpleGrantedAuthority> authorities;
@@ -103,7 +94,15 @@ public class User extends BaseEntity implements UserDetails, Serializable {
     private Double serviceWorkPrice;
     private Double serviceGoodsCost;
 
-    private Long subscriptionTypeId;
+    @ManyToOne
+    @NotFound(action = NotFoundAction.IGNORE)
+    @JsonApiRelation(serialize = SerializeType.EAGER)
+    private SubscriptionType subscriptionType;
+
+    @OneToOne
+    @NotFound(action = NotFoundAction.IGNORE)
+    @JsonApiRelation(serialize = SerializeType.EAGER)
+    private Profile profile;
 
     @Override
     public boolean isAccountNonExpired() {
@@ -161,11 +160,6 @@ public class User extends BaseEntity implements UserDetails, Serializable {
             return currentSubscription.getId();
 
         return null;
-    }
-
-    @JsonIgnore
-    public Long getCurrentCurrentSubscriptionId() {
-        return currentSubscriptionId;
     }
 
     public Double getBalance() {

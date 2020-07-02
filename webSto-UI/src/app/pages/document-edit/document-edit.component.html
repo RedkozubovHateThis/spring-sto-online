@@ -1,0 +1,266 @@
+<div class="container-fluid mt--7" *ngIf="userService.isAdmin() || userService.isServiceLeader()">
+  <div class="row">
+    <div class="col">
+      <div class="card shadow">
+        <div class="card-header">
+          <app-loading-bar [isLoading]="isLoading"></app-loading-bar>
+          <div class="row align-items-center">
+            <div class="col-md mb-3">
+              Данные заказ-наряда: редактирование
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-sm btn-buro-blue" (click)="location.back()">
+                Назад
+              </button>
+              <button class="btn btn-sm btn-buro-blue" (click)="save()">
+                Сохранить
+              </button>
+<!--              <app-report-button *ngIf="userService.currentUser != null" [disabled]="model != null"-->
+<!--                                 [model]="model" [withPrint]="false"></app-report-button>-->
+<!--              <app-report-button *ngIf="userService.currentUser != null" [printDisabled]="model != null"-->
+<!--                                 [model]="model"></app-report-button>-->
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+
+          <div class="row form-group">
+
+            <div class="col-md-4 mb-3">
+
+              <div class="row form-group">
+                <div class="col-lg-12">
+                  <label class="form-control-label" for="number-input">Номер заказ-наряда</label>
+                  <input class="form-control form-control-sm form-control-alternative" id="number-input"
+                         [(ngModel)]="model.attributes.number" placeholder="Номер заказ-наряда">
+                </div>
+              </div>
+              <div class="row form-group">
+                <div class="col-lg-12">
+                  <label class="form-control-label" for="status-select">Статус заказ-наряда</label>
+                  <select id="status-select" class="form-control form-control-sm form-control-alternative"
+                          [(ngModel)]="model.attributes.status">
+                    <option *ngFor="let status of model.getStatuses()" [selected]="model.attributes.status === status.id" [ngValue]="status.id">
+                      {{status.name}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="row form-group">
+                <div class="col-lg-12">
+                  <label class="form-control-label" for="start-date-picker">Дата начала ремонта</label>
+                  <div style="max-height: 29px;">
+                    <input class="form-control form-control-alternative form-control-sm" id="start-date-picker" [mode]="'daytime'"
+                           placeholder="Дата начала ремонта"
+                           (ngModelChange)="setStartDate($event)" [(ngModel)]="startDate" [dpDayPicker]="datePickerConfig" theme="dp-material" />
+                  </div>
+                </div>
+              </div>
+              <div class="row form-group">
+                <div class="col-lg-12">
+                  <label class="form-control-label" for="end-date-picker">Дата окончания ремонта</label>
+                  <div style="max-height: 29px;">
+                    <input class="form-control form-control-alternative form-control-sm" id="end-date-picker" [mode]="'daytime'"
+                           placeholder="Дата начала ремонта"
+                           (ngModelChange)="setEndDate($event)" [(ngModel)]="endDate" [dpDayPicker]="datePickerConfig" theme="dp-material" />
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="col-md-4 mb-3">
+
+              <div class="row form-group">
+                <div class="col-lg-12">
+                  <label class="form-control-label" for="model-input">Марка/модель автомобиля</label>
+                  <input class="form-control form-control-sm form-control-alternative" id="model-input"
+                         [(ngModel)]="model.relationships.vehicle.data.attributes.modelName" placeholder="Марка/модель автомобиля">
+                </div>
+              </div>
+
+              <div class="row form-group">
+                <div class="col-lg-12">
+                  <label class="form-control-label" for="reg-number-input">Регистрационный номер автомобиля</label>
+                  <input class="form-control form-control-sm form-control-alternative" id="reg-number-input"
+                         [(ngModel)]="model.relationships.vehicle.data.attributes.regNumber" placeholder="Регистрационный номер автомобиля">
+                </div>
+              </div>
+
+              <div class="row form-group">
+                <div class="col-lg-12">
+                  <label class="form-control-label" for="vin-number-input">VIN-номер автомобиля</label>
+                  <input class="form-control form-control-sm form-control-alternative" id="vin-number-input"
+                         [(ngModel)]="model.relationships.vehicle.data.attributes.vinNumber" placeholder="VIN-номер автомобиля">
+                </div>
+              </div>
+
+              <div class="row form-group">
+                <div class="col-lg-12">
+                  <label class="form-control-label" for="year-input">Год выпуска автомобиля</label>
+                  <input class="form-control form-control-sm form-control-alternative" id="year-input" type="number"
+                         [(ngModel)]="model.relationships.vehicle.data.attributes.year" placeholder="Год выпуска автомобиля">
+                </div>
+              </div>
+
+              <div class="row form-group">
+                <div class="col-lg-12">
+                  <label class="form-control-label" for="mileage-number-input">Пробег автомобиля</label>
+                  <input class="form-control form-control-sm form-control-alternative" id="mileage-number-input" type="number"
+                         [(ngModel)]="model.relationships.vehicleMileage.data.attributes.mileage" placeholder="Пробег автомобиля">
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="row form-group">
+            <div class="col-lg-12">
+
+              <label class="form-control-label" for="reason-input">Причина обращения</label>
+              <textarea class="form-control form-control-sm form-control-alternative" id="reason-input" [(ngModel)]="model.attributes.reason"></textarea>
+
+            </div>
+          </div>
+
+          <div class="row form-group">
+            <div class="col-lg-12">
+
+              <div class="row form-group">
+                <div class="col mb-3">
+
+                  <h2 class="mb-0">Работы</h2>
+
+                </div>
+                <div class="col-auto">
+
+<!--                  <span>-->
+<!--                    <span>Сумма работ:</span>-->
+<!--                    &nbsp;-->
+<!--                  </span>-->
+<!--&lt;!&ndash;                  <h2 style="display: inline-block;" *ngIf="model != null">{{model.serviceWork.workSum | number:'.2':'ru'}} р.</h2>&ndash;&gt;-->
+                  <button class="btn btn-sm btn-buro-blue" (click)="newServiceWork()">Добавить</button>
+
+                </div>
+              </div>
+
+              <div class="table-responsive">
+                <table class="table table-flush table-hover table-sm">
+                  <thead class="thead-light">
+                  <tr>
+                    <th scope="col" style="width: 125px;">Код работ</th>
+                    <th scope="col">Наименование работ</th>
+                    <th scope="col" style="width: 95px;">Фикс. цена</th>
+                    <th scope="col" style="width: 175px;">
+                      Норма времени, чел./час.
+                    </th>
+                    <th scope="col" style="width: 175px;">
+                      Стоимость нормы времени, руб. /
+                      <div>
+                        Фиксированная цена, руб.
+                      </div>
+                    </th>
+                    <th scope="col" style="width: 175px;">
+                      Кратность
+                    </th>
+                  </tr>
+                  </thead>
+                  <tbody *ngIf="model != null">
+                  <tr *ngFor="let serviceWork of serviceWorks.data">
+                    <th>
+                      <input class="form-control form-control-sm form-control-alternative" placeholder="Код работ"
+                             [(ngModel)]="serviceWork.attributes.number">
+                    </th>
+                    <th class="wrap-column">
+                      <input class="form-control form-control-sm form-control-alternative" placeholder="Наименование работ"
+                             [(ngModel)]="serviceWork.attributes.name">
+                    </th>
+                    <th>
+                      <input type="checkbox" class="form-control form-control-sm" [(ngModel)]="serviceWork.attributes.byPrice">
+                    </th>
+                    <th>
+                      <input class="form-control form-control-sm form-control-alternative" placeholder="Норма времени, чел./час."
+                             [(ngModel)]="serviceWork.attributes.timeValue" [disabled]="serviceWork.attributes.byPrice">
+                    </th>
+                    <th>
+                      <ng-container *ngIf="serviceWork.attributes.byPrice; else byPriceNorm">
+                        <input class="form-control form-control-sm form-control-alternative" placeholder="Фиксированная цена, руб."
+                               [(ngModel)]="serviceWork.attributes.price" type="number">
+                      </ng-container>
+                      <ng-template #byPriceNorm>
+                        <input class="form-control form-control-sm form-control-alternative" placeholder="Стоимость нормы времени, руб."
+                               [(ngModel)]="serviceWork.attributes.priceNorm" type="number">
+                      </ng-template>
+                    </th>
+                    <th>
+                      <input class="form-control form-control-sm form-control-alternative" placeholder="Кратность"
+                             [(ngModel)]="serviceWork.attributes.count" type="number">
+                    </th>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="row form-group">
+            <div class="col-lg-12">
+
+              <div class="row form-group">
+                <div class="col mb-3">
+
+                  <h2 class="mb-0">Товары</h2>
+
+                </div>
+                <div class="col-auto">
+
+<!--                  <span>-->
+<!--                    <span>Сумма товаров:</span>-->
+<!--                    &nbsp;-->
+<!--                  </span>-->
+<!--                  <h2 style="display: inline-block;" *ngIf="model != null">{{model.serviceGoodsAddon.addonsSum | number:'.2':'ru'}} р.</h2>-->
+                  <button class="btn btn-sm btn-buro-blue" (click)="newServiceAddon()">Добавить</button>
+
+                </div>
+              </div>
+
+              <div class="table-responsive">
+                <table class="table table-flush table-hover table-sm">
+                  <thead class="thead-light">
+                  <tr>
+                    <th scope="col" style="width: 125px;">Код товара</th>
+                    <th scope="col">Наименование товара</th>
+                    <th scope="col" style="width: 175px;">
+                      Количество
+                    </th>
+                  </tr>
+                  </thead>
+                  <tbody *ngIf="model != null">
+                  <tr *ngFor="let addon of serviceAddons.data">
+                    <th>
+                      <input class="form-control form-control-sm form-control-alternative" placeholder="Код товара"
+                             [(ngModel)]="addon.attributes.number">
+                    </th>
+                    <th class="wrap-column">
+                      <input class="form-control form-control-sm form-control-alternative" placeholder="Наименование товара"
+                             [(ngModel)]="addon.attributes.name">
+                    </th>
+                    <th style="text-align: right;">
+                      <input class="form-control form-control-sm form-control-alternative" placeholder="Количество"
+                             [(ngModel)]="addon.attributes.count" type="number">
+                    </th>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

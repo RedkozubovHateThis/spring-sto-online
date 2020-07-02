@@ -14,6 +14,10 @@
               </h3>
             </div>
             <div class="col-auto">
+              <a href="#" class="btn btn-sm btn-buro-blue" [routerLink]="['/documents/add']"
+                 *ngIf="userService.isAdmin() || userService.isServiceLeader()">
+                Добавить
+              </a>
               <button class="btn btn-sm btn-buro-blue" (click)="requestData()"
                       [disabled]="isLoading">
                 Обновить
@@ -48,13 +52,25 @@
                 <th style="cursor: pointer;" (click)="navigate(serviceDocument)">{{serviceDocument.attributes.startDate | date : 'dd.MM.yyyy HH:mm'}}</th>
                 <th style="cursor: pointer;" (click)="navigate(serviceDocument)">{{serviceDocument.attributes.endDate | date : 'dd.MM.yyyy HH:mm'}}</th>
                 <th style="cursor: pointer;" (click)="navigate(serviceDocument)">
-              <span class="badge badge-dot">
-                <i class="bg-green"></i>{{serviceDocument.attributes.status}}
-              </span>
+                  <span class="badge badge-dot">
+                    <i class="bg-green"></i>{{serviceDocument.statusRus()}}
+                  </span>
                 </th>
-                <th style="cursor: pointer;" class="wrap-column" (click)="navigate(serviceDocument)">{{serviceDocument.relationships.client.data.attributes.fio}}</th>
-                <th style="cursor: pointer;" (click)="navigate(serviceDocument)">{{serviceDocument.relationships.vehicle.data.attributes.modelName}}</th>
-                <th style="cursor: pointer;" (click)="navigate(serviceDocument)">{{serviceDocument.relationships.vehicle.data.attributes.regNumber}}</th>
+                <th style="cursor: pointer;" class="wrap-column" (click)="navigate(serviceDocument)">
+                  <ng-container *ngIf="serviceDocument.relationships.client.data">
+                    {{serviceDocument.relationships.client.data.attributes.name}}
+                  </ng-container>
+                </th>
+                <th style="cursor: pointer;" (click)="navigate(serviceDocument)" *ngIf="serviceDocument.relationships.vehicle.data">
+                  <ng-container *ngIf="serviceDocument.relationships.vehicle.data">
+                    {{serviceDocument.relationships.vehicle.data.attributes.modelName}}
+                  </ng-container>
+                </th>
+                <th style="cursor: pointer;" (click)="navigate(serviceDocument)" *ngIf="serviceDocument.relationships.vehicle.data">
+                  <ng-container *ngIf="serviceDocument.relationships.vehicle.data">
+                    {{serviceDocument.relationships.vehicle.data.attributes.regNumber}}
+                  </ng-container>
+                </th>
                 <th style="cursor: pointer;" (click)="navigate(serviceDocument)">{{serviceDocument.attributes.cost | number:'.2':'ru'}}</th>
               </tr>
             </ng-container>

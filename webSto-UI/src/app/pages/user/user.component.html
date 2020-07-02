@@ -86,13 +86,21 @@
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="email">Email</label>
-                    <span id="email" class="form-control form-control-alternative">{{model.attributes.email}}</span>
+                    <span id="email" class="form-control form-control-alternative">
+                      <ng-container *ngIf="model.relationships.profile.data">
+                        {{model.relationships.profile.data.attributes.email}}
+                      </ng-container>
+                    </span>
                   </div>
                 </div>
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="phone">Телефон</label>
-                    <span id="phone" class="form-control form-control-alternative">{{model.attributes.phone}}</span>
+                    <span id="phone" class="form-control form-control-alternative">
+                      <ng-container *ngIf="model.relationships.profile.data">
+                        {{model.relationships.profile.data.attributes.phone}}
+                      </ng-container>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -121,12 +129,12 @@
                     {{model.attributes.balance | number : '.2' : 'ru'}} руб.
                   </span>
                   </div>
-                  <div class="col-lg-6" *ngIf="userService.isAdmin()">
-                    <label class="form-control-label">Тариф</label>
-                    <button class="btn btn-buro-blue btn-block" (click)="giftSubscription()">
-                      Выдать бесплатный тариф
-                    </button>
-                  </div>
+<!--                  <div class="col-lg-6" *ngIf="userService.isAdmin()">-->
+<!--                    <label class="form-control-label">Тариф</label>-->
+<!--                    <button class="btn btn-buro-blue btn-block" (click)="giftSubscription()">-->
+<!--                      Выдать бесплатный тариф-->
+<!--                    </button>-->
+<!--                  </div>-->
                 </div>
               </div>
             </ng-container>

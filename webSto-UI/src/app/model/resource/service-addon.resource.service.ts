@@ -12,7 +12,7 @@ export class ServiceAddonResource extends Resource {
   };
 
   public relationships = {
-    serviceDocument: new DocumentResource<ServiceDocumentResource>()
+    document: new DocumentResource<ServiceDocumentResource>()
   };
 }
 

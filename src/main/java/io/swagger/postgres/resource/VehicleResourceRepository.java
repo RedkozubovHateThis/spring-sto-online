@@ -43,6 +43,7 @@ public class VehicleResourceRepository implements ResourceRepository<Vehicle, Lo
 
     @Override
     public <S extends Vehicle> S create(S s) {
+        s.setDeleted(false);
         return save( s );
     }
 
