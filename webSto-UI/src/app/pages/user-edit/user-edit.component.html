@@ -81,20 +81,43 @@
             <hr class="my-4" />
             <!-- Address -->
             <h6 class="heading-small text-muted mb-4">Контактная информация</h6>
-            <div class="pl-lg-4" *ngIf="model != null">
+            <div class="pl-lg-4" *ngIf="model != null && model.relationships.profile.data">
               <div class="row">
                 <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-name">Полное имя</label>
+                    <input type="text" id="input-name" class="form-control form-control-alternative" placeholder="Полное имя"
+                           [(ngModel)]="model.relationships.profile.data.attributes.name" name="name">
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-address">Адрес</label>
+                    <input type="text" id="input-address" class="form-control form-control-alternative" placeholder="Адрес"
+                           [(ngModel)]="model.relationships.profile.data.attributes.address" name="address">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-4">
                   <div class="form-group">
                     <label class="form-control-label" for="input-email">Email</label>
                     <input type="text" id="input-email" class="form-control form-control-alternative" placeholder="Email (не обязательно к заполнению)"
                            [(ngModel)]="model.relationships.profile.data.attributes.email" name="email">
                   </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                   <div class="form-group">
                     <label class="form-control-label" for="input-phone">Телефон</label>
                     <input type="text" id="input-phone" class="form-control form-control-alternative" placeholder="Телефон"
                            [(ngModel)]="model.relationships.profile.data.attributes.phone" name="phone">
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-inn">ИНН</label>
+                    <input type="text" id="input-inn" class="form-control form-control-alternative" placeholder="ИНН"
+                           [(ngModel)]="model.relationships.profile.data.attributes.inn" name="inn">
                   </div>
                 </div>
               </div>

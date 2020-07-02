@@ -45,8 +45,16 @@
               <th>{{user.attributes.lastName}}</th>
               <th>{{user.attributes.firstName}}</th>
               <th>{{user.attributes.middleName}}</th>
-              <th>{{user.attributes.phone}}</th>
-              <th>{{user.attributes.email}}</th>
+              <th>
+                <ng-container *ngIf="user.relationships.profile.data">
+                  {{user.relationships.profile.data.attributes.phone}}
+                </ng-container>
+              </th>
+              <th>
+                <ng-container *ngIf="user.relationships.profile.data">
+                  {{user.relationships.profile.data.attributes.email}}
+                </ng-container>
+              </th>
               <th>
                 <span *ngFor="let userRole of user.relationships.roles.data">
                   {{userRole.attributes.nameRus}}&nbsp;
