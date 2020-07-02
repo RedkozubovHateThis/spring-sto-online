@@ -9,6 +9,7 @@ import {UserResource} from '../../model/resource/user.resource.service';
 import {DocumentCollection} from 'ngx-jsonapi';
 import {SubscriptionTypeResource} from '../../model/resource/subscription-type.resource.service';
 import {ProfileResourceService} from '../../model/resource/profile.resource.service';
+import {UserRoleResource, UserRoleResourceService} from '../../model/resource/user-role.resource.service';
 
 @Component({
   selector: 'app-user-edit',
@@ -18,13 +19,16 @@ import {ProfileResourceService} from '../../model/resource/profile.resource.serv
 export class UserEditComponent extends ModelTransfer<UserResource, string> implements OnInit {
 
   private isLoading = false;
+  private roles: DocumentCollection<UserRoleResource> = new DocumentCollection<UserRoleResource>();
+  private selectedRole: UserRoleResource;
+  private password = '';
+  private rePassword = '';
 
   private subscriptionTypes: DocumentCollection<SubscriptionTypeResource>;
   private isTypesLoading = false;
-  private vinNumber: string;
 
   constructor(private userService: UserService, protected route: ActivatedRoute, private location: Location,
-              private router: Router, private toastrService: ToastrService,
+              private router: Router, private toastrService: ToastrService, private userRoleResourceService: UserRoleResourceService,
               private paymentService: PaymentService, private profileResourceService: ProfileResourceService) {
     super(userService, route);
   }
@@ -61,6 +65,12 @@ export class UserEditComponent extends ModelTransfer<UserResource, string> imple
   onTransferComplete() {
     this.checkRelations();
     this.requestAllSubscriptionTypes();
+  }
+
+  setRole() {}
+
+  save() {
+    this.userService.saveUser( this.model, 'Пользователь успешно сохранен!' );
   }
 
 }

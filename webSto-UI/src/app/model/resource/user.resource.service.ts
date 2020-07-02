@@ -8,13 +8,13 @@ import {SubscriptionTypeResource} from './subscription-type.resource.service';
 export class UserResource extends Resource {
   public attributes = {
     username: null,
-    password: null,
+    rawPassword: null,
     firstName: null,
     lastName: null,
     middleName: null,
     fio: null,
-    enabled: null,
-    isAutoRegistered: null,
+    enabled: true,
+    isAutoRegistered: false,
     serviceWorkPrice: null,
     serviceGoodsCost: null,
     balance: null,

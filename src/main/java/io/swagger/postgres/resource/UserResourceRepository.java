@@ -9,6 +9,7 @@ import io.swagger.postgres.resourceProcessor.JsonApiListMeta;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -18,6 +19,9 @@ public class UserResourceRepository implements ResourceRepository<User, Long>, M
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder userPasswordEncoder;
 
     @Override
     public Class<User> getResourceClass() {
@@ -46,6 +50,9 @@ public class UserResourceRepository implements ResourceRepository<User, Long>, M
 
     @Override
     public <S extends User> S create(S s) {
+        s.setEnabled(true);
+        s.setIsAutoRegistered(false);
+        s.setPassword( userPasswordEncoder.encode( s.getRawPassword() ) );
         return save( s );
     }
 

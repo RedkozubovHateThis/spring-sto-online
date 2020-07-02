@@ -107,21 +107,21 @@
            *ngIf="userService.isAdmin()">
             <i class="fas fa-users text-buro-blue"></i> Пользователи
         </a>
-        <a routerLinkActive="active" [routerLink]="['/reports']" class="nav-link"
-           *ngIf="userService.isNotClient()">
-            <i class="fas fa-copy text-buro-blue"></i> Отчеты
-        </a>
-        <a routerLinkActive="active" [routerLink]="['/event-messages']" class="nav-link">
-          <i class="fas fa-bell text-buro-blue"></i> Уведомления
-        </a>
-        <a routerLinkActive="active" [routerLink]="['/balance']" class="nav-link"
-           *ngIf="userService.isServiceLeader()">
-          <i class="fas fa-ruble-sign text-buro-blue"></i> Баланс
-        </a>
-        <a routerLinkActive="active" [routerLink]="['/subscription']" class="nav-link"
-           *ngIf="userService.isServiceLeader() || userService.isAdmin()">
-          <i class="fas fa-book text-buro-blue"></i> Тарифы
-        </a>
+<!--        <a routerLinkActive="active" [routerLink]="['/reports']" class="nav-link"-->
+<!--           *ngIf="userService.isNotClient()">-->
+<!--            <i class="fas fa-copy text-buro-blue"></i> Отчеты-->
+<!--        </a>-->
+<!--        <a routerLinkActive="active" [routerLink]="['/event-messages']" class="nav-link">-->
+<!--          <i class="fas fa-bell text-buro-blue"></i> Уведомления-->
+<!--        </a>-->
+<!--        <a routerLinkActive="active" [routerLink]="['/balance']" class="nav-link"-->
+<!--           *ngIf="userService.isServiceLeader()">-->
+<!--          <i class="fas fa-ruble-sign text-buro-blue"></i> Баланс-->
+<!--        </a>-->
+<!--        <a routerLinkActive="active" [routerLink]="['/subscription']" class="nav-link"-->
+<!--           *ngIf="userService.isServiceLeader() || userService.isAdmin()">-->
+<!--          <i class="fas fa-book text-buro-blue"></i> Тарифы-->
+<!--        </a>-->
       </ul>
     </div>
   </div>

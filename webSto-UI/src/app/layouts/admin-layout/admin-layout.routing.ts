@@ -24,7 +24,7 @@ export const AdminLayoutRoutes: Routes = [
   { path: 'documents/:id',  component: DocumentComponent },
   { path: 'documents/:id/edit',  component: DocumentEditComponent },
   // { path: 'reports',        component: ReportsComponent },
-  { path: 'event-messages', component: EventMessagesComponent },
-  { path: 'balance',        component: BalanceComponent },
-  { path: 'subscription',   component: SubscriptionComponent }
+  // { path: 'event-messages', component: EventMessagesComponent },
+  // { path: 'balance',        component: BalanceComponent },
+  // { path: 'subscription',   component: SubscriptionComponent }
 ];

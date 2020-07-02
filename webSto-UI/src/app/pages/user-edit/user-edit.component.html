@@ -6,7 +6,7 @@
           <app-loading-bar [isLoading]="isLoading || userService.isSaving"></app-loading-bar>
           <div class="row align-items-center">
             <div class="col-md mb-3">
-              <h3 class="mb-0">Данные пользователя: редактирование</h3>
+              <h3 class="mb-0">Данные пользователя: {{model != null && model.is_new ? 'добалвение' : 'редактирование'}}</h3>
             </div>
             <div class="col-auto">
               <button class="btn btn-sm btn-buro-blue" [disabled]="userService.isSaving" (click)="location.back()">
@@ -14,10 +14,10 @@
               </button>
               <button class="btn btn-sm btn-buro-blue" [disabled]="userService.isSaving"
                       *ngIf="userService.isAdmin() || userService.isSameUser( model )"
-                      (click)="userService.saveUser( model, 'Пользователь успешно сохранен!' )">
+                      (click)="save()">
                 Сохранить
               </button>
-              <ng-container *ngIf="model != null">
+              <ng-container *ngIf="model != null && !model.is_new">
                 <app-role-change-button [model]="model" [currentUser]="userService.currentUser"
                                         (onRoleChange)="requestData()"
                                         *ngIf="( userService.isSameUser(model) && !userService.isAdmin() ) || userService.isAdmin()"></app-role-change-button>
@@ -34,7 +34,7 @@
                   <div class="form-group">
                     <label class="form-control-label" for="input-username">Логин</label>
                     <input type="text" id="input-username" class="form-control form-control-alternative" placeholder="Логин"
-                           disabled="true" [value]="model.attributes.username" name="username">
+                           [disabled]="!model.is_new" [(ngModel)]="model.attributes.username" name="username">
                   </div>
                 </div>
                 <div class="col-lg-6">
@@ -74,6 +74,22 @@
                     <label class="form-control-label" for="input-service-goods-cost">Наценка на з/ч, %</label>
                     <input type="number" step="0.1" min="0" id="input-service-goods-cost" class="form-control form-control-alternative" placeholder="Наценка на з/ч, %"
                            [(ngModel)]="model.attributes.serviceGoodsCost" name="serviceGoodsCost">
+                  </div>
+                </div>
+              </div>
+              <div class="row" *ngIf="model.is_new">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-password">Пароль</label>
+                    <input type="password" id="input-password" class="form-control form-control-alternative" placeholder="Пароль"
+                           [(ngModel)]="password" name="password">
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-re-password">Подтверждение пароля</label>
+                    <input type="password" id="input-re-password" class="form-control form-control-alternative" placeholder="Подтверждение пароля"
+                           [(ngModel)]="rePassword" name="rePassword">
                   </div>
                 </div>
               </div>
@@ -125,14 +141,28 @@
             <!-- Roles -->
             <h6 class="heading-small text-muted mb-4">Роли</h6>
             <div class="pl-lg-4" *ngIf="model != null">
-              <div class="row">
-                <div class="col-lg-6">
-                  <label class="form-control-label">Роль</label>
-                  <span class="form-control form-control-alternative" *ngFor="let role of model.relationships.roles.data">
+              <ng-container *ngIf="model.is_new; else roleName">
+                <div class="row">
+                  <div class="col-lg-6">
+                    <select id="role-select" class="form-control form-control-alternative" [ngModelOptions]="{standalone: true}"
+                            [(ngModel)]="selectedRole" (ngModelChange)="setRole()">
+                      <option *ngFor="let role of roles.data" [selected]="selectedRole != null && selectedRole.id === role.id" [ngValue]="role">
+                        {{role.attributes.nameRus}}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-template #roleName>
+                <div class="row">
+                  <div class="col-lg-6">
+                    <label class="form-control-label">Роль</label>
+                    <span class="form-control form-control-alternative" *ngFor="let role of model.relationships.roles.data">
                     {{role.attributes.nameRus}}
                   </span>
+                  </div>
                 </div>
-              </div>
+              </ng-template>
             </div>
 <!--            <ng-container *ngIf="userService.isSameUser( model ) && model.attributes.userServiceLeader">-->
 <!--              <hr class="my-4" />-->

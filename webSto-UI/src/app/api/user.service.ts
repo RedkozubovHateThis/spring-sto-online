@@ -213,15 +213,16 @@ export class UserService implements TransferService<UserResource>, RestService<U
     return this.http.get(`${this.getApiUrl()}oauth/demo/register`);
   }
 
-  saveUser(user: UserResource, message: string) {
+  saveUser(user: UserResource, message: string, router?: Router) {
 
     const headers = this.getHeaders();
     this.isSaving = true;
+    const isNew = user.is_new;
 
     const profile = user.relationships.profile.data;
 
     profile.save().subscribe( (savedProfile) => {
-      user.save().subscribe(savedUser => {
+      user.save().subscribe((savedUser) => {
         this.isSaving = false;
 
         if ( this.currentUser != null && this.currentUser.id === user.id )
@@ -229,6 +230,8 @@ export class UserService implements TransferService<UserResource>, RestService<U
 
         this.isSaving = false;
         this.toastrService.success(message);
+        if ( isNew )
+          this.router.navigate(['/users', user.id, 'edit']);
       }, () => {
         this.isSaving = false;
         this.toastrService.error('Ошибка сохранения пользователя!', 'Внимание!');

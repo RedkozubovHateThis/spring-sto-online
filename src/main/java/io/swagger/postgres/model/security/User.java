@@ -40,6 +40,8 @@ public class User extends BaseEntity implements UserDetails, Serializable {
     private String username;
     @JsonIgnore
     private String password;
+    @Transient
+    private String rawPassword;
     private String firstName;
     private String lastName;
     private String middleName;
@@ -153,13 +155,6 @@ public class User extends BaseEntity implements UserDetails, Serializable {
     @JsonProperty
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public Long getCurrentSubscriptionId() {
-        if ( currentSubscription != null )
-            return currentSubscription.getId();
-
-        return null;
     }
 
     public Double getBalance() {

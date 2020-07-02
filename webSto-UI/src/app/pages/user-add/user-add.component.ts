@@ -4,89 +4,101 @@ import {Location} from '@angular/common';
 import {Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {DocumentCollection} from 'ngx-jsonapi';
+import {UserRoleResource, UserRoleResourceService} from '../../model/resource/user-role.resource.service';
+import {UserResource, UserResourceService} from '../../model/resource/user.resource.service';
+import {ProfileResourceService} from '../../model/resource/profile.resource.service';
 
 @Component({
   selector: 'app-user-add',
-  templateUrl: './user-add.component.html',
-  styleUrls: ['./user-add.component.scss']
+  templateUrl: '../user-edit/user-edit.component.html',
+  styleUrls: ['../user-edit/user-edit.component.scss']
 })
 export class UserAddComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder, private userService: UserService, private location: Location, private router: Router,
-              private toastrService: ToastrService) {}
-
-  private addForm: FormGroup = this.formBuilder.group({
-    email: [null],
-    inn: [''],
-    phone: ['', Validators.required],
-    password: ['', Validators.required],
-    rePassword: ['', Validators.required],
-    firstName: ['', Validators.required],
-    lastName: ['', Validators.required],
-    middleName: ['', Validators.required],
-    username: [''],
-    serviceWorkPrice: [null],
-    serviceGoodsCost: [null],
-    selectedRole: [null, Validators.required]
-  });
-  private isRegistering: boolean = false;
-  private roles = [
-    { name: 'Администратор', id: 'ADMIN' },
-    { name: 'Автосервис', id: 'SERVICE_LEADER' }
-  ];
-
-  ngOnInit() {
+              private toastrService: ToastrService, private userResourceService: UserResourceService,
+              private userRoleResourceService: UserRoleResourceService, private profileResourceService: ProfileResourceService) {
+    this.model = userResourceService.new();
+    this.model.addRelationship( profileResourceService.new(), 'profile' );
   }
 
-  resetNotSharedFields() {
-    const selectedRole = this.addForm.controls.selectedRole.value;
+  private roles: DocumentCollection<UserRoleResource> = new DocumentCollection<UserRoleResource>();
+  private password = '';
+  private rePassword = '';
+  private model: UserResource;
+  private selectedRole: UserRoleResource;
 
-    if ( selectedRole == null ) return;
+  ngOnInit() {
+    this.requestRoles();
+  }
 
-    if ( selectedRole !== 'SERVICE_LEADER' ) {
-      this.addForm.controls.serviceWorkPrice.setValue(null);
-      this.addForm.controls.serviceGoodsCost.setValue(null);
-      this.addForm.controls.inn.setValue(null);
+  requestRoles() {
+    this.userRoleResourceService.all().subscribe( (roles) => {
+      this.roles = roles;
+    } );
+  }
+
+  setRole() {
+    if ( this.selectedRole ) {
+      this.model.addRelationships( [ this.selectedRole ], 'roles' );
     }
   }
 
-  onSubmit() {
-
-    if ( this.addForm.invalid ) return;
-
-    if ( this.addForm.controls.selectedRole.value == null ) {
+  save() {
+    if ( this.model.relationships.roles.data.length === 0 ) {
       this.showError( 'Необходимо выбрать роль!' );
       return;
     }
-
-    if ( this.addForm.controls.password.value.length < 6 || this.addForm.controls.rePassword.value.length < 6 ) {
+    if ( this.password.length < 6 || this.rePassword.length < 6 ) {
       this.showError( 'Пароль не может содержать менее 6 символов!' );
       return;
     }
-
-    if ( this.addForm.controls.password.value !== this.addForm.controls.rePassword.value ) {
+    if ( this.password !== this.rePassword ) {
       this.showError( 'Пароли не совпадают!' );
       return;
     }
-
-    this.isRegistering = true;
-
-    this.userService.createUser(this.addForm.value, this.addForm.controls.selectedRole.value)
-      .subscribe( data => {
-        this.isRegistering = false;
-        this.router.navigate(['users']);
-        this.toastrService.success('Пользователь успешно добавлен!');
-      }, error => {
-        this.isRegistering = false;
-        if ( error.status === 400 ) {
-          this.showError(error.error);
-        }
-        else {
-          this.showError('Ошибка регистрации пользователя!');
-        }
-      } );
+    this.model.attributes.rawPassword = this.password;
+    this.userService.saveUser( this.model, 'Пользователь успешно сохранен!' );
   }
 
+  // onSubmit() {
+  //
+  //   if ( this.addForm.invalid ) return;
+  //
+  //   if ( this.addForm.controls.selectedRole.value == null ) {
+  //     this.showError( 'Необходимо выбрать роль!' );
+  //     return;
+  //   }
+  //
+  //   if ( this.addForm.controls.password.value.length < 6 || this.addForm.controls.rePassword.value.length < 6 ) {
+  //     this.showError( 'Пароль не может содержать менее 6 символов!' );
+  //     return;
+  //   }
+  //
+  //   if ( this.addForm.controls.password.value !== this.addForm.controls.rePassword.value ) {
+  //     this.showError( 'Пароли не совпадают!' );
+  //     return;
+  //   }
+  //
+  //   this.isRegistering = true;
+  //
+  //   this.userService.createUser(this.addForm.value, this.addForm.controls.selectedRole.value)
+  //     .subscribe( data => {
+  //       this.isRegistering = false;
+  //       this.router.navigate(['users']);
+  //       this.toastrService.success('Пользователь успешно добавлен!');
+  //     }, error => {
+  //       this.isRegistering = false;
+  //       if ( error.status === 400 ) {
+  //         this.showError(error.error);
+  //       }
+  //       else {
+  //         this.showError('Ошибка регистрации пользователя!');
+  //       }
+  //     } );
+  // }
+  //
   showError(messageText) {
     this.toastrService.error(messageText, 'Внимание!');
   }
