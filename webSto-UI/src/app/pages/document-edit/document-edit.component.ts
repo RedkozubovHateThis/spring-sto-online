@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ModelTransfer} from '../model.transfer';
 import {UserService} from '../../api/user.service';
@@ -16,6 +16,9 @@ import {DocumentCollection} from 'ngx-jsonapi';
 import {ServiceWorkService} from '../../api/service-work.service';
 import {ServiceAddonService} from '../../api/service-addon.service';
 import {ProfileResource, ProfileResourceService} from '../../model/resource/profile.resource.service';
+import {VehicleService} from '../../api/vehicle.service';
+import {ProfileService} from '../../api/profile.service';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-document-edit',
@@ -23,6 +26,11 @@ import {ProfileResource, ProfileResourceService} from '../../model/resource/prof
   styleUrls: ['./document-edit.component.scss']
 })
 export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource, string> implements OnInit {
+
+  @ViewChild('clientModal', {static: false}) private clientModal;
+  @ViewChild('vehicleModal', {static: false}) private vehicleModal;
+  private vinSearch = '';
+  private phoneOrEmailSearch = '';
 
   private vehicleEdit = false;
   private clientEdit = false;
@@ -41,15 +49,17 @@ export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource
   };
   private serviceWorks: DocumentCollection<ServiceWorkResource> = new DocumentCollection<ServiceWorkResource>();
   private serviceAddons: DocumentCollection<ServiceAddonResource> = new DocumentCollection<ServiceAddonResource>();
+  private vehicles: DocumentCollection<VehicleResource> = new DocumentCollection<VehicleResource>();
+  private clients: DocumentCollection<ProfileResource> = new DocumentCollection<ProfileResource>();
 
   constructor(private documentService: DocumentService, protected route: ActivatedRoute, private toastrService: ToastrService,
               private userService: UserService, private httpClient: HttpClient,
               private location: Location, private serviceWorkResourceService: ServiceWorkResourceService,
-              private serviceAddonResourceService: ServiceAddonResourceService,
-              private vehicleResourceService: VehicleResourceService,
+              private serviceAddonResourceService: ServiceAddonResourceService, private vehicleService: VehicleService,
+              private vehicleResourceService: VehicleResourceService, private profileService: ProfileService,
               private vehicleMileageResourceService: VehicleMileageResourceService,
               private serviceWorkService: ServiceWorkService, private profileResourceService: ProfileResourceService,
-              private serviceAddonService: ServiceAddonService) {
+              private serviceAddonService: ServiceAddonService, private modalService: NgbModal) {
     super(documentService, route);
   }
 
@@ -61,7 +71,6 @@ export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource
       this.checkRelations();
       this.requestRelations();
       this.setDates();
-      this.requestPreviousVehicles();
     }, error => {
       this.isLoading = false;
     } );
@@ -71,7 +80,6 @@ export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource
     this.checkRelations();
     this.requestRelations();
     this.setDates();
-    this.requestPreviousVehicles();
   }
 
   checkRelations() {
@@ -90,12 +98,6 @@ export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource
     this.serviceAddonService.getAll(this.model.id).subscribe( (data) => {
       this.serviceAddons = data;
     } );
-  }
-
-  requestPreviousVehicles() {
-    this.documentService.getPreviousVehicles().subscribe((response) => {
-      console.log(response);
-    });
   }
 
   setDates() {
@@ -128,14 +130,18 @@ export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource
 
   save() {
     this.isSaving = true;
-    this.documentService.saveVehicle( this.model ).subscribe( (savedVehicle) => {
-      this.documentService.saveVehicleMileage( this.model ).subscribe( (savedVehicleMileage) => {
-        this.documentService.saveServiceDocument(this.model).subscribe( (savedModel) => {
-          this.documentService.saveServiceWorks( this.model, this.serviceWorks );
-          this.documentService.saveServiceAddons( this.model, this.serviceAddons );
-          this.model = savedModel;
-          this.isSaving = false;
-          this.toastrService.success('Документ успешно сохранен!');
+    this.profileService.saveClientProfile( this.model ).subscribe( (savedClient) => {
+      this.profileService.saveExecutorProfile( this.model ).subscribe( (savedExecutor) => {
+        this.vehicleService.saveVehicle( this.model ).subscribe( (savedVehicle) => {
+          this.vehicleService.saveVehicleMileage( this.model ).subscribe( (savedVehicleMileage) => {
+            this.documentService.saveServiceDocument(this.model).subscribe( (savedModel) => {
+              this.serviceWorkService.saveServiceWorks( this.model, this.serviceWorks );
+              this.serviceAddonService.saveServiceAddons( this.model, this.serviceAddons );
+              this.model = savedModel;
+              this.isSaving = false;
+              this.toastrService.success('Документ успешно сохранен!');
+            } );
+          } );
         } );
       } );
     } );
@@ -150,5 +156,39 @@ export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource
     const profile: ProfileResource = this.profileResourceService.new();
     this.model.addRelationship( profile, 'client' );
     this.clientRegister = true;
+  }
+
+  openClientsModal() {
+    this.modalService.open(this.clientModal, { size: 'lg' });
+  }
+
+  openVehiclesModal() {
+    this.modalService.open(this.vehicleModal, { size: 'lg' });
+  }
+
+  searchClients() {
+    if ( !this.phoneOrEmailSearch ) return;
+
+    this.profileService.findByPhoneOrEmail( this.phoneOrEmailSearch ).subscribe( (clients) => {
+      this.clients = clients;
+    } );
+  }
+
+  searchVehicles() {
+    if ( !this.vinSearch ) return;
+
+    this.vehicleService.findByVin( this.vinSearch ).subscribe( (vehicles) => {
+      this.vehicles = vehicles;
+    } );
+  }
+
+  setVehicle(vehicle: VehicleResource) {
+    this.model.addRelationship(vehicle, 'vehicle');
+    this.modalService.dismissAll();
+  }
+
+  setClient(client: ProfileResource) {
+    this.model.addRelationship(client, 'client');
+    this.modalService.dismissAll();
   }
 }

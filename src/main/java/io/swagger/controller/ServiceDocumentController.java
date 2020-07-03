@@ -23,33 +23,5 @@ public class ServiceDocumentController {
 
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private VehicleRepository vehicleRepository;
-    @Autowired
-    private VehicleResourceProcessor vehicleResourceProcessor;
-
-    @GetMapping("/previousVehicles")
-    public ResponseEntity getTest() throws Exception {
-        User currentUser = userRepository.findCurrentUser();
-
-        if ( !UserHelper.isAdmin( currentUser ) && !UserHelper.isServiceLeader( currentUser ) )
-            return ResponseEntity.notFound().build();
-
-        List<Vehicle> previousVehicles;
-
-        if ( UserHelper.isAdmin( currentUser ) )
-            previousVehicles = vehicleRepository.findAll();
-        else
-            previousVehicles = vehicleRepository.findPreviousVehicles( currentUser.getId() );
-
-        return ResponseEntity.ok(
-                vehicleResourceProcessor.toResourceList(
-                        previousVehicles,
-                        null,
-                        (long) previousVehicles.size(),
-                        null
-                )
-        );
-    }
 
 }

@@ -185,7 +185,6 @@ export class UserService implements TransferService<UserResource>, RestService<U
 
     const headers = this.getHeaders();
 
-    console.log('REQUESTING CURRENT USER!');
     this.userResourceService.get('currentUser', {
       beforepath: 'external'
     }).subscribe((result) => {

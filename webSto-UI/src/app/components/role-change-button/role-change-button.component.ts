@@ -48,7 +48,7 @@ export class RoleChangeButtonComponent implements OnInit {
       .set('role', this.selectedRole);
 
     this.isChanging = true;
-    this.httpClient.post(`${this.userService.getApiUrl()}users/${this.model.id}/role/change`,
+    this.httpClient.post(`${this.userService.getApiUrl()}external/users/${this.model.id}/role/change`,
       body, {headers} ).subscribe( response => {
       this.isChanging = false;
       this.onRoleChange.emit();

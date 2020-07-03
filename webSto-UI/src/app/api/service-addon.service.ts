@@ -30,6 +30,15 @@ export class ServiceAddonService implements RestService<ServiceAddonResource> {
     });
   }
 
+  saveServiceAddons(serviceDocument: ServiceDocumentResource, serviceAddons: DocumentCollection<ServiceAddonResource>): void {
+    serviceAddons.data.forEach( (serviceAddon) => {
+      serviceAddon.addRelationship(serviceDocument, 'document');
+      serviceAddon.save().subscribe( (saved: IDocumentResource) => {
+        serviceAddon.fill( saved );
+      } );
+    } );
+  }
+
   delete(model: ServiceAddonResource): Observable<void> {
     return model.delete();
   }

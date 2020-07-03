@@ -38,7 +38,7 @@ export class PasswordChangeButtonComponent implements OnInit {
       .set('rePassword', this.rePassword);
 
     this.isChanging = true;
-    this.httpClient.post(`${this.userService.getApiUrl()}users/${this.model.id}/password/change`,
+    this.httpClient.post(`${this.userService.getApiUrl()}external/users/${this.model.id}/password/change`,
       body, {headers} ).subscribe( response => {
       this.isChanging = false;
 

@@ -87,7 +87,13 @@
                     >
                       <i class="fas fa-file"></i>
                     </button>
-                    <button class="btn btn-sn btn-buro-blue" title="Поиск"><i class="fas fa-search"></i></button>
+                    <button
+                      class="btn btn-sn btn-buro-blue"
+                      title="Поиск"
+                      (click)="openVehiclesModal()"
+                    >
+                      <i class="fas fa-search"></i>
+                    </button>
                     <button
                       class="btn btn-sn btn-buro-blue"
                       [class.active]="vehicleEdit"
@@ -171,7 +177,13 @@
                     >
                       <i class="fas fa-file"></i>
                     </button>
-                    <button class="btn btn-sn btn-buro-blue" title="Поиск"><i class="fas fa-search"></i></button>
+                    <button
+                      class="btn btn-sn btn-buro-blue"
+                      title="Поиск"
+                      (click)="openClientsModal()"
+                    >
+                      <i class="fas fa-search"></i>
+                    </button>
                     <button
                       class="btn btn-sn btn-buro-blue"
                       [class.active]="clientEdit"
@@ -407,3 +419,123 @@
     </div>
   </div>
 </div>
+
+<ng-template #clientModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">Поиск клиентов</h3>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row form-group">
+      <div class="col">
+        <div class="input-group input-group-alternative input-group-sm">
+          <input id="client-select-ahead" type="text" placeholder="Введите телефон или email"
+                 class="form-control form-control-sm" [(ngModel)]="phoneOrEmailSearch" (keyup.enter)="searchClients()"/>
+          <div class="input-group-append">
+            <button class="btn btn-buro-blue" type="button" (click)="searchClients()" [disabled]="!phoneOrEmailSearch">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <table class="table align-items-center table-flush table-hover table-sm">
+          <thead class="thead-light">
+            <tr>
+              <th scope="col">Полное имя</th>
+              <th scope="col">Телефон</th>
+              <th scope="col">Почта</th>
+              <th scope="col">Адрес</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let client of clients.data">
+              <tr style="cursor: pointer;" (click)="setClient(client)">
+                <td>
+                  {{client.attributes.name}}
+                </td>
+                <td>
+                  {{client.attributes.phone}}
+                </td>
+                <td>
+                  {{client.attributes.email}}
+                </td>
+                <td>
+                  {{client.attributes.address}}
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-buro-blue" (click)="modal.dismiss()">Закрыть</button>
+  </div>
+</ng-template>
+
+<ng-template #vehicleModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">Поиск автомобилей</h3>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row form-group">
+      <div class="col">
+        <div class="input-group input-group-alternative input-group-sm">
+          <input id="vehicle-select-ahead" type="text" placeholder="Введите VIN-номер"
+                 class="form-control form-control-sm" [(ngModel)]="vinSearch" (keyup.enter)="searchVehicles()"/>
+          <div class="input-group-append">
+            <button class="btn btn-buro-blue" type="button" (click)="searchVehicles()" [disabled]="!vinSearch">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <table class="table align-items-center table-flush table-hover table-sm">
+          <thead class="thead-light">
+          <tr>
+            <th scope="col">Марка/модель</th>
+            <th scope="col">Рег. номер</th>
+            <th scope="col">VIN-номер</th>
+            <th scope="col">Год выпуска</th>
+          </tr>
+          </thead>
+          <tbody>
+          <ng-container *ngFor="let vehicle of vehicles.data">
+            <tr style="cursor: pointer;" (click)="setVehicle(vehicle)">
+              <td>
+                {{vehicle.attributes.modelName}}
+              </td>
+              <td>
+                {{vehicle.attributes.regNumber}}
+              </td>
+              <td>
+                {{vehicle.attributes.vinNumber}}
+              </td>
+              <td>
+                {{vehicle.attributes.year}}
+              </td>
+            </tr>
+          </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-buro-blue" (click)="modal.dismiss()">Закрыть</button>
+  </div>
+</ng-template>

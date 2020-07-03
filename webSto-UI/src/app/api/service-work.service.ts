@@ -30,6 +30,15 @@ export class ServiceWorkService implements RestService<ServiceWorkResource> {
     });
   }
 
+  saveServiceWorks(serviceDocument: ServiceDocumentResource, serviceWorks: DocumentCollection<ServiceWorkResource>): void {
+    serviceWorks.data.forEach( (serviceWork) => {
+      serviceWork.addRelationship(serviceDocument, 'document');
+      serviceWork.save().subscribe( (saved: IDocumentResource) => {
+        serviceWork.fill( saved );
+      } );
+    } );
+  }
+
   delete(model: ServiceWorkResource): Observable<void> {
     return model.delete();
   }

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ModelTransfer} from '../model.transfer';
 import {UserService} from '../../api/user.service';
@@ -15,6 +15,10 @@ import {VehicleMileageResourceService} from '../../model/resource/vehicle-mileag
 import {DocumentCollection} from 'ngx-jsonapi';
 import {ProfileResource, ProfileResourceService} from '../../model/resource/profile.resource.service';
 import {ServiceWorkService} from '../../api/service-work.service';
+import {VehicleService} from '../../api/vehicle.service';
+import {ProfileService} from '../../api/profile.service';
+import {ServiceAddonService} from '../../api/service-addon.service';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-document-add',
@@ -22,6 +26,11 @@ import {ServiceWorkService} from '../../api/service-work.service';
   styleUrls: ['../document-edit/document-edit.component.scss']
 })
 export class DocumentAddComponent implements OnInit {
+
+  @ViewChild('clientModal', {static: false}) private clientModal;
+  @ViewChild('vehicleModal', {static: false}) private vehicleModal;
+  private vinSearch = '';
+  private phoneOrEmailSearch = '';
 
   private vehicleEdit = false;
   private clientEdit = false;
@@ -40,14 +49,17 @@ export class DocumentAddComponent implements OnInit {
   };
   private serviceWorks: DocumentCollection<ServiceWorkResource> = new DocumentCollection<ServiceWorkResource>();
   private serviceAddons: DocumentCollection<ServiceAddonResource> = new DocumentCollection<ServiceAddonResource>();
+  private vehicles: DocumentCollection<VehicleResource> = new DocumentCollection<VehicleResource>();
+  private clients: DocumentCollection<ProfileResource> = new DocumentCollection<ProfileResource>();
 
   constructor(private documentService: DocumentService, protected route: ActivatedRoute, private toastrService: ToastrService,
               private userService: UserService, private httpClient: HttpClient, private router: Router,
               private location: Location, private serviceDocumentResourceService: ServiceDocumentResourceService,
-              private serviceWorkResourceService: ServiceWorkResourceService,
-              private serviceAddonResourceService: ServiceAddonResourceService,
+              private serviceWorkResourceService: ServiceWorkResourceService, private vehicleService: VehicleService,
+              private serviceAddonResourceService: ServiceAddonResourceService, private profileService: ProfileService,
               private vehicleResourceService: VehicleResourceService, private profileResourceService: ProfileResourceService,
-              private vehicleMileageResourceService: VehicleMileageResourceService) {
+              private vehicleMileageResourceService: VehicleMileageResourceService, private serviceWorkService: ServiceWorkService,
+              private serviceAddonService: ServiceAddonService, private modalService: NgbModal) {
     this.model = serviceDocumentResourceService.new();
     this.model.attributes.startDate = new Date().getTime();
     this.model.attributes.status = 'CREATED';
@@ -59,13 +71,6 @@ export class DocumentAddComponent implements OnInit {
 
   ngOnInit(): void {
     this.setDates();
-    this.requestPreviousVehicles();
-  }
-
-  requestPreviousVehicles() {
-    this.documentService.getPreviousVehicles().subscribe((response) => {
-      console.log(response);
-    });
   }
 
   setDates() {
@@ -95,15 +100,19 @@ export class DocumentAddComponent implements OnInit {
 
   save() {
     this.isSaving = true;
-    this.documentService.saveVehicle( this.model ).subscribe( (savedVehicle) => {
-      this.documentService.saveVehicleMileage( this.model ).subscribe( (savedVehicleMileage) => {
-        this.documentService.saveServiceDocument(this.model).subscribe( (savedModel) => {
-          this.documentService.saveServiceWorks( this.model, this.serviceWorks );
-          this.documentService.saveServiceAddons( this.model, this.serviceAddons );
-          this.model = savedModel;
-          this.isSaving = false;
-          this.toastrService.success('Документ успешно сохранен!');
-          this.router.navigate(['documents', this.model.id, 'edit']);
+    this.profileService.saveClientProfile( this.model ).subscribe( (savedClient) => {
+      this.profileService.saveExecutorProfile( this.model ).subscribe( (savedExecutor) => {
+        this.vehicleService.saveVehicle( this.model ).subscribe( (savedVehicle) => {
+          this.vehicleService.saveVehicleMileage( this.model ).subscribe( (savedVehicleMileage) => {
+            this.documentService.saveServiceDocument(this.model).subscribe( (savedModel) => {
+              this.serviceWorkService.saveServiceWorks( this.model, this.serviceWorks );
+              this.serviceAddonService.saveServiceAddons( this.model, this.serviceAddons );
+              this.model = savedModel;
+              this.isSaving = false;
+              this.toastrService.success('Документ успешно сохранен!');
+              this.router.navigate(['documents', this.model.id, 'edit']);
+            } );
+          } );
         } );
       } );
     } );
@@ -118,5 +127,39 @@ export class DocumentAddComponent implements OnInit {
     const profile: ProfileResource = this.profileResourceService.new();
     this.model.addRelationship( profile, 'client' );
     this.clientRegister = true;
+  }
+
+  openClientsModal() {
+    this.modalService.open(this.clientModal, { size: 'lg' });
+  }
+
+  openVehiclesModal() {
+    this.modalService.open(this.vehicleModal, { size: 'lg' });
+  }
+
+  searchClients() {
+    if ( !this.phoneOrEmailSearch ) return;
+
+    this.profileService.findByPhoneOrEmail( this.phoneOrEmailSearch ).subscribe( (clients) => {
+      this.clients = clients;
+    } );
+  }
+
+  searchVehicles() {
+    if ( !this.vinSearch ) return;
+
+    this.vehicleService.findByVin( this.vinSearch ).subscribe( (vehicles) => {
+      this.vehicles = vehicles;
+    } );
+  }
+
+  setVehicle(vehicle: VehicleResource) {
+    this.model.addRelationship(vehicle, 'vehicle');
+    this.modalService.dismissAll();
+  }
+
+  setClient(client: ProfileResource) {
+    this.model.addRelationship(client, 'client');
+    this.modalService.dismissAll();
   }
 }

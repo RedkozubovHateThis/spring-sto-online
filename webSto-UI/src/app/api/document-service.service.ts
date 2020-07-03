@@ -53,80 +53,11 @@ export class DocumentService implements TransferService<ServiceDocumentResource>
     return this.serviceDocumentResourceService.get(id);
   }
 
-
-
-
-  getPreviousVehicles(): Observable<DocumentCollection<VehicleResource>> {
-    return new Observable<DocumentCollection<VehicleResource>>( (subscriber) => {
-      this.http.get<IDataCollection>(`${this.userService.getApiUrl()}external/serviceDocuments/previousVehicles`).subscribe( (response) => {
-        const collection = new DocumentCollection<VehicleResource>();
-        collection.fill( response );
-        subscriber.next( collection );
-        subscriber.complete();
-      }, ( error ) => {
-        subscriber.error( error );
-        subscriber.complete();
-      });
-    });
-  }
-
   saveServiceDocument(model: ServiceDocumentResource): Observable<ServiceDocumentResource> {
     return new Observable<ServiceDocumentResource>( (subscriber) => {
       model.save().subscribe( (data: IDocumentResource) => {
         model.fill(data);
         subscriber.next(model);
-        subscriber.complete();
-      }, ( error ) => {
-        subscriber.error( error );
-        subscriber.complete();
-      } );
-    } );
-  }
-
-  saveServiceWorks(serviceDocument: ServiceDocumentResource, serviceWorks: DocumentCollection<ServiceWorkResource>): void {
-    serviceWorks.data.forEach( (serviceWork) => {
-      serviceWork.addRelationship(serviceDocument, 'document');
-      serviceWork.save().subscribe( (saved: IDocumentResource) => {
-        serviceWork.fill( saved );
-      } );
-    } );
-  }
-
-  saveServiceAddons(serviceDocument: ServiceDocumentResource, serviceAddons: DocumentCollection<ServiceAddonResource>): void {
-    serviceAddons.data.forEach( (serviceAddon) => {
-      serviceAddon.addRelationship(serviceDocument, 'document');
-      serviceAddon.save().subscribe( (saved: IDocumentResource) => {
-        serviceAddon.fill( saved );
-      } );
-    } );
-  }
-
-  saveVehicle(serviceDocument: ServiceDocumentResource): Observable<VehicleResource> {
-    return new Observable<VehicleResource>( (subscriber) => {
-      const vehicle: VehicleResource = serviceDocument.relationships.vehicle.data;
-
-      vehicle.save().subscribe( (saved: IDocumentResource) => {
-        vehicle.fill( saved );
-        subscriber.next(vehicle);
-        subscriber.complete();
-      }, ( error ) => {
-        subscriber.error( error );
-        subscriber.complete();
-      } );
-    } );
-  }
-
-  saveVehicleMileage(serviceDocument: ServiceDocumentResource): Observable<VehicleMileageResource> {
-    return new Observable<VehicleMileageResource>( (subscriber) => {
-      const vehicle: VehicleResource = serviceDocument.relationships.vehicle.data;
-      const vehicleMileage: VehicleMileageResource = serviceDocument.relationships.vehicleMileage.data;
-
-      vehicleMileage.addRelationship(serviceDocument, 'document');
-      vehicleMileage.addRelationship(vehicle, 'vehicle');
-
-      vehicleMileage.save().subscribe( (saved: IDocumentResource) => {
-        vehicleMileage.fill( saved );
-        subscriber.next( vehicleMileage );
         subscriber.complete();
       }, ( error ) => {
         subscriber.error( error );
