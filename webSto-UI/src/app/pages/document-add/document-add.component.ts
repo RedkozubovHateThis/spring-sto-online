@@ -13,6 +13,8 @@ import {ServiceWorkResource, ServiceWorkResourceService} from '../../model/resou
 import {ServiceAddonResource, ServiceAddonResourceService} from '../../model/resource/service-addon.resource.service';
 import {VehicleMileageResourceService} from '../../model/resource/vehicle-mileage.resource.service';
 import {DocumentCollection} from 'ngx-jsonapi';
+import {ProfileResource, ProfileResourceService} from '../../model/resource/profile.resource.service';
+import {ServiceWorkService} from '../../api/service-work.service';
 
 @Component({
   selector: 'app-document-add',
@@ -21,6 +23,9 @@ import {DocumentCollection} from 'ngx-jsonapi';
 })
 export class DocumentAddComponent implements OnInit {
 
+  private vehicleEdit = false;
+  private clientEdit = false;
+  private clientRegister = false;
   private isSaving = false;
   protected model: ServiceDocumentResource;
   private startDate: moment.Moment;
@@ -41,7 +46,7 @@ export class DocumentAddComponent implements OnInit {
               private location: Location, private serviceDocumentResourceService: ServiceDocumentResourceService,
               private serviceWorkResourceService: ServiceWorkResourceService,
               private serviceAddonResourceService: ServiceAddonResourceService,
-              private vehicleResourceService: VehicleResourceService,
+              private vehicleResourceService: VehicleResourceService, private profileResourceService: ProfileResourceService,
               private vehicleMileageResourceService: VehicleMileageResourceService) {
     this.model = serviceDocumentResourceService.new();
     this.model.attributes.startDate = new Date().getTime();
@@ -102,5 +107,16 @@ export class DocumentAddComponent implements OnInit {
         } );
       } );
     } );
+  }
+
+  newVehicle() {
+    const vehicle: VehicleResource = this.vehicleResourceService.new();
+    this.model.addRelationship( vehicle, 'vehicle' );
+  }
+
+  newClient() {
+    const profile: ProfileResource = this.profileResourceService.new();
+    this.model.addRelationship( profile, 'client' );
+    this.clientRegister = true;
   }
 }

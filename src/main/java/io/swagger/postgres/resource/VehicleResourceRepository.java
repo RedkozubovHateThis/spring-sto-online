@@ -1,5 +1,6 @@
 package io.swagger.postgres.resource;
 
+import io.crnk.core.exception.BadRequestException;
 import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepository;
 import io.crnk.core.resource.list.ResourceList;
@@ -38,6 +39,12 @@ public class VehicleResourceRepository implements ResourceRepository<Vehicle, Lo
 
     @Override
     public <S extends Vehicle> S save(S s) {
+        if ( s.getVinNumber() == null || s.getVinNumber().length() == 0 )
+            throw new BadRequestException("VIN-номер не может быть пустым!");
+        if ( s.getModelName() == null || s.getModelName().length() == 0 )
+            throw new BadRequestException("Марка/модель не может быть пустой!");
+
+        prepareVinNumber(s);
         return vehicleRepository.save( s );
     }
 
@@ -49,5 +56,14 @@ public class VehicleResourceRepository implements ResourceRepository<Vehicle, Lo
 
     @Override
     public void delete(Long aLong) {
+    }
+
+    private void prepareVinNumber(Vehicle vehicle) {
+        String vinNumber = vehicle.getVinNumber();
+        vinNumber = vinNumber.trim();
+        vinNumber = vinNumber.toUpperCase();
+        vinNumber = vinNumber.replaceAll(" ", "");
+
+        vehicle.setVinNumber( vinNumber );
     }
 }

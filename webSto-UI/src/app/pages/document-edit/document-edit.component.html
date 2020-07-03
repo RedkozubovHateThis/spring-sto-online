@@ -28,6 +28,8 @@
 
             <div class="col-md-4 mb-3">
 
+              <h3>Заказ-наряд</h3>
+
               <div class="row form-group">
                 <div class="col-lg-12">
                   <label class="form-control-label" for="number-input">Номер заказ-наряда</label>
@@ -71,45 +73,162 @@
 
             <div class="col-md-4 mb-3">
 
-              <div class="row form-group">
-                <div class="col-lg-12">
-                  <label class="form-control-label" for="model-input">Марка/модель автомобиля</label>
-                  <input class="form-control form-control-sm form-control-alternative" id="model-input"
-                         [(ngModel)]="model.relationships.vehicle.data.attributes.modelName" placeholder="Марка/модель автомобиля">
+              <div class="row">
+                <div class="col-md">
+                  <h3>Автомобиль</h3>
+                </div>
+                <div class="col-md-auto">
+                  <div class="btn-group btn-group-sm">
+                    <button
+                      class="btn btn-sn btn-buro-blue"
+                      title="Новый"
+                      (click)="newVehicle()"
+                      [disabled]="model.relationships.vehicle.data && model.relationships.vehicle.data.is_new"
+                    >
+                      <i class="fas fa-file"></i>
+                    </button>
+                    <button class="btn btn-sn btn-buro-blue" title="Поиск"><i class="fas fa-search"></i></button>
+                    <button
+                      class="btn btn-sn btn-buro-blue"
+                      [class.active]="vehicleEdit"
+                      title="Редактировать"
+                      (click)="vehicleEdit = !vehicleEdit"
+                      [disabled]="!model.relationships.vehicle.data || model.relationships.vehicle.data.is_new"
+                    >
+                      <i class="fas fa-edit"></i>
+                    </button>
+                  </div>
                 </div>
               </div>
 
-              <div class="row form-group">
-                <div class="col-lg-12">
-                  <label class="form-control-label" for="reg-number-input">Регистрационный номер автомобиля</label>
-                  <input class="form-control form-control-sm form-control-alternative" id="reg-number-input"
-                         [(ngModel)]="model.relationships.vehicle.data.attributes.regNumber" placeholder="Регистрационный номер автомобиля">
+              <ng-container *ngIf="vehicleEdit">
+                <div class="alert alert-warning">
+                  Внимание! Все изменения, внесенные в автомобиль, отразяться во всех заказ-нарядах, где указан данный автомобиль!
+                </div>
+              </ng-container>
+
+              <ng-container *ngIf="model.relationships.vehicle.data">
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="model-input">Марка/модель автомобиля</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="model-input"
+                           [disabled]="!vehicleEdit && !model.relationships.vehicle.data.is_new"
+                           [(ngModel)]="model.relationships.vehicle.data.attributes.modelName" placeholder="Марка/модель автомобиля">
+                  </div>
+                </div>
+
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="reg-number-input">Регистрационный номер автомобиля</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="reg-number-input"
+                           [disabled]="!vehicleEdit && !model.relationships.vehicle.data.is_new"
+                           [(ngModel)]="model.relationships.vehicle.data.attributes.regNumber" placeholder="Регистрационный номер автомобиля">
+                  </div>
+                </div>
+
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="vin-number-input">VIN-номер автомобиля</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="vin-number-input"
+                           [disabled]="!vehicleEdit && !model.relationships.vehicle.data.is_new"
+                           [(ngModel)]="model.relationships.vehicle.data.attributes.vinNumber" placeholder="VIN-номер автомобиля">
+                  </div>
+                </div>
+
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="year-input">Год выпуска автомобиля</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="year-input" type="number"
+                           [disabled]="!vehicleEdit && !model.relationships.vehicle.data.is_new"
+                           [(ngModel)]="model.relationships.vehicle.data.attributes.year" placeholder="Год выпуска автомобиля">
+                  </div>
+                </div>
+
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="mileage-number-input">Пробег автомобиля</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="mileage-number-input" type="number"
+                           [(ngModel)]="model.relationships.vehicleMileage.data.attributes.mileage" placeholder="Пробег автомобиля">
+                  </div>
+                </div>
+              </ng-container>
+
+            </div>
+
+            <div class="col-md-4 mb-3">
+
+              <div class="row">
+                <div class="col-md">
+                  <h3>Клиент</h3>
+                </div>
+                <div class="col-md-auto">
+                  <div class="btn-group btn-group-sm">
+                    <button
+                      class="btn btn-sn btn-buro-blue"
+                      title="Новый"
+                      (click)="newClient()"
+                      [disabled]="model.relationships.client.data && model.relationships.client.data.is_new"
+                    >
+                      <i class="fas fa-file"></i>
+                    </button>
+                    <button class="btn btn-sn btn-buro-blue" title="Поиск"><i class="fas fa-search"></i></button>
+                    <button
+                      class="btn btn-sn btn-buro-blue"
+                      [class.active]="clientEdit"
+                      (click)="clientEdit = !clientEdit"
+                      title="Редактировать"
+                      [disabled]="!model.relationships.client.data || model.relationships.client.data.is_new"
+                    >
+                      <i class="fas fa-edit"></i>
+                    </button>
+                  </div>
                 </div>
               </div>
 
-              <div class="row form-group">
-                <div class="col-lg-12">
-                  <label class="form-control-label" for="vin-number-input">VIN-номер автомобиля</label>
-                  <input class="form-control form-control-sm form-control-alternative" id="vin-number-input"
-                         [(ngModel)]="model.relationships.vehicle.data.attributes.vinNumber" placeholder="VIN-номер автомобиля">
+              <ng-container *ngIf="clientEdit">
+                <div class="alert alert-warning">
+                  Внимание! Все изменения, внесенные в информацию о клиенте, отразяться во всех заказ-нарядах, где указан данный клиент!
                 </div>
-              </div>
+              </ng-container>
 
-              <div class="row form-group">
-                <div class="col-lg-12">
-                  <label class="form-control-label" for="year-input">Год выпуска автомобиля</label>
-                  <input class="form-control form-control-sm form-control-alternative" id="year-input" type="number"
-                         [(ngModel)]="model.relationships.vehicle.data.attributes.year" placeholder="Год выпуска автомобиля">
+              <ng-container *ngIf="model.relationships.client.data">
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="name-input">Полное имя</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="name-input"
+                           [disabled]="!clientEdit && !model.relationships.client.data.is_new"
+                           [(ngModel)]="model.relationships.client.data.attributes.name" placeholder="Полное имя">
+                  </div>
                 </div>
-              </div>
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="phone-input">Телефон</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="phone-input"
+                           [disabled]="!clientEdit && !model.relationships.client.data.is_new"
+                           [(ngModel)]="model.relationships.client.data.attributes.phone" placeholder="Телефон">
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="email-input">Email</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="email-input"
+                           [disabled]="!clientEdit && !model.relationships.client.data.is_new"
+                           [(ngModel)]="model.relationships.client.data.attributes.email" placeholder="Email (не обязательно к заполнению)">
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="address-input">Адрес</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="address-input"
+                           [disabled]="!clientEdit && !model.relationships.client.data.is_new"
+                           [(ngModel)]="model.relationships.client.data.attributes.address" placeholder="Адрес">
+                  </div>
+                </div>
+              </ng-container>
 
-              <div class="row form-group">
-                <div class="col-lg-12">
-                  <label class="form-control-label" for="mileage-number-input">Пробег автомобиля</label>
-                  <input class="form-control form-control-sm form-control-alternative" id="mileage-number-input" type="number"
-                         [(ngModel)]="model.relationships.vehicleMileage.data.attributes.mileage" placeholder="Пробег автомобиля">
-                </div>
-              </div>
+              <ng-container *ngIf="userService.isAdmin()">
+                    <h3>Исполнитель</h3>
+              </ng-container>
 
             </div>
 

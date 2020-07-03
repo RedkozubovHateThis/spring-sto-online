@@ -15,6 +15,7 @@ import {VehicleMileageResourceService} from '../../model/resource/vehicle-mileag
 import {DocumentCollection} from 'ngx-jsonapi';
 import {ServiceWorkService} from '../../api/service-work.service';
 import {ServiceAddonService} from '../../api/service-addon.service';
+import {ProfileResource, ProfileResourceService} from '../../model/resource/profile.resource.service';
 
 @Component({
   selector: 'app-document-edit',
@@ -23,6 +24,9 @@ import {ServiceAddonService} from '../../api/service-addon.service';
 })
 export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource, string> implements OnInit {
 
+  private vehicleEdit = false;
+  private clientEdit = false;
+  private clientRegister = false;
   private isSaving = false;
   private isLoading = false;
   private startDate: moment.Moment;
@@ -44,7 +48,7 @@ export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource
               private serviceAddonResourceService: ServiceAddonResourceService,
               private vehicleResourceService: VehicleResourceService,
               private vehicleMileageResourceService: VehicleMileageResourceService,
-              private serviceWorkService: ServiceWorkService,
+              private serviceWorkService: ServiceWorkService, private profileResourceService: ProfileResourceService,
               private serviceAddonService: ServiceAddonService) {
     super(documentService, route);
   }
@@ -135,5 +139,16 @@ export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource
         } );
       } );
     } );
+  }
+
+  newVehicle() {
+    const vehicle: VehicleResource = this.vehicleResourceService.new();
+    this.model.addRelationship( vehicle, 'vehicle' );
+  }
+
+  newClient() {
+    const profile: ProfileResource = this.profileResourceService.new();
+    this.model.addRelationship( profile, 'client' );
+    this.clientRegister = true;
   }
 }

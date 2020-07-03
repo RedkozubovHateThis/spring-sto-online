@@ -5,6 +5,7 @@ import io.crnk.core.repository.ResourceRepository;
 import io.crnk.core.resource.list.ResourceList;
 import io.swagger.postgres.model.security.Profile;
 import io.swagger.postgres.repository.ProfileRepository;
+import io.swagger.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,9 @@ public class ProfileResourceRepository implements ResourceRepository<Profile, Lo
 
     @Autowired
     private ProfileRepository profileRepository;
+
+    @Autowired
+    private UserService userService;
 
     @Override
     public Class<Profile> getResourceClass() {
