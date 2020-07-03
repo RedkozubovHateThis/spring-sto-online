@@ -21,6 +21,7 @@ import {DocumentCollection} from 'ngx-jsonapi';
 })
 export class DocumentAddComponent implements OnInit {
 
+  private isSaving = false;
   protected model: ServiceDocumentResource;
   private startDate: moment.Moment;
   private endDate: moment.Moment;
@@ -45,8 +46,8 @@ export class DocumentAddComponent implements OnInit {
     this.model = serviceDocumentResourceService.new();
     this.model.attributes.startDate = new Date().getTime();
     this.model.attributes.status = 'CREATED';
-    if ( this.userService.isServiceLeader() )
-      this.model.addRelationship( this.userService.currentUser, 'executor' );
+    if ( this.userService.isServiceLeader() && this.userService.currentUser.relationships.profile.data )
+      this.model.addRelationship( this.userService.currentUser.relationships.profile.data, 'executor' );
     this.model.addRelationship( vehicleResourceService.new(), 'vehicle' );
     this.model.addRelationship( vehicleMileageResourceService.new(), 'vehicleMileage' );
   }
@@ -88,12 +89,15 @@ export class DocumentAddComponent implements OnInit {
   }
 
   save() {
+    this.isSaving = true;
     this.documentService.saveVehicle( this.model ).subscribe( (savedVehicle) => {
       this.documentService.saveVehicleMileage( this.model ).subscribe( (savedVehicleMileage) => {
         this.documentService.saveServiceDocument(this.model).subscribe( (savedModel) => {
           this.documentService.saveServiceWorks( this.model, this.serviceWorks );
           this.documentService.saveServiceAddons( this.model, this.serviceAddons );
           this.model = savedModel;
+          this.isSaving = false;
+          this.toastrService.success('Документ успешно сохранен!');
           this.router.navigate(['documents', this.model.id, 'edit']);
         } );
       } );

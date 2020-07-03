@@ -106,26 +106,6 @@ public class UserController {
 
     }
 
-    @DeleteMapping("/{userId}")
-    public ResponseEntity deleteUser(@PathVariable("userId") Long userId) {
-
-        User currentUser = userRepository.findCurrentUser();
-
-        if ( currentUser.getId().equals( userId ) )
-            return ResponseEntity.status(400).body( new ApiResponse( "Невозможно удалить активного пользователя!" ) );
-
-        User user = userRepository.findById( userId ).orElse( null );
-
-        if ( user == null )
-            return ResponseEntity.status(400).body( new ApiResponse( "Пользователь не найден!" ) );
-
-        user.setEnabled( false );
-        userRepository.save( user );
-
-        return ResponseEntity.ok( new ApiResponse( "Пользователь успешно удален!" ) );
-
-    }
-
     @PostMapping(value = "/{id}/password/change")
     public ResponseEntity changePassword(@PathVariable("id") Long id,
                                          @RequestParam("oldPassword") String oldPassword,
@@ -252,25 +232,6 @@ public class UserController {
                         userRepository.findAll(specification, pageable), params.getInclude(), userRepository.count(specification), pageable
                 )
         );
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity findById(@PathVariable("id") Long id) {
-
-        User currentUser = userRepository.findCurrentUser();
-
-        if ( currentUser == null ) return ResponseEntity.status(401).build();
-
-        User user = userRepository.findById(id).orElse( null );
-
-        if ( user == null )
-            return ResponseEntity.status(404).build();
-
-        if ( currentUser.getId().equals( user.getId() ) ||
-                UserHelper.isAdmin( currentUser ) )
-            return ResponseEntity.ok( user );
-        else
-            return ResponseEntity.status(403).build();
     }
 
     @GetMapping("/eventMessages/fromUsers")

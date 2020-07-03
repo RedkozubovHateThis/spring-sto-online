@@ -13,6 +13,8 @@ import {ServiceWorkResource, ServiceWorkResourceService} from '../../model/resou
 import {ServiceAddonResource, ServiceAddonResourceService} from '../../model/resource/service-addon.resource.service';
 import {VehicleMileageResourceService} from '../../model/resource/vehicle-mileage.resource.service';
 import {DocumentCollection} from 'ngx-jsonapi';
+import {ServiceWorkService} from '../../api/service-work.service';
+import {ServiceAddonService} from '../../api/service-addon.service';
 
 @Component({
   selector: 'app-document-edit',
@@ -21,17 +23,8 @@ import {DocumentCollection} from 'ngx-jsonapi';
 })
 export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource, string> implements OnInit {
 
-  private isLoading: boolean = false;
-  private states = [
-    {
-      name: 'Черновик',
-      id: 'CREATED'
-    },
-    {
-      name: 'Оформлен',
-      id: 'COMPLETED'
-    }
-  ];
+  private isSaving = false;
+  private isLoading = false;
   private startDate: moment.Moment;
   private endDate: moment.Moment;
   private datePickerConfig = {
@@ -50,7 +43,9 @@ export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource
               private location: Location, private serviceWorkResourceService: ServiceWorkResourceService,
               private serviceAddonResourceService: ServiceAddonResourceService,
               private vehicleResourceService: VehicleResourceService,
-              private vehicleMileageResourceService: VehicleMileageResourceService) {
+              private vehicleMileageResourceService: VehicleMileageResourceService,
+              private serviceWorkService: ServiceWorkService,
+              private serviceAddonService: ServiceAddonService) {
     super(documentService, route);
   }
 
@@ -85,10 +80,10 @@ export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource
   }
 
   requestRelations() {
-    this.documentService.getServiceWorks(this.model.id).subscribe( (data) => {
+    this.serviceWorkService.getAll(this.model.id).subscribe( (data) => {
       this.serviceWorks = data;
     } );
-    this.documentService.getServiceAddons(this.model.id).subscribe( (data) => {
+    this.serviceAddonService.getAll(this.model.id).subscribe( (data) => {
       this.serviceAddons = data;
     } );
   }
@@ -117,20 +112,26 @@ export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource
 
   newServiceWork() {
     const serviceWork: ServiceWorkResource = this.serviceWorkResourceService.new();
+    serviceWork.attributes.count = 1;
+    serviceWork.attributes.byPrice = true;
     this.serviceWorks.data.push( serviceWork );
   }
   newServiceAddon() {
     const serviceAddon: ServiceAddonResource = this.serviceAddonResourceService.new();
+    serviceAddon.attributes.count = 1;
     this.serviceAddons.data.push( serviceAddon );
   }
 
   save() {
+    this.isSaving = true;
     this.documentService.saveVehicle( this.model ).subscribe( (savedVehicle) => {
       this.documentService.saveVehicleMileage( this.model ).subscribe( (savedVehicleMileage) => {
         this.documentService.saveServiceDocument(this.model).subscribe( (savedModel) => {
           this.documentService.saveServiceWorks( this.model, this.serviceWorks );
           this.documentService.saveServiceAddons( this.model, this.serviceAddons );
           this.model = savedModel;
+          this.isSaving = false;
+          this.toastrService.success('Документ успешно сохранен!');
         } );
       } );
     } );

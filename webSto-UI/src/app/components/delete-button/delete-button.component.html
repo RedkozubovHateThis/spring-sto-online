@@ -1,5 +1,10 @@
 <button class="btn btn-sm btn-buro-blue" (click)="open(content)" [disabled]="isDeleting">
-  Удалить
+  <ng-container *ngIf="isIcon; else text">
+    <i class="fas fa-times"></i>
+  </ng-container>
+  <ng-template #text>
+    Удалить
+  </ng-template>
 </button>
 
 <!-- Modal -->

@@ -3,7 +3,7 @@
     <div class="col">
       <div class="card shadow">
         <div class="card-header">
-          <app-loading-bar [isLoading]="isLoading"></app-loading-bar>
+          <app-loading-bar [isLoading]="isLoading || isSaving"></app-loading-bar>
           <div class="row align-items-center">
             <div class="col-md mb-3">
               Данные заказ-наряда: {{model && model.is_new ? 'добалвение' : 'редактирование'}}
@@ -12,7 +12,7 @@
               <button class="btn btn-sm btn-buro-blue" (click)="location.back()">
                 Назад
               </button>
-              <button class="btn btn-sm btn-buro-blue" (click)="save()">
+              <button class="btn btn-sm btn-buro-blue" (click)="save()" [disabled]="isSaving">
                 Сохранить
               </button>
 <!--              <app-report-button *ngIf="userService.currentUser != null" [disabled]="model != null"-->
@@ -164,6 +164,9 @@
                     <th scope="col" style="width: 175px;">
                       Кратность
                     </th>
+                    <th style="width: 43px;">
+                      &nbsp;
+                    </th>
                   </tr>
                   </thead>
                   <tbody *ngIf="model != null">
@@ -196,6 +199,15 @@
                     <th>
                       <input class="form-control form-control-sm form-control-alternative" placeholder="Кратность"
                              [(ngModel)]="serviceWork.attributes.count" type="number">
+                    </th>
+                    <th>
+                      <app-delete-button
+                        [model]="serviceWork"
+                        [isIcon]="true"
+                        [modalTitle]="serviceWork.attributes.name"
+                        [parentList]="serviceWorks"
+                        [restService]="serviceWorkService"
+                      ></app-delete-button>
                     </th>
                   </tr>
                   </tbody>
@@ -235,6 +247,9 @@
                     <th scope="col" style="width: 175px;">
                       Количество
                     </th>
+                    <th style="width: 43px;">
+                      &nbsp;
+                    </th>
                   </tr>
                   </thead>
                   <tbody *ngIf="model != null">
@@ -250,6 +265,15 @@
                     <th style="text-align: right;">
                       <input class="form-control form-control-sm form-control-alternative" placeholder="Количество"
                              [(ngModel)]="addon.attributes.count" type="number">
+                    </th>
+                    <th>
+                      <app-delete-button
+                        [model]="addon"
+                        [isIcon]="true"
+                        [modalTitle]="addon.attributes.name"
+                        [parentList]="serviceAddons"
+                        [restService]="serviceAddonService"
+                      ></app-delete-button>
                     </th>
                   </tr>
                   </tbody>

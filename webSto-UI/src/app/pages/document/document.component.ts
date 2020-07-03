@@ -12,6 +12,9 @@ import {UserResource} from '../../model/resource/user.resource.service';
 import {DocumentCollection} from 'ngx-jsonapi';
 import {ServiceWorkResource} from '../../model/resource/service-work.resource.service';
 import {ServiceAddonResource} from '../../model/resource/service-addon.resource.service';
+import {VehicleMileageResourceService} from '../../model/resource/vehicle-mileage.resource.service';
+import {ServiceWorkService} from '../../api/service-work.service';
+import {ServiceAddonService} from '../../api/service-addon.service';
 
 @Component({
   selector: 'app-documents',
@@ -26,7 +29,9 @@ export class DocumentComponent extends ModelTransfer<ServiceDocumentResource, st
 
   constructor(private documentService: DocumentService, protected route: ActivatedRoute, private toastrService: ToastrService,
               private userService: UserService, private httpClient: HttpClient, private router: Router,
-              private location: Location) {
+              private location: Location,
+              private serviceWorkService: ServiceWorkService,
+              private serviceAddonService: ServiceAddonService) {
     super(documentService, route);
   }
 
@@ -46,10 +51,10 @@ export class DocumentComponent extends ModelTransfer<ServiceDocumentResource, st
   }
 
   requestRelations() {
-    this.documentService.getServiceWorks(this.model.id).subscribe( (data) => {
+    this.serviceWorkService.getAll(this.model.id).subscribe( (data) => {
       this.serviceWorks = data;
     } );
-    this.documentService.getServiceAddons(this.model.id).subscribe( (data) => {
+    this.serviceAddonService.getAll(this.model.id).subscribe( (data) => {
       this.serviceAddons = data;
     } );
   }

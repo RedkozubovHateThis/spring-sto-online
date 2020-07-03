@@ -15,7 +15,7 @@ import java.io.Serializable;
 @EqualsAndHashCode(of = "id", callSuper = true)
 @Entity
 @Data
-@JsonApiResource(type = "profile", resourcePath = "profiles")
+@JsonApiResource(type = "profile", resourcePath = "profiles", deletable = false)
 public class Profile extends BaseEntity implements Serializable {
 
     private String name;

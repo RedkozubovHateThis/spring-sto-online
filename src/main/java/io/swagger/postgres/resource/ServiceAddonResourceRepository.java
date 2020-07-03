@@ -1,10 +1,16 @@
 package io.swagger.postgres.resource;
 
+import io.crnk.core.exception.ForbiddenException;
+import io.crnk.core.exception.ResourceNotFoundException;
 import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepository;
 import io.crnk.core.resource.list.ResourceList;
+import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.ServiceAddon;
+import io.swagger.postgres.model.ServiceWork;
+import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.ServiceAddonRepository;
+import io.swagger.postgres.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +18,9 @@ import java.util.Collection;
 
 @Component
 public class ServiceAddonResourceRepository implements ResourceRepository<ServiceAddon, Long> {
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private ServiceAddonRepository serviceAddonRepository;
@@ -49,5 +58,17 @@ public class ServiceAddonResourceRepository implements ResourceRepository<Servic
 
     @Override
     public void delete(Long aLong) {
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( !UserHelper.isServiceLeader( currentUser ) && !UserHelper.isAdmin( currentUser ) )
+            throw new ForbiddenException("Вам запрещено удалять товары!");
+
+        ServiceAddon serviceAddon = serviceAddonRepository.findById(aLong).orElse(null);
+
+        if ( serviceAddon == null )
+            throw new ResourceNotFoundException("Товар не найден!");
+
+        serviceAddon.setDeleted(true);
+        serviceAddonRepository.save(serviceAddon);
     }
 }

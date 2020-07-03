@@ -1,14 +1,20 @@
 package io.swagger.postgres.resource;
 
+import io.crnk.core.exception.BadRequestException;
+import io.crnk.core.exception.ForbiddenException;
+import io.crnk.core.exception.ResourceNotFoundException;
 import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.MetaRepository;
 import io.crnk.core.repository.ResourceRepository;
 import io.crnk.core.resource.list.ResourceList;
 import io.crnk.core.resource.meta.MetaInformation;
+import io.swagger.helper.UserHelper;
 import io.swagger.postgres.resourceProcessor.JsonApiListMeta;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.UserRepository;
+import io.swagger.response.api.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +36,18 @@ public class UserResourceRepository implements ResourceRepository<User, Long>, M
 
     @Override
     public User findOne(Long aLong, QuerySpec querySpec) {
-        return userRepository.findById( aLong ).orElse(null);
+        User currentUser = userRepository.findCurrentUser();
+
+        User user = userRepository.findById(aLong).orElse( null );
+        if ( user == null ) {
+            throw new ResourceNotFoundException("Пользователь не найден!");
+        }
+
+        if ( currentUser.getId().equals( user.getId() ) ||
+                UserHelper.isAdmin( currentUser ) )
+            return user;
+
+        throw new ForbiddenException("Пользователь недоступен!");
     }
 
     @Override
@@ -58,12 +75,22 @@ public class UserResourceRepository implements ResourceRepository<User, Long>, M
 
     @Override
     public void delete(Long aLong) {
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( !UserHelper.isAdmin( currentUser ) )
+            throw new ForbiddenException("Вам запрещено удалять пользователей!");
+
         User user = userRepository.findById( aLong ).orElse(null);
 
         if ( user != null ) {
+
+            if ( currentUser.getId().equals( user.getId() ) )
+                throw new BadRequestException("Невозможно удалить активного пользователя!");
+
             user.setEnabled( false );
             userRepository.save(user);
         }
+        throw new ResourceNotFoundException("Пользователь не найден!");
     }
 
     @Override

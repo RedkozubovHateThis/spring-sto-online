@@ -40,6 +40,8 @@ import {ServiceAddonResourceService} from './model/resource/service-addon.resour
 import {VehicleResourceService} from './model/resource/vehicle.resource.service';
 import {VehicleMileageResourceService} from './model/resource/vehicle-mileage.resource.service';
 import {ProfileResourceService} from './model/resource/profile.resource.service';
+import {ServiceWorkService} from './api/service-work.service';
+import {ServiceAddonService} from './api/service-addon.service';
 
 registerLocaleData(localeRu, 'ru');
 
@@ -95,6 +97,8 @@ registerLocaleData(localeRu, 'ru');
     VehicleResourceService,
     VehicleMileageResourceService,
     ProfileResourceService,
+    ServiceWorkService,
+    ServiceAddonService,
     {
       provide: HTTP_INTERCEPTORS,
       useFactory(userService: UserService, router: Router) {

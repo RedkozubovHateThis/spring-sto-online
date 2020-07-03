@@ -203,10 +203,8 @@ export class UserService implements TransferService<UserResource>, RestService<U
     return this.http.post(`${this.getApiUrl()}oauth/register/${selectedRole}`, user);
   }
 
-  delete(user: UserResource) {
-    const headers = this.getHeaders();
-
-    return this.http.delete(`${this.getApiUrl()}/users/${user.id}`, {headers});
+  delete(user: UserResource): Observable<void> {
+    return user.delete();
   }
 
   createDemoUser() {

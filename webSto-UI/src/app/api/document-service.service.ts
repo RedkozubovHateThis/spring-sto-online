@@ -53,17 +53,8 @@ export class DocumentService implements TransferService<ServiceDocumentResource>
     return this.serviceDocumentResourceService.get(id);
   }
 
-  getServiceWorks(id: string): Observable<DocumentCollection<ServiceWorkResource>> {
-    return this.serviceWorkResourceService.all({
-      beforepath: `serviceDocuments/${id}`
-    });
-  }
 
-  getServiceAddons(id: string): Observable<DocumentCollection<ServiceAddonResource>> {
-    return this.serviceAddonResourceService.all({
-      beforepath: `serviceDocuments/${id}`
-    });
-  }
+
 
   getPreviousVehicles(): Observable<DocumentCollection<VehicleResource>> {
     return new Observable<DocumentCollection<VehicleResource>>( (subscriber) => {
@@ -144,7 +135,8 @@ export class DocumentService implements TransferService<ServiceDocumentResource>
     } );
   }
 
-  delete(model: ServiceDocumentResource) {
+  delete(model: ServiceDocumentResource): Observable<void> {
+    return model.delete();
   }
 
   getTransferModel() {
