@@ -16,6 +16,13 @@
                       *ngIf="userService.isAdmin() || userService.isServiceLeader()">
                 Редактировать
               </button>
+              <app-delete-button *ngIf="model != null && ( userService.isAdmin() || ( userService.isServiceLeader() && model.attributes.status !== 'COMPLETED' ) )"
+                                 [model]="model"
+                                 [restService]="userService"
+                                 [modalTitle]="'Заказ-наряд №' + model.attributes.number"
+                                 (onDelete)="location.back()"
+                                 style="margin-right: .5rem"
+              ></app-delete-button>
 <!--              <app-report-button *ngIf="userService.currentUser != null" [disabled]="model != null"-->
 <!--                                 [model]="model" [withPrint]="false"></app-report-button>-->
 <!--              <app-report-button *ngIf="userService.currentUser != null" [printDisabled]="model != null"-->

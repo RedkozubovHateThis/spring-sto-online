@@ -41,7 +41,7 @@ export class ErrorInterceptor implements HttpInterceptor {
               this.userService.logout();
             }
             else if ( err.status == 403 )
-              this.router.navigate(["dashboard"]);
+              this.router.navigate(["documents"]);
           }
           throw err;
         })

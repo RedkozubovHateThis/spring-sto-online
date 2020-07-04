@@ -11,6 +11,7 @@ import io.crnk.core.resource.meta.MetaInformation;
 import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.ServiceDocument;
 import io.swagger.postgres.model.enums.ServiceDocumentStatus;
+import io.swagger.postgres.model.security.Profile;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.ServiceDocumentRepository;
 import io.swagger.postgres.repository.UserRepository;
@@ -36,7 +37,25 @@ public class ServiceDocumentResourceRepository implements ResourceRepository<Ser
 
     @Override
     public ServiceDocument findOne(Long aLong, QuerySpec querySpec) {
-        return serviceDocumentRepository.findById( aLong ).orElse(null);
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( !UserHelper.isAdmin(currentUser) && currentUser.getProfile() == null )
+            throw new ResourceNotFoundException("Заказ-наряд не найден!");
+
+        ServiceDocument serviceDocument = serviceDocumentRepository.findById( aLong ).orElse(null);
+
+        if ( serviceDocument == null )
+            throw new ResourceNotFoundException("Заказ-наряд не найден!");
+
+        Profile executor = serviceDocument.getExecutor();
+        Profile client = serviceDocument.getClient();
+
+        if ( UserHelper.isClient( currentUser ) && ( client == null || !client.getId().equals( currentUser.getProfile().getId() ) ) )
+            throw new ForbiddenException("Заказ-наряд не найден!");
+        if ( UserHelper.isServiceLeader( currentUser ) && ( executor == null || !executor.getId().equals( currentUser.getProfile().getId() ) ) )
+            throw new ForbiddenException("Заказ-наряд не найден!");
+
+        return serviceDocument;
     }
 
     @Override
