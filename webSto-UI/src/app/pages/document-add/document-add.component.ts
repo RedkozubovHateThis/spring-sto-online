@@ -21,6 +21,10 @@ import {ServiceAddonService} from '../../api/service-addon.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {VehicleDictionaryResource} from '../../model/resource/vehicle-dictionary.resource.service';
 import {VehicleDictionaryService} from '../../api/vehicle.dictionary.service';
+import {ServiceWorkDictionaryService} from '../../api/service-work.dictionary.service';
+import {ServiceWorkDictionaryResource} from '../../model/resource/service-work-dictionary.resource.service';
+import {ServiceAddonDictionaryResource} from '../../model/resource/service-addon-dictionary.resource.service';
+import {ServiceAddonDictionaryService} from '../../api/service-addon.dictionary.service';
 
 @Component({
   selector: 'app-document-add',
@@ -58,8 +62,14 @@ export class DocumentAddComponent implements OnInit {
 
   // Справочники
   @ViewChild('vehicleDictionaryModal', {static: false}) private vehicleDictionaryModal;
+  @ViewChild('serviceWorkDictionaryModal', {static: false}) private serviceWorkDictionaryModal;
+  @ViewChild('serviceAddonDictionaryModal', {static: false}) private serviceAddonDictionaryModal;
   private vehicleDictionaryNameSearch = '';
+  private serviceWorkDictionaryNameSearch = '';
+  private serviceAddonDictionaryNameSearch = '';
   private vehicleDictionaries: DocumentCollection<VehicleDictionaryResource> = new DocumentCollection<VehicleDictionaryResource>();
+  private serviceWorkDictionaries: DocumentCollection<ServiceWorkDictionaryResource> = new DocumentCollection<ServiceWorkDictionaryResource>();
+  private serviceAddonDictionaries: DocumentCollection<ServiceAddonDictionaryResource> = new DocumentCollection<ServiceAddonDictionaryResource>();
 
   constructor(private documentService: DocumentService, protected route: ActivatedRoute, private toastrService: ToastrService,
               private userService: UserService, private httpClient: HttpClient, private router: Router,
@@ -69,7 +79,9 @@ export class DocumentAddComponent implements OnInit {
               private vehicleResourceService: VehicleResourceService, private profileResourceService: ProfileResourceService,
               private vehicleMileageResourceService: VehicleMileageResourceService, private serviceWorkService: ServiceWorkService,
               private serviceAddonService: ServiceAddonService, private modalService: NgbModal,
-              private vehicleDictionaryService: VehicleDictionaryService) {
+              private vehicleDictionaryService: VehicleDictionaryService,
+              private serviceWorkDictionaryService: ServiceWorkDictionaryService,
+              private serviceAddonDictionaryService: ServiceAddonDictionaryService) {
     this.model = serviceDocumentResourceService.new();
     this.model.attributes.startDate = new Date().getTime();
     this.model.attributes.status = 'CREATED';
@@ -99,15 +111,17 @@ export class DocumentAddComponent implements OnInit {
     this.model.attributes.endDate = endDate.toDate().getTime();
   }
 
-  newServiceWork() {
+  newServiceWork(name?: string) {
     const serviceWork: ServiceWorkResource = this.serviceWorkResourceService.new();
     serviceWork.attributes.count = 1;
     serviceWork.attributes.byPrice = true;
+    serviceWork.attributes.name = name;
     this.serviceWorks.data.push( serviceWork );
   }
-  newServiceAddon() {
+  newServiceAddon(name?: string) {
     const serviceAddon: ServiceAddonResource = this.serviceAddonResourceService.new();
     serviceAddon.attributes.count = 1;
+    serviceAddon.attributes.name = name;
     this.serviceAddons.data.push( serviceAddon );
   }
 
@@ -218,13 +232,41 @@ export class DocumentAddComponent implements OnInit {
   openVehicleDictionariesModal() {
     this.modalService.open(this.vehicleDictionaryModal, { size: 'lg' });
   }
+  openServiceWorkDictionariesModal() {
+    this.modalService.open(this.serviceWorkDictionaryModal, { size: 'lg' });
+  }
+  openServiceAddonDictionariesModal() {
+    this.modalService.open(this.serviceAddonDictionaryModal, { size: 'lg' });
+  }
 
   searchVehicleDictionaries() {
     if ( !this.vehicleDictionaryNameSearch || this.vehicleDictionaryNameSearch.length < 3 ) return;
 
-    this.vehicleDictionaryService.findByName( this.vehicleDictionaryNameSearch ).subscribe( (vehicles) => {
-      this.vehicleDictionaries = vehicles;
+    this.vehicleDictionaryService.findByName( this.vehicleDictionaryNameSearch ).subscribe( (vehicleDictionaries) => {
+      this.vehicleDictionaries = vehicleDictionaries;
     } );
+  }
+  searchServiceWorkDictionaries() {
+    if ( !this.serviceWorkDictionaryNameSearch || this.serviceWorkDictionaryNameSearch.length < 3 ) return;
+
+    this.serviceWorkDictionaryService.findByName( this.serviceWorkDictionaryNameSearch ).subscribe( (serviceWorkDictionaries) => {
+      this.serviceWorkDictionaries = serviceWorkDictionaries;
+    } );
+  }
+  searchServiceAddonDictionaries() {
+    if ( !this.serviceAddonDictionaryNameSearch || this.serviceAddonDictionaryNameSearch.length < 3 ) return;
+
+    this.serviceAddonDictionaryService.findByName( this.serviceAddonDictionaryNameSearch ).subscribe( (serviceAddonDictionaries) => {
+      this.serviceAddonDictionaries = serviceAddonDictionaries;
+    } );
+  }
+  newServiceWorkFromDictionary(serviceWorkDictionaryResource: ServiceWorkDictionaryResource) {
+    this.newServiceWork(serviceWorkDictionaryResource.attributes.name);
+    this.modalService.dismissAll();
+  }
+  newServiceAddonFromDictionary(serviceAddonDictionaryResource: ServiceAddonDictionaryResource) {
+    this.newServiceAddon(serviceAddonDictionaryResource.attributes.name);
+    this.modalService.dismissAll();
   }
 
   updateVehicle(vehicleDictionary: VehicleDictionaryResource) {

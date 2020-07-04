@@ -51,6 +51,8 @@ import {
   ServiceWorkDictionaryResourceService
 } from './model/resource/service-work-dictionary.resource.service';
 import {VehicleDictionaryService} from './api/vehicle.dictionary.service';
+import {ServiceWorkDictionaryService} from './api/service-work.dictionary.service';
+import {ServiceAddonDictionaryService} from './api/service-addon.dictionary.service';
 
 registerLocaleData(localeRu, 'ru');
 
@@ -114,6 +116,8 @@ registerLocaleData(localeRu, 'ru');
     ServiceWorkDictionaryResourceService,
     ServiceAddonDictionaryResourceService,
     VehicleDictionaryService,
+    ServiceWorkDictionaryService,
+    ServiceAddonDictionaryService,
     {
       provide: HTTP_INTERCEPTORS,
       useFactory(userService: UserService, router: Router) {

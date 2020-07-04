@@ -1,11 +1,11 @@
 package io.swagger.controller;
 
 import io.swagger.helper.UserHelper;
-import io.swagger.postgres.model.VehicleDictionary;
+import io.swagger.postgres.model.ServiceWorkDictionary;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.UserRepository;
-import io.swagger.postgres.repository.VehicleDictionaryRepository;
-import io.swagger.postgres.resourceProcessor.VehicleDictionaryResourceProcessor;
+import io.swagger.postgres.repository.ServiceWorkDictionaryRepository;
+import io.swagger.postgres.resourceProcessor.ServiceWorkDictionaryResourceProcessor;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,20 +22,20 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/external/vehicleDictionaries")
-public class VehicleDictionaryController {
+@RequestMapping("/external/serviceWorkDictionaries")
+public class ServiceWorkDictionaryController {
 
-    private final static Logger logger = LoggerFactory.getLogger( VehicleDictionaryController.class );
+    private final static Logger logger = LoggerFactory.getLogger( ServiceWorkDictionaryController.class );
 
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private VehicleDictionaryRepository vehicleDictionaryRepository;
+    private ServiceWorkDictionaryRepository serviceWorkDictionaryRepository;
     @Autowired
-    private VehicleDictionaryResourceProcessor vehicleDictionaryResourceProcessor;
+    private ServiceWorkDictionaryResourceProcessor serviceWorkDictionaryResourceProcessor;
 
     @GetMapping
-    public ResponseEntity findVehicleDictionaries(JsonApiParams params) throws Exception {
+    public ResponseEntity findServiceWorkDictionaries(JsonApiParams params) throws Exception {
         User currentUser = userRepository.findCurrentUser();
 
         if ( !UserHelper.isAdmin( currentUser ) && !UserHelper.isServiceLeader( currentUser ) )
@@ -45,17 +45,17 @@ public class VehicleDictionaryController {
         if ( filterPayload.getName() == null || filterPayload.getName().length() < 3 )
             return ResponseEntity.status(400).build();
 
-        List<VehicleDictionary> vehicleDictionaries = vehicleDictionaryRepository.findAllByName(
+        List<ServiceWorkDictionary> serviceWorkDictionaries = serviceWorkDictionaryRepository.findAllByName(
                 String.format("%%%s%%", filterPayload.getName())
         );
-        if ( vehicleDictionaries.size() == 0 )
+        if ( serviceWorkDictionaries.size() == 0 )
             return ResponseEntity.status(404).build();
 
         return ResponseEntity.ok(
-                vehicleDictionaryResourceProcessor.toResourceList(
-                        vehicleDictionaries,
+                serviceWorkDictionaryResourceProcessor.toResourceList(
+                        serviceWorkDictionaries,
                         null,
-                        (long) vehicleDictionaries.size(),
+                        (long) serviceWorkDictionaries.size(),
                         null
                 )
         );

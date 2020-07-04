@@ -323,7 +323,10 @@
 
                 </div>
                 <div class="col-auto">
-                  <button class="btn btn-sm btn-buro-blue" (click)="newServiceWork()">Добавить</button>
+                  <div class="btn-group btn-group-sm">
+                    <button class="btn btn-sm btn-buro-blue" (click)="newServiceWork()">Добавить</button>
+                    <button class="btn btn-sm btn-buro-blue" (click)="openServiceWorkDictionariesModal()">Из справочника</button>
+                  </div>
                 </div>
               </div>
 
@@ -409,7 +412,10 @@
 
                 </div>
                 <div class="col-auto">
-                  <button class="btn btn-sm btn-buro-blue" (click)="newServiceAddon()">Добавить</button>
+                  <div class="btn-group btn-group-sm">
+                    <button class="btn btn-sm btn-buro-blue" (click)="newServiceAddon()">Добавить</button>
+                    <button class="btn btn-sm btn-buro-blue" (click)="openServiceAddonDictionariesModal()">Из справочника</button>
+                  </div>
                 </div>
               </div>
 
@@ -648,7 +654,7 @@
     <div class="row form-group">
       <div class="col">
         <div class="input-group input-group-alternative input-group-sm">
-          <input id="vehicle-dictionary-select-ahead" type="text" placeholder="Введите наименование (мин. 3 символа)"
+          <input id="vehicle-dictionary-select-ahead" type="text" placeholder="Введите марку или модель (мин. 3 символа)"
                  class="form-control form-control-sm" [(ngModel)]="vehicleDictionaryNameSearch" (keyup.enter)="searchVehicleDictionaries()"/>
           <div class="input-group-append">
             <button class="btn btn-buro-blue" type="button" (click)="searchVehicleDictionaries()"
@@ -673,6 +679,104 @@
             <tr style="cursor: pointer;" (click)="updateVehicle(vehicleDictionary)">
               <td>
                 {{vehicleDictionary.attributes.name}}
+              </td>
+            </tr>
+          </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-buro-blue" (click)="modal.dismiss()">Закрыть</button>
+  </div>
+</ng-template>
+
+<ng-template #serviceWorkDictionaryModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">Поиск в справочнике работ</h3>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row form-group">
+      <div class="col">
+        <div class="input-group input-group-alternative input-group-sm">
+          <input id="service-work-dictionary-select-ahead" type="text" placeholder="Введите наименование (мин. 3 символа)"
+                 class="form-control form-control-sm" [(ngModel)]="serviceWorkDictionaryNameSearch" (keyup.enter)="searchServiceWorkDictionaries()"/>
+          <div class="input-group-append">
+            <button class="btn btn-buro-blue" type="button" (click)="searchServiceWorkDictionaries()"
+                    [disabled]="!serviceWorkDictionaryNameSearch || serviceWorkDictionaryNameSearch.length < 3">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <table class="table align-items-center table-flush table-hover table-sm">
+          <thead class="thead-light">
+          <tr>
+            <th scope="col">Наименование</th>
+          </tr>
+          </thead>
+          <tbody>
+          <ng-container *ngFor="let serviceWorkDictionary of serviceWorkDictionaries.data">
+            <tr style="cursor: pointer;" (click)="newServiceWorkFromDictionary(serviceWorkDictionary)">
+              <td>
+                {{serviceWorkDictionary.attributes.name}}
+              </td>
+            </tr>
+          </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-buro-blue" (click)="modal.dismiss()">Закрыть</button>
+  </div>
+</ng-template>
+
+<ng-template #serviceAddonDictionaryModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">Поиск в справочнике товаров</h3>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row form-group">
+      <div class="col">
+        <div class="input-group input-group-alternative input-group-sm">
+          <input id="service-addon-dictionary-select-ahead" type="text" placeholder="Введите наименование (мин. 3 символа)"
+                 class="form-control form-control-sm" [(ngModel)]="serviceAddonDictionaryNameSearch" (keyup.enter)="searchServiceAddonDictionaries()"/>
+          <div class="input-group-append">
+            <button class="btn btn-buro-blue" type="button" (click)="searchServiceAddonDictionaries()"
+                    [disabled]="!serviceAddonDictionaryNameSearch || serviceAddonDictionaryNameSearch.length < 3">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <table class="table align-items-center table-flush table-hover table-sm">
+          <thead class="thead-light">
+          <tr>
+            <th scope="col">Наименование</th>
+          </tr>
+          </thead>
+          <tbody>
+          <ng-container *ngFor="let serviceAddonDictionary of serviceAddonDictionaries.data">
+            <tr style="cursor: pointer;" (click)="newServiceAddonFromDictionary(serviceAddonDictionary)">
+              <td>
+                {{serviceAddonDictionary.attributes.name}}
               </td>
             </tr>
           </ng-container>
