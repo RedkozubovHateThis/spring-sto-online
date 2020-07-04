@@ -63,7 +63,7 @@
                   <label class="form-control-label" for="end-date-picker">Дата окончания ремонта</label>
                   <div style="max-height: 29px;">
                     <input class="form-control form-control-alternative form-control-sm" id="end-date-picker" [mode]="'daytime'"
-                           placeholder="Дата начала ремонта"
+                           placeholder="Дата окончания ремонта"
                            (ngModelChange)="setEndDate($event)" [(ngModel)]="endDate" [dpDayPicker]="datePickerConfig" theme="dp-material" />
                   </div>
                 </div>
@@ -109,7 +109,7 @@
 
               <ng-container *ngIf="vehicleEdit">
                 <div class="alert alert-warning">
-                  Внимание! Все изменения, внесенные в автомобиль, отразяться во всех заказ-нарядах, где указан данный автомобиль!
+                  Внимание! Все изменения, внесенные в информацию об автомобиле, отразяться на всех заказ-нарядах, где указан данный автомобиль!
                 </div>
               </ng-container>
 
@@ -199,7 +199,7 @@
 
               <ng-container *ngIf="clientEdit">
                 <div class="alert alert-warning">
-                  Внимание! Все изменения, внесенные в информацию о клиенте, отразяться во всех заказ-нарядах, где указан данный клиент!
+                  Внимание! Все изменения, внесенные в информацию о клиенте, отразяться на всех заказ-нарядах, где указан данный клиент!
                 </div>
               </ng-container>
 
@@ -376,6 +376,9 @@
                     <th scope="col" style="width: 125px;">Код товара</th>
                     <th scope="col">Наименование товара</th>
                     <th scope="col" style="width: 175px;">
+                      Цена, руб.
+                    </th>
+                    <th scope="col" style="width: 175px;">
                       Количество
                     </th>
                     <th style="width: 43px;">
@@ -392,6 +395,10 @@
                     <th class="wrap-column">
                       <input class="form-control form-control-sm form-control-alternative" placeholder="Наименование товара"
                              [(ngModel)]="addon.attributes.name">
+                    </th>
+                    <th scope="col">
+                      <input class="form-control form-control-sm form-control-alternative" placeholder="Цена, руб."
+                             [(ngModel)]="addon.attributes.cost" type="number">
                     </th>
                     <th style="text-align: right;">
                       <input class="form-control form-control-sm form-control-alternative" placeholder="Количество"

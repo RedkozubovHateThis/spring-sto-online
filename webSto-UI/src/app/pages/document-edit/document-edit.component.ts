@@ -129,6 +129,7 @@ export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource
   }
 
   save() {
+    this.calculateTotalCost();
     this.isSaving = true;
     this.profileService.saveClientProfile( this.model ).subscribe( (savedClient) => {
       this.profileService.saveExecutorProfile( this.model ).subscribe( (savedExecutor) => {
@@ -190,5 +191,26 @@ export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource
   setClient(client: ProfileResource) {
     this.model.addRelationship(client, 'client');
     this.modalService.dismissAll();
+  }
+
+  calculateTotalCost() {
+    let cost = 0;
+    this.serviceWorks.data.forEach( (serviceWork) => {
+      if ( serviceWork.attributes.count > 0 ) {
+        if ( serviceWork.attributes.byPrice )
+          cost += serviceWork.attributes.price > 0 ? serviceWork.attributes.price * serviceWork.attributes.count : 0;
+        else {
+          cost += serviceWork.attributes.timeValue > 0 && serviceWork.attributes.priceNorm > 0
+            ? serviceWork.attributes.timeValue * serviceWork.attributes.priceNorm
+            : 0;
+        }
+      }
+    } );
+    this.serviceAddons.data.forEach( (serviceAddon) => {
+      if ( serviceAddon.attributes.count > 0 ) {
+        cost += serviceAddon.attributes.cost > 0 ? serviceAddon.attributes.cost * serviceAddon.attributes.count : 0;
+      }
+    } );
+    this.model.attributes.cost = cost;
   }
 }

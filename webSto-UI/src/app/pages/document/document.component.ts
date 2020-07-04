@@ -63,4 +63,39 @@ export class DocumentComponent extends ModelTransfer<ServiceDocumentResource, st
     this.documentService.setTransferModel( document );
     this.router.navigate(['/documents', document.id, 'edit']);
   }
+
+  calculateServiceWorkTotalCost(): number {
+    let totalCost = 0;
+    this.serviceWorks.data.forEach( (serviceWork) => {
+      totalCost += this.calculateServiceWorkCost(serviceWork);
+    } );
+    return totalCost;
+  }
+
+  calculateServiceWorkCost(serviceWork: ServiceWorkResource): number {
+    if ( serviceWork.attributes.count > 0 ) {
+      if ( serviceWork.attributes.byPrice )
+        return serviceWork.attributes.price > 0 ? serviceWork.attributes.price * serviceWork.attributes.count : 0;
+      else {
+        return serviceWork.attributes.timeValue > 0 && serviceWork.attributes.priceNorm > 0
+          ? serviceWork.attributes.timeValue * serviceWork.attributes.priceNorm
+          : 0;
+      }
+    }
+    return 0;
+  }
+
+  calculateServiceAddonTotalCost(): number {
+    let totalCost = 0;
+    this.serviceAddons.data.forEach( (serviceAddon) => {
+      totalCost += this.calculateServiceAddonCost(serviceAddon);
+    } );
+    return totalCost;
+  }
+
+  calculateServiceAddonCost(serviceAddon: ServiceAddonResource): number {
+    if ( serviceAddon.attributes.count > 0 )
+      return serviceAddon.attributes.cost > 0 ? serviceAddon.attributes.cost * serviceAddon.attributes.count : 0;
+    return 0;
+  }
 }

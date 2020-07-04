@@ -137,7 +137,7 @@
                     <span>Сумма работ:</span>
                     &nbsp;
                   </span>
-<!--                  <h2 style="display: inline-block;" *ngIf="model != null">{{model.serviceWork.workSum | number:'.2':'ru'}} р.</h2>-->
+                  <h2 style="display: inline-block;" *ngIf="model != null">{{calculateServiceWorkTotalCost() | number:'.2':'ru'}} р.</h2>
 
                 </div>
               </div>
@@ -149,16 +149,14 @@
                     <th scope="col" style="width: 125px;">Код работ</th>
                     <th scope="col">Наименование работ</th>
                     <th scope="col" style="text-align: right; width: 175px;">
-                      Норма времени, чел./час. /
+                      Норма времени, чел./час.
+                    </th>
+                    <th scope="col" style="text-align: right; width: 175px;">
+                      Стоимость нормы времени, руб. /
                       <div>
                         Фиксированная цена, руб.
                       </div>
                     </th>
-                    <ng-template #onlyPriceNorm>
-                      <th scope="col" style="text-align: right; width: 175px;">
-                        Стоимость нормы времени, руб.
-                      </th>
-                    </ng-template>
                     <th scope="col" style="text-align: right; width: 175px;">
                       Стоимость работ
                       <div class="text-muted">
@@ -176,20 +174,18 @@
                       {{serviceWork.attributes.name}}
                     </th>
                     <th style="text-align: right;">
+                      <div *ngIf="!serviceWork.attributes.byPrice">{{serviceWork.attributes.timeValue | number:'.2':'ru'}} ч./ч.</div>
+                    </th>
+                    <th style="text-align: right;">
                       <ng-container *ngIf="serviceWork.attributes.byPrice; else byPriceNorm">
                         <div>{{serviceWork.attributes.price | number:'.2':'ru'}} р.</div>
                       </ng-container>
                       <ng-template #byPriceNorm>
-                        <div>{{serviceWork.attributes.timeValue | number:'.2':'ru'}} ч./ч.</div>
+                        <div>{{serviceWork.attributes.priceNorm | number:'.2':'ru'}} р.</div>
                       </ng-template>
                     </th>
-                    <ng-template #viewFields>
-                      <th style="text-align: right;">
-                        <div *ngIf="!serviceWork.attributes.byPrice">{{serviceWork.attributes.priceNorm | number:'.2':'ru'}} р.</div>
-                      </th>
-                    </ng-template>
                     <th style="text-align: right;">
-<!--                      <div>{{serviceWork.total | number:'.2':'ru'}} р.</div>-->
+                      <div>{{calculateServiceWorkCost(serviceWork) | number:'.2':'ru'}} р.</div>
                       <div class="text-muted" *ngIf="serviceWork.attributes.count != null && serviceWork.attributes.count > 1">{{serviceWork.attributes.count}}</div>
                     </th>
                   </tr>
@@ -215,7 +211,7 @@
                     <span>Сумма товаров:</span>
                     &nbsp;
                   </span>
-<!--                  <h2 style="display: inline-block;" *ngIf="model != null">{{model.serviceGoodsAddon.addonsSum | number:'.2':'ru'}} р.</h2>-->
+                  <h2 style="display: inline-block;" *ngIf="model != null">{{calculateServiceAddonTotalCost() | number:'.2':'ru'}} р.</h2>
 
                 </div>
               </div>
@@ -243,7 +239,7 @@
                       {{addon.attributes.name}}
                     </th>
                     <th style="text-align: right;">
-<!--                      <div>{{addon.totalCost | number:'.2':'ru'}} р.</div>-->
+                      <div>{{calculateServiceAddonCost(addon) | number:'.2':'ru'}} р.</div>
                       <div class="text-muted" *ngIf="addon.attributes.count != null && addon.attributes.count > 1">{{addon.attributes.count}}</div>
                     </th>
                   </tr>
