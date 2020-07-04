@@ -26,20 +26,20 @@
 
           <div class="row form-group">
 
-            <div class="col-md-4 mb-3">
+            <div class="col-md-3 mb-3">
 
               <h3>Заказ-наряд</h3>
 
               <div class="row form-group">
                 <div class="col-lg-12">
-                  <label class="form-control-label" for="number-input">Номер заказ-наряда</label>
+                  <label class="form-control-label" for="number-input">Номер</label>
                   <input class="form-control form-control-sm form-control-alternative" id="number-input"
                          [(ngModel)]="model.attributes.number" placeholder="Номер заказ-наряда">
                 </div>
               </div>
               <div class="row form-group">
                 <div class="col-lg-12">
-                  <label class="form-control-label" for="status-select">Статус заказ-наряда</label>
+                  <label class="form-control-label" for="status-select">Статус</label>
                   <select id="status-select" class="form-control form-control-sm form-control-alternative"
                           [(ngModel)]="model.attributes.status">
                     <option *ngFor="let status of model.getStatuses()" [selected]="model.attributes.status === status.id" [ngValue]="status.id">
@@ -71,7 +71,7 @@
 
             </div>
 
-            <div class="col-md-4 mb-3">
+            <div class="col-md-3 mb-3">
 
               <div class="row">
                 <div class="col-md">
@@ -107,16 +107,10 @@
                 </div>
               </div>
 
-              <ng-container *ngIf="vehicleEdit">
-                <div class="alert alert-warning">
-                  Внимание! Все изменения, внесенные в информацию об автомобиле, отразяться на всех заказ-нарядах, где указан данный автомобиль!
-                </div>
-              </ng-container>
-
               <ng-container *ngIf="model.relationships.vehicle.data">
                 <div class="row form-group">
                   <div class="col-lg-12">
-                    <label class="form-control-label" for="model-input">Марка/модель автомобиля</label>
+                    <label class="form-control-label" for="model-input">Марка/модель</label>
                     <input class="form-control form-control-sm form-control-alternative" id="model-input"
                            [disabled]="!vehicleEdit && !model.relationships.vehicle.data.is_new"
                            [(ngModel)]="model.relationships.vehicle.data.attributes.modelName" placeholder="Марка/модель автомобиля">
@@ -125,7 +119,7 @@
 
                 <div class="row form-group">
                   <div class="col-lg-12">
-                    <label class="form-control-label" for="reg-number-input">Регистрационный номер автомобиля</label>
+                    <label class="form-control-label" for="reg-number-input">Регистрационный номер</label>
                     <input class="form-control form-control-sm form-control-alternative" id="reg-number-input"
                            [disabled]="!vehicleEdit && !model.relationships.vehicle.data.is_new"
                            [(ngModel)]="model.relationships.vehicle.data.attributes.regNumber" placeholder="Регистрационный номер автомобиля">
@@ -134,7 +128,7 @@
 
                 <div class="row form-group">
                   <div class="col-lg-12">
-                    <label class="form-control-label" for="vin-number-input">VIN-номер автомобиля</label>
+                    <label class="form-control-label" for="vin-number-input">VIN-номер</label>
                     <input class="form-control form-control-sm form-control-alternative" id="vin-number-input"
                            [disabled]="!vehicleEdit && !model.relationships.vehicle.data.is_new"
                            [(ngModel)]="model.relationships.vehicle.data.attributes.vinNumber" placeholder="VIN-номер автомобиля">
@@ -142,26 +136,29 @@
                 </div>
 
                 <div class="row form-group">
-                  <div class="col-lg-12">
-                    <label class="form-control-label" for="year-input">Год выпуска автомобиля</label>
+                  <div class="col-lg-6">
+                    <label class="form-control-label" for="year-input">Год выпуска</label>
                     <input class="form-control form-control-sm form-control-alternative" id="year-input" type="number"
                            [disabled]="!vehicleEdit && !model.relationships.vehicle.data.is_new"
                            [(ngModel)]="model.relationships.vehicle.data.attributes.year" placeholder="Год выпуска автомобиля">
                   </div>
-                </div>
-
-                <div class="row form-group">
-                  <div class="col-lg-12">
-                    <label class="form-control-label" for="mileage-number-input">Пробег автомобиля</label>
+                  <div class="col-lg-6">
+                    <label class="form-control-label" for="mileage-number-input">Пробег</label>
                     <input class="form-control form-control-sm form-control-alternative" id="mileage-number-input" type="number"
                            [(ngModel)]="model.relationships.vehicleMileage.data.attributes.mileage" placeholder="Пробег автомобиля">
                   </div>
                 </div>
               </ng-container>
 
+              <ng-container *ngIf="vehicleEdit">
+                <div class="alert alert-warning">
+                  Внимание! Все изменения, внесенные в информацию об автомобиле, отразяться на всех заказ-нарядах, где указан данный автомобиль!
+                </div>
+              </ng-container>
+
             </div>
 
-            <div class="col-md-4 mb-3">
+            <div class="col-md-3 mb-3">
 
               <div class="row">
                 <div class="col-md">
@@ -196,12 +193,6 @@
                   </div>
                 </div>
               </div>
-
-              <ng-container *ngIf="clientEdit">
-                <div class="alert alert-warning">
-                  Внимание! Все изменения, внесенные в информацию о клиенте, отразяться на всех заказ-нарядах, где указан данный клиент!
-                </div>
-              </ng-container>
 
               <ng-container *ngIf="model.relationships.client.data">
                 <div class="row form-group">
@@ -238,8 +229,66 @@
                 </div>
               </ng-container>
 
-              <ng-container *ngIf="userService.isAdmin()">
-                    <h3>Исполнитель</h3>
+              <ng-container *ngIf="clientEdit">
+                <div class="alert alert-warning">
+                  Внимание! Все изменения, внесенные в информацию о клиенте, отразяться на всех заказ-нарядах, где указан данный клиент!
+                </div>
+              </ng-container>
+
+            </div>
+
+            <div class="col-md-3 mb-3">
+
+              <div class="row">
+                <div class="col-md">
+                  <h3>Исполнитель</h3>
+                </div>
+                <div class="col-md-auto" *ngIf="userService.isAdmin()">
+                  <div class="btn-group btn-group-sm">
+                    <button
+                      class="btn btn-sn btn-buro-blue"
+                      title="Выбор"
+                      (click)="openExecutorsModal()"
+                    >
+                      <i class="fas fa-list"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <ng-container *ngIf="model.relationships.executor.data">
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="executor-name-input">Полное имя</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="executor-name-input"
+                           disabled
+                           [(ngModel)]="model.relationships.executor.data.attributes.name" placeholder="Полное имя">
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="executor-phone-input">Телефон</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="executor-phone-input"
+                           disabled
+                           [(ngModel)]="model.relationships.executor.data.attributes.phone" placeholder="Телефон">
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="executor-email-input">Email</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="executor-email-input"
+                           disabled
+                           [(ngModel)]="model.relationships.executor.data.attributes.email" placeholder="Email (не обязательно к заполнению)">
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="executor-address-input">Адрес</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="executor-address-input"
+                           disabled
+                           [(ngModel)]="model.relationships.executor.data.attributes.address" placeholder="Адрес">
+                  </div>
+                </div>
               </ng-container>
 
             </div>
@@ -265,14 +314,7 @@
 
                 </div>
                 <div class="col-auto">
-
-<!--                  <span>-->
-<!--                    <span>Сумма работ:</span>-->
-<!--                    &nbsp;-->
-<!--                  </span>-->
-<!--&lt;!&ndash;                  <h2 style="display: inline-block;" *ngIf="model != null">{{model.serviceWork.workSum | number:'.2':'ru'}} р.</h2>&ndash;&gt;-->
                   <button class="btn btn-sm btn-buro-blue" (click)="newServiceWork()">Добавить</button>
-
                 </div>
               </div>
 
@@ -358,14 +400,7 @@
 
                 </div>
                 <div class="col-auto">
-
-<!--                  <span>-->
-<!--                    <span>Сумма товаров:</span>-->
-<!--                    &nbsp;-->
-<!--                  </span>-->
-<!--                  <h2 style="display: inline-block;" *ngIf="model != null">{{model.serviceGoodsAddon.addonsSum | number:'.2':'ru'}} р.</h2>-->
                   <button class="btn btn-sm btn-buro-blue" (click)="newServiceAddon()">Добавить</button>
-
                 </div>
               </div>
 
@@ -438,10 +473,10 @@
     <div class="row form-group">
       <div class="col">
         <div class="input-group input-group-alternative input-group-sm">
-          <input id="client-select-ahead" type="text" placeholder="Введите телефон или email"
+          <input id="client-select-ahead" type="text" placeholder="Введите ФИО, телефон или email (мин. 3 символа)"
                  class="form-control form-control-sm" [(ngModel)]="phoneOrEmailSearch" (keyup.enter)="searchClients()"/>
           <div class="input-group-append">
-            <button class="btn btn-buro-blue" type="button" (click)="searchClients()" [disabled]="!phoneOrEmailSearch">
+            <button class="btn btn-buro-blue" type="button" (click)="searchClients()" [disabled]="!phoneOrEmailSearch || phoneOrEmailSearch.length < 3">
               <i class="fas fa-search"></i>
             </button>
           </div>
@@ -487,6 +522,52 @@
   </div>
 </ng-template>
 
+<ng-template #executorModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">Выбор исполнителя</h3>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col">
+        <table class="table align-items-center table-flush table-hover table-sm">
+          <thead class="thead-light">
+            <tr>
+              <th scope="col">Полное имя</th>
+              <th scope="col">Телефон</th>
+              <th scope="col">Почта</th>
+              <th scope="col">Адрес</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let executor of executors.data">
+              <tr style="cursor: pointer;" (click)="setExecutor(executor)">
+                <td>
+                  {{executor.attributes.name}}
+                </td>
+                <td>
+                  {{executor.attributes.phone}}
+                </td>
+                <td>
+                  {{executor.attributes.email}}
+                </td>
+                <td>
+                  {{executor.attributes.address}}
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-buro-blue" (click)="modal.dismiss()">Закрыть</button>
+  </div>
+</ng-template>
+
 <ng-template #vehicleModal let-modal>
   <div class="modal-header">
     <h3 class="modal-title">Поиск автомобилей</h3>
@@ -498,10 +579,10 @@
     <div class="row form-group">
       <div class="col">
         <div class="input-group input-group-alternative input-group-sm">
-          <input id="vehicle-select-ahead" type="text" placeholder="Введите VIN-номер"
+          <input id="vehicle-select-ahead" type="text" placeholder="Введите VIN-номер (мин. 3 символа)"
                  class="form-control form-control-sm" [(ngModel)]="vinSearch" (keyup.enter)="searchVehicles()"/>
           <div class="input-group-append">
-            <button class="btn btn-buro-blue" type="button" (click)="searchVehicles()" [disabled]="!vinSearch">
+            <button class="btn btn-buro-blue" type="button" (click)="searchVehicles()" [disabled]="!vinSearch || vinSearch.length < 3">
               <i class="fas fa-search"></i>
             </button>
           </div>

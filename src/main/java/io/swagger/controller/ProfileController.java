@@ -35,20 +35,22 @@ public class ProfileController {
     private ProfileResourceProcessor profileResourceProcessor;
 
     @GetMapping
-    public ResponseEntity findVehicles(JsonApiParams params) throws Exception {
+    public ResponseEntity findProfiles(JsonApiParams params) throws Exception {
         User currentUser = userRepository.findCurrentUser();
 
         if ( !UserHelper.isAdmin( currentUser ) && !UserHelper.isServiceLeader( currentUser ) )
-            return ResponseEntity.status(403).build();
+            return ResponseEntity.status(404).build();
 
         FilterPayload filterPayload = params.getFilterPayload();
         if ( filterPayload.getPhone() == null || filterPayload.getPhone().length() == 0 ||
-                filterPayload.getEmail() == null || filterPayload.getEmail().length() == 0 )
+                filterPayload.getEmail() == null || filterPayload.getEmail().length() == 0 ||
+                filterPayload.getFio() == null || filterPayload.getFio().length() == 0 )
             return ResponseEntity.status(400).build();
 
         List<Profile> profiles = profileRepository.findAllByPhoneOrEmail(
                 String.format("%%%s%%", filterPayload.getPhone()),
-                String.format("%%%s%%", filterPayload.getEmail())
+                String.format("%%%s%%", filterPayload.getEmail()),
+                String.format("%%%s%%", filterPayload.getFio())
         );
         if ( profiles.size() == 0 )
             return ResponseEntity.status(404).build();
@@ -121,6 +123,7 @@ public class ProfileController {
     public static class FilterPayload {
         private String phone;
         private String email;
+        private String fio;
     }
 
     @Data
@@ -140,6 +143,8 @@ public class ProfileController {
                 filterPayload.setPhone( filter.get("phone").get(0) );
             if ( filter.containsKey("email") && filter.get("email").size() > 0 )
                 filterPayload.setEmail( filter.get("email").get(0) );
+            if ( filter.containsKey("fio") && filter.get("fio").size() > 0 )
+                filterPayload.setFio( filter.get("fio").get(0) );
 
             return filterPayload;
         }

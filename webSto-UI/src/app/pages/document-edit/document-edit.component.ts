@@ -29,6 +29,7 @@ export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource
 
   @ViewChild('clientModal', {static: false}) private clientModal;
   @ViewChild('vehicleModal', {static: false}) private vehicleModal;
+  @ViewChild('executorModal', {static: false}) private executorModal;
   private vinSearch = '';
   private phoneOrEmailSearch = '';
 
@@ -51,6 +52,7 @@ export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource
   private serviceAddons: DocumentCollection<ServiceAddonResource> = new DocumentCollection<ServiceAddonResource>();
   private vehicles: DocumentCollection<VehicleResource> = new DocumentCollection<VehicleResource>();
   private clients: DocumentCollection<ProfileResource> = new DocumentCollection<ProfileResource>();
+  private executors: DocumentCollection<ProfileResource> = new DocumentCollection<ProfileResource>();
 
   constructor(private documentService: DocumentService, protected route: ActivatedRoute, private toastrService: ToastrService,
               private userService: UserService, private httpClient: HttpClient,
@@ -162,21 +164,31 @@ export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource
   openClientsModal() {
     this.modalService.open(this.clientModal, { size: 'lg' });
   }
+  openExecutorsModal() {
+    this.searchExecutors();
+    this.modalService.open(this.executorModal, { size: 'lg' });
+  }
 
   openVehiclesModal() {
     this.modalService.open(this.vehicleModal, { size: 'lg' });
   }
 
   searchClients() {
-    if ( !this.phoneOrEmailSearch ) return;
+    if ( !this.phoneOrEmailSearch || this.phoneOrEmailSearch.length < 3 ) return;
 
     this.profileService.findByPhoneOrEmail( this.phoneOrEmailSearch ).subscribe( (clients) => {
       this.clients = clients;
     } );
   }
 
+  searchExecutors() {
+    this.profileService.getAllExecutors().subscribe( (executors) => {
+      this.executors = executors;
+    } );
+  }
+
   searchVehicles() {
-    if ( !this.vinSearch ) return;
+    if ( !this.vinSearch || this.vinSearch.length < 3 ) return;
 
     this.vehicleService.findByVin( this.vinSearch ).subscribe( (vehicles) => {
       this.vehicles = vehicles;
@@ -190,6 +202,11 @@ export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource
 
   setClient(client: ProfileResource) {
     this.model.addRelationship(client, 'client');
+    this.modalService.dismissAll();
+  }
+
+  setExecutor(executor: ProfileResource) {
+    this.model.addRelationship(executor, 'executor');
     this.modalService.dismissAll();
   }
 

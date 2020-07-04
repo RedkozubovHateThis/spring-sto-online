@@ -30,7 +30,8 @@ export class ProfileService {
       beforepath: `external`,
       remotefilter: {
         phone: search,
-        email: search
+        email: search,
+        fio: search
       }
     });
   }
