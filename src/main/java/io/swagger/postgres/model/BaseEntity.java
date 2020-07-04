@@ -12,7 +12,7 @@ import javax.persistence.MappedSuperclass;
 @Data
 @EqualsAndHashCode(of = "id")
 @MappedSuperclass
-public class BaseEntity {
+public abstract class BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
