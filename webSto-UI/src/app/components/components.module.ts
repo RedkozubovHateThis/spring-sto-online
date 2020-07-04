@@ -6,7 +6,7 @@ import {FooterComponent} from './footer/footer.component';
 import {RouterModule} from '@angular/router';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {InfobarComponent} from './infobar/infobar.component';
-// import {DocumentFilterComponent} from './document-filter/document-filter.component';
+import {DocumentFilterComponent} from './document-filter/document-filter.component';
 import {FormsModule} from '@angular/forms';
 // import {ReportButtonComponent} from './report-button/report-button.component';
 import {PdfViewerModule} from 'ng2-pdf-viewer';
@@ -32,7 +32,7 @@ import {RoleChangeButtonComponent} from './role-change-button/role-change-button
     NavbarComponent,
     SidebarComponent,
     InfobarComponent,
-    // DocumentFilterComponent,
+    DocumentFilterComponent,
     // ReportButtonComponent,
     PasswordChangeButtonComponent,
     UserFilterComponent,
@@ -46,7 +46,7 @@ import {RoleChangeButtonComponent} from './role-change-button/role-change-button
     NavbarComponent,
     SidebarComponent,
     InfobarComponent,
-    // DocumentFilterComponent,
+    DocumentFilterComponent,
     // ReportButtonComponent,
     PasswordChangeButtonComponent,
     UserFilterComponent,

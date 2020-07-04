@@ -90,10 +90,12 @@
       </div>
     </div>
     <div class="col-xl-3">
-<!--      <app-document-filter (onChange)="applyFilter()"-->
-<!--                           [filter]="documentResponseController.filter"-->
-<!--                           [document]="selected"-->
-<!--                           (onOrganizationChange)="documentResponseController.emitOrganizationChange()"></app-document-filter>-->
+      <app-document-filter
+        (onChange)="applyFilter()"
+        [filter]="documentController.filter"
+        [document]="selected"
+        (onOrganizationChange)="documentService.emitOrganizationChange()"
+      ></app-document-filter>
     </div>
   </div>
 </div>

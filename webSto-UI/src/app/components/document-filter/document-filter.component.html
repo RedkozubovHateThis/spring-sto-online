@@ -8,12 +8,12 @@
         </h3>
       </div>
       <div class="col-auto mb-3">
-        <app-report-button [model]="document" [withPrint]="false" [disabled]="document != null && document.state !== 4"
-                           *ngIf="userService.currentUser != null">
-        </app-report-button>
-        <app-report-button [model]="document" [printDisabled]="document != null && document.state !== 4"
-                           *ngIf="userService.currentUser != null">
-        </app-report-button>
+<!--        <app-report-button [model]="document" [withPrint]="false" [disabled]="document != null && document.state !== 4"-->
+<!--                           *ngIf="userService.currentUser != null">-->
+<!--        </app-report-button>-->
+<!--        <app-report-button [model]="document" [printDisabled]="document != null && document.state !== 4"-->
+<!--                           *ngIf="userService.currentUser != null">-->
+<!--        </app-report-button>-->
         <button class="btn btn-sm btn-buro-blue" (click)="resetFilters()" *ngIf="filter.state || filter.organization ||
         filter.vehicle || filter.vinNumber || filter.client || filter.fromDate || filter.toDate">
           Сбросить
@@ -39,8 +39,8 @@
         <option [selected]="null === filter.organization" [ngValue]="null">
           Без фильтра
         </option>
-        <option [selected]="organization.id === filter.organization" *ngFor="let organization of organizations" [ngValue]="organization.id">
-          {{ organization.fullName }}
+        <option [selected]="organization.id === filter.organization" *ngFor="let organization of executors.data" [ngValue]="organization.id">
+          {{ organization.attributes.name }}
         </option>
       </select>
     </div>
@@ -52,8 +52,8 @@
         <option [selected]="null === filter.client" [ngValue]="null">
           Без фильтра
         </option>
-        <option [selected]="client.id === filter.client" *ngFor="let client of clients" [ngValue]="client.id">
-          {{ client.shortName }}
+        <option [selected]="client.id === filter.client" *ngFor="let client of clients.data" [ngValue]="client.id">
+          {{ client.attributes.name }}
         </option>
       </select>
     </div>
@@ -71,14 +71,14 @@
         </div>
       </div>
       <ng-template #rt let-r="result" let-t="term">
-        <ngb-highlight [result]="r.shortName" [term]="t"></ngb-highlight>
+        <ngb-highlight [result]="r.attributes.name" [term]="t"></ngb-highlight>
       </ng-template>
     </div>
 
     <div class="form-group">
-      <label class="form-control-label" for="model-input">VIN-номер</label>
+      <label class="form-control-label" for="vin-number-input">VIN-номер</label>
       <div class="input-group input-group-alternative input-group-sm">
-        <input id="model-input" class="form-control" placeholder="VIN-номер"
+        <input id="vin-number-input" class="form-control" placeholder="VIN-номер"
                [disabled]="disabled" [(ngModel)]="filter.vinNumber" (keyup.enter)="emitChange()">
         <div class="input-group-append">
           <button class="btn btn-buro-blue" type="button" (click)="emitChange()" [disabled]="disabled">
@@ -89,9 +89,9 @@
     </div>
 
     <div class="form-group">
-      <label class="form-control-label" for="vin-input">Рег. номер</label>
+      <label class="form-control-label" for="reg-number-input">Рег. номер</label>
       <div class="input-group input-group-alternative input-group-sm">
-        <input id="vin-input" class="form-control" placeholder="Рег. номер"
+        <input id="reg-number-input" class="form-control" placeholder="Рег. номер"
                [disabled]="disabled" [(ngModel)]="filter.vehicle" (keyup.enter)="emitChange()">
         <div class="input-group-append">
           <button class="btn btn-buro-blue" type="button" (click)="emitChange()" [disabled]="disabled">
@@ -104,17 +104,17 @@
     <div class="form-group">
       <div class="row">
         <div class="col-xl-12 col-lg-6 col-sm col-xs-12">
-          <label class="form-control-label" for="from-date-picker">Дата начала ремонта - от</label>
+          <label class="form-control-label" for="from-date-picker-filter">Дата начала ремонта - от</label>
           <div>
-            <input class="form-control form-control-alternative form-control-sm" id="from-date-picker" [mode]="'day'"
+            <input class="form-control form-control-alternative form-control-sm" id="from-date-picker-filter" [mode]="'day'"
                    placeholder="выберите дату - от" [disabled]="disabled"
                    (ngModelChange)="setFromDate($event)" [(ngModel)]="fromDate" [dpDayPicker]="datePickerConfig" theme="dp-material" />
           </div>
         </div>
         <div class="col-xl-12 col-lg-6 col-sm col-xs-12">
-          <label class="form-control-label" for="to-date-picker">Дата начала ремонта - до</label>
+          <label class="form-control-label" for="to-date-picker-filter">Дата начала ремонта - до</label>
           <div>
-            <input class="form-control form-control-alternative form-control-sm" id="to-date-picker" [mode]="'day'"
+            <input class="form-control form-control-alternative form-control-sm" id="to-date-picker-filter" [mode]="'day'"
                    placeholder="выберите дату - до" [disabled]="disabled"
                    (ngModelChange)="setToDate($event)" [(ngModel)]="toDate" [dpDayPicker]="datePickerConfig" theme="dp-material" />
           </div>
@@ -140,10 +140,10 @@
       <label class="form-control-label" for="sort-select">Сортировать по:</label>
       <select id="sort-select" class="form-control form-control-sm form-control-alternative"
               [disabled]="disabled" [(ngModel)]="filter.sort" (change)="emitChange()">
-        <option [selected]="'dateStart' === filter.sort" [ngValue]="'dateStart'">
+        <option [selected]="'startDate' === filter.sort" [ngValue]="'startDate'">
           Дата начала
         </option>
-        <option [selected]="'documentOutHeader.dateCreate' === filter.sort" [ngValue]="'documentOutHeader.dateCreate'">
+        <option [selected]="'endDate' === filter.sort" [ngValue]="'endDate'">
           Дата окончания
         </option>
       </select>

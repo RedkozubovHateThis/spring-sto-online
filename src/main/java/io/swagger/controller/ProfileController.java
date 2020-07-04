@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/external/profiles")
@@ -57,6 +58,60 @@ public class ProfileController {
                         profiles,
                         null,
                         (long) profiles.size(),
+                        null
+                )
+        );
+    }
+
+    @GetMapping("/clients")
+    public ResponseEntity findAllClients() throws Exception {
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( !UserHelper.isServiceLeader( currentUser ) && !UserHelper.isAdmin( currentUser ) )
+            return ResponseEntity.status(404).build();
+
+        List<Profile> clients;
+
+        if ( UserHelper.isAdmin( currentUser ) )
+            clients = profileRepository.findAll();
+        else {
+            if ( currentUser.getProfile() == null )
+                return ResponseEntity.status(404).build();
+            clients = profileRepository.findClientsByExecutorId( currentUser.getProfile().getId() );
+        }
+
+        return ResponseEntity.ok(
+                profileResourceProcessor.toResourceList(
+                        clients,
+                        null,
+                        (long) clients.size(),
+                        null
+                )
+        );
+    }
+
+    @GetMapping("/executors")
+    public ResponseEntity findAllExecutors() throws Exception {
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( !UserHelper.isAdmin( currentUser ) && !UserHelper.isClient( currentUser ) )
+            return ResponseEntity.status(404).build();
+
+        List<Profile> clients;
+
+        if ( UserHelper.isAdmin( currentUser ) )
+            clients = profileRepository.findExecutors();
+        else {
+            if ( currentUser.getProfile() == null )
+                return ResponseEntity.status(404).build();
+            clients = profileRepository.findExecutorsByClientId( currentUser.getProfile().getId() );
+        }
+
+        return ResponseEntity.ok(
+                profileResourceProcessor.toResourceList(
+                        clients,
+                        null,
+                        (long) clients.size(),
                         null
                 )
         );
@@ -104,8 +159,10 @@ public class ProfileController {
             String firstField = sort.get(0);
             Sort sortDomain;
 
-            if (firstField.startsWith("-"))
-                sortDomain = Sort.by(Sort.Direction.DESC, sort.toArray( new String[ sort.size() ] ));
+            if (firstField.startsWith("-")) {
+                List<String> sortFixed = sort.stream().map( eachSort -> eachSort.replaceFirst("-", "") ).collect( Collectors.toList() );
+                sortDomain = Sort.by(Sort.Direction.DESC, sortFixed.toArray( new String[ sort.size() ] ) );
+            }
             else
                 sortDomain = Sort.by(Sort.Direction.ASC, sort.toArray( new String[ sort.size() ] ));
 

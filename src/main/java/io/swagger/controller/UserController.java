@@ -24,6 +24,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RequestMapping("/external/users")
 @RestController
@@ -347,8 +348,10 @@ public class UserController {
             String firstField = sort.get(0);
             Sort sortDomain;
 
-            if (firstField.startsWith("-"))
-                sortDomain = Sort.by(Sort.Direction.DESC, sort.toArray( new String[ sort.size() ] ));
+            if (firstField.startsWith("-")) {
+                List<String> sortFixed = sort.stream().map( eachSort -> eachSort.replaceFirst("-", "") ).collect( Collectors.toList() );
+                sortDomain = Sort.by(Sort.Direction.DESC, sortFixed.toArray( new String[ sort.size() ] ) );
+            }
             else
                 sortDomain = Sort.by(Sort.Direction.ASC, sort.toArray( new String[ sort.size() ] ));
 

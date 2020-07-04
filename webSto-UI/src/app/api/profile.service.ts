@@ -21,7 +21,7 @@ import {ProfileResource, ProfileResourceService} from '../model/resource/profile
 @Injectable()
 export class ProfileService {
 
-  constructor(private profileResourceService: ProfileResourceService) {
+  constructor(private profileResourceService: ProfileResourceService, private http: HttpClient, private userService: UserService) {
     profileResourceService.register();
   }
 
@@ -59,6 +59,34 @@ export class ProfileService {
         subscriber.next(executor);
         subscriber.complete();
       }, ( error ) => {
+        subscriber.error( error );
+        subscriber.complete();
+      } );
+    } );
+  }
+
+  getAllClients(): Observable<DocumentCollection<ProfileResource>> {
+    return new Observable<DocumentCollection<ProfileResource>>( (subscriber) => {
+      this.http.get<IDataCollection>(`${this.userService.getApiUrl()}external/profiles/clients`).subscribe( (data) => {
+        const collection = this.profileResourceService.newCollection();
+        collection.fill( data );
+        subscriber.next( collection );
+        subscriber.complete();
+      }, (error) => {
+        subscriber.error( error );
+        subscriber.complete();
+      } );
+    } );
+  }
+
+  getAllExecutors(): Observable<DocumentCollection<ProfileResource>> {
+    return new Observable<DocumentCollection<ProfileResource>>( (subscriber) => {
+      this.http.get<IDataCollection>(`${this.userService.getApiUrl()}external/profiles/executors`).subscribe( (data) => {
+        const collection = this.profileResourceService.newCollection();
+        collection.fill( data );
+        subscriber.next( collection );
+        subscriber.complete();
+      }, (error) => {
         subscriber.error( error );
         subscriber.complete();
       } );

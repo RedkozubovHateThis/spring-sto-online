@@ -4,10 +4,10 @@ import {PageFilter} from './pageFilter';
 export class DocumentsFilter extends PageFilter {
 
   state: string;
-  organization: number;
+  organization: string;
   vehicle: string;
   vinNumber: string;
-  client: number;
+  client: string;
   sort: string;
   direction: string;
   fromDate: string;
@@ -33,10 +33,10 @@ export class DocumentsFilter extends PageFilter {
     if ( queryParams.state ) this.state = queryParams.state;
     // else this.state = null;
 
-    if ( queryParams.organization ) this.organization = parseInt(queryParams.organization, 10);
+    if ( queryParams.organization ) this.organization = queryParams.organization;
     // else this.organization = null;
 
-    if ( queryParams.client ) this.client = parseInt(queryParams.client, 10);
+    if ( queryParams.client ) this.client = queryParams.client;
     // else this.client = null;
 
     if ( queryParams.vehicle ) this.vehicle = queryParams.vehicle;

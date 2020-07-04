@@ -42,10 +42,10 @@ export class DocumentService implements TransferService<ServiceDocumentResource>
       toDate: filter.toDate != null ? filter.toDate : '',
     };
     return this.serviceDocumentResourceService.all({
-      // beforepath: 'external',
+      beforepath: 'external',
       sort: [`${filter.direction === 'desc' ? '-' : ''}${filter.sort}`],
       page: { number: filter.page, size: filter.size },
-      // remotefilter: params
+      remotefilter: params
     });
   }
 
@@ -80,6 +80,10 @@ export class DocumentService implements TransferService<ServiceDocumentResource>
 
   setTransferModel(model: ServiceDocumentResource) {
     this.transferModel = model;
+  }
+
+  emitOrganizationChange() {
+
   }
 
 }
