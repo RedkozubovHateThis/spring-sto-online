@@ -81,7 +81,7 @@
                   <div class="btn-group btn-group-sm">
                     <button
                       class="btn btn-sn btn-buro-blue"
-                      title="Новый"
+                      title="Добавить новый"
                       (click)="newVehicle()"
                       [disabled]="model.relationships.vehicle.data && model.relationships.vehicle.data.is_new"
                     >
@@ -89,7 +89,7 @@
                     </button>
                     <button
                       class="btn btn-sn btn-buro-blue"
-                      title="Поиск"
+                      title="Найти ранее добавленный"
                       (click)="openVehiclesModal()"
                     >
                       <i class="fas fa-search"></i>
@@ -97,7 +97,7 @@
                     <button
                       class="btn btn-sn btn-buro-blue"
                       [class.active]="vehicleEdit"
-                      title="Редактировать"
+                      title="Редактировать текущий"
                       (click)="vehicleEdit = !vehicleEdit"
                       [disabled]="!model.relationships.vehicle.data || model.relationships.vehicle.data.is_new"
                     >
@@ -111,9 +111,18 @@
                 <div class="row form-group">
                   <div class="col-lg-12">
                     <label class="form-control-label" for="model-input">Марка/модель</label>
-                    <input class="form-control form-control-sm form-control-alternative" id="model-input"
-                           [disabled]="!vehicleEdit && !model.relationships.vehicle.data.is_new"
-                           [(ngModel)]="model.relationships.vehicle.data.attributes.modelName" placeholder="Марка/модель автомобиля">
+                    <div class="input-group input-group-alternative input-group-sm">
+                      <input class="form-control form-control-sm form-control-alternative" id="model-input"
+                             [disabled]="!vehicleEdit && !model.relationships.vehicle.data.is_new"
+                             [(ngModel)]="model.relationships.vehicle.data.attributes.modelName" placeholder="Марка/модель автомобиля">
+                      <div class="input-group-append">
+                        <button class="btn btn-buro-blue" type="button" (click)="openVehicleDictionariesModal()"
+                                title="Найти в справочнике"
+                                [disabled]="!vehicleEdit && !model.relationships.vehicle.data.is_new">
+                          <i class="fas fa-search"></i>
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -152,7 +161,7 @@
 
               <ng-container *ngIf="vehicleEdit">
                 <div class="alert alert-warning">
-                  Внимание! Все изменения, внесенные в информацию об автомобиле, отразяться на всех заказ-нарядах, где указан данный автомобиль!
+                  Внимание! Все изменения, внесенные в информацию об автомобиле, отразятся на всех заказ-нарядах, где указан данный автомобиль!
                 </div>
               </ng-container>
 
@@ -168,7 +177,7 @@
                   <div class="btn-group btn-group-sm">
                     <button
                       class="btn btn-sn btn-buro-blue"
-                      title="Новый"
+                      title="Добавить нового"
                       (click)="newClient()"
                       [disabled]="model.relationships.client.data && model.relationships.client.data.is_new"
                     >
@@ -176,7 +185,7 @@
                     </button>
                     <button
                       class="btn btn-sn btn-buro-blue"
-                      title="Поиск"
+                      title="Найти ранее добавленного"
                       (click)="openClientsModal()"
                     >
                       <i class="fas fa-search"></i>
@@ -185,7 +194,7 @@
                       class="btn btn-sn btn-buro-blue"
                       [class.active]="clientEdit"
                       (click)="clientEdit = !clientEdit"
-                      title="Редактировать"
+                      title="Редактировать текущего"
                       [disabled]="!model.relationships.client.data || model.relationships.client.data.is_new"
                     >
                       <i class="fas fa-edit"></i>
@@ -231,7 +240,7 @@
 
               <ng-container *ngIf="clientEdit">
                 <div class="alert alert-warning">
-                  Внимание! Все изменения, внесенные в информацию о клиенте, отразяться на всех заказ-нарядах, где указан данный клиент!
+                  Внимание! Все изменения, внесенные в информацию о клиенте, отразятся на всех заказ-нарядах, где указан данный клиент!
                 </div>
               </ng-container>
 
@@ -247,7 +256,7 @@
                   <div class="btn-group btn-group-sm">
                     <button
                       class="btn btn-sn btn-buro-blue"
-                      title="Выбор"
+                      title="Выбрать"
                       (click)="openExecutorsModal()"
                     >
                       <i class="fas fa-list"></i>
@@ -615,6 +624,55 @@
               </td>
               <td>
                 {{vehicle.attributes.year}}
+              </td>
+            </tr>
+          </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-buro-blue" (click)="modal.dismiss()">Закрыть</button>
+  </div>
+</ng-template>
+
+<ng-template #vehicleDictionaryModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">Поиск в справочнике автомобилей</h3>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row form-group">
+      <div class="col">
+        <div class="input-group input-group-alternative input-group-sm">
+          <input id="vehicle-dictionary-select-ahead" type="text" placeholder="Введите наименование (мин. 3 символа)"
+                 class="form-control form-control-sm" [(ngModel)]="vehicleDictionaryNameSearch" (keyup.enter)="searchVehicleDictionaries()"/>
+          <div class="input-group-append">
+            <button class="btn btn-buro-blue" type="button" (click)="searchVehicleDictionaries()"
+                    [disabled]="!vehicleDictionaryNameSearch || vehicleDictionaryNameSearch.length < 3">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <table class="table align-items-center table-flush table-hover table-sm">
+          <thead class="thead-light">
+          <tr>
+            <th scope="col">Марка/модель</th>
+          </tr>
+          </thead>
+          <tbody>
+          <ng-container *ngFor="let vehicleDictionary of vehicleDictionaries.data">
+            <tr style="cursor: pointer;" (click)="updateVehicle(vehicleDictionary)">
+              <td>
+                {{vehicleDictionary.attributes.name}}
               </td>
             </tr>
           </ng-container>

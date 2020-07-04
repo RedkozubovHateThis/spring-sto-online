@@ -42,9 +42,9 @@ public class ProfileController {
             return ResponseEntity.status(404).build();
 
         FilterPayload filterPayload = params.getFilterPayload();
-        if ( filterPayload.getPhone() == null || filterPayload.getPhone().length() == 0 ||
-                filterPayload.getEmail() == null || filterPayload.getEmail().length() == 0 ||
-                filterPayload.getFio() == null || filterPayload.getFio().length() == 0 )
+        if ( filterPayload.getPhone() == null || filterPayload.getPhone().length() < 3 ||
+                filterPayload.getEmail() == null || filterPayload.getEmail().length() < 3 ||
+                filterPayload.getFio() == null || filterPayload.getFio().length() < 3 )
             return ResponseEntity.status(400).build();
 
         List<Profile> profiles = profileRepository.findAllByPhoneOrEmail(

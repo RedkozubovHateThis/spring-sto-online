@@ -19,6 +19,8 @@ import {VehicleService} from '../../api/vehicle.service';
 import {ProfileService} from '../../api/profile.service';
 import {ServiceAddonService} from '../../api/service-addon.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {VehicleDictionaryResource} from '../../model/resource/vehicle-dictionary.resource.service';
+import {VehicleDictionaryService} from '../../api/vehicle.dictionary.service';
 
 @Component({
   selector: 'app-document-add',
@@ -54,6 +56,11 @@ export class DocumentAddComponent implements OnInit {
   private clients: DocumentCollection<ProfileResource> = new DocumentCollection<ProfileResource>();
   private executors: DocumentCollection<ProfileResource> = new DocumentCollection<ProfileResource>();
 
+  // Справочники
+  @ViewChild('vehicleDictionaryModal', {static: false}) private vehicleDictionaryModal;
+  private vehicleDictionaryNameSearch = '';
+  private vehicleDictionaries: DocumentCollection<VehicleDictionaryResource> = new DocumentCollection<VehicleDictionaryResource>();
+
   constructor(private documentService: DocumentService, protected route: ActivatedRoute, private toastrService: ToastrService,
               private userService: UserService, private httpClient: HttpClient, private router: Router,
               private location: Location, private serviceDocumentResourceService: ServiceDocumentResourceService,
@@ -61,7 +68,8 @@ export class DocumentAddComponent implements OnInit {
               private serviceAddonResourceService: ServiceAddonResourceService, private profileService: ProfileService,
               private vehicleResourceService: VehicleResourceService, private profileResourceService: ProfileResourceService,
               private vehicleMileageResourceService: VehicleMileageResourceService, private serviceWorkService: ServiceWorkService,
-              private serviceAddonService: ServiceAddonService, private modalService: NgbModal) {
+              private serviceAddonService: ServiceAddonService, private modalService: NgbModal,
+              private vehicleDictionaryService: VehicleDictionaryService) {
     this.model = serviceDocumentResourceService.new();
     this.model.attributes.startDate = new Date().getTime();
     this.model.attributes.status = 'CREATED';
@@ -93,10 +101,13 @@ export class DocumentAddComponent implements OnInit {
 
   newServiceWork() {
     const serviceWork: ServiceWorkResource = this.serviceWorkResourceService.new();
+    serviceWork.attributes.count = 1;
+    serviceWork.attributes.byPrice = true;
     this.serviceWorks.data.push( serviceWork );
   }
   newServiceAddon() {
     const serviceAddon: ServiceAddonResource = this.serviceAddonResourceService.new();
+    serviceAddon.attributes.count = 1;
     this.serviceAddons.data.push( serviceAddon );
   }
 
@@ -200,5 +211,25 @@ export class DocumentAddComponent implements OnInit {
       }
     } );
     this.model.attributes.cost = cost;
+  }
+
+  // Справочники
+
+  openVehicleDictionariesModal() {
+    this.modalService.open(this.vehicleDictionaryModal, { size: 'lg' });
+  }
+
+  searchVehicleDictionaries() {
+    if ( !this.vehicleDictionaryNameSearch || this.vehicleDictionaryNameSearch.length < 3 ) return;
+
+    this.vehicleDictionaryService.findByName( this.vehicleDictionaryNameSearch ).subscribe( (vehicles) => {
+      this.vehicleDictionaries = vehicles;
+    } );
+  }
+
+  updateVehicle(vehicleDictionary: VehicleDictionaryResource) {
+    const vehicle = this.model.relationships.vehicle.data;
+    vehicle.attributes.modelName = vehicleDictionary.attributes.name;
+    this.modalService.dismissAll();
   }
 }

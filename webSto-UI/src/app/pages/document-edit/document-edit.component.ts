@@ -19,6 +19,8 @@ import {ProfileResource, ProfileResourceService} from '../../model/resource/prof
 import {VehicleService} from '../../api/vehicle.service';
 import {ProfileService} from '../../api/profile.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {VehicleDictionaryService} from '../../api/vehicle.dictionary.service';
+import {VehicleDictionaryResource} from '../../model/resource/vehicle-dictionary.resource.service';
 
 @Component({
   selector: 'app-document-edit',
@@ -54,6 +56,11 @@ export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource
   private clients: DocumentCollection<ProfileResource> = new DocumentCollection<ProfileResource>();
   private executors: DocumentCollection<ProfileResource> = new DocumentCollection<ProfileResource>();
 
+  // Справочники
+  @ViewChild('vehicleDictionaryModal', {static: false}) private vehicleDictionaryModal;
+  private vehicleDictionaryNameSearch = '';
+  private vehicleDictionaries: DocumentCollection<VehicleDictionaryResource> = new DocumentCollection<VehicleDictionaryResource>();
+
   constructor(private documentService: DocumentService, protected route: ActivatedRoute, private toastrService: ToastrService,
               private userService: UserService, private httpClient: HttpClient,
               private location: Location, private serviceWorkResourceService: ServiceWorkResourceService,
@@ -61,7 +68,8 @@ export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource
               private vehicleResourceService: VehicleResourceService, private profileService: ProfileService,
               private vehicleMileageResourceService: VehicleMileageResourceService,
               private serviceWorkService: ServiceWorkService, private profileResourceService: ProfileResourceService,
-              private serviceAddonService: ServiceAddonService, private modalService: NgbModal) {
+              private serviceAddonService: ServiceAddonService, private modalService: NgbModal,
+              private vehicleDictionaryService: VehicleDictionaryService) {
     super(documentService, route);
   }
 
@@ -229,5 +237,25 @@ export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource
       }
     } );
     this.model.attributes.cost = cost;
+  }
+
+  // Справочники
+
+  openVehicleDictionariesModal() {
+    this.modalService.open(this.vehicleDictionaryModal, { size: 'lg' });
+  }
+
+  searchVehicleDictionaries() {
+    if ( !this.vehicleDictionaryNameSearch || this.vehicleDictionaryNameSearch.length < 3 ) return;
+
+    this.vehicleDictionaryService.findByName( this.vehicleDictionaryNameSearch ).subscribe( (vehicles) => {
+      this.vehicleDictionaries = vehicles;
+    } );
+  }
+
+  updateVehicle(vehicleDictionary: VehicleDictionaryResource) {
+    const vehicle = this.model.relationships.vehicle.data;
+    vehicle.attributes.modelName = vehicleDictionary.attributes.name;
+    this.modalService.dismissAll();
   }
 }

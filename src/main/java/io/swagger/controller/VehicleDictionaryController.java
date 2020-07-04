@@ -1,10 +1,11 @@
 package io.swagger.controller;
 
 import io.swagger.helper.UserHelper;
-import io.swagger.postgres.model.Vehicle;
+import io.swagger.postgres.model.VehicleDictionary;
 import io.swagger.postgres.model.security.User;
-import io.swagger.postgres.repository.*;
-import io.swagger.postgres.resourceProcessor.VehicleResourceProcessor;
+import io.swagger.postgres.repository.UserRepository;
+import io.swagger.postgres.repository.VehicleDictionaryRepository;
+import io.swagger.postgres.resourceProcessor.VehicleDictionaryResourceProcessor;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,51 +13,49 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/external/vehicles")
-public class VehicleController {
+@RequestMapping("/external/vehicleDictionaries")
+public class VehicleDictionaryController {
 
-    private final static Logger logger = LoggerFactory.getLogger( VehicleController.class );
+    private final static Logger logger = LoggerFactory.getLogger( VehicleDictionaryController.class );
 
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private VehicleRepository vehicleRepository;
+    private VehicleDictionaryRepository vehicleDictionaryRepository;
     @Autowired
-    private VehicleResourceProcessor vehicleResourceProcessor;
+    private VehicleDictionaryResourceProcessor vehicledictionaryResourceProcessor;
 
     @GetMapping
-    public ResponseEntity findVehicles(JsonApiParams params) throws Exception {
+    public ResponseEntity findVehicleDictionaries(JsonApiParams params) throws Exception {
         User currentUser = userRepository.findCurrentUser();
 
         if ( !UserHelper.isAdmin( currentUser ) && !UserHelper.isServiceLeader( currentUser ) )
             return ResponseEntity.status(404).build();
 
         FilterPayload filterPayload = params.getFilterPayload();
-        if ( filterPayload.getVinNumber() == null || filterPayload.getVinNumber().length() < 3 ||
-                filterPayload.getModelName() == null || filterPayload.getModelName().length() < 3 ||
-                filterPayload.getRegNumber() == null || filterPayload.getRegNumber().length() < 3 )
+        if ( filterPayload.getName() == null || filterPayload.getName().length() < 3 )
             return ResponseEntity.status(400).build();
 
-        List<Vehicle> vehicles = vehicleRepository.findAllByVinNumberOrRegNumberOrModelName(
-                String.format("%%%s%%", filterPayload.getVinNumber()),
-                String.format("%%%s%%", filterPayload.getRegNumber()),
-                String.format("%%%s%%", filterPayload.getModelName())
+        List<VehicleDictionary> vehicleDictionaries = vehicleDictionaryRepository.findAllByName(
+                String.format("%%%s%%", filterPayload.getName())
         );
-        if ( vehicles.size() == 0 )
+        if ( vehicleDictionaries.size() == 0 )
             return ResponseEntity.status(404).build();
 
         return ResponseEntity.ok(
-                vehicleResourceProcessor.toResourceList(
-                        vehicles,
+                vehicledictionaryResourceProcessor.toResourceList(
+                        vehicleDictionaries,
                         null,
-                        (long) vehicles.size(),
+                        (long) vehicleDictionaries.size(),
                         null
                 )
         );
@@ -64,9 +63,7 @@ public class VehicleController {
 
     @Data
     public static class FilterPayload {
-        private String vinNumber;
-        private String regNumber;
-        private String modelName;
+        private String name;
     }
 
     @Data
@@ -82,12 +79,8 @@ public class VehicleController {
             if ( filter == null )
                 return filterPayload;
 
-            if ( filter.containsKey("vinNumber") && filter.get("vinNumber").size() > 0 )
-                filterPayload.setVinNumber( filter.get("vinNumber").get(0) );
-            if ( filter.containsKey("modelName") && filter.get("modelName").size() > 0 )
-                filterPayload.setModelName( filter.get("modelName").get(0) );
-            if ( filter.containsKey("regNumber") && filter.get("regNumber").size() > 0 )
-                filterPayload.setRegNumber( filter.get("regNumber").get(0) );
+            if ( filter.containsKey("name") && filter.get("name").size() > 0 )
+                filterPayload.setName( filter.get("name").get(0) );
 
             return filterPayload;
         }

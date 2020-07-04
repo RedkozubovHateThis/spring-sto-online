@@ -44,6 +44,13 @@ import {ServiceWorkService} from './api/service-work.service';
 import {ServiceAddonService} from './api/service-addon.service';
 import {VehicleService} from './api/vehicle.service';
 import {ProfileService} from './api/profile.service';
+import {VehicleDictionaryResourceService} from './model/resource/vehicle-dictionary.resource.service';
+import {ServiceAddonDictionaryResourceService} from './model/resource/service-addon-dictionary.resource.service';
+import {
+  ServiceWorkDictionaryResource,
+  ServiceWorkDictionaryResourceService
+} from './model/resource/service-work-dictionary.resource.service';
+import {VehicleDictionaryService} from './api/vehicle.dictionary.service';
 
 registerLocaleData(localeRu, 'ru');
 
@@ -103,6 +110,10 @@ registerLocaleData(localeRu, 'ru');
     ServiceAddonService,
     VehicleService,
     ProfileService,
+    VehicleDictionaryResourceService,
+    ServiceWorkDictionaryResourceService,
+    ServiceAddonDictionaryResourceService,
+    VehicleDictionaryService,
     {
       provide: HTTP_INTERCEPTORS,
       useFactory(userService: UserService, router: Router) {
