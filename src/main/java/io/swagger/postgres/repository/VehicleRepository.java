@@ -14,7 +14,12 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
     @Query("SELECT DISTINCT v FROM Vehicle AS v WHERE v.id IN ( SELECT DISTINCT sd.vehicle.id FROM ServiceDocument AS sd WHERE sd.executor.id = :executorId )")
     List<Vehicle> findPreviousVehicles(@Param("executorId") Long executorId);
 
-    @Query("SELECT DISTINCT v FROM Vehicle AS v WHERE upper(v.vinNumber) LIKE upper(:vinNumber)")
-    List<Vehicle> findAllByVinNumber(@Param("vinNumber") String vinNumber);
+    @Query("SELECT DISTINCT v FROM Vehicle AS v " +
+            "WHERE upper(v.vinNumber) LIKE upper(:vinNumber) " +
+            "OR upper(v.regNumber) LIKE upper(:regNumber) " +
+            "OR upper(v.modelName) LIKE upper(:modelName)")
+    List<Vehicle> findAllByVinNumberOrRegNumberOrModelName(@Param("vinNumber") String vinNumber,
+                                                           @Param("regNumber") String regNumber,
+                                                           @Param("modelName") String modelName);
 
 }

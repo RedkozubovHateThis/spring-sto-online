@@ -24,11 +24,13 @@ export class VehicleService {
     vehicleResourceService.register();
   }
 
-  findByVin(search: string): Observable<DocumentCollection<VehicleResource>> {
+  findByVinOrRegOrModel(search: string): Observable<DocumentCollection<VehicleResource>> {
     return this.vehicleResourceService.all({
       beforepath: `external`,
       remotefilter: {
-        vinNumber: search
+        vinNumber: search,
+        regNumber: search,
+        modelName: search
       }
     });
   }

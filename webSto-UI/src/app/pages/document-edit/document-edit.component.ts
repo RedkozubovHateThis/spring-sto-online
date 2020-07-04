@@ -190,7 +190,7 @@ export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource
   searchVehicles() {
     if ( !this.vinSearch || this.vinSearch.length < 3 ) return;
 
-    this.vehicleService.findByVin( this.vinSearch ).subscribe( (vehicles) => {
+    this.vehicleService.findByVinOrRegOrModel( this.vinSearch ).subscribe( (vehicles) => {
       this.vehicles = vehicles;
     } );
   }

@@ -39,10 +39,16 @@ public class VehicleController {
             return ResponseEntity.status(403).build();
 
         FilterPayload filterPayload = params.getFilterPayload();
-        if ( filterPayload.getVinNumber() == null || filterPayload.getVinNumber().length() == 0 )
+        if ( filterPayload.getVinNumber() == null || filterPayload.getVinNumber().length() == 0 ||
+                filterPayload.getModelName() == null || filterPayload.getModelName().length() == 0 ||
+                filterPayload.getRegNumber() == null || filterPayload.getRegNumber().length() == 0 )
             return ResponseEntity.status(400).build();
 
-        List<Vehicle> vehicles = vehicleRepository.findAllByVinNumber( String.format("%%%s%%", filterPayload.getVinNumber()) );
+        List<Vehicle> vehicles = vehicleRepository.findAllByVinNumberOrRegNumberOrModelName(
+                String.format("%%%s%%", filterPayload.getVinNumber()),
+                String.format("%%%s%%", filterPayload.getRegNumber()),
+                String.format("%%%s%%", filterPayload.getModelName())
+        );
         if ( vehicles.size() == 0 )
             return ResponseEntity.status(404).build();
 
@@ -59,6 +65,8 @@ public class VehicleController {
     @Data
     public static class FilterPayload {
         private String vinNumber;
+        private String regNumber;
+        private String modelName;
     }
 
     @Data
@@ -76,6 +84,10 @@ public class VehicleController {
 
             if ( filter.containsKey("vinNumber") && filter.get("vinNumber").size() > 0 )
                 filterPayload.setVinNumber( filter.get("vinNumber").get(0) );
+            if ( filter.containsKey("modelName") && filter.get("modelName").size() > 0 )
+                filterPayload.setModelName( filter.get("modelName").get(0) );
+            if ( filter.containsKey("regNumber") && filter.get("regNumber").size() > 0 )
+                filterPayload.setRegNumber( filter.get("regNumber").get(0) );
 
             return filterPayload;
         }
