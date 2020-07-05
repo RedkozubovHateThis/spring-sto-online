@@ -3,7 +3,7 @@ import {UserService} from '../../api/user.service';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {ToastrService} from 'ngx-toastr';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {User} from '../../model/postgres/auth/user';
+import {UserResource} from '../../model/resource/user.resource.service';
 
 @Component({
   selector: 'app-password-change-button',
@@ -18,9 +18,9 @@ export class PasswordChangeButtonComponent implements OnInit {
   private rePassword: string;
 
   @Input()
-  private model: User;
+  private model: UserResource;
   @Input()
-  private currentUser: User;
+  private currentUser: UserResource;
   @ViewChild('content', {static: false}) private content;
 
   constructor(private userService: UserService, private httpClient: HttpClient, private toastrService: ToastrService,

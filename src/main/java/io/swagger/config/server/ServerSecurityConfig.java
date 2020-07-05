@@ -7,6 +7,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -20,7 +21,7 @@ import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
-//@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
+//@Order(2)
 @Import(Encoders.class)
 public class ServerSecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -50,11 +51,11 @@ public class ServerSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/swagger-resources/**",
                 "/configuration/security/**",
                 "/swagger-ui.html",
-                "/oauth/register/**",
-                "/oauth/restore",
-                "/oauth/restore/password",
-                "/oauth/demo/register",
-                "/open/report/compiled",
+                "/api/oauth/register/**",
+                "/api/oauth/restore",
+                "/api/oauth/restore/password",
+                "/api/oauth/demo/register",
+                "/api/open/report/compiled",
                 "/webjars/**");
     }
 

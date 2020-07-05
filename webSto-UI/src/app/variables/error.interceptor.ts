@@ -16,6 +16,11 @@ export class ErrorInterceptor implements HttpInterceptor {
     return headers;
   }
 
+  private addExtraBasicHeaders(headers: HttpHeaders): HttpHeaders {
+    headers = headers.append('Authorization', `Basic ${btoa('spring-security-oauth2-read-write-client:spring-security-oauth2-read-write-client-password1234')}`);
+    return headers;
+  }
+
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let modified;
 

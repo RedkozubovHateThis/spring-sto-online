@@ -49,6 +49,7 @@ public class VehicleResourceRepository implements ResourceRepository<Vehicle, Lo
             throw new BadRequestException("Год выпуска не может быть пустым!");
 
         prepareVinNumber(s);
+        prepareRegNumber(s);
 
         Boolean isVehicleExists;
 
@@ -80,5 +81,14 @@ public class VehicleResourceRepository implements ResourceRepository<Vehicle, Lo
         vinNumber = vinNumber.replaceAll(" ", "");
 
         vehicle.setVinNumber( vinNumber );
+    }
+
+    private void prepareRegNumber(Vehicle vehicle) {
+        String regNumber = vehicle.getRegNumber();
+        regNumber = regNumber.trim();
+        regNumber = regNumber.toUpperCase();
+        regNumber = regNumber.replaceAll(" ", "");
+
+        vehicle.setRegNumber( regNumber );
     }
 }

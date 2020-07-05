@@ -1,9 +1,12 @@
 package io.swagger.controller;
 
+import io.swagger.postgres.model.security.Profile;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.model.security.UserRole;
+import io.swagger.postgres.repository.ProfileRepository;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.postgres.repository.UserRoleRepository;
+import io.swagger.response.RegisterModel;
 import io.swagger.response.api.ApiResponse;
 import io.swagger.response.api.PasswordRestoreData;
 import io.swagger.service.MailSendService;
@@ -32,6 +35,9 @@ public class oAuthController {
     private UserRepository userRepository;
 
     @Autowired
+    private ProfileRepository profileRepository;
+
+    @Autowired
     private UserRoleRepository userRoleRepository;
 
     @Autowired
@@ -55,67 +61,82 @@ public class oAuthController {
     private Map<String, PasswordRestoreData> hashPool = new HashMap<>();
 
     @PostMapping("/register/{roleName}")
-    public ResponseEntity register(@RequestBody User user,
+    public ResponseEntity register(@RequestBody RegisterModel registerModel,
                                    @PathVariable("roleName") String roleName) {
 
-        if ( user == null )
+        if ( registerModel == null )
             return ResponseEntity.status(400).body("Тело запроса не может быть пустым!");
 
         if ( roleName == null )
             return ResponseEntity.status(400).body("Роль не может быть пустой!");
 
-        if ( user.getPassword() == null || user.getPassword().isEmpty() )
+        if ( !roleName.equals("SERVICE_LEADER") && !roleName.equals("CLIENT") )
+            return ResponseEntity.status(400).body("Неправильная роль!");
+
+        if ( registerModel.getPassword() == null || registerModel.getPassword().isEmpty() )
             return ResponseEntity.status(400).body("Пароль не может быть пустым!");
 
-        if ( user.getPassword().length() < 6 )
+        if ( registerModel.getPassword().length() < 6 )
             return ResponseEntity.status(400).body("Пароль не может содержать менее 6 символов!");
 
-//        if ( user.getEmail() != null && user.getEmail().length() == 0 )
-//            user.setEmail(null);
+        if ( !registerModel.getPassword().equals( registerModel.getRePassword() ) )
+            return ResponseEntity.status(400).body("Пароли не совпадают!");
 
-//        if ( user.getEmail() != null && user.getEmail().length() > 0 &&
-//                !userService.isEmailValid( user.getEmail() ) )
-//            return ResponseEntity.status(400).body("Неверный формат почты!");
+        if ( registerModel.getEmail() != null && registerModel.getEmail().length() == 0 )
+            registerModel.setEmail(null);
 
-//        if ( user.getPhone() == null || user.getPhone().isEmpty() )
-//            return ResponseEntity.status(400).body("Телефон не может быть пустым!");
+        if ( registerModel.getEmail() != null && registerModel.getEmail().length() > 0 &&
+                !userService.isEmailValid( registerModel.getEmail() ) )
+            return ResponseEntity.status(400).body("Неверный формат почты!");
 
-//        if ( !userService.isPhoneValid( user.getPhone() ) )
-//            return ResponseEntity.status(400).body("Неверный номер телефона!");
+        if ( registerModel.getPhone() == null || registerModel.getPhone().isEmpty() )
+            return ResponseEntity.status(400).body("Телефон не может быть пустым!");
 
-//        userService.processPhone(user);
+        if ( !userService.isPhoneValid( registerModel.getPhone() ) )
+            return ResponseEntity.status(400).body("Неверный номер телефона!");
 
-        if ( user.getUsername() != null && user.getUsername().length() > 0 &&
-                userRepository.isUserExistsUsername( user.getUsername() ) )
-            return ResponseEntity.status(400).body("Пользователь с таким логином уже существует!");
+        String phone = userService.processPhone( registerModel.getPhone() );
 
-//        if ( userRepository.isUserExistsPhone( user.getPhone() ) )
-//            return ResponseEntity.status(400).body("Пользователь с таким телефоном уже существует!");
+        if ( profileRepository.isProfileExistsPhone( phone ) )
+            return ResponseEntity.status(400).body("Пользователь с таким телефоном уже существует!");
 
-//        if ( user.getEmail() != null && user.getEmail().length() > 0 &&
-//                userRepository.isUserExistsEmail( user.getEmail() ) )
-//            return ResponseEntity.status(400).body("Пользователь с такой почтой уже существует!");
+        if ( registerModel.getEmail() != null && registerModel.getEmail().length() > 0 &&
+                profileRepository.isProfileExistsEmail( registerModel.getEmail() ) )
+            return ResponseEntity.status(400).body("Пользователь с такой почтой уже существует!");
 
-        if ( user.getUsername() == null || user.getUsername().isEmpty() )
-            user.setUsername( UUID.randomUUID().toString() );
+        User user = new User();
+        Profile profile = new Profile();
 
+        user.setProfile( profile );
+        user.setUsername( UUID.randomUUID().toString() );
+        user.setFirstName( registerModel.getFirstName() );
+        user.setMiddleName( registerModel.getMiddleName() );
+        user.setLastName( registerModel.getLastName() );
         user.setEnabled(true);
         user.setIsAutoRegistered(false);
-        user.setPassword( userPasswordEncoder.encode( user.getPassword() ) );
+        user.setPassword( userPasswordEncoder.encode( registerModel.getPassword() ) );
 
-        UserRole clientRole = userRoleRepository.findByName(roleName);
+        profile.setPhone( phone );
+        profile.setEmail( registerModel.getEmail() );
+        profile.setAddress( registerModel.getAddress() );
+        profile.setInn( registerModel.getInn() );
+        profile.setName( registerModel.getName() );
+        profile.setDeleted( false );
 
-        if ( clientRole != null )
-            user.getRoles().add(clientRole);
+        UserRole role = userRoleRepository.findByName(roleName);
 
-//        else if ( roleName.equals("SERVICE_LEADER") ) {
-//            if ( user.getInn() == null || user.getInn().isEmpty() )
-//                return ResponseEntity.status(400).body("ИНН не может быть пустым!");
-//
-//            if ( userRepository.isUserExistsInn( user.getInn() ) )
-//                return ResponseEntity.status(400).body("Пользователь с таким ИНН уже существует!");
-//        }
+        if ( role != null )
+            user.getRoles().add(role);
 
+        else if ( roleName.equals("SERVICE_LEADER") ) {
+            if ( registerModel.getInn() == null || registerModel.getInn().isEmpty() )
+                return ResponseEntity.status(400).body("ИНН не может быть пустым!");
+
+            if ( profileRepository.isProfileExistsInn( registerModel.getInn() ) )
+                return ResponseEntity.status(400).body("Пользователь с таким ИНН уже существует!");
+        }
+
+        profileRepository.save(profile);
         userRepository.save(user);
 
         return ResponseEntity.ok().build();
@@ -209,11 +230,16 @@ public class oAuthController {
         String email = String.format( "demo_user%s@buromotors.ru", usersCount );
 
         User user = new User();
+        Profile profile = new Profile();
+
+        user.setProfile( profile );
         user.setFirstName("Пользователь");
         user.setLastName("Демонстрационный");
         user.setPassword( password );
-//        user.setEmail( email );
-//        user.setPhone( buildDemoPhone( usersCount ) );
+        profile.setEmail( email );
+        profile.setPhone( buildDemoPhone( usersCount ) );
+        profile.setName( "Демонстрационный Пользователь" );
+        profile.setDeleted( false );
 
         if ( user.getUsername() == null || user.getUsername().isEmpty() )
             user.setUsername( UUID.randomUUID().toString() );
@@ -228,6 +254,7 @@ public class oAuthController {
         if ( clientRole != null )
             user.getRoles().add(clientRole);
 
+        profileRepository.save( profile );
         userRepository.save(user);
 
         Map<String, String> credentials = new HashMap<>();

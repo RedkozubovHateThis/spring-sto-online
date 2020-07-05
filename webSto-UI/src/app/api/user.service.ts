@@ -1,7 +1,6 @@
 import {Injectable, Output} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable, Subject} from 'rxjs';
-import {User} from '../model/postgres/auth/user';
 import {Router} from '@angular/router';
 import {TransferService} from './transfer.service';
 import {environment} from '../../environments/environment';
@@ -14,6 +13,7 @@ import {SubscriptionResourceService} from '../model/resource/subscription.resour
 import {SubscriptionTypeResourceService} from '../model/resource/subscription-type.resource.service';
 import {DocumentCollection} from 'ngx-jsonapi';
 import {ProfileResourceService} from '../model/resource/profile.resource.service';
+import {RegisterModel} from '../model/postgres/registerModel';
 
 @Injectable()
 export class UserService implements TransferService<UserResource>, RestService<UserResource> {
@@ -198,7 +198,7 @@ export class UserService implements TransferService<UserResource>, RestService<U
     this.currentUser = user;
   }
 
-  createUser(user: User, selectedRole: string) {
+  createUser(user: RegisterModel, selectedRole: string) {
     return this.http.post(`${this.getApiUrl()}oauth/register/${selectedRole}`, user);
   }
 
