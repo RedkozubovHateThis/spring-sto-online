@@ -70,6 +70,23 @@ public class ServiceDocumentResourceRepository implements ResourceRepository<Ser
 
     @Override
     public <S extends ServiceDocument> S save(S s) {
+        if ( s.getNumber() == null || s.getNumber().length() == 0 )
+            throw new BadRequestException("Номер заказ-наряда не может быть пустым!");
+        if ( s.getStartDate() == null )
+            throw new BadRequestException("Дата начала ремонта не может быть пустой!");
+        if ( s.getStatus() == null )
+            throw new BadRequestException("Статус заказ-наряда не может быть пустым!");
+
+        Boolean isServiceDocumentExists;
+
+        if ( s.getId() != null )
+            isServiceDocumentExists = serviceDocumentRepository.isServiceDocumentExistsNumberNotSelf( s.getNumber(), s.getId() );
+        else
+            isServiceDocumentExists = serviceDocumentRepository.isServiceDocumentExistsNumber( s.getNumber() );
+
+        if ( isServiceDocumentExists )
+            throw new BadRequestException("Заказ-наряд с таким номером уже существует!");
+
         return serviceDocumentRepository.save( s );
     }
 

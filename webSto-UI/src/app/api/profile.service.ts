@@ -41,7 +41,7 @@ export class ProfileService {
       const client: ProfileResource = serviceDocument.relationships.client.data;
 
       client.save().subscribe( (saved: IDocumentResource) => {
-        client.fill( saved );
+        // client.fill( saved );
         subscriber.next(client);
         subscriber.complete();
       }, ( error ) => {
@@ -56,7 +56,7 @@ export class ProfileService {
       const executor: ProfileResource = serviceDocument.relationships.executor.data;
 
       executor.save().subscribe( (saved: IDocumentResource) => {
-        executor.fill( saved );
+        // executor.fill( saved );
         subscriber.next(executor);
         subscriber.complete();
       }, ( error ) => {

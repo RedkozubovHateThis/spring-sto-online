@@ -229,14 +229,21 @@ export class UserService implements TransferService<UserResource>, RestService<U
         this.toastrService.success(message);
         if ( isNew )
           this.router.navigate(['/users', user.id, 'edit']);
-      }, () => {
+      }, (error) => {
         this.isSaving = false;
         this.toastrService.error('Ошибка сохранения пользователя!', 'Внимание!');
       });
-    }, () => {
+    }, (error) => {
       this.isSaving = false;
       this.toastrService.error('Ошибка сохранения пользователя!', 'Внимание!');
     } );
+  }
+
+  showError(error: any, defaultMessage: string) {
+    if ( error.errors && Array.isArray( error.errors ) )
+      this.toastrService.error( `${defaultMessage}: ${error.errors[0].detail}`, 'Внимание!' );
+    else
+      this.toastrService.error( `${defaultMessage}!`, 'Внимание!' );
   }
 
   getAll(filter: UsersFilter): Observable<DocumentCollection<UserResource>> {

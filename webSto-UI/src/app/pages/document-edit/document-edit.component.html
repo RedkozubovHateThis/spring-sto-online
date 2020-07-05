@@ -114,7 +114,7 @@
                     <div class="input-group input-group-alternative input-group-sm">
                       <input class="form-control form-control-sm form-control-alternative" id="model-input"
                              [disabled]="!vehicleEdit && !model.relationships.vehicle.data.is_new"
-                             [(ngModel)]="model.relationships.vehicle.data.attributes.modelName" placeholder="Марка/модель автомобиля">
+                             [(ngModel)]="model.relationships.vehicle.data.attributes.modelName" placeholder="Марка/модель">
                       <div class="input-group-append">
                         <button class="btn btn-buro-blue" type="button" (click)="openVehicleDictionariesModal()"
                                 title="Найти в справочнике"
@@ -131,7 +131,7 @@
                     <label class="form-control-label" for="reg-number-input">Регистрационный номер</label>
                     <input class="form-control form-control-sm form-control-alternative" id="reg-number-input"
                            [disabled]="!vehicleEdit && !model.relationships.vehicle.data.is_new"
-                           [(ngModel)]="model.relationships.vehicle.data.attributes.regNumber" placeholder="Регистрационный номер автомобиля">
+                           [(ngModel)]="model.relationships.vehicle.data.attributes.regNumber" placeholder="Регистрационный номер">
                   </div>
                 </div>
 
@@ -140,7 +140,7 @@
                     <label class="form-control-label" for="vin-number-input">VIN-номер</label>
                     <input class="form-control form-control-sm form-control-alternative" id="vin-number-input"
                            [disabled]="!vehicleEdit && !model.relationships.vehicle.data.is_new"
-                           [(ngModel)]="model.relationships.vehicle.data.attributes.vinNumber" placeholder="VIN-номер автомобиля">
+                           [(ngModel)]="model.relationships.vehicle.data.attributes.vinNumber" placeholder="VIN-номер">
                   </div>
                 </div>
 
@@ -149,12 +149,12 @@
                     <label class="form-control-label" for="year-input">Год выпуска</label>
                     <input class="form-control form-control-sm form-control-alternative" id="year-input" type="number"
                            [disabled]="!vehicleEdit && !model.relationships.vehicle.data.is_new"
-                           [(ngModel)]="model.relationships.vehicle.data.attributes.year" placeholder="Год выпуска автомобиля">
+                           [(ngModel)]="model.relationships.vehicle.data.attributes.year" placeholder="Год выпуска">
                   </div>
                   <div class="col-lg-6">
                     <label class="form-control-label" for="mileage-number-input">Пробег</label>
                     <input class="form-control form-control-sm form-control-alternative" id="mileage-number-input" type="number"
-                           [(ngModel)]="model.relationships.vehicleMileage.data.attributes.mileage" placeholder="Пробег автомобиля">
+                           [(ngModel)]="model.relationships.vehicleMileage.data.attributes.mileage" placeholder="Пробег">
                   </div>
                 </div>
               </ng-container>
@@ -233,7 +233,7 @@
                     <label class="form-control-label" for="address-input">Адрес</label>
                     <input class="form-control form-control-sm form-control-alternative" id="address-input"
                            [disabled]="!clientEdit && !model.relationships.client.data.is_new"
-                           [(ngModel)]="model.relationships.client.data.attributes.address" placeholder="Адрес">
+                           [(ngModel)]="model.relationships.client.data.attributes.address" placeholder="Адрес (не обязательно к заполнению)">
                   </div>
                 </div>
               </ng-container>

@@ -40,7 +40,7 @@ export class VehicleService {
       const vehicle: VehicleResource = serviceDocument.relationships.vehicle.data;
 
       vehicle.save().subscribe( (saved: IDocumentResource) => {
-        vehicle.fill( saved );
+        // vehicle.fill( saved );
         subscriber.next(vehicle);
         subscriber.complete();
       }, ( error ) => {
@@ -59,7 +59,7 @@ export class VehicleService {
       vehicleMileage.addRelationship(vehicle, 'vehicle');
 
       vehicleMileage.save().subscribe( (saved: IDocumentResource) => {
-        vehicleMileage.fill( saved );
+        // vehicleMileage.fill( saved );
         subscriber.next( vehicleMileage );
         subscriber.complete();
       }, ( error ) => {

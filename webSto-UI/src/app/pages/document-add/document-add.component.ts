@@ -11,7 +11,7 @@ import * as moment from 'moment';
 import {VehicleResource, VehicleResourceService} from '../../model/resource/vehicle.resource.service';
 import {ServiceWorkResource, ServiceWorkResourceService} from '../../model/resource/service-work.resource.service';
 import {ServiceAddonResource, ServiceAddonResourceService} from '../../model/resource/service-addon.resource.service';
-import {VehicleMileageResourceService} from '../../model/resource/vehicle-mileage.resource.service';
+import {VehicleMileageResource, VehicleMileageResourceService} from '../../model/resource/vehicle-mileage.resource.service';
 import {DocumentCollection} from 'ngx-jsonapi';
 import {ProfileResource, ProfileResourceService} from '../../model/resource/profile.resource.service';
 import {ServiceWorkService} from '../../api/service-work.service';
@@ -125,7 +125,103 @@ export class DocumentAddComponent implements OnInit {
     this.serviceAddons.data.push( serviceAddon );
   }
 
+  checkData(): boolean {
+    const client: ProfileResource = this.model.relationships.client.data;
+    const executor: ProfileResource = this.model.relationships.executor.data;
+    const vehicle: VehicleResource = this.model.relationships.vehicle.data;
+    const vehicleMileage: VehicleMileageResource = this.model.relationships.vehicleMileage.data;
+
+    if ( !client || !client.type || !Object.keys( client.attributes ).length ) {
+      this.toastrService.error('Не указан клиент!', 'Внимание!');
+      return false;
+    }
+    else if ( !client.attributes.phone || client.attributes.phone.length === 0 ) {
+      this.toastrService.error('Не указан телефон клиента!', 'Внимание!');
+      return false;
+    }
+    else if ( !client.attributes.name || client.attributes.name.length === 0 ) {
+      this.toastrService.error('Не указано полное имя клиента!', 'Внимание!');
+      return false;
+    }
+
+    if ( !executor || !executor.type || !Object.keys( executor.attributes ).length ) {
+      this.toastrService.error('Не указан исполнитель!', 'Внимание!');
+      return false;
+    }
+
+    if ( !vehicle || !vehicle.type || !Object.keys( vehicle.attributes ).length ) {
+      this.toastrService.error('Не указан автомобиль!', 'Внимание!');
+      return false;
+    }
+    else if ( !vehicle.attributes.modelName || vehicle.attributes.modelName.length === 0 ) {
+      this.toastrService.error('Не указана марка/модель автомобиля!', 'Внимание!');
+      return false;
+    }
+    else if ( !vehicle.attributes.vinNumber || vehicle.attributes.vinNumber.length === 0 ) {
+      this.toastrService.error('Не указан VIN-номер автомобиля!', 'Внимание!');
+      return false;
+    }
+    else if ( !vehicle.attributes.regNumber || vehicle.attributes.regNumber.length === 0 ) {
+      this.toastrService.error('Не указан регистрационный номер автомобиля!', 'Внимание!');
+      return false;
+    }
+    else if ( !vehicle.attributes.year ) {
+      this.toastrService.error('Не указан год выпуска автомобиля!', 'Внимание!');
+      return false;
+    }
+
+    if ( !vehicleMileage || !vehicleMileage.type || !Object.keys( vehicleMileage.attributes ).length
+      || !vehicleMileage.attributes.mileage ) {
+      this.toastrService.error('Не указан пробег автомобиля!', 'Внимание!');
+      return false;
+    }
+
+    if ( !this.model.attributes.number || this.model.attributes.number.length === 0 ) {
+      this.toastrService.error('Не указан номер заказ-наряда!', 'Внимание!');
+      return false;
+    }
+    else if ( !this.model.attributes.startDate ) {
+      this.toastrService.error('Не указана дата начала ремонта!', 'Внимание!');
+      return false;
+    }
+
+    return true;
+  }
+
+  checkDataList(): boolean {
+    let isWorksError = false;
+    let isAddonsError = false;
+    this.serviceWorks.data.forEach( (serviceWork) => {
+      if ( !serviceWork.attributes.name || serviceWork.attributes.name.length === 0 )
+        isWorksError = true;
+      if ( !serviceWork.attributes.count )
+        isWorksError = true;
+      if ( serviceWork.attributes.byPrice && !serviceWork.attributes.price )
+        isWorksError = true;
+      else if ( !serviceWork.attributes.byPrice && ( !serviceWork.attributes.priceNorm || !serviceWork.attributes.timeValue ) )
+        isWorksError = true;
+    } );
+    this.serviceAddons.data.forEach( (serviceAddon) => {
+      if ( !serviceAddon.attributes.name || serviceAddon.attributes.name.length === 0 )
+        isAddonsError = true;
+      if ( !serviceAddon.attributes.count )
+        isAddonsError = true;
+      if ( !serviceAddon.attributes.cost )
+        isWorksError = true;
+    } );
+
+    if ( isWorksError )
+      this.toastrService.error('Ошибка заполнения работ по заказ-наряду!', 'Внимание!');
+    if ( isAddonsError )
+      this.toastrService.error('Ошибка заполнения товаров по заказ-наряду!', 'Внимание!');
+
+    return !isWorksError || !isAddonsError;
+  }
+
   save() {
+    if ( !this.checkData() ) return;
+    if ( !this.checkDataList() ) return;
+
     this.calculateTotalCost();
     this.isSaving = true;
     this.profileService.saveClientProfile( this.model ).subscribe( (savedClient) => {
@@ -137,24 +233,48 @@ export class DocumentAddComponent implements OnInit {
               this.serviceAddonService.saveServiceAddons( this.model, this.serviceAddons );
               this.model = savedModel;
               this.isSaving = false;
-              this.toastrService.success('Документ успешно сохранен!');
+              this.toastrService.success('Заказ-наряд успешно сохранен!');
               this.router.navigate(['documents', this.model.id, 'edit']);
-            } );
-          } );
-        } );
-      } );
+            }, (error) => {
+              this.showError(error, 'Ошибка сохранения заказ-наряда');
+              this.isSaving = false;
+            }  );
+          }, (error) => {
+            this.showError(error, 'Ошибка сохранения пробега');
+            this.isSaving = false;
+          }  );
+        }, (error) => {
+          this.showError(error, 'Ошибка сохранения автомобиля');
+          this.isSaving = false;
+        }  );
+      }, (error) => {
+        this.showError(error, 'Ошибка сохранения исполнителя');
+        this.isSaving = false;
+      }  );
+    }, (error) => {
+      this.showError(error, 'Ошибка сохранения клиента');
+      this.isSaving = false;
     } );
+  }
+
+  showError(error: any, defaultMessage: string) {
+    if ( error.errors && Array.isArray( error.errors ) )
+      this.toastrService.error( `${defaultMessage}: ${error.errors[0].detail}`, 'Внимание!' );
+    else
+      this.toastrService.error( `${defaultMessage}!`, 'Внимание!' );
   }
 
   newVehicle() {
     const vehicle: VehicleResource = this.vehicleResourceService.new();
     this.model.addRelationship( vehicle, 'vehicle' );
+    this.vehicleEdit = false;
   }
 
   newClient() {
     const profile: ProfileResource = this.profileResourceService.new();
     this.model.addRelationship( profile, 'client' );
     this.clientRegister = true;
+    this.clientEdit = false;
   }
 
   openClientsModal() {
@@ -199,6 +319,7 @@ export class DocumentAddComponent implements OnInit {
   setClient(client: ProfileResource) {
     this.model.addRelationship(client, 'client');
     this.modalService.dismissAll();
+    this.clientRegister = false;
   }
 
   setExecutor(executor: ProfileResource) {

@@ -1,5 +1,6 @@
 package io.swagger.postgres.resource;
 
+import io.crnk.core.exception.BadRequestException;
 import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepository;
 import io.crnk.core.resource.list.ResourceList;
@@ -38,6 +39,9 @@ public class VehicleMileageResourceRepository implements ResourceRepository<Vehi
 
     @Override
     public <S extends VehicleMileage> S save(S s) {
+        if ( s.getMileage() == null )
+            throw new BadRequestException("Пробег не может быть пустым!");
+
         return vehicleMileageRepository.save( s );
     }
 

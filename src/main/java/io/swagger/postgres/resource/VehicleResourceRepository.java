@@ -43,8 +43,23 @@ public class VehicleResourceRepository implements ResourceRepository<Vehicle, Lo
             throw new BadRequestException("VIN-номер не может быть пустым!");
         if ( s.getModelName() == null || s.getModelName().length() == 0 )
             throw new BadRequestException("Марка/модель не может быть пустой!");
+        if ( s.getRegNumber() == null || s.getRegNumber().length() == 0 )
+            throw new BadRequestException("Регистрационный номер не может быть пустым!");
+        if ( s.getYear() == null )
+            throw new BadRequestException("Год выпуска не может быть пустым!");
 
         prepareVinNumber(s);
+
+        Boolean isVehicleExists;
+
+        if ( s.getId() != null )
+            isVehicleExists = vehicleRepository.isVehicleExistsVinNotSelf( s.getVinNumber(), s.getId() );
+        else
+            isVehicleExists = vehicleRepository.isVehicleExistsVin( s.getVinNumber() );
+
+        if ( isVehicleExists )
+            throw new BadRequestException("Автомобиль с таким VIN-номером уже существует!");
+
         return vehicleRepository.save( s );
     }
 

@@ -32,4 +32,31 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
             "INNER JOIN profile AS p ON sd.executor_id = p.id AND p.deleted = FALSE\n" +
             "WHERE sd.client_id = :clientId AND sd.deleted = FALSE")
     List<Profile> findExecutorsByClientId(@Param("clientId") Long clientId);
+
+    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT p.id FROM profile AS p " +
+            "WHERE p.phone = :phone )")
+    Boolean isProfileExistsPhone(@Param("phone") String phone);
+
+    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT p.id FROM profile AS p " +
+            "WHERE p.email = :email )")
+    Boolean isProfileExistsEmail(@Param("email") String email);
+
+    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT p.id FROM profile AS p " +
+            "WHERE p.inn = :inn )")
+    Boolean isProfileExistsInn(@Param("inn") String inn);
+
+    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT p.id FROM profile AS p " +
+            "WHERE p.inn = :inn AND p.id <> :userId )")
+    Boolean isProfileExistsInnNotSelf(@Param("inn") String inn,
+                                      @Param("userId") Long userId);
+
+    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT p.id FROM profile AS p " +
+            "WHERE p.phone = :phone AND p.id <> :userId )")
+    Boolean isProfileExistsPhoneNotSelf(@Param("phone") String phone,
+                                        @Param("userId") Long userId);
+
+    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT p.id FROM profile AS p " +
+            "WHERE p.email = :email AND p.id <> :userId )")
+    Boolean isProfileExistsEmailNotSelf(@Param("email") String email,
+                                        @Param("userId") Long userId);
 }

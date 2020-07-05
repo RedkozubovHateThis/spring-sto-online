@@ -56,7 +56,7 @@ export class DocumentService implements TransferService<ServiceDocumentResource>
   saveServiceDocument(model: ServiceDocumentResource): Observable<ServiceDocumentResource> {
     return new Observable<ServiceDocumentResource>( (subscriber) => {
       model.save().subscribe( (data: IDocumentResource) => {
-        model.fill(data);
+        // model.fill(data);
         subscriber.next(model);
         subscriber.complete();
       }, ( error ) => {
