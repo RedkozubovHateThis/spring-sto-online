@@ -8,7 +8,7 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {InfobarComponent} from './infobar/infobar.component';
 import {DocumentFilterComponent} from './document-filter/document-filter.component';
 import {FormsModule} from '@angular/forms';
-// import {ReportButtonComponent} from './report-button/report-button.component';
+import {ReportButtonComponent} from './report-button/report-button.component';
 import {PdfViewerModule} from 'ng2-pdf-viewer';
 import {PasswordChangeButtonComponent} from './password-change-button/password-change-button.component';
 import {DpDatePickerModule} from 'ng2-date-picker';
@@ -33,7 +33,7 @@ import {RoleChangeButtonComponent} from './role-change-button/role-change-button
     SidebarComponent,
     InfobarComponent,
     DocumentFilterComponent,
-    // ReportButtonComponent,
+    ReportButtonComponent,
     PasswordChangeButtonComponent,
     UserFilterComponent,
     PaginationComponent,
@@ -47,7 +47,7 @@ import {RoleChangeButtonComponent} from './role-change-button/role-change-button
     SidebarComponent,
     InfobarComponent,
     DocumentFilterComponent,
-    // ReportButtonComponent,
+    ReportButtonComponent,
     PasswordChangeButtonComponent,
     UserFilterComponent,
     PaginationComponent,

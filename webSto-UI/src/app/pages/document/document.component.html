@@ -23,10 +23,10 @@
                                  (onDelete)="location.back()"
                                  style="margin-right: .5rem"
               ></app-delete-button>
-<!--              <app-report-button *ngIf="userService.currentUser != null" [disabled]="model != null"-->
-<!--                                 [model]="model" [withPrint]="false"></app-report-button>-->
-<!--              <app-report-button *ngIf="userService.currentUser != null" [printDisabled]="model != null"-->
-<!--                                 [model]="model"></app-report-button>-->
+              <app-report-button *ngIf="userService.currentUser != null" [disabled]="model != null && model.attributes.status !== 'CREATED'"
+                                 [model]="model" [withPrint]="false"></app-report-button>
+              <app-report-button *ngIf="userService.currentUser != null" [printDisabled]="model != null && model.attributes.status !== 'CREATED'"
+                                 [model]="model"></app-report-button>
             </div>
           </div>
         </div>
@@ -34,98 +34,203 @@
 
           <div class="row form-group">
 
-            <div class="col-sm mb-3">
-              <div class="row">
-                <div class="col-md-5 mb-3">
+            <div class="col-md-3 mb-3">
 
-                  <div class="row">
-                    <div class="col-lg-12">
-                      <h2 *ngIf="model != null">{{model.attributes.number}} {{model.statusRus()}}</h2>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-lg-12">
+              <h3>Заказ-наряд</h3>
 
-                      <table>
-                        <tbody>
-                        <tr>
-                          <td class="font-weight-bold">Дата начала:&nbsp;</td>
-                          <td *ngIf="model != null">{{model.attributes.startDate | date : 'dd.MM.yyyy HH:mm'}}</td>
-                        </tr>
-                        <tr>
-                          <td class="font-weight-bold">Дата окончания:&nbsp;</td>
-                          <td *ngIf="model != null">{{model.attributes.endDate | date : 'dd.MM.yyyy HH:mm'}}</td>
-                        </tr>
-                        </tbody>
-                      </table>
-
-                    </div>
-                  </div>
-
+              <div class="row form-group">
+                <div class="col-lg-6">
+                  <label class="form-control-label" for="number">Номер</label>
+                  <span class="form-control form-control-sm form-control-alternative" id="number" *ngIf="model != null">
+                    {{model.attributes.number}}
+                  </span>
                 </div>
-                <div class="col-md-7 mb-3">
-
-                  <div class="row">
-                    <div class="col-lg-12">
-
-                      <h2 *ngIf="model != null && model.relationships.vehicle.data">{{model.relationships.vehicle.data.attributes.modelName}}</h2>
-
-                    </div>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-lg-12">
-
-                      <span class="font-weight-bold">Гос. номер:</span>&nbsp;<span *ngIf="model != null && model.relationships.vehicle.data">{{model.relationships.vehicle.data.attributes.regNumber}}</span>
-
-                    </div>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-lg-12">
-
-                      <span class="font-weight-bold">VIN:</span>&nbsp;<span *ngIf="model != null && model.relationships.vehicle.data">{{model.relationships.vehicle.data.attributes.vinNumber}}</span>
-
-                    </div>
-                  </div>
-
+                <div class="col-lg-6">
+                  <label class="form-control-label" for="cost">Сумма</label>
+                  <span class="form-control form-control-sm form-control-alternative" id="cost" *ngIf="model != null">
+                    {{model.attributes.cost | number:'.2':'ru'}} р.
+                  </span>
                 </div>
               </div>
+              <div class="row form-group">
+                <div class="col-lg-12">
+                  <label class="form-control-label" for="status">Статус</label>
+                  <span id="status" class="form-control form-control-sm form-control-alternative" *ngIf="model != null">
+                    {{model.statusRus()}}
+                  </span>
+                </div>
+              </div>
+              <div class="row form-group">
+                <div class="col-lg-12">
+                  <label class="form-control-label" for="start-date">Дата начала ремонта</label>
+                    <span class="form-control form-control-alternative form-control-sm" id="start-date">
+                      {{model.attributes.startDate | date : 'dd.MM.yyyy HH:mm'}}
+                    </span>
+                </div>
+              </div>
+              <div class="row form-group">
+                <div class="col-lg-12">
+                  <label class="form-control-label" for="end-date">Дата окончания ремонта</label>
+                  <span class="form-control form-control-alternative form-control-sm" id="end-date">
+                      {{model.attributes.endDate | date : 'dd.MM.yyyy HH:mm'}}
+                    </span>
+                </div>
+              </div>
+
             </div>
-            <div class="col-auto">
-              <h2 *ngIf="model != null">{{model.attributes.cost | number:'.2':'ru'}} р.</h2>
+
+            <div class="col-md-3 mb-3">
+
+              <div class="row">
+                <div class="col">
+                  <h3>Автомобиль</h3>
+                </div>
+              </div>
+
+              <ng-container *ngIf="model.relationships.vehicle.data">
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="model">Марка/модель</label>
+                    <span class="form-control form-control-sm form-control-alternative" id="model">
+                      {{model.relationships.vehicle.data.attributes.modelName}}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="reg-number">Регистрационный номер</label>
+                    <span class="form-control form-control-sm form-control-alternative" id="reg-number">
+                      {{model.relationships.vehicle.data.attributes.regNumber}}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="vin-number">VIN-номер</label>
+                    <span class="form-control form-control-sm form-control-alternative" id="vin-number">
+                      {{model.relationships.vehicle.data.attributes.vinNumber}}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="row form-group">
+                  <div class="col-lg-6">
+                    <label class="form-control-label" for="year">Год выпуска</label>
+                    <span class="form-control form-control-sm form-control-alternative" id="year">
+                      {{model.relationships.vehicle.data.attributes.year}}
+                    </span>
+                  </div>
+                  <div class="col-lg-6">
+                    <label class="form-control-label" for="mileage-number">Пробег</label>
+                    <span class="form-control form-control-sm form-control-alternative" id="mileage-number">
+                      {{model.relationships.vehicleMileage.data.attributes.mileage}}
+                    </span>
+                  </div>
+                </div>
+              </ng-container>
+
+            </div>
+
+            <div class="col-md-3 mb-3">
+
+              <div class="row">
+                <div class="col-md">
+                  <h3>Клиент</h3>
+                </div>
+              </div>
+
+              <ng-container *ngIf="model.relationships.client.data">
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="name">Полное имя</label>
+                    <span class="form-control form-control-sm form-control-alternative" id="name">
+                      {{model.relationships.client.data.attributes.name}}
+                    </span>
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="phone">Телефон</label>
+                    <span class="form-control form-control-sm form-control-alternative" id="phone">
+                      {{model.relationships.client.data.attributes.phone}}
+                    </span>
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="email">Email</label>
+                    <span class="form-control form-control-sm form-control-alternative" id="email">
+                      {{model.relationships.client.data.attributes.email}}
+                    </span>
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="address">Адрес</label>
+                    <span class="form-control form-control-sm form-control-alternative" id="address">
+                      {{model.relationships.client.data.attributes.address}}
+                    </span>
+                  </div>
+                </div>
+              </ng-container>
+
+            </div>
+
+            <div class="col-md-3 mb-3">
+
+              <div class="row">
+                <div class="col-md">
+                  <h3>Исполнитель</h3>
+                </div>
+              </div>
+
+              <ng-container *ngIf="model.relationships.executor.data">
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="executor-name">Полное имя</label>
+                    <span class="form-control form-control-sm form-control-alternative" id="executor-name">
+                      {{model.relationships.executor.data.attributes.name}}
+                    </span>
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="executor-phone">Телефон</label>
+                    <span class="form-control form-control-sm form-control-alternative" id="executor-phone">
+                      {{model.relationships.executor.data.attributes.phone}}
+                    </span>
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="executor-email">Email</label>
+                    <span class="form-control form-control-sm form-control-alternative" id="executor-email">
+                      {{model.relationships.executor.data.attributes.email}}
+                    </span>
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="executor-address">Адрес</label>
+                    <span class="form-control form-control-sm form-control-alternative" id="executor-address">
+                      {{model.relationships.executor.data.attributes.address}}
+                    </span>
+                  </div>
+                </div>
+              </ng-container>
+
             </div>
 
           </div>
 
           <div class="row form-group">
             <div class="col-lg-12">
-
-              <table>
-                <tbody>
-                <tr>
-                  <td class="font-weight-bold">
-                    Предприятие:&nbsp;
-                  </td>
-                  <td *ngIf="model != null && model.relationships.executor.data">{{model.relationships.executor.data.attributes.name}}</td>
-                </tr>
-                <tr>
-                  <td class="font-weight-bold">
-                    Клиент:&nbsp;
-                  </td>
-                  <td *ngIf="model != null && model.relationships.client.data">{{model.relationships.client.data.attributes.name}}</td>
-                </tr>
-                </tbody>
-              </table>
-
-            </div>
-          </div>
-
-          <div class="row form-group">
-            <div class="col-lg-12">
-
-              <span class="font-weight-bold">Услуга:&nbsp;</span> <span *ngIf="model != null">{{model.attributes.reason}}</span>
-
+              <label class="form-control-label" for="reason">Услуга</label>
+              <span class="form-control form-control-sm form-control-alternative" id="reason" *ngIf="model != null">
+                {{model.attributes.reason}}
+              </span>
             </div>
           </div>
 

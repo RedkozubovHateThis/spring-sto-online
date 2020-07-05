@@ -1,11 +1,21 @@
 package io.swagger.controller;
 
+import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.UserRepository;
+import io.swagger.response.exception.DataNotFoundException;
 import io.swagger.service.ReportService;
+import net.sf.jasperreports.engine.JRException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
 
 @RequestMapping("/reports/")
 @RestController
@@ -20,52 +30,29 @@ public class ReportController {
     @Value("${domain.demo}")
     private Boolean demoDomain;
 
-//    @GetMapping("{documentId}/{reportType}/{printStamp}")
-//    public ResponseEntity getOrderResponse(@PathVariable("documentId") Integer documentId,
-//                                           @PathVariable("printStamp") Boolean printStamp,
-//                                           @PathVariable("reportType") ReportType reportType) {
-//
-//        User currentUser = userRepository.findCurrentUser();
-//        if ( UserHelper.isClient( currentUser ) ) {
-//
-//            if ( !reportType.equals( ReportType.ORDER ) && !reportType.equals( ReportType.ORDER_ACT )
-//                    && !reportType.equals( ReportType.ORDER_TRANSFER ) )
-//                return ResponseEntity.status(403).build();
-//
-//            printStamp = true;
-//
-//        }
-//
-//        try {
-//            byte[] response;
-//            switch (reportType) {
-//                case ORDER: response = reportService.getOrderReport(documentId, printStamp, false); break;
-//                case ORDER_ACT: response = reportService.getOrderActReport(documentId, printStamp); break;
-//                case ORDER_DEFECTION: response = reportService.getOrderDefectionReport(documentId); break;
-//                case ORDER_INSPECTION: response = reportService.getOrderInspectionReport(documentId); break;
-//                case ORDER_RECEIPT: response = reportService.getOrderReceiptReport(documentId); break;
-//                case ORDER_REQUEST: response = reportService.getOrderRequestReport(documentId); break;
-//                case ORDER_REQUIREMENT: response = reportService.getOrderRequirementReport(documentId); break;
-//                case ORDER_TASK: response = reportService.getOrderTaskReport(documentId); break;
-//                case ORDER_TRANSFER: response = reportService.getOrderTransferReport(documentId, printStamp); break;
-//                default: return ResponseEntity.status(400).build();
-//            }
-//
-//            return ResponseEntity.ok()
-//                    .header( HttpHeaders.CONTENT_DISPOSITION, "attachment" )
-//                    .contentType( MediaType.APPLICATION_OCTET_STREAM )
-//                    .contentLength( response.length )
-//                    .body( response );
-//        } catch (IOException | JRException e) {
-//            e.printStackTrace();
-//            return ResponseEntity.status(500).build();
-//        }
-//        catch (DataNotFoundException dnfe) {
-//            dnfe.printStackTrace();
-//            return ResponseEntity.status(404).build();
-//        }
-//
-//    }
+    @GetMapping("{documentId}")
+    public ResponseEntity getOrderResponse(@PathVariable("documentId") Long documentId) {
+
+        User currentUser = userRepository.findCurrentUser();
+
+        try {
+            byte[] response = reportService.getOrderReport(documentId);
+
+            return ResponseEntity.ok()
+                    .header( HttpHeaders.CONTENT_DISPOSITION, "attachment" )
+                    .contentType( MediaType.APPLICATION_OCTET_STREAM )
+                    .contentLength( response.length )
+                    .body( response );
+        } catch (IOException | JRException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
+        }
+        catch (DataNotFoundException dnfe) {
+            dnfe.printStackTrace();
+            return ResponseEntity.status(404).build();
+        }
+
+    }
 //
 //    @GetMapping("/executors")
 //    public ResponseEntity findExecutors(@DateTimeFormat(pattern = "dd.MM.yyyy HH:mm:ss") Date startDate,

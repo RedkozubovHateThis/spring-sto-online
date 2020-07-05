@@ -1,74 +1,15 @@
-<div ngbDropdown class="d-inline-block" placement="auto">
-  <button class="btn btn-sm btn-buro-blue" id="reports-dropdown" [disabled]="isDownloading || model == null || disabled" ngbDropdownToggle
-          [ngbTooltip]="withPrint ? 'Выгрузить и распечатать...' : 'Выгрузить...'">
-    <span *ngIf="withPrint">
-      <i class="fas fa-print"></i>
-    </span>
-    <span *ngIf="!withPrint">
-      <i class="fas fa-download"></i>
-    </span>
-    <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
-  </button>
-  <div ngbDropdownMenu aria-labelledby="reports-dropdown">
-    <button class="dropdown-item" (click)="downloadReport('ORDER', 'Заказ-наряд', false)" [disabled]="isDownloading"
-            *ngIf="userService.isNotClient()">
-      Заказ-наряд
-      <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
-    </button>
-    <button class="dropdown-item" (click)="downloadReport('ORDER', 'Заказ-наряд', true)" [disabled]="isDownloading">
-      Заказ-наряд (с печатью)
-      <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
-    </button>
-    <button class="dropdown-item" (click)="downloadReport('ORDER_ACT', 'Акт на выполненные работы', false)" [disabled]="isDownloading"
-            *ngIf="userService.isNotClient()">
-      Акт на выполненные работы
-      <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
-    </button>
-    <button class="dropdown-item" (click)="downloadReport('ORDER_ACT', 'Акт на выполненные работы', true)" [disabled]="isDownloading">
-      Акт на выполненные работы (с печатью)
-      <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
-    </button>
-    <button class="dropdown-item" (click)="downloadReport('ORDER_REQUEST', 'Заявка на ремонт автомобиля', false)" [disabled]="isDownloading"
-            *ngIf="userService.isNotClient()">
-      Заявка на ремонт автомобиля
-      <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
-    </button>
-    <button class="dropdown-item" (click)="downloadReport('ORDER_INSPECTION', 'Акт осмотра', false)" [disabled]="isDownloading"
-            *ngIf="userService.isNotClient()">
-      Акт осмотра
-      <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
-    </button>
-    <button class="dropdown-item" (click)="downloadReport('ORDER_TRANSFER', 'Универсальный передаточный документ', false)" [disabled]="isDownloading"
-            *ngIf="userService.isNotClient()">
-      Универсальный передаточный документ
-      <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
-    </button>
-    <button class="dropdown-item" (click)="downloadReport('ORDER_TRANSFER', 'Универсальный передаточный документ', true)" [disabled]="isDownloading">
-      Универсальный передаточный документ (с печатью)
-      <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
-    </button>
-    <button class="dropdown-item" (click)="downloadReport('ORDER_TASK', 'Задание на ремонтные работы', false)" [disabled]="isDownloading"
-            *ngIf="userService.isNotClient()">
-      Задание на ремонтные работы
-      <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
-    </button>
-    <button class="dropdown-item" (click)="downloadReport('ORDER_REQUIREMENT', 'Требование на запчасти', false)" [disabled]="isDownloading"
-            *ngIf="userService.isNotClient()">
-      Требование на запчасти
-      <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
-    </button>
-    <button class="dropdown-item" (click)="downloadReport('ORDER_RECEIPT', 'Расписка о приеме автомобиля', false)" [disabled]="isDownloading"
-            *ngIf="userService.isNotClient()">
-      Расписка о приеме автомобиля
-      <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
-    </button>
-    <button class="dropdown-item" (click)="downloadReport('ORDER_DEFECTION', 'Акт дефектовки', false)" [disabled]="isDownloading"
-            *ngIf="userService.isNotClient()">
-      Акт дефектовки
-      <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
-    </button>
-  </div>
-</div>
+<button class="btn btn-sm btn-buro-blue" id="reports-dropdown" [disabled]="isDownloading || model == null || disabled" *ngIf="userService.isNotClient()"
+        (click)="downloadReport('Заказ-наряд')"
+        [ngStyle]="{ marginRight: withPrint ? 0 : '0.5rem' }"
+        [ngbTooltip]="withPrint ? 'Выгрузить и распечатать...' : 'Выгрузить...'">
+<span *ngIf="withPrint">
+  <i class="fas fa-print"></i>
+</span>
+  <span *ngIf="!withPrint">
+  <i class="fas fa-download"></i>
+</span>
+  <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+</button>
 
 <!-- Modal -->
 <ng-template #content let-modal *ngIf="withPrint">
