@@ -51,11 +51,11 @@ public class ServerSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/swagger-resources/**",
                 "/configuration/security/**",
                 "/swagger-ui.html",
-                "/api/oauth/register/**",
-                "/api/oauth/restore",
-                "/api/oauth/restore/password",
-                "/api/oauth/demo/register",
-                "/api/open/report/compiled",
+                "/oauth/register/**",
+                "/oauth/restore",
+                "/oauth/restore/password",
+                "/oauth/demo/register",
+                "/open/report/compiled",
                 "/webjars/**");
     }
 
