@@ -23,9 +23,9 @@
                                  (onDelete)="location.back()"
                                  style="margin-right: .5rem"
               ></app-delete-button>
-              <app-report-button *ngIf="userService.currentUser != null" [disabled]="model != null && model.attributes.status !== 'CREATED'"
+              <app-report-button *ngIf="userService.currentUser != null" [disabled]="model != null && model.attributes.status !== 'COMPLETED'"
                                  [model]="model" [withPrint]="false"></app-report-button>
-              <app-report-button *ngIf="userService.currentUser != null" [printDisabled]="model != null && model.attributes.status !== 'CREATED'"
+              <app-report-button *ngIf="userService.currentUser != null" [disabled]="model != null && model.attributes.status !== 'COMPLETED'"
                                  [model]="model"></app-report-button>
             </div>
           </div>

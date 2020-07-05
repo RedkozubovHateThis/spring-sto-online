@@ -51,6 +51,8 @@ public class ServiceWorkResourceRepository implements ResourceRepository<Service
 
     @Override
     public <S extends ServiceWork> S create(S s) {
+        if ( s.getByPrice() == null )
+            s.setByPrice(false);
         s.setDeleted(false);
         return save( s );
     }
