@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {UserService} from './user.service';
+import {environment} from '../../environments/environment';
 
 @Injectable()
 export class InfobarService {
@@ -8,25 +9,19 @@ export class InfobarService {
   constructor(private http: HttpClient, private userService: UserService) { }
 
   getClientInfo() {
-    const headers = this.userService.getHeaders();
-
-    return this.http.get( `${this.userService.getApiUrl()}infoBar/client`, {headers} );
+    return this.http.get( `${environment.getApiUrl()}infoBar/client`);
   }
 
   getServiceLeaderInfo() {
-    const headers = this.userService.getHeaders();
-
-    return this.http.get( `${this.userService.getApiUrl()}infoBar/serviceLeader`, {headers} );
+    return this.http.get( `${environment.getApiUrl()}infoBar/serviceLeader`);
   }
 
   getModeratorInfo(organizationId: number) {
-    const headers = this.userService.getHeaders();
-
     const params = {
       organizationId: organizationId != null ? organizationId.toString() : ''
     };
 
-    return this.http.get( `${this.userService.getApiUrl()}infoBar/moderator`, {headers, params} );
+    return this.http.get( `${environment.getApiUrl()}infoBar/moderator`, {params} );
   }
 
 }

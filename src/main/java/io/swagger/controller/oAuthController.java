@@ -269,7 +269,7 @@ public class oAuthController {
         String lastNumbers = String.valueOf( usersCount );
         StringBuilder sb = new StringBuilder("8");
 
-        for ( int z = 0; z < 11 - lastNumbers.length(); z++ ) {
+        for ( int z = 0; z < 10 - lastNumbers.length(); z++ ) {
             sb.append("0");
         }
 

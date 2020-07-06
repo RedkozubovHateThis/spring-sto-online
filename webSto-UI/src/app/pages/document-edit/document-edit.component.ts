@@ -361,7 +361,7 @@ export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource
           cost += serviceWork.attributes.price > 0 ? serviceWork.attributes.price * serviceWork.attributes.count : 0;
         else {
           cost += serviceWork.attributes.timeValue > 0 && serviceWork.attributes.priceNorm > 0
-            ? serviceWork.attributes.timeValue * serviceWork.attributes.priceNorm
+            ? serviceWork.attributes.timeValue * serviceWork.attributes.priceNorm * serviceWork.attributes.count
             : 0;
         }
       }

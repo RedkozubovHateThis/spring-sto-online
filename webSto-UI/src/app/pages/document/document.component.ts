@@ -78,7 +78,7 @@ export class DocumentComponent extends ModelTransfer<ServiceDocumentResource, st
         return serviceWork.attributes.price > 0 ? serviceWork.attributes.price * serviceWork.attributes.count : 0;
       else {
         return serviceWork.attributes.timeValue > 0 && serviceWork.attributes.priceNorm > 0
-          ? serviceWork.attributes.timeValue * serviceWork.attributes.priceNorm
+          ? serviceWork.attributes.timeValue * serviceWork.attributes.priceNorm * serviceWork.attributes.count
           : 0;
       }
     }

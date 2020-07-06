@@ -16,6 +16,7 @@ import {UserService} from './user.service';
 import {IDataCollection} from 'ngx-jsonapi/interfaces/data-collection';
 import {IDocumentResource} from 'ngx-jsonapi/interfaces/data-object';
 import {subscribeOn} from 'rxjs/operators';
+import {environment} from '../../environments/environment';
 
 @Injectable()
 export class VehicleService {
@@ -26,7 +27,7 @@ export class VehicleService {
 
   findByVinOrRegOrModel(search: string): Observable<DocumentCollection<VehicleResource>> {
     return this.vehicleResourceService.all({
-      beforepath: `external`,
+      beforepath: `${environment.getBeforeUrl()}/external`,
       remotefilter: {
         vinNumber: search,
         regNumber: search,
@@ -39,7 +40,7 @@ export class VehicleService {
     return new Observable<VehicleResource>( (subscriber) => {
       const vehicle: VehicleResource = serviceDocument.relationships.vehicle.data;
 
-      vehicle.save().subscribe( (saved: IDocumentResource) => {
+      vehicle.save({ beforepath: environment.getBeforeUrl() }).subscribe( (saved: IDocumentResource) => {
         // vehicle.fill( saved );
         subscriber.next(vehicle);
         subscriber.complete();
@@ -58,7 +59,7 @@ export class VehicleService {
       vehicleMileage.addRelationship(serviceDocument, 'document');
       vehicleMileage.addRelationship(vehicle, 'vehicle');
 
-      vehicleMileage.save().subscribe( (saved: IDocumentResource) => {
+      vehicleMileage.save({ beforepath: environment.getBeforeUrl() }).subscribe( (saved: IDocumentResource) => {
         // vehicleMileage.fill( saved );
         subscriber.next( vehicleMileage );
         subscriber.complete();

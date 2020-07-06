@@ -87,6 +87,7 @@ export class DocumentAddComponent implements OnInit {
     this.model.attributes.status = 'CREATED';
     if ( this.userService.isServiceLeader() && this.userService.currentUser.relationships.profile.data )
       this.model.addRelationship( this.userService.currentUser.relationships.profile.data, 'executor' );
+    this.model.addRelationship( profileResourceService.new(), 'client' );
     this.model.addRelationship( vehicleResourceService.new(), 'vehicle' );
     this.model.addRelationship( vehicleMileageResourceService.new(), 'vehicleMileage' );
   }
@@ -335,7 +336,7 @@ export class DocumentAddComponent implements OnInit {
           cost += serviceWork.attributes.price > 0 ? serviceWork.attributes.price * serviceWork.attributes.count : 0;
         else {
           cost += serviceWork.attributes.timeValue > 0 && serviceWork.attributes.priceNorm > 0
-            ? serviceWork.attributes.timeValue * serviceWork.attributes.priceNorm
+            ? serviceWork.attributes.timeValue * serviceWork.attributes.priceNorm * serviceWork.attributes.count
             : 0;
         }
       }

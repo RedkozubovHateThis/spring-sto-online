@@ -39,7 +39,7 @@ export class UserService implements TransferService<UserResource>, RestService<U
       Authorization: 'Basic ' + btoa('spring-security-oauth2-read-write-client:spring-security-oauth2-read-write-client-password1234'),
       'Content-type': 'application/x-www-form-urlencoded'
     };
-    return this.http.post(`${this.getApiUrl()}oauth/token`, loginPayload, {headers});
+    return this.http.post(`${environment.getApiUrl()}oauth/token`, loginPayload, {headers});
   }
 
   restore(restoreData: HttpParams) {
@@ -48,7 +48,7 @@ export class UserService implements TransferService<UserResource>, RestService<U
       'Content-type': 'application/x-www-form-urlencoded'
     };
 
-    return this.http.post(`${this.getApiUrl()}oauth/restore`, restoreData, {headers});
+    return this.http.post(`${environment.getApiUrl()}oauth/restore`, restoreData, {headers});
   }
 
   restorePassword(restoreData: HttpParams) {
@@ -57,7 +57,7 @@ export class UserService implements TransferService<UserResource>, RestService<U
       'Content-type': 'application/x-www-form-urlencoded'
     };
 
-    return this.http.post(`${this.getApiUrl()}oauth/restore/password`, restoreData, {headers});
+    return this.http.post(`${environment.getApiUrl()}oauth/restore/password`, restoreData, {headers});
   }
 
   requestOpenReport(uuid: string) {
@@ -68,7 +68,7 @@ export class UserService implements TransferService<UserResource>, RestService<U
     const params = {
       uuid
     };
-    return this.http.get(`${this.getApiUrl()}open/report/compiled`, {headers, params, responseType: 'blob'});
+    return this.http.get(`${environment.getApiUrl()}open/report/compiled`, {headers, params, responseType: 'blob'});
   }
 
   logout() {
@@ -127,45 +127,16 @@ export class UserService implements TransferService<UserResource>, RestService<U
     return localStorage.getItem('demoDomain') != null && localStorage.getItem('demoDomain') !== null
   }
 
-  getApiUrl(): string {
-    if ( localStorage.getItem('demoDomain') != null && localStorage.getItem('demoDomain') !== null ) {
-      return environment.demoUrl;
-    }
-    else
-      return environment.apiUrl;
-  }
-
-  getWsUrl(): string {
-    if ( localStorage.getItem('demoDomain') != null && localStorage.getItem('demoDomain') !== null ) {
-      return environment.wsdUrl;
-    }
-    else
-      return environment.wsUrl;
-  }
-
   isAuthenticated(): boolean {
     const isAuthenticated = localStorage.getItem('isAuthenticated') as unknown;
 
     return isAuthenticated != null && isAuthenticated as boolean;
   }
 
-  getHeaders() {
-
-    if ( this.isTokenExists() ) {
-      return {
-        Authorization: 'Bearer ' + JSON.parse(localStorage.getItem('token')).access_token
-      };
-    } else {
-      this.logout();
-      return null;
-    }
-
-  }
-
   authenticate() {
 
     this.userResourceService.get('currentUser', {
-      beforepath: 'external'
+      beforepath: `${environment.getBeforeUrl()}/external`
     }).subscribe((result) => {
       this.setCurrentUserData( result );
       localStorage.setItem('isAuthenticated', 'true');
@@ -182,11 +153,8 @@ export class UserService implements TransferService<UserResource>, RestService<U
   }
 
   getCurrentUser() {
-
-    const headers = this.getHeaders();
-
     this.userResourceService.get('currentUser', {
-      beforepath: 'external'
+      beforepath: `${environment.getBeforeUrl()}/external`
     }).subscribe((result) => {
       this.setCurrentUserData( result );
       this.currentUserIsLoaded.next( this.currentUser );
@@ -199,27 +167,25 @@ export class UserService implements TransferService<UserResource>, RestService<U
   }
 
   createUser(user: RegisterModel, selectedRole: string) {
-    return this.http.post(`${this.getApiUrl()}oauth/register/${selectedRole}`, user);
+    return this.http.post(`${environment.getApiUrl()}oauth/register/${selectedRole}`, user);
   }
 
   delete(user: UserResource): Observable<void> {
-    return user.delete();
+    return this.userResourceService.delete( user.id, { beforepath: environment.getBeforeUrl() } );
   }
 
   createDemoUser() {
-    return this.http.get(`${this.getApiUrl()}oauth/demo/register`);
+    return this.http.get(`${environment.getApiUrl()}oauth/demo/register`);
   }
 
   saveUser(user: UserResource, message: string, router?: Router) {
-
-    const headers = this.getHeaders();
     this.isSaving = true;
     const isNew = user.is_new;
 
     const profile = user.relationships.profile.data;
 
-    profile.save().subscribe( (savedProfile) => {
-      user.save().subscribe((savedUser) => {
+    profile.save({ beforepath: environment.getBeforeUrl() }).subscribe( (savedProfile) => {
+      user.save({ beforepath: environment.getBeforeUrl() }).subscribe((savedUser) => {
         this.isSaving = false;
 
         if ( this.currentUser != null && this.currentUser.id === user.id )
@@ -231,11 +197,11 @@ export class UserService implements TransferService<UserResource>, RestService<U
           this.router.navigate(['/users', user.id, 'edit']);
       }, (error) => {
         this.isSaving = false;
-        this.toastrService.error('Ошибка сохранения пользователя!', 'Внимание!');
+        this.showError(error, 'Ошибка сохранения пользователя');
       });
     }, (error) => {
       this.isSaving = false;
-      this.toastrService.error('Ошибка сохранения пользователя!', 'Внимание!');
+      this.showError(error, 'Ошибка сохранения пользователя');
     } );
   }
 
@@ -257,7 +223,7 @@ export class UserService implements TransferService<UserResource>, RestService<U
     };
 
     return this.userResourceService.all({
-      beforepath: 'external',
+      beforepath: `${environment.getBeforeUrl()}/external`,
       sort: [`${filter.direction === 'desc' ? '-' : ''}${filter.sort}`],
       page: {number: filter.page, size: filter.size},
       remotefilter: params
@@ -265,7 +231,7 @@ export class UserService implements TransferService<UserResource>, RestService<U
   }
 
   getOne(id: string): Observable<UserResource> {
-    return this.userResourceService.get(id.toString());
+    return this.userResourceService.get(id, { beforepath: environment.getBeforeUrl() });
   }
 
   getTransferModel() {

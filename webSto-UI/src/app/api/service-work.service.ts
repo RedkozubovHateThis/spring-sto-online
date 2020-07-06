@@ -16,6 +16,7 @@ import {UserService} from './user.service';
 import {IDataCollection} from 'ngx-jsonapi/interfaces/data-collection';
 import {IDocumentResource} from 'ngx-jsonapi/interfaces/data-object';
 import {subscribeOn} from 'rxjs/operators';
+import {environment} from '../../environments/environment';
 
 @Injectable()
 export class ServiceWorkService implements RestService<ServiceWorkResource> {
@@ -26,21 +27,21 @@ export class ServiceWorkService implements RestService<ServiceWorkResource> {
 
   getAll(id: string): Observable<DocumentCollection<ServiceWorkResource>> {
     return this.serviceWorkResourceService.all({
-      beforepath: `serviceDocuments/${id}`
+      beforepath: `${environment.getBeforeUrl()}/serviceDocuments/${id}`
     });
   }
 
   saveServiceWorks(serviceDocument: ServiceDocumentResource, serviceWorks: DocumentCollection<ServiceWorkResource>): void {
     serviceWorks.data.forEach( (serviceWork) => {
       serviceWork.addRelationship(serviceDocument, 'document');
-      serviceWork.save().subscribe( (saved: IDocumentResource) => {
+      serviceWork.save({ beforepath: environment.getBeforeUrl() }).subscribe( (saved: IDocumentResource) => {
         serviceWork.fill( saved );
       } );
     } );
   }
 
   delete(model: ServiceWorkResource): Observable<void> {
-    return model.delete();
+    return this.serviceWorkResourceService.delete(model.id, { beforepath: environment.getBeforeUrl() });
   }
 
 }

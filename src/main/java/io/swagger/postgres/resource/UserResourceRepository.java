@@ -90,7 +90,8 @@ public class UserResourceRepository implements ResourceRepository<User, Long>, M
             user.setEnabled( false );
             userRepository.save(user);
         }
-        throw new ResourceNotFoundException("Пользователь не найден!");
+        else
+            throw new ResourceNotFoundException("Пользователь не найден!");
     }
 
     @Override

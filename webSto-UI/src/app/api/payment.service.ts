@@ -9,6 +9,7 @@ import {PromisedAvailableResponse} from '../model/payment/promisedAvailableRespo
 import {SubscriptionTypeResource, SubscriptionTypeResourceService} from '../model/resource/subscription-type.resource.service';
 import {SubscriptionResource, SubscriptionResourceService} from '../model/resource/subscription.resource.service';
 import {DocumentCollection} from 'ngx-jsonapi';
+import {environment} from '../../environments/environment';
 
 @Injectable()
 export class PaymentService {
@@ -24,105 +25,86 @@ export class PaymentService {
   }
 
   sendRegisterRequest(amount: number): Observable<RegisterResponse> {
-    const headers = this.userService.getHeaders();
-
     return this.http.put<RegisterResponse>(
-      `${this.userService.getApiUrl()}payment/registerRequest?amount=${amount}`, {}, {headers}
-      );
+      `${environment.getApiUrl()}payment/registerRequest?amount=${amount}`, {});
   }
 
   sendRegisterPromisedRequest(amount: number): Observable<RegisterResponse> {
-    const headers = this.userService.getHeaders();
-
     return this.http.put<RegisterResponse>(
-      `${this.userService.getApiUrl()}payment/registerRequest/promised?amount=${amount}`, {}, {headers}
-      );
+      `${environment.getApiUrl()}payment/registerRequest/promised?amount=${amount}`, {});
   }
 
   getPromisedStatus(): Observable<PromisedAvailableResponse> {
-    const headers = this.userService.getHeaders();
-
     return this.http.get<PromisedAvailableResponse>(
-      `${this.userService.getApiUrl()}payment/registerRequest/promised/isAvailable`, {headers}
-      );
+      `${environment.getApiUrl()}payment/registerRequest/promised/isAvailable`);
   }
 
   sendUpdateRequestExtended(orderId: string): Observable<PaymentResponse> {
-    const headers = this.userService.getHeaders();
-
-    return this.http.put<PaymentResponse>(`${this.userService.getApiUrl()}payment/updateRequest/extended?orderId=${orderId}`,
-      {}, {headers});
+    return this.http.put<PaymentResponse>(`${environment.getApiUrl()}payment/updateRequest/extended?orderId=${orderId}`,
+      {});
   }
 
   getAll(fromDate: string, toDate: string): Observable<PaymentResponse[]> {
-    const headers = this.userService.getHeaders();
-
     return this.http.get<PaymentResponse[]>(
-      `${this.userService.getApiUrl()}payment/findAll?fromDate=${fromDate}&toDate=${toDate}`, {headers}
+      `${environment.getApiUrl()}payment/findAll?fromDate=${fromDate}&toDate=${toDate}`
     );
   }
 
   getAllSubscriptionTypes(): Observable<DocumentCollection<SubscriptionTypeResource>> {
     return this.subscriptionTypeResourceService.all({
-      beforepath: 'payment'
+      beforepath: `${environment.getBeforeUrl()}/payment`
     });
   }
 
   getAllSubscriptions(): Observable<DocumentCollection<SubscriptionResource>> {
     return this.subscriptionResourceService.all({
-      beforepath: 'payment'
+      beforepath: `${environment.getBeforeUrl()}/payment`
     });
   }
 
   buySubscription(subscriptionTypeId: string): Observable<SubscriptionResponse> {
-    const headers = this.userService.getHeaders();
     const params = {
       subscriptionTypeId: subscriptionTypeId != null ? subscriptionTypeId.toString() : ''
     };
 
     return this.http.put<SubscriptionResponse>(
-      `${this.userService.getApiUrl()}payment/subscriptions/buy`, {}, {headers, params}
+      `${environment.getApiUrl()}payment/subscriptions/buy`, {}, {params}
     );
   }
 
   giftSubscription(serviceLeaderId: string): Observable<SubscriptionResponse> {
-    const headers = this.userService.getHeaders();
     const params = {
       serviceLeaderId: serviceLeaderId != null ? serviceLeaderId : ''
     };
 
     return this.http.put<SubscriptionResponse>(
-      `${this.userService.getApiUrl()}payment/subscriptions/gift`, {}, {headers, params}
+      `${environment.getApiUrl()}payment/subscriptions/gift`, {}, {params}
     );
   }
 
   buySubscriptionAddon(subscriptionId: string, documentsCount: number): Observable<void> {
-    const headers = this.userService.getHeaders();
     const params = {
       subscriptionId: subscriptionId != null ? subscriptionId : '',
       documentsCount: documentsCount != null ? documentsCount.toString() : ''
     };
 
     return this.http.put<void>(
-      `${this.userService.getApiUrl()}payment/subscriptions/addon/buy`, {}, {headers, params}
+      `${environment.getApiUrl()}payment/subscriptions/addon/buy`, {}, {params}
     );
   }
 
   updateRenewalSubscription(subscriptionTypeId: string): Observable<void> {
-    const headers = this.userService.getHeaders();
     const params = {
       subscriptionTypeId: subscriptionTypeId != null ? subscriptionTypeId : ''
     };
 
     return this.http.put<void>(
-      `${this.userService.getApiUrl()}payment/subscriptions/updateRenewal`, {}, {headers, params}
+      `${environment.getApiUrl()}payment/subscriptions/updateRenewal`, {}, {params}
     );
   }
 
   updateSubscription(subscriptionType: SubscriptionTypeResource): Observable<object> {
-    const headers = this.userService.getHeaders();
-
-    return subscriptionType.save();
+    return subscriptionType.save({ beforepath: environment.getBeforeUrl() });
   }
 
 }

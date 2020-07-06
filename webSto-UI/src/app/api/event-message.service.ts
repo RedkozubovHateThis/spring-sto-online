@@ -5,6 +5,7 @@ import {UserService} from './user.service';
 import {EventMessagesFilter} from '../model/eventMessagesFilter';
 import {EventMessageResource, EventMessageResourceService} from '../model/resource/event-message.resource.service';
 import {UserResourceService} from '../model/resource/user.resource.service';
+import {environment} from '../../environments/environment';
 
 @Injectable()
 export class EventMessageService {
@@ -39,7 +40,6 @@ export class EventMessageService {
 
   private getMessages(sort: string, direction: string, page: number, size: number, offset: number, messageType: string, fromId: number, toId: number,
                       documentId: number) {
-    const headers = this.userService.getHeaders();
     const params = {
       messageTypes: messageType != null ? messageType : '',
       fromIds: fromId != null ? fromId.toString() : '',
@@ -48,7 +48,7 @@ export class EventMessageService {
     };
 
     return this.eventMessageResourceService.all({
-      beforepath: 'external',
+      beforepath: `${environment.getBeforeUrl()}/external`,
       sort: [`${direction === 'desc' ? '-' : ''}${sort}`],
       page: {number: page, size},
       remotefilter: params

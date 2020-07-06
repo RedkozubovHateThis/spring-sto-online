@@ -4,6 +4,7 @@ import {HttpClient} from '@angular/common/http';
 import {ToastrService} from 'ngx-toastr';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ServiceDocumentResource} from '../../model/resource/service-document.resource.service';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-report-button',
@@ -37,10 +38,9 @@ export class ReportButtonComponent implements OnInit {
   }
 
   downloadReport(reportName: string) {
-    const headers = this.userService.getHeaders();
     this.isDownloading = true;
-    this.httpClient.get(`${this.userService.getApiUrl()}reports/${this.model.id}`,
-      {headers, responseType: 'blob'} ).subscribe( response => {
+    this.httpClient.get(`${environment.getApiUrl()}reports/${this.model.id}`,
+      {responseType: 'blob'} ).subscribe( response => {
 
       this.isDownloading = false;
 

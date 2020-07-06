@@ -17,6 +17,7 @@ import {IDataCollection} from 'ngx-jsonapi/interfaces/data-collection';
 import {IDocumentResource} from 'ngx-jsonapi/interfaces/data-object';
 import {subscribeOn} from 'rxjs/operators';
 import {ProfileResource, ProfileResourceService} from '../model/resource/profile.resource.service';
+import {environment} from '../../environments/environment';
 
 @Injectable()
 export class ProfileService {
@@ -27,7 +28,7 @@ export class ProfileService {
 
   findByPhoneOrEmail(search: string): Observable<DocumentCollection<ProfileResource>> {
     return this.profileResourceService.all({
-      beforepath: `external`,
+      beforepath: `${environment.getBeforeUrl()}/external`,
       remotefilter: {
         phone: search,
         email: search,
@@ -40,7 +41,7 @@ export class ProfileService {
     return new Observable<ProfileResource>( (subscriber) => {
       const client: ProfileResource = serviceDocument.relationships.client.data;
 
-      client.save().subscribe( (saved: IDocumentResource) => {
+      client.save({ beforepath: environment.getBeforeUrl() }).subscribe( (saved: IDocumentResource) => {
         // client.fill( saved );
         subscriber.next(client);
         subscriber.complete();
@@ -55,7 +56,7 @@ export class ProfileService {
     return new Observable<ProfileResource>( (subscriber) => {
       const executor: ProfileResource = serviceDocument.relationships.executor.data;
 
-      executor.save().subscribe( (saved: IDocumentResource) => {
+      executor.save({ beforepath: environment.getBeforeUrl() }).subscribe( (saved: IDocumentResource) => {
         // executor.fill( saved );
         subscriber.next(executor);
         subscriber.complete();
@@ -68,7 +69,7 @@ export class ProfileService {
 
   getAllClients(): Observable<DocumentCollection<ProfileResource>> {
     return new Observable<DocumentCollection<ProfileResource>>( (subscriber) => {
-      this.http.get<IDataCollection>(`${this.userService.getApiUrl()}external/profiles/clients`).subscribe( (data) => {
+      this.http.get<IDataCollection>(`${environment.getApiUrl()}external/profiles/clients`).subscribe( (data) => {
         const collection = this.profileResourceService.newCollection();
         collection.fill( data );
         subscriber.next( collection );
@@ -82,7 +83,7 @@ export class ProfileService {
 
   getAllExecutors(): Observable<DocumentCollection<ProfileResource>> {
     return new Observable<DocumentCollection<ProfileResource>>( (subscriber) => {
-      this.http.get<IDataCollection>(`${this.userService.getApiUrl()}external/profiles/executors`).subscribe( (data) => {
+      this.http.get<IDataCollection>(`${environment.getApiUrl()}external/profiles/executors`).subscribe( (data) => {
         const collection = this.profileResourceService.newCollection();
         collection.fill( data );
         subscriber.next( collection );

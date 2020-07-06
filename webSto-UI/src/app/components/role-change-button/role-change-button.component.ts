@@ -4,6 +4,7 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {ToastrService} from 'ngx-toastr';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {UserResource} from '../../model/resource/user.resource.service';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-role-change-button',
@@ -42,14 +43,12 @@ export class RoleChangeButtonComponent implements OnInit {
   }
 
   changeRole() {
-    const headers = this.userService.getHeaders();
-
     const body = new HttpParams()
       .set('role', this.selectedRole);
 
     this.isChanging = true;
-    this.httpClient.post(`${this.userService.getApiUrl()}external/users/${this.model.id}/role/change`,
-      body, {headers} ).subscribe( response => {
+    this.httpClient.post(`${environment.getApiUrl()}external/users/${this.model.id}/role/change`,
+      body).subscribe( response => {
       this.isChanging = false;
       this.onRoleChange.emit();
 

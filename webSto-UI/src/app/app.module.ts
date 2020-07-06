@@ -53,6 +53,7 @@ import {
 import {VehicleDictionaryService} from './api/vehicle.dictionary.service';
 import {ServiceWorkDictionaryService} from './api/service-work.dictionary.service';
 import {ServiceAddonDictionaryService} from './api/service-addon.dictionary.service';
+import {environment} from '../environments/environment';
 
 registerLocaleData(localeRu, 'ru');
 
@@ -74,7 +75,7 @@ registerLocaleData(localeRu, 'ru');
       timeOut: 3000
     }),
     NgxJsonapiModule.forRoot({
-      url: 'https://local.buromotors.ru:8080/api/'
+      url: environment.baseUrl
     })
   ],
   declarations: [

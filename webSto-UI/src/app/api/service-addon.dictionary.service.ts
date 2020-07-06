@@ -7,6 +7,7 @@ import {
   ServiceAddonDictionaryResource,
   ServiceAddonDictionaryResourceService
 } from '../model/resource/service-addon-dictionary.resource.service';
+import {environment} from '../../environments/environment';
 
 @Injectable()
 export class ServiceAddonDictionaryService {
@@ -17,7 +18,7 @@ export class ServiceAddonDictionaryService {
 
   findByName(search: string): Observable<DocumentCollection<ServiceAddonDictionaryResource>> {
     return this.serviceAddonDictionaryResourceService.all({
-      beforepath: `external`,
+      beforepath: `${environment.getBeforeUrl()}/external`,
       remotefilter: {
         name: search
       }

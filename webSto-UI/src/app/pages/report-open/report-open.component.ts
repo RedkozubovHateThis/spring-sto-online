@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {UserService} from '../../api/user.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -23,7 +24,7 @@ export class ReportOpenComponent implements OnInit {
 
     if ( uuid == null ) this.router.navigate(['login']);
 
-    window.location.href = `${this.userService.getApiUrl()}open/report/compiled?uuid=${uuid}`;
+    window.location.href = `${environment.getApiUrl()}open/report/compiled?uuid=${uuid}`;
 
     // this.isDownloading = true;
     // this.userService.requestOpenReport(uuid).subscribe( response => {

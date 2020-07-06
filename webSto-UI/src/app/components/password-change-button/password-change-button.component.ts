@@ -4,6 +4,7 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {ToastrService} from 'ngx-toastr';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {UserResource} from '../../model/resource/user.resource.service';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-password-change-button',
@@ -30,16 +31,14 @@ export class PasswordChangeButtonComponent implements OnInit {
   }
 
   changePassword() {
-    const headers = this.userService.getHeaders();
-
     const body = new HttpParams()
       .set('oldPassword', this.oldPassword)
       .set('newPassword', this.newPassword)
       .set('rePassword', this.rePassword);
 
     this.isChanging = true;
-    this.httpClient.post(`${this.userService.getApiUrl()}external/users/${this.model.id}/password/change`,
-      body, {headers} ).subscribe( response => {
+    this.httpClient.post(`${environment.getApiUrl()}external/users/${this.model.id}/password/change`,
+      body).subscribe( response => {
       this.isChanging = false;
 
       this.oldPassword = null;

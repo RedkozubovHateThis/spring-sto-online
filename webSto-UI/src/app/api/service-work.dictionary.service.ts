@@ -6,6 +6,7 @@ import {
   ServiceWorkDictionaryResource,
   ServiceWorkDictionaryResourceService
 } from '../model/resource/service-work-dictionary.resource.service';
+import {environment} from '../../environments/environment';
 
 @Injectable()
 export class ServiceWorkDictionaryService {
@@ -16,7 +17,7 @@ export class ServiceWorkDictionaryService {
 
   findByName(search: string): Observable<DocumentCollection<ServiceWorkDictionaryResource>> {
     return this.serviceWorkDictionaryResourceService.all({
-      beforepath: `external`,
+      beforepath: `${environment.getBeforeUrl()}/external`,
       remotefilter: {
         name: search
       }

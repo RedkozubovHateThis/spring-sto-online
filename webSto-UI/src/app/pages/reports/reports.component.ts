@@ -84,7 +84,7 @@
 //     };
 //
 //     this.isDownloading = true;
-//     this.httpClient.get(`${this.userService.getApiUrl()}reports/${this.reportType}/PDF`,
+//     this.httpClient.get(`${environment.getApiUrl()}reports/${this.reportType}/PDF`,
 //       {headers, params, responseType: 'blob'} ).subscribe( blob => {
 //
 //       this.isDownloading = false;
@@ -129,7 +129,7 @@
 //     };
 //
 //     this.isLoading = true;
-//     this.httpClient.get(`${this.userService.getApiUrl()}reports/${this.reportType}`,
+//     this.httpClient.get(`${environment.getApiUrl()}reports/${this.reportType}`,
 //       {headers, params} ).subscribe( reportData => {
 //
 //       this.reportData = reportData as object[];

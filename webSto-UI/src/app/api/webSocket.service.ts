@@ -8,6 +8,7 @@ import {EventMessageService} from './event-message.service';
 import {EventMessageResponse} from '../model/postgres/eventMessageResponse';
 import {DatePipe} from '@angular/common';
 import {Router} from '@angular/router';
+import {environment} from '../../environments/environment';
 
 @Injectable()
 export class WebSocketService {
@@ -31,7 +32,7 @@ export class WebSocketService {
       //       // },
       webSocketFactory() {
         return new SockJS(
-          `${me.userService.getWsUrl()}?access_token=${JSON.parse(localStorage.getItem('token')).access_token}`
+          `${environment.getWsUrl()}?access_token=${JSON.parse(localStorage.getItem('token')).access_token}`
         );
       },
       reconnectDelay: 5000,

@@ -16,6 +16,7 @@ import {UserService} from './user.service';
 import {IDataCollection} from 'ngx-jsonapi/interfaces/data-collection';
 import {IDocumentResource} from 'ngx-jsonapi/interfaces/data-object';
 import {subscribeOn} from 'rxjs/operators';
+import {environment} from '../../environments/environment';
 
 @Injectable()
 export class DocumentService implements TransferService<ServiceDocumentResource>, RestService<ServiceDocumentResource> {
@@ -42,7 +43,7 @@ export class DocumentService implements TransferService<ServiceDocumentResource>
       toDate: filter.toDate != null ? filter.toDate : '',
     };
     return this.serviceDocumentResourceService.all({
-      beforepath: 'external',
+      beforepath: `${environment.getBeforeUrl()}/external`,
       sort: [`${filter.direction === 'desc' ? '-' : ''}${filter.sort}`],
       page: { number: filter.page, size: filter.size },
       remotefilter: params
@@ -50,12 +51,12 @@ export class DocumentService implements TransferService<ServiceDocumentResource>
   }
 
   getOne(id: string): Observable<ServiceDocumentResource> {
-    return this.serviceDocumentResourceService.get(id);
+    return this.serviceDocumentResourceService.get(id, { beforepath: environment.getBeforeUrl() });
   }
 
   saveServiceDocument(model: ServiceDocumentResource): Observable<ServiceDocumentResource> {
     return new Observable<ServiceDocumentResource>( (subscriber) => {
-      model.save().subscribe( (data: IDocumentResource) => {
+      model.save({ beforepath: environment.getBeforeUrl() }).subscribe( (data: IDocumentResource) => {
         // model.fill(data);
         subscriber.next(model);
         subscriber.complete();
@@ -67,7 +68,7 @@ export class DocumentService implements TransferService<ServiceDocumentResource>
   }
 
   delete(model: ServiceDocumentResource): Observable<void> {
-    return model.delete();
+    return this.serviceDocumentResourceService.delete(model.id, { beforepath: environment.getBeforeUrl() });
   }
 
   getTransferModel() {
