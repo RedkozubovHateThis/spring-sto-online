@@ -54,8 +54,8 @@ export class DocumentAddComponent implements OnInit {
     showTwentyFourHours: true
     // monthFormat: 'MM, YYYY'
   };
-  private serviceWorks: DocumentCollection<ServiceWorkResource> = new DocumentCollection<ServiceWorkResource>();
-  private serviceAddons: DocumentCollection<ServiceAddonResource> = new DocumentCollection<ServiceAddonResource>();
+  private serviceWorks: Array<ServiceWorkResource> = new Array<ServiceWorkResource>();
+  private serviceAddons: Array<ServiceAddonResource> = new Array<ServiceAddonResource>();
   private vehicles: DocumentCollection<VehicleResource> = new DocumentCollection<VehicleResource>();
   private clients: DocumentCollection<ProfileResource> = new DocumentCollection<ProfileResource>();
   private executors: DocumentCollection<ProfileResource> = new DocumentCollection<ProfileResource>();
@@ -94,6 +94,13 @@ export class DocumentAddComponent implements OnInit {
 
   ngOnInit(): void {
     this.setDates();
+    const subscription = this.userService.currentUserIsLoaded.subscribe( (currentUser) => {
+      if ( !this.model.hasOneRelated('executor') && currentUser.attributes.userServiceLeader
+        && currentUser.relationships.profile.data)
+        this.model.addRelationship( currentUser.relationships.profile.data, 'executor' );
+
+      subscription.unsubscribe();
+    } );
   }
 
   setDates() {
@@ -117,13 +124,13 @@ export class DocumentAddComponent implements OnInit {
     serviceWork.attributes.count = 1;
     serviceWork.attributes.byPrice = true;
     serviceWork.attributes.name = name;
-    this.serviceWorks.data.push( serviceWork );
+    this.serviceWorks.push( serviceWork );
   }
   newServiceAddon(name?: string) {
     const serviceAddon: ServiceAddonResource = this.serviceAddonResourceService.new();
     serviceAddon.attributes.count = 1;
     serviceAddon.attributes.name = name;
-    this.serviceAddons.data.push( serviceAddon );
+    this.serviceAddons.push( serviceAddon );
   }
 
   checkData(): boolean {
@@ -192,7 +199,7 @@ export class DocumentAddComponent implements OnInit {
   checkDataList(): boolean {
     let isWorksError = false;
     let isAddonsError = false;
-    this.serviceWorks.data.forEach( (serviceWork) => {
+    this.serviceWorks.forEach( (serviceWork) => {
       if ( !serviceWork.attributes.name || serviceWork.attributes.name.length === 0 )
         isWorksError = true;
       if ( !serviceWork.attributes.count )
@@ -202,7 +209,7 @@ export class DocumentAddComponent implements OnInit {
       else if ( !serviceWork.attributes.byPrice && ( !serviceWork.attributes.priceNorm || !serviceWork.attributes.timeValue ) )
         isWorksError = true;
     } );
-    this.serviceAddons.data.forEach( (serviceAddon) => {
+    this.serviceAddons.forEach( (serviceAddon) => {
       if ( !serviceAddon.attributes.name || serviceAddon.attributes.name.length === 0 )
         isAddonsError = true;
       if ( !serviceAddon.attributes.count )
@@ -330,7 +337,7 @@ export class DocumentAddComponent implements OnInit {
 
   calculateTotalCost() {
     let cost = 0;
-    this.serviceWorks.data.forEach( (serviceWork) => {
+    this.serviceWorks.forEach( (serviceWork) => {
       if ( serviceWork.attributes.count > 0 ) {
         if ( serviceWork.attributes.byPrice )
           cost += serviceWork.attributes.price > 0 ? serviceWork.attributes.price * serviceWork.attributes.count : 0;
@@ -341,7 +348,7 @@ export class DocumentAddComponent implements OnInit {
         }
       }
     } );
-    this.serviceAddons.data.forEach( (serviceAddon) => {
+    this.serviceAddons.forEach( (serviceAddon) => {
       if ( serviceAddon.attributes.count > 0 ) {
         cost += serviceAddon.attributes.cost > 0 ? serviceAddon.attributes.cost * serviceAddon.attributes.count : 0;
       }

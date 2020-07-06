@@ -31,8 +31,8 @@ export class ServiceWorkService implements RestService<ServiceWorkResource> {
     });
   }
 
-  saveServiceWorks(serviceDocument: ServiceDocumentResource, serviceWorks: DocumentCollection<ServiceWorkResource>): void {
-    serviceWorks.data.forEach( (serviceWork) => {
+  saveServiceWorks(serviceDocument: ServiceDocumentResource, serviceWorks: Array<ServiceWorkResource>): void {
+    serviceWorks.forEach( (serviceWork) => {
       serviceWork.addRelationship(serviceDocument, 'document');
       serviceWork.save({ beforepath: environment.getBeforeUrl() }).subscribe( (saved: IDocumentResource) => {
         serviceWork.fill( saved );

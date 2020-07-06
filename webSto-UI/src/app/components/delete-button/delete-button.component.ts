@@ -23,7 +23,7 @@ export class DeleteButtonComponent<R extends Resource> implements OnInit {
   @Input()
   private restService: RestService<any>;
   @Input()
-  private parentList: DocumentCollection<R>;
+  private parentList: Array<R>;
   @Output()
   private onDelete: EventEmitter<any> = new EventEmitter();
 
@@ -36,8 +36,8 @@ export class DeleteButtonComponent<R extends Resource> implements OnInit {
     this.isDeleting = true;
 
     if ( this.model.is_new && this.parentList ) {
-      const index = this.parentList.data.indexOf( this.model );
-      this.parentList.data.splice(index, 1);
+      const index = this.parentList.indexOf( this.model );
+      this.parentList.splice(index, 1);
       this.isDeleting = false;
       this.modalService.dismissAll();
       this.toastrService.success('Запись успешно удалена!');
@@ -45,6 +45,10 @@ export class DeleteButtonComponent<R extends Resource> implements OnInit {
     }
     else {
       this.restService.delete(this.model).subscribe( () => {
+        if ( this.parentList ) {
+          const index = this.parentList.indexOf( this.model );
+          this.parentList.splice(index, 1);
+        }
         this.isDeleting = false;
         this.modalService.dismissAll();
         this.toastrService.success('Запись успешно удалена!');

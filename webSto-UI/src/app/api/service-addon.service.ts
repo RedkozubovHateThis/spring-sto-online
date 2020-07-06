@@ -31,8 +31,8 @@ export class ServiceAddonService implements RestService<ServiceAddonResource> {
     });
   }
 
-  saveServiceAddons(serviceDocument: ServiceDocumentResource, serviceAddons: DocumentCollection<ServiceAddonResource>): void {
-    serviceAddons.data.forEach( (serviceAddon) => {
+  saveServiceAddons(serviceDocument: ServiceDocumentResource, serviceAddons: Array<ServiceAddonResource>): void {
+    serviceAddons.forEach( (serviceAddon) => {
       serviceAddon.addRelationship(serviceDocument, 'document');
       serviceAddon.save({ beforepath: environment.getBeforeUrl() }).subscribe( (saved: IDocumentResource) => {
         serviceAddon.fill( saved );

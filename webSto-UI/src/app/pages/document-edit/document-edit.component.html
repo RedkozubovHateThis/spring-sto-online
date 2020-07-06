@@ -355,7 +355,7 @@
                   </tr>
                   </thead>
                   <tbody *ngIf="model != null">
-                  <tr *ngFor="let serviceWork of serviceWorks.data">
+                  <tr *ngFor="let serviceWork of serviceWorks">
                     <th>
                       <input class="form-control form-control-sm form-control-alternative" placeholder="Код работ"
                              [(ngModel)]="serviceWork.attributes.number">
@@ -437,7 +437,7 @@
                   </tr>
                   </thead>
                   <tbody *ngIf="model != null">
-                  <tr *ngFor="let addon of serviceAddons.data">
+                  <tr *ngFor="let addon of serviceAddons">
                     <th>
                       <input class="form-control form-control-sm form-control-alternative" placeholder="Код товара"
                              [(ngModel)]="addon.attributes.number">
