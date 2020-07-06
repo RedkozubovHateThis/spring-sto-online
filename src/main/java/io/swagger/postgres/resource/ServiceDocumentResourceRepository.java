@@ -10,6 +10,7 @@ import io.crnk.core.resource.list.ResourceList;
 import io.crnk.core.resource.meta.MetaInformation;
 import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.ServiceDocument;
+import io.swagger.postgres.model.enums.ServiceDocumentPaidStatus;
 import io.swagger.postgres.model.enums.ServiceDocumentStatus;
 import io.swagger.postgres.model.security.Profile;
 import io.swagger.postgres.model.security.User;
@@ -70,22 +71,33 @@ public class ServiceDocumentResourceRepository implements ResourceRepository<Ser
 
     @Override
     public <S extends ServiceDocument> S save(S s) {
-        if ( s.getNumber() == null || s.getNumber().length() == 0 )
+        if ( s.getId() != null && ( s.getNumber() == null || s.getNumber().length() == 0 ) )
             throw new BadRequestException("Номер заказ-наряда не может быть пустым!");
         if ( s.getStartDate() == null )
             throw new BadRequestException("Дата начала ремонта не может быть пустой!");
         if ( s.getStatus() == null )
             throw new BadRequestException("Статус заказ-наряда не может быть пустым!");
+        if ( s.getExecutor() == null )
+            throw new BadRequestException("Не указан исполнитель!");
+        if ( s.getClient() == null )
+            throw new BadRequestException("Не указан клиент!");
+        if ( s.getVehicle() == null )
+            throw new BadRequestException("Не указан автомобиль!");
+        if ( s.getVehicleMileage() == null )
+            throw new BadRequestException("Не указан пробег!");
 
-        Boolean isServiceDocumentExists;
+//        Boolean isServiceDocumentExists;
+//
+//        if ( s.getId() != null )
+//            isServiceDocumentExists = serviceDocumentRepository.isServiceDocumentExistsNumberNotSelf( s.getNumber(), s.getId() );
+//        else
+//            isServiceDocumentExists = serviceDocumentRepository.isServiceDocumentExistsNumber( s.getNumber() );
+//
+//        if ( isServiceDocumentExists )
+//            throw new BadRequestException("Заказ-наряд с таким номером уже существует!");
 
-        if ( s.getId() != null )
-            isServiceDocumentExists = serviceDocumentRepository.isServiceDocumentExistsNumberNotSelf( s.getNumber(), s.getId() );
-        else
-            isServiceDocumentExists = serviceDocumentRepository.isServiceDocumentExistsNumber( s.getNumber() );
-
-        if ( isServiceDocumentExists )
-            throw new BadRequestException("Заказ-наряд с таким номером уже существует!");
+        if ( s.getId() == null && s.getNumber() == null || s.getNumber().length() == 0 )
+            generateNumber(s);
 
         return serviceDocumentRepository.save( s );
     }
@@ -93,6 +105,10 @@ public class ServiceDocumentResourceRepository implements ResourceRepository<Ser
     @Override
     public <S extends ServiceDocument> S create(S s) {
         s.setDeleted(false);
+        if ( s.getPaidStatus() == null )
+            s.setPaidStatus( ServiceDocumentPaidStatus.NOT_PAID );
+        if ( s.getStatus() == null )
+            s.setStatus( ServiceDocumentStatus.CREATED );
         return save( s );
     }
 
@@ -118,5 +134,19 @@ public class ServiceDocumentResourceRepository implements ResourceRepository<Ser
     @Override
     public MetaInformation getMetaInformation(Collection<ServiceDocument> resources, QuerySpec querySpec, MetaInformation current) {
         return new JsonApiListMeta(serviceDocumentRepository.count());
+    }
+
+    private void generateNumber(ServiceDocument serviceDocument) throws BadRequestException {
+        Profile executor = serviceDocument.getExecutor();
+        User user = executor.getUser();
+        if ( user == null )
+            throw new BadRequestException("Не найден исполнитель! Возможно, пользователь был удален!");
+
+        String shortFio = user.getShortFio();
+        if ( shortFio == null )
+            throw new BadRequestException("Необходимо заполнить профиль исполнителя!");
+        long count = serviceDocumentRepository.countAllByExecutorId(executor.getId());
+        String documentNumber = String.format("%s%s", shortFio, count + 1);
+        serviceDocument.setNumber( documentNumber );
     }
 }

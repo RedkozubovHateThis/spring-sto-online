@@ -185,10 +185,10 @@ export class DocumentAddComponent implements OnInit {
       return false;
     }
 
-    if ( !this.model.attributes.number || this.model.attributes.number.length === 0 ) {
-      this.toastrService.error('Не указан номер заказ-наряда!', 'Внимание!');
-      return false;
-    }
+    // if ( !this.model.attributes.number || this.model.attributes.number.length === 0 ) {
+    //   this.toastrService.error('Не указан номер заказ-наряда!', 'Внимание!');
+    //   return false;
+    // }
     else if ( !this.model.attributes.startDate ) {
       this.toastrService.error('Не указана дата начала ремонта!', 'Внимание!');
       return false;

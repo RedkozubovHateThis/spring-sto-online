@@ -122,17 +122,49 @@ public class User extends BaseEntity implements UserDetails, Serializable {
     }
 
     public String getFio() {
-        if ( this.middleName == null && this.firstName == null )
+        if ( !notEmpty(this.middleName) && !notEmpty(this.firstName) )
             return this.lastName;
-        else if ( this.middleName == null && this.firstName != null )
+        else if ( !notEmpty(this.middleName) && notEmpty(this.firstName) )
             return this.lastName + " " + this.firstName.substring(0, 1) + ".";
-        else if ( this.middleName != null && this.firstName == null )
+        else if ( notEmpty(this.middleName) && !notEmpty(this.firstName) )
             return this.lastName + " " + this.middleName.substring(0, 1) + ".";
-        else if ( this.middleName != null && this.firstName != null )
+        else if ( notEmpty(this.middleName) && notEmpty(this.firstName) )
             return this.lastName + " " + this.firstName.substring(0, 1) + ". " +
                     this.middleName.substring(0, 1) + ".";
         else
             return null;
+    }
+
+    public String getFullFio() {
+        if ( !notEmpty(this.middleName) && !notEmpty(this.firstName) )
+            return this.lastName;
+        else if ( !notEmpty(this.middleName) && notEmpty(this.firstName) )
+            return this.lastName + " " + this.firstName;
+        else if ( notEmpty(this.middleName) && !notEmpty(this.firstName) )
+            return this.lastName + " " + this.middleName;
+        else if ( notEmpty(this.middleName) && notEmpty(this.firstName) )
+            return this.lastName + " " + this.firstName + " " +
+                    this.middleName;
+        else
+            return null;
+    }
+
+    public String getShortFio() {
+        if ( !notEmpty(this.middleName) && !notEmpty(this.firstName) )
+            return this.lastName.substring(0, 1).toUpperCase();
+        else if ( !notEmpty(this.middleName) && notEmpty(this.firstName) )
+            return (this.lastName.substring(0, 1) + this.firstName.substring(0, 1)).toUpperCase();
+        else if ( notEmpty(this.middleName) && !notEmpty(this.firstName) )
+            return (this.lastName.substring(0, 1) + this.middleName.substring(0, 1)).toUpperCase();
+        else if ( notEmpty(this.middleName) && notEmpty(this.firstName) )
+            return (this.lastName.substring(0, 1) + this.firstName.substring(0, 1) +
+                    this.middleName.substring(0, 1)).toUpperCase();
+        else
+            return null;
+    }
+
+    private boolean notEmpty(String field) {
+        return field != null && field.length() > 0;
     }
 
     public Boolean isUserAdmin() {

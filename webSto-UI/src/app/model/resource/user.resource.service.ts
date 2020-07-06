@@ -13,6 +13,8 @@ export class UserResource extends Resource {
     lastName: null,
     middleName: null,
     fio: null,
+    shortFio: null,
+    fullFio: null,
     enabled: true,
     isAutoRegistered: false,
     serviceWorkPrice: null,

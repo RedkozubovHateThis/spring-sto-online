@@ -18,4 +18,7 @@ public interface ServiceDocumentRepository extends JpaRepository<ServiceDocument
             "WHERE sd.number = :number AND sd.id <> :id )")
     Boolean isServiceDocumentExistsNumberNotSelf(@Param("number") String number,
                                                  @Param("id") Long id);
+
+    @Query(nativeQuery = true, value = "SELECT COUNT(DISTINCT sd.id) FROM service_document AS sd WHERE sd.executor_id = :executorId")
+    Long countAllByExecutorId(@Param("executorId") Long executorId);
 }
