@@ -8,6 +8,7 @@ import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.ServiceDocumentRepository;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.postgres.resourceProcessor.ServiceDocumentResourceProcessor;
+import io.swagger.response.api.JsonApiParamsBase;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -76,59 +77,29 @@ public class ServiceDocumentController {
     }
 
     @Data
-    public static class JsonApiParams {
-        private Map<String, List<String>> filter;
-        private List<String> sort;
-        private List<String> include;
-        private Map<String, Integer> page;
-
-        public FilterPayload getFilterPayload() throws ParseException {
+    public static class JsonApiParams extends JsonApiParamsBase<FilterPayload> {
+        public FilterPayload getFilterPayload() throws Exception {
             FilterPayload filterPayload = new FilterPayload();
 
-            if ( filter == null )
+            if ( getFilter() == null )
                 return filterPayload;
 
-            if ( filter.containsKey("state") && filter.get("state").size() > 0 )
-                filterPayload.setState( ServiceDocumentStatus.valueOf( filter.get("state").get(0) ) );
-            if ( filter.containsKey("organization") && filter.get("organization").size() > 0 )
-                filterPayload.setOrganization( Long.parseLong( filter.get("organization").get(0), 10 ) );
-            if ( filter.containsKey("vehicle") && filter.get("vehicle").size() > 0 )
-                filterPayload.setVehicle( filter.get("vehicle").get(0) );
-            if ( filter.containsKey("vinNumber") && filter.get("vinNumber").size() > 0 )
-                filterPayload.setVinNumber( filter.get("vinNumber").get(0) );
-            if ( filter.containsKey("client") && filter.get("client").size() > 0 )
-                filterPayload.setClient( Long.parseLong( filter.get("client").get(0), 10 ) );
-            if ( filter.containsKey("fromDate") && filter.get("fromDate").size() > 0 )
-                filterPayload.setFromDate( DATE_FORMAT.parse( filter.get("fromDate").get(0) ) );
-            if ( filter.containsKey("toDate") && filter.get("toDate").size() > 0 )
-                filterPayload.setFromDate( DATE_FORMAT.parse( filter.get("toDate").get(0) ) );
+            if ( getFilter().containsKey("state") && getFilter().get("state").size() > 0 )
+                filterPayload.setState( ServiceDocumentStatus.valueOf( getFilter().get("state").get(0) ) );
+            if ( getFilter().containsKey("organization") && getFilter().get("organization").size() > 0 )
+                filterPayload.setOrganization( Long.parseLong( getFilter().get("organization").get(0), 10 ) );
+            if ( getFilter().containsKey("vehicle") && getFilter().get("vehicle").size() > 0 )
+                filterPayload.setVehicle( getFilter().get("vehicle").get(0) );
+            if ( getFilter().containsKey("vinNumber") && getFilter().get("vinNumber").size() > 0 )
+                filterPayload.setVinNumber( getFilter().get("vinNumber").get(0) );
+            if ( getFilter().containsKey("client") && getFilter().get("client").size() > 0 )
+                filterPayload.setClient( Long.parseLong( getFilter().get("client").get(0), 10 ) );
+            if ( getFilter().containsKey("fromDate") && getFilter().get("fromDate").size() > 0 )
+                filterPayload.setFromDate( DATE_FORMAT.parse( getFilter().get("fromDate").get(0) ) );
+            if ( getFilter().containsKey("toDate") && getFilter().get("toDate").size() > 0 )
+                filterPayload.setFromDate( DATE_FORMAT.parse( getFilter().get("toDate").get(0) ) );
 
             return filterPayload;
-        }
-
-        public PageRequest getPageable() {
-            int number;
-            int size = page.getOrDefault("size", 20);
-
-            if ( !page.containsKey("number") )
-                number = 0;
-            else
-                number = page.get("number") - 1;
-
-            if ( sort == null || sort.size() == 0 )
-                return PageRequest.of(number, size);
-
-            String firstField = sort.get(0);
-            Sort sortDomain;
-
-            if (firstField.startsWith("-")) {
-                List<String> sortFixed = sort.stream().map( eachSort -> eachSort.replaceFirst("-", "") ).collect( Collectors.toList() );
-                sortDomain = Sort.by(Sort.Direction.DESC, sortFixed.toArray( new String[ sort.size() ] ) );
-            }
-            else
-                sortDomain = Sort.by(Sort.Direction.ASC, sort.toArray( new String[ sort.size() ] ));
-
-            return PageRequest.of(number, size, sortDomain);
         }
     }
 

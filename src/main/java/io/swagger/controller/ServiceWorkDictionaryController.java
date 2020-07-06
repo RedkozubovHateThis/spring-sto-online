@@ -6,6 +6,7 @@ import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.postgres.repository.ServiceWorkDictionaryRepository;
 import io.swagger.postgres.resourceProcessor.ServiceWorkDictionaryResourceProcessor;
+import io.swagger.response.api.JsonApiParamsBase;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,47 +68,17 @@ public class ServiceWorkDictionaryController {
     }
 
     @Data
-    public static class JsonApiParams {
-        private Map<String, List<String>> filter;
-        private List<String> sort;
-        private List<String> include;
-        private Map<String, Integer> page;
-
+    public static class JsonApiParams extends JsonApiParamsBase<FilterPayload> {
         public FilterPayload getFilterPayload() {
             FilterPayload filterPayload = new FilterPayload();
 
-            if ( filter == null )
+            if ( getFilter() == null )
                 return filterPayload;
 
-            if ( filter.containsKey("name") && filter.get("name").size() > 0 )
-                filterPayload.setName( filter.get("name").get(0) );
+            if ( getFilter().containsKey("name") && getFilter().get("name").size() > 0 )
+                filterPayload.setName( getFilter().get("name").get(0) );
 
             return filterPayload;
-        }
-
-        public PageRequest getPageable() {
-            int number;
-            int size = page.getOrDefault("size", 20);
-
-            if ( !page.containsKey("number") )
-                number = 0;
-            else
-                number = page.get("number") - 1;
-
-            if ( sort == null || sort.size() == 0 )
-                return PageRequest.of(number, size);
-
-            String firstField = sort.get(0);
-            Sort sortDomain;
-
-            if (firstField.startsWith("-")) {
-                List<String> sortFixed = sort.stream().map( eachSort -> eachSort.replaceFirst("-", "") ).collect( Collectors.toList() );
-                sortDomain = Sort.by(Sort.Direction.DESC, sortFixed.toArray( new String[ sort.size() ] ) );
-            }
-            else
-                sortDomain = Sort.by(Sort.Direction.ASC, sort.toArray( new String[ sort.size() ] ));
-
-            return PageRequest.of(number, size, sortDomain);
         }
     }
 }

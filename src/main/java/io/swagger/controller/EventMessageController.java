@@ -8,6 +8,7 @@ import io.swagger.postgres.repository.EventMessageRepository;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.postgres.resourceProcessor.EventMessageResourceProcessor;
 import io.swagger.response.EventMessageResponse;
+import io.swagger.response.api.JsonApiParamsBase;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,61 +64,31 @@ public class EventMessageController {
     }
 
     @Data
-    public static class JsonApiParams {
-        private Map<String, List<String>> filter;
-        private List<String> sort;
-        private List<String> include;
-        private Map<String, Integer> page;
-
+    public static class JsonApiParams extends JsonApiParamsBase<FilterPayload> {
         public FilterPayload getFilterPayload() {
             FilterPayload filterPayload = new FilterPayload();
 
-            if ( filter == null )
+            if ( getFilter() == null )
                 return filterPayload;
 
-            if ( filter.containsKey("messageTypes") && filter.get("messageTypes").size() > 0 )
-                for (String messageType : filter.get("messageTypes")) {
+            if ( getFilter().containsKey("messageTypes") && getFilter().get("messageTypes").size() > 0 )
+                for (String messageType : getFilter().get("messageTypes")) {
                     filterPayload.getMessageTypes().add( MessageType.valueOf(messageType) );
                 }
-            if ( filter.containsKey("fromIds") && filter.get("fromIds").size() > 0 )
-                for (String fromId : filter.get("fromIds")) {
+            if ( getFilter().containsKey("fromIds") && getFilter().get("fromIds").size() > 0 )
+                for (String fromId : getFilter().get("fromIds")) {
                     filterPayload.getFromIds().add( Integer.parseInt( fromId, 10 ) );
                 }
-            if ( filter.containsKey("toIds") && filter.get("toIds").size() > 0 )
-                for (String toId : filter.get("toIds")) {
+            if ( getFilter().containsKey("toIds") && getFilter().get("toIds").size() > 0 )
+                for (String toId : getFilter().get("toIds")) {
                     filterPayload.getToIds().add( Integer.parseInt( toId, 10 ) );
                 }
-            if ( filter.containsKey("documentIds") && filter.get("documentIds").size() > 0 )
-                for (String documentId : filter.get("documentIds")) {
+            if ( getFilter().containsKey("documentIds") && getFilter().get("documentIds").size() > 0 )
+                for (String documentId : getFilter().get("documentIds")) {
                     filterPayload.getDocumentIds().add( Integer.parseInt( documentId, 10 ) );
                 }
 
             return filterPayload;
-        }
-
-        public PageRequest getPageable() {
-            int number;
-            int size = page.getOrDefault("size", 20);
-
-            if ( !page.containsKey("number") )
-                number = 0;
-            else
-                number = page.get("number") - 1;
-
-            if ( sort == null || sort.size() == 0 )
-                return PageRequest.of(number, size);
-
-            String firstField = sort.get(0);
-            Sort sortDomain;
-
-            if (firstField.startsWith("-")) {
-                List<String> sortFixed = sort.stream().map( eachSort -> eachSort.replaceFirst("-", "") ).collect( Collectors.toList() );
-                sortDomain = Sort.by(Sort.Direction.DESC, sortFixed.toArray( new String[ sort.size() ] ) );
-            }
-            else
-                sortDomain = Sort.by(Sort.Direction.ASC, sort.toArray( new String[ sort.size() ] ));
-
-            return PageRequest.of(number, size, sortDomain);
         }
     }
 
