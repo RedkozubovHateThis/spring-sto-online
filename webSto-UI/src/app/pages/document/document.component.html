@@ -62,6 +62,14 @@
               </div>
               <div class="row form-group">
                 <div class="col-lg-12">
+                  <label class="form-control-label" for="paid-status">Статус оплаты</label>
+                  <span id="paid-status" class="form-control form-control-sm form-control-alternative" *ngIf="model != null">
+                    {{model.paidStatusRus()}}
+                  </span>
+                </div>
+              </div>
+              <div class="row form-group">
+                <div class="col-lg-12">
                   <label class="form-control-label" for="start-date">Дата начала ремонта</label>
                     <span class="form-control form-control-alternative form-control-sm" id="start-date">
                       {{model.attributes.startDate | date : 'dd.MM.yyyy HH:mm'}}

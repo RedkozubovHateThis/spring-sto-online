@@ -85,6 +85,7 @@ export class DocumentAddComponent implements OnInit {
     this.model = serviceDocumentResourceService.new();
     this.model.attributes.startDate = new Date().getTime();
     this.model.attributes.status = 'CREATED';
+    this.model.attributes.paidStatus = 'NOT_PAID';
     if ( this.userService.isServiceLeader() && this.userService.currentUser.relationships.profile.data )
       this.model.addRelationship( this.userService.currentUser.relationships.profile.data, 'executor' );
     this.model.addRelationship( profileResourceService.new(), 'client' );

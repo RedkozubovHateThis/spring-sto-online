@@ -5,6 +5,7 @@ import io.swagger.postgres.model.ServiceDocument;
 import io.swagger.postgres.model.ServiceDocument_;
 import io.swagger.postgres.model.Vehicle;
 import io.swagger.postgres.model.Vehicle_;
+import io.swagger.postgres.model.enums.ServiceDocumentStatus;
 import io.swagger.postgres.model.security.Profile;
 import io.swagger.postgres.model.security.Profile_;
 import io.swagger.postgres.model.security.User;
@@ -32,6 +33,9 @@ public class ServiceDocumentSpecificationBuilder {
                     predicates.add( cb.equal(
                             clientJoin.get( Profile_.id ), currentUser.getProfile().getId()
                     ) );
+                    predicates.add( cb.equal(
+                            root.get( ServiceDocument_.status ), ServiceDocumentStatus.COMPLETED
+                    ) );
                 }
                 else if ( filterPayload.getClient() != null ) {
                     predicates.add( cb.equal(
@@ -51,6 +55,9 @@ public class ServiceDocumentSpecificationBuilder {
 
                 if ( filterPayload.getState() != null ) {
                     predicates.add( root.get( ServiceDocument_.status ).in( filterPayload.getState() ) );
+                }
+                if ( filterPayload.getPaidState() != null ) {
+                    predicates.add( root.get( ServiceDocument_.paidStatus ).in( filterPayload.getPaidState() ) );
                 }
                 if ( filterPayload.getVehicle() != null && filterPayload.getVehicle().length() > 0 ) {
                     predicates.add(

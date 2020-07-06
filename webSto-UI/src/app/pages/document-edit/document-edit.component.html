@@ -50,6 +50,17 @@
               </div>
               <div class="row form-group">
                 <div class="col-lg-12">
+                  <label class="form-control-label" for="paid-status-select">Статус оплаты</label>
+                  <select id="paid-status-select" class="form-control form-control-sm form-control-alternative"
+                          [(ngModel)]="model.attributes.paidStatus">
+                    <option *ngFor="let status of model.getPaidStatuses()" [selected]="model.attributes.paidStatus === status.id" [ngValue]="status.id">
+                      {{status.name}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="row form-group">
+                <div class="col-lg-12">
                   <label class="form-control-label" for="start-date-picker">Дата начала ремонта</label>
                   <div style="max-height: 29px;">
                     <input class="form-control form-control-alternative form-control-sm" id="start-date-picker" [mode]="'daytime'"

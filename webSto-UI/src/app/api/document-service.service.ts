@@ -35,6 +35,7 @@ export class DocumentService implements TransferService<ServiceDocumentResource>
   getAll(filter: DocumentsFilter): Observable<DocumentCollection<ServiceDocumentResource>> {
     const params = {
       state: filter.state != null ? filter.state : '',
+      paidState: filter.paidState != null ? filter.paidState : '',
       organization: filter.organization != null ? filter.organization : '',
       vehicle: filter.vehicle != null ? filter.vehicle : '',
       vinNumber: filter.vinNumber != null ? filter.vinNumber : '',

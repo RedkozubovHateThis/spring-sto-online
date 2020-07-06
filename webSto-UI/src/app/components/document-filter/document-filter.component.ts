@@ -38,6 +38,16 @@ export class DocumentFilterComponent implements OnInit {
       id: 'COMPLETED'
     }
   ];
+  private paidStates = [
+    {
+      name: 'Не оплачен',
+      id: 'NOT_PAID'
+    },
+    {
+      name: 'Оплачен',
+      id: 'PAID'
+    }
+  ];
   private datePickerConfig = {
     locale: 'ru',
     firstDayOfWeek: 'mo',
@@ -111,6 +121,7 @@ export class DocumentFilterComponent implements OnInit {
 
   resetFilters() {
     this.filter.state = null;
+    this.filter.paidState = null;
     this.filter.organization = null;
     this.filter.vehicle = null;
     this.filter.client = null;

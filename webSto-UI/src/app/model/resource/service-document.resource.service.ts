@@ -19,6 +19,18 @@ const statuses: IStatus[] = [
       style: 'success'
     }
 ];
+const paidStatuses: IStatus[] = [
+    {
+      name: 'Не оплачен',
+      id: 'NOT_PAID',
+      style: 'danger'
+    },
+    {
+      name: 'Оплачен',
+      id: 'PAID',
+      style: 'success'
+    }
+];
 
 export class ServiceDocumentResource extends Resource {
   public attributes = {
@@ -26,6 +38,7 @@ export class ServiceDocumentResource extends Resource {
     startDate: new Date().getTime(),
     endDate: null,
     status: 'CREATED',
+    paidStatus: 'NOT_PAID',
     deleted: false,
     cost: null,
     reason: null
@@ -50,6 +63,16 @@ export class ServiceDocumentResource extends Resource {
 
     return 'Не найден';
   }
+  public paidStatusRus = (): string => {
+    const { paidStatus } = this.attributes;
+
+    if ( !paidStatus ) return 'Не указан';
+    const currentStatus = paidStatuses.find( (eachStatus) => eachStatus.id === paidStatus );
+    if ( currentStatus )
+      return currentStatus.name;
+
+    return 'Не найден';
+  }
 
   public statusStyle = (): string => {
     const { status } = this.attributes;
@@ -61,9 +84,22 @@ export class ServiceDocumentResource extends Resource {
 
     return 'warn';
   }
+  public paidStatusStyle = (): string => {
+    const { paidStatus } = this.attributes;
+
+    if ( !paidStatus ) return 'warn';
+    const currentStatus = paidStatuses.find( (eachStatus) => eachStatus.id === paidStatus );
+    if ( currentStatus )
+      return currentStatus.style;
+
+    return 'warn';
+  }
 
   public getStatuses = (): IStatus[] => {
     return statuses;
+  }
+  public getPaidStatuses = (): IStatus[] => {
+    return paidStatuses;
   }
 }
 

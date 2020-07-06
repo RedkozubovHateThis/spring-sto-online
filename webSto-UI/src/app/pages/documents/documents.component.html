@@ -32,7 +32,7 @@
               <tr>
                 <th scope="col">Номер</th>
                 <th scope="col">Дата начала</th>
-                <th scope="col">Дата окончания</th>
+                <th scope="col">Статус оплаты</th>
                 <th scope="col">Состояние</th>
                 <th scope="col">Клиент</th>
                 <th scope="col">Автомобиль</th>
@@ -50,7 +50,11 @@
                   <i class="far fa-circle" *ngIf="selected !== serviceDocument"></i>
                 </th>
                 <th style="cursor: pointer;" (click)="navigate(serviceDocument)">{{serviceDocument.attributes.startDate | date : 'dd.MM.yyyy HH:mm'}}</th>
-                <th style="cursor: pointer;" (click)="navigate(serviceDocument)">{{serviceDocument.attributes.endDate | date : 'dd.MM.yyyy HH:mm'}}</th>
+                <th style="cursor: pointer;" (click)="navigate(serviceDocument)">
+                  <span class="badge badge-dot">
+                    <i class="bg-{{serviceDocument.paidStatusStyle()}}"></i>{{serviceDocument.paidStatusRus()}}
+                  </span>
+                </th>
                 <th style="cursor: pointer;" (click)="navigate(serviceDocument)">
                   <span class="badge badge-dot">
                     <i class="bg-{{serviceDocument.statusStyle()}}"></i>{{serviceDocument.statusRus()}}

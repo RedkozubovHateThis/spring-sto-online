@@ -3,6 +3,7 @@ package io.swagger.postgres.model;
 import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
+import io.swagger.postgres.model.enums.ServiceDocumentPaidStatus;
 import io.swagger.postgres.model.enums.ServiceDocumentStatus;
 import io.swagger.postgres.model.security.Profile;
 import io.swagger.postgres.model.security.User;
@@ -31,6 +32,8 @@ public class ServiceDocument extends BaseEntity {
     private Date endDate;
     @Enumerated(EnumType.STRING)
     private ServiceDocumentStatus status;
+    @Enumerated(EnumType.STRING)
+    private ServiceDocumentPaidStatus paidStatus;
     private Boolean deleted;
     private Double cost;
     @Column(columnDefinition = "TEXT")

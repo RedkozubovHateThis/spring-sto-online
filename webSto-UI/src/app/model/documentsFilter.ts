@@ -4,6 +4,7 @@ import {PageFilter} from './pageFilter';
 export class DocumentsFilter extends PageFilter {
 
   state: string;
+  paidState: string;
   organization: string;
   vehicle: string;
   vinNumber: string;
@@ -16,6 +17,7 @@ export class DocumentsFilter extends PageFilter {
   constructor() {
     super();
     this.state = null;
+    this.paidState = null;
     this.organization = null;
     this.vehicle = null;
     this.client = null;
@@ -31,6 +33,9 @@ export class DocumentsFilter extends PageFilter {
     if ( queryParams.direction ) this.direction = queryParams.direction;
 
     if ( queryParams.state ) this.state = queryParams.state;
+    // else this.state = null;
+
+    if ( queryParams.paidState ) this.paidState = queryParams.paidState;
     // else this.state = null;
 
     if ( queryParams.organization ) this.organization = queryParams.organization;

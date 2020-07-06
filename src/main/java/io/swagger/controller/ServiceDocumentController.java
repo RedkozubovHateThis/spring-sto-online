@@ -3,6 +3,7 @@ package io.swagger.controller;
 import io.swagger.helper.ServiceDocumentSpecificationBuilder;
 import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.ServiceDocument;
+import io.swagger.postgres.model.enums.ServiceDocumentPaidStatus;
 import io.swagger.postgres.model.enums.ServiceDocumentStatus;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.ServiceDocumentRepository;
@@ -67,6 +68,7 @@ public class ServiceDocumentController {
     public static class FilterPayload {
 
         private ServiceDocumentStatus state;
+        private ServiceDocumentPaidStatus paidState;
         private Long organization;
         private String vehicle;
         private String vinNumber;
@@ -86,6 +88,8 @@ public class ServiceDocumentController {
 
             if ( getFilter().containsKey("state") && getFilter().get("state").size() > 0 )
                 filterPayload.setState( ServiceDocumentStatus.valueOf( getFilter().get("state").get(0) ) );
+            if ( getFilter().containsKey("paidState") && getFilter().get("paidState").size() > 0 )
+                filterPayload.setPaidState( ServiceDocumentPaidStatus.valueOf( getFilter().get("paidState").get(0) ) );
             if ( getFilter().containsKey("organization") && getFilter().get("organization").size() > 0 )
                 filterPayload.setOrganization( Long.parseLong( getFilter().get("organization").get(0), 10 ) );
             if ( getFilter().containsKey("vehicle") && getFilter().get("vehicle").size() > 0 )
