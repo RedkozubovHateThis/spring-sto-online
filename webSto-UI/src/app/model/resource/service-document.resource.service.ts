@@ -9,12 +9,14 @@ import {ProfileResource} from './profile.resource.service';
 
 const statuses: IStatus[] = [
     {
-      name: 'Черновик',
-      id: 'CREATED'
+      name: 'В работе',
+      id: 'CREATED',
+      style: 'danger'
     },
     {
       name: 'Оформлен',
-      id: 'COMPLETED'
+      id: 'COMPLETED',
+      style: 'success'
     }
 ];
 
@@ -41,12 +43,23 @@ export class ServiceDocumentResource extends Resource {
   public statusRus = (): string => {
     const { status } = this.attributes;
 
-    if ( !status ) return '';
+    if ( !status ) return 'Не указан';
     const currentStatus = statuses.find( (eachStatus) => eachStatus.id === status );
     if ( currentStatus )
       return currentStatus.name;
 
-    return '';
+    return 'Не найден';
+  }
+
+  public statusStyle = (): string => {
+    const { status } = this.attributes;
+
+    if ( !status ) return 'warn';
+    const currentStatus = statuses.find( (eachStatus) => eachStatus.id === status );
+    if ( currentStatus )
+      return currentStatus.style;
+
+    return 'warn';
   }
 
   public getStatuses = (): IStatus[] => {

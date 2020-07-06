@@ -14,7 +14,7 @@
         <app-report-button [model]="document" [disabled]="document != null && document.attributes.status !== 'COMPLETED'"
                            *ngIf="userService.currentUser != null">
         </app-report-button>
-        <button class="btn btn-sm btn-buro-blue" (click)="resetFilters()" *ngIf="filter.state || filter.organization ||
+        <button class="btn btn-sm btn-buro-blue" style="margin-left: 0.5rem;" (click)="resetFilters()" *ngIf="filter.state || filter.organization ||
         filter.vehicle || filter.vinNumber || filter.client || filter.fromDate || filter.toDate">
           Сбросить
         </button>

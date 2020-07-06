@@ -30,7 +30,7 @@ export class DocumentFilterComponent implements OnInit {
   private onOrganizationChange: EventEmitter<void> = new EventEmitter();
   private states = [
     {
-      name: 'Черновик',
+      name: 'В работе',
       id: 'CREATED'
     },
     {
