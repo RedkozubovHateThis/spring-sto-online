@@ -5,6 +5,7 @@ import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepository;
 import io.crnk.core.resource.list.ResourceList;
 import io.swagger.postgres.model.security.Profile;
+import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.ProfileRepository;
 import io.swagger.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,7 +94,20 @@ public class ProfileResourceRepository implements ResourceRepository<Profile, Lo
 
         }
 
-        return profileRepository.save( s );
+        boolean wasNew = s.getId() == null;
+
+        profileRepository.save(s);
+
+        if ( wasNew && s.getAutoRegister() != null && s.getAutoRegister() ) {
+            try {
+                userService.generateUser(s);
+            }
+            catch(Exception e) {
+                throw new BadRequestException("Ошибка регистрации нового клиента!");
+            }
+        }
+
+        return s;
     }
 
     @Override

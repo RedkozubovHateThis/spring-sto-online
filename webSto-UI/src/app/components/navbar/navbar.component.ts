@@ -22,7 +22,7 @@ export class NavbarComponent implements OnInit {
   }
 
   getUsername() {
-    return this.userService.getUsername();
+    return this.userService.currentUser ? this.userService.currentUser.getTitle() : '';
   }
   logout() {
     this.userService.logout();

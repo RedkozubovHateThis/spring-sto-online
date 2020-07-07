@@ -47,13 +47,6 @@ public class User extends BaseEntity implements UserDetails, Serializable {
     private String middleName;
     private Boolean isAutoRegistered;
 
-    @JsonIgnore
-    private boolean accountExpired;
-    @JsonIgnore
-    private boolean accountLocked;
-    @JsonIgnore
-    private boolean credentialsExpired;
-
     private boolean enabled;
 
     private Double balance;
@@ -113,17 +106,17 @@ public class User extends BaseEntity implements UserDetails, Serializable {
 
     @Override
     public boolean isAccountNonExpired() {
-        return !accountExpired;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return !accountLocked;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return !credentialsExpired;
+        return true;
     }
 
     public String getFio() {

@@ -19,7 +19,7 @@
               <app-delete-button *ngIf="userService.isAdmin() && !userService.isSameUser(model)"
                                  [model]="model"
                                  [restService]="userService"
-                                 [modalTitle]="userService.getModelUsername(model)"
+                                 [modalTitle]="model.getTitle()"
                                  (onDelete)="location.back()"
                                  style="margin-right: .5rem"
               ></app-delete-button>

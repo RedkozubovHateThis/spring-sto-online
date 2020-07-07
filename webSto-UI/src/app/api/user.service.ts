@@ -80,36 +80,6 @@ export class UserService implements TransferService<UserResource>, RestService<U
     this.router.navigate(['/login']);
   }
 
-  getUsername(): string {
-    if ( this.currentUser != null ) {
-      if ( this.currentUser.attributes.fio != null )
-        return this.currentUser.attributes.fio;
-      // else if ( this.currentUser.attributes.phone != null )
-      //   return this.currentUser.attributes.phone;
-      // else if ( this.currentUser.attributes.email != null )
-      //   return this.currentUser.attributes.email;
-      else
-        return this.currentUser.attributes.username;
-    }
-    else
-      return null;
-  }
-
-  getModelUsername(model: UserResource): string {
-    if ( model != null ) {
-      if ( model.attributes.fio != null )
-        return model.attributes.fio;
-      // else if ( model.attributes.phone != null )
-      //   return model.attributes.phone;
-      // else if ( model.attributes.email != null )
-      //   return model.attributes.email;
-      else
-        return model.attributes.username;
-    }
-    else
-      return null;
-  }
-
   isTokenExists(): boolean {
     return localStorage.getItem('token') != null && localStorage.getItem('token') !== 'null';
   }

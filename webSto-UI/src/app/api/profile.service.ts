@@ -37,9 +37,10 @@ export class ProfileService {
     });
   }
 
-  saveClientProfile(serviceDocument: ServiceDocumentResource): Observable<ProfileResource> {
+  saveClientProfile(serviceDocument: ServiceDocumentResource, clientRegister: boolean): Observable<ProfileResource> {
     return new Observable<ProfileResource>( (subscriber) => {
       const client: ProfileResource = serviceDocument.relationships.client.data;
+      client.attributes.autoRegister = clientRegister;
 
       client.save({ beforepath: environment.getBeforeUrl() }).subscribe( (saved: IDocumentResource) => {
         // client.fill( saved );

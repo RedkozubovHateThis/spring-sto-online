@@ -14,4 +14,6 @@ public interface UserService {
     void processPhone(Profile profile);
 
     String processPhone(String phone);
+
+    void generateUser(Profile profile) throws Exception;
 }

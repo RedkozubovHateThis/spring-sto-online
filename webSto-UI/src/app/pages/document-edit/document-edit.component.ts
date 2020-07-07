@@ -251,7 +251,7 @@ export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource
 
     this.calculateTotalCost();
     this.isSaving = true;
-    this.profileService.saveClientProfile( this.model ).subscribe( (savedClient) => {
+    this.profileService.saveClientProfile( this.model, this.clientRegister ).subscribe( (savedClient) => {
       this.profileService.saveExecutorProfile( this.model ).subscribe( (savedExecutor) => {
         this.vehicleService.saveVehicle( this.model ).subscribe( (savedVehicle) => {
           this.vehicleService.saveVehicleMileage( this.model ).subscribe( (savedVehicleMileage) => {

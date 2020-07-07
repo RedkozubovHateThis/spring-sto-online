@@ -10,6 +10,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 import java.io.Serializable;
 
 @EqualsAndHashCode(of = "id", callSuper = true)
@@ -24,6 +25,9 @@ public class Profile extends BaseEntity implements Serializable {
     private String phone;
     private String inn;
     private Boolean deleted;
+
+    @Transient
+    private Boolean autoRegister;
 
     @OneToOne(mappedBy = "profile")
     @NotFound(action = NotFoundAction.IGNORE)

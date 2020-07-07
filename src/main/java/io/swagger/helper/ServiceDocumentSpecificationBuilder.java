@@ -33,9 +33,6 @@ public class ServiceDocumentSpecificationBuilder {
                     predicates.add( cb.equal(
                             clientJoin.get( Profile_.id ), currentUser.getProfile().getId()
                     ) );
-                    predicates.add( cb.equal(
-                            root.get( ServiceDocument_.status ), ServiceDocumentStatus.COMPLETED
-                    ) );
                 }
                 else if ( filterPayload.getClient() != null ) {
                     predicates.add( cb.equal(

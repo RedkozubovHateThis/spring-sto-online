@@ -96,9 +96,6 @@ public class UserController {
 //        userService.processPhone(user);
 
         user.setPassword( existingUser.getPassword() );
-        user.setAccountExpired( existingUser.isAccountExpired() );
-        user.setAccountLocked( existingUser.isAccountLocked() );
-        user.setCredentialsExpired( existingUser.isCredentialsExpired() );
         user.setBalance( existingUser.getBalance() );
         userRepository.save( user );
 

@@ -50,6 +50,23 @@ export class UserResource extends Resource {
     return !!role;
   }
 
+  public getTitle = (): string => {
+      if ( this.attributes.fio != null )
+        return this.attributes.fio;
+      else if ( this.relationships.profile.data ) {
+        const profile: ProfileResource = this.relationships.profile.data;
+
+        if ( profile.attributes.name )
+          return profile.attributes.name;
+        else if ( profile.attributes.phone )
+          return profile.attributes.phone;
+        else if ( profile.attributes.email )
+          return profile.attributes.email;
+      }
+      else
+        return this.attributes.username;
+  }
+
   public relationships = {
     roles: new DocumentCollection<UserRoleResource>(),
     currentSubscription: new DocumentResource<SubscriptionResource>(),

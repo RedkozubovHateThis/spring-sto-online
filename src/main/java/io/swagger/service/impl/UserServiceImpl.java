@@ -1,15 +1,24 @@
 package io.swagger.service.impl;
 
 import io.swagger.controller.WebSocketController;
+import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.security.Profile;
 import io.swagger.postgres.model.security.User;
+import io.swagger.postgres.model.security.UserRole;
 import io.swagger.postgres.repository.EventMessageRepository;
 import io.swagger.postgres.repository.UserRepository;
+import io.swagger.postgres.repository.UserRoleRepository;
+import io.swagger.service.PasswordGenerationService;
+import io.swagger.service.SmsService;
 import io.swagger.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -24,6 +33,17 @@ public class UserServiceImpl implements UserService {
     private WebSocketController webSocketController;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserRoleRepository userRoleRepository;
+    @Autowired
+    private SmsService smsService;
+    @Autowired
+    private PasswordGenerationService passwordGenerationService;
+    @Autowired
+    private PasswordEncoder userPasswordEncoder;
+
+    @Value("${domain.url}")
+    private String domainUrl;
 
     @Override
     public String preparePhone(String phone) {
@@ -87,5 +107,38 @@ public class UserServiceImpl implements UserService {
         }
 
         return phone;
+    }
+
+    @Override
+    public void generateUser(Profile profile) throws Exception {
+
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( !UserHelper.isAdmin(currentUser) && !UserHelper.isServiceLeader(currentUser) )
+            throw new Exception();
+
+        User user = new User();
+        user.setProfile(profile);
+
+        user.setUsername( UUID.randomUUID().toString() );
+        user.setEnabled(true);
+        user.setIsAutoRegistered(true);
+
+        String rawPassword = passwordGenerationService.generatePassword();
+
+        user.setPassword( userPasswordEncoder.encode(rawPassword) );
+
+        UserRole userRole = userRoleRepository.findByName("CLIENT");
+        if ( userRole != null ) user.getRoles().add( userRole );
+
+        userRepository.save(user);
+
+        String smsText = String.format("По вашему автомобилю добавлен новый заказ-наряд. " +
+                "Логин для входа в систему: ваш телефон, пароль: %s. " +
+                "Сервис BUROMOTORS: %s/login", rawPassword, domainUrl);
+        logger.info(" [ SCHEDULER ] Prepared sms text: \"{}\"", smsText );
+
+        smsService.sendSmsAsync( profile.getPhone(), smsText );
+
     }
 }
