@@ -39,7 +39,7 @@
               </div>
               <div class="row form-group">
                 <div class="col-lg-12">
-                  <label class="form-control-label" for="status-select">Статус</label>
+                  <label class="form-control-label" for="status-select">Состояние</label>
                   <select id="status-select" class="form-control form-control-sm form-control-alternative"
                           [(ngModel)]="model.attributes.status">
                     <option *ngFor="let status of model.getStatuses()" [selected]="model.attributes.status === status.id" [ngValue]="status.id">
@@ -217,10 +217,10 @@
               <ng-container *ngIf="model.relationships.client.data">
                 <div class="row form-group">
                   <div class="col-lg-12">
-                    <label class="form-control-label" for="name-input">Полное имя</label>
+                    <label class="form-control-label" for="name-input">Полное наименование (ФИО физического лица или название Организации/ИП)</label>
                     <input class="form-control form-control-sm form-control-alternative" id="name-input"
                            [disabled]="!clientEdit && !model.relationships.client.data.is_new"
-                           [(ngModel)]="model.relationships.client.data.attributes.name" placeholder="Полное имя">
+                           [(ngModel)]="model.relationships.client.data.attributes.name" placeholder="Полное наименование (ФИО физ. лица или назв. Организации/ИП)">
                   </div>
                 </div>
                 <div class="row form-group">
@@ -279,10 +279,10 @@
               <ng-container *ngIf="model.relationships.executor.data">
                 <div class="row form-group">
                   <div class="col-lg-12">
-                    <label class="form-control-label" for="executor-name-input">Полное имя</label>
+                    <label class="form-control-label" for="executor-name-input">Полное наименование (ФИО физического лица или название Организации/ИП)</label>
                     <input class="form-control form-control-sm form-control-alternative" id="executor-name-input"
                            disabled
-                           [(ngModel)]="model.relationships.executor.data.attributes.name" placeholder="Полное имя">
+                           [(ngModel)]="model.relationships.executor.data.attributes.name" placeholder="Полное наименование (ФИО физ. лица или назв. Организации/ИП)">
                   </div>
                 </div>
                 <div class="row form-group">
@@ -515,7 +515,7 @@
         <table class="table align-items-center table-flush table-hover table-sm">
           <thead class="thead-light">
             <tr>
-              <th scope="col">Полное имя</th>
+              <th scope="col">Полное наименование (ФИО физического лица или название Организации/ИП)</th>
               <th scope="col">Телефон</th>
               <th scope="col">Почта</th>
               <th scope="col">Адрес</th>
@@ -561,7 +561,7 @@
         <table class="table align-items-center table-flush table-hover table-sm">
           <thead class="thead-light">
             <tr>
-              <th scope="col">Полное имя</th>
+              <th scope="col">Полное наименование (ФИО физического лица или название Организации/ИП)</th>
               <th scope="col">Телефон</th>
               <th scope="col">Почта</th>
               <th scope="col">Адрес</th>

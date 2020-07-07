@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
+import java.util.UUID;
 
 @Component
 public class UserResourceRepository implements ResourceRepository<User, Long>, MetaRepository<User> {
@@ -62,6 +63,9 @@ public class UserResourceRepository implements ResourceRepository<User, Long>, M
 
     @Override
     public <S extends User> S save(S s) {
+        if ( s.getUsername() == null || s.getUsername().isEmpty() )
+            s.setUsername( UUID.randomUUID().toString() );
+
         return userRepository.save( s );
     }
 

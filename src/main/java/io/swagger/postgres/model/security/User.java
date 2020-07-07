@@ -122,6 +122,9 @@ public class User extends BaseEntity implements UserDetails, Serializable {
     }
 
     public String getFio() {
+        if ( !notEmpty(this.firstName) && !notEmpty(this.middleName) && !notEmpty(this.lastName) )
+            return null;
+
         if ( !notEmpty(this.middleName) && !notEmpty(this.firstName) )
             return this.lastName;
         else if ( !notEmpty(this.middleName) && notEmpty(this.firstName) )
@@ -136,6 +139,9 @@ public class User extends BaseEntity implements UserDetails, Serializable {
     }
 
     public String getFullFio() {
+        if ( !notEmpty(this.firstName) && !notEmpty(this.middleName) && !notEmpty(this.lastName) )
+            return null;
+
         if ( !notEmpty(this.middleName) && !notEmpty(this.firstName) )
             return this.lastName;
         else if ( !notEmpty(this.middleName) && notEmpty(this.firstName) )
@@ -150,6 +156,9 @@ public class User extends BaseEntity implements UserDetails, Serializable {
     }
 
     public String getShortFio() {
+        if ( !notEmpty(this.firstName) && !notEmpty(this.middleName) && !notEmpty(this.lastName) )
+            return null;
+
         if ( !notEmpty(this.middleName) && !notEmpty(this.firstName) )
             return this.lastName.substring(0, 1).toUpperCase();
         else if ( !notEmpty(this.middleName) && notEmpty(this.firstName) )

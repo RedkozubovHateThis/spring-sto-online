@@ -27,6 +27,8 @@ export class ErrorInterceptor implements HttpInterceptor {
     const ignoreAuth = request.url.includes('/api/oauth/token') || request.url.includes('/api/oauth/restore')
       || request.url.includes('/api/oauth/restore/password') || request.url.includes('/api/open/report/compiled');
 
+    console.log(ignoreAuth);
+
     if ( !ignoreAuth && this.userService.isTokenExists() ) {
       modified = request.clone({
         headers: this.addExtraHeaders(request.headers)

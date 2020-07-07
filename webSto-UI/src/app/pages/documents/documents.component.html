@@ -32,9 +32,10 @@
               <tr>
                 <th scope="col">Номер</th>
                 <th scope="col">Дата начала</th>
-                <th scope="col">Статус оплаты</th>
                 <th scope="col">Состояние</th>
-                <th scope="col">Клиент</th>
+                <th scope="col">Статус оплаты</th>
+                <th scope="col" *ngIf="userService.isAdmin() || userService.isServiceLeader()">Клиент</th>
+                <th scope="col" *ngIf="userService.isAdmin() || userService.isClient()">Автосервис</th>
                 <th scope="col">Автомобиль</th>
                 <th scope="col">Гос. номер</th>
                 <th scope="col">Сумма, руб.</th>
@@ -52,17 +53,22 @@
                 <th style="cursor: pointer;" (click)="navigate(serviceDocument)">{{serviceDocument.attributes.startDate | date : 'dd.MM.yyyy HH:mm'}}</th>
                 <th style="cursor: pointer;" (click)="navigate(serviceDocument)">
                   <span class="badge badge-dot">
-                    <i class="bg-{{serviceDocument.paidStatusStyle()}}"></i>{{serviceDocument.paidStatusRus()}}
+                    <i class="bg-{{serviceDocument.statusStyle()}}"></i>{{serviceDocument.statusRus()}}
                   </span>
                 </th>
                 <th style="cursor: pointer;" (click)="navigate(serviceDocument)">
                   <span class="badge badge-dot">
-                    <i class="bg-{{serviceDocument.statusStyle()}}"></i>{{serviceDocument.statusRus()}}
+                    <i class="bg-{{serviceDocument.paidStatusStyle()}}"></i>{{serviceDocument.paidStatusRus()}}
                   </span>
                 </th>
-                <th style="cursor: pointer;" class="wrap-column" (click)="navigate(serviceDocument)">
+                <th style="cursor: pointer;" class="wrap-column" (click)="navigate(serviceDocument)" *ngIf="userService.isAdmin() || userService.isServiceLeader()">
                   <ng-container *ngIf="serviceDocument.relationships.client.data">
                     {{serviceDocument.relationships.client.data.attributes.name}}
+                  </ng-container>
+                </th>
+                <th style="cursor: pointer;" class="wrap-column" (click)="navigate(serviceDocument)" *ngIf="userService.isAdmin() || userService.isClient()">
+                  <ng-container *ngIf="serviceDocument.relationships.executor.data">
+                    {{serviceDocument.relationships.executor.data.attributes.name}}
                   </ng-container>
                 </th>
                 <th style="cursor: pointer;" (click)="navigate(serviceDocument)" *ngIf="serviceDocument.relationships.vehicle.data">
