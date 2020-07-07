@@ -13,7 +13,7 @@
                 Назад
               </button>
               <button class="btn btn-sm btn-buro-blue" (click)="navigate( model )"
-                      *ngIf="userService.currentUser != null && model != null && ( userService.currentUser.id == model.id || userService.currentUser.attributes.userAdmin )">
+                      *ngIf="userService.currentUser != null && model != null && ( userService.currentUser.id == model.id || userService.currentUser.isAdmin() )">
                 Редактировать
               </button>
               <app-delete-button *ngIf="userService.isAdmin() && !userService.isSameUser(model)"
@@ -25,7 +25,7 @@
               ></app-delete-button>
               <app-password-change-button [model]="model" [currentUser]="userService.currentUser"
                                           *ngIf="model != null && userService.currentUser != null
-                                        && ( userService.currentUser.attributes.userAdmin || userService.currentUser.id === model.id )"></app-password-change-button>
+                                        && ( userService.currentUser.isAdmin() || userService.currentUser.id === model.id )"></app-password-change-button>
             </div>
           </div>
         </div>
@@ -37,13 +37,13 @@
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="username">Логин</label>
-                    <span id="username" class="form-control form-control-alternative">{{model.attributes.username}}</span>
+                    <span id="username" class="form-control form-control-alternative form-control-sm">{{model.attributes.username}}</span>
                   </div>
                 </div>
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="first-name">Имя</label>
-                    <span id="first-name" class="form-control form-control-alternative">{{model.attributes.firstName}}</span>
+                    <span id="first-name" class="form-control form-control-alternative form-control-sm">{{model.attributes.firstName}}</span>
                   </div>
                 </div>
               </div>
@@ -51,34 +51,33 @@
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="last-name">Фамилия</label>
-                    <span id="last-name" class="form-control form-control-alternative">{{model.attributes.lastName}}</span>
+                    <span id="last-name" class="form-control form-control-alternative form-control-sm">{{model.attributes.lastName}}</span>
                   </div>
                 </div>
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="middle-name">Отчество</label>
-                    <span id="middle-name" class="form-control form-control-alternative">{{model.attributes.middleName}}</span>
+                    <span id="middle-name" class="form-control form-control-alternative form-control-sm">{{model.attributes.middleName}}</span>
                   </div>
                 </div>
               </div>
-              <div class="row" *ngIf="model.attributes.userServiceLeader">
+              <div class="row" *ngIf="model.isServiceLeader()">
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="service-work-price">Стоимость работа по н/ч</label>
-                    <span id="service-work-price" class="form-control form-control-alternative">{{model.attributes.serviceWorkPrice}}</span>
+                    <span id="service-work-price" class="form-control form-control-alternative form-control-sm">{{model.attributes.serviceWorkPrice}}</span>
                   </div>
                 </div>
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="service-goods-cost">Наценка на з/ч</label>
-                    <span id="service-goods-cost" class="form-control form-control-alternative">
+                    <span id="service-goods-cost" class="form-control form-control-alternative form-control-sm">
                       {{model.attributes.serviceGoodsCost}}<ng-container *ngIf="model.attributes.serviceGoodsCost != null">%</ng-container>
                     </span>
                   </div>
                 </div>
               </div>
             </div>
-            <hr class="my-4" />
             <!-- Address -->
             <h6 class="heading-small text-muted mb-4">Контактная информация</h6>
             <div class="pl-lg-4" *ngIf="model != null">
@@ -86,7 +85,7 @@
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="name">Полное наименование (ФИО физического лица или название Организации/ИП)</label>
-                    <span id="name" class="form-control form-control-alternative">
+                    <span id="name" class="form-control form-control-alternative form-control-sm">
                       <ng-container *ngIf="model.relationships.profile.data">
                         {{model.relationships.profile.data.attributes.name}}
                       </ng-container>
@@ -96,7 +95,7 @@
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="address">Адрес</label>
-                    <span id="address" class="form-control form-control-alternative">
+                    <span id="address" class="form-control form-control-alternative form-control-sm">
                       <ng-container *ngIf="model.relationships.profile.data">
                         {{model.relationships.profile.data.attributes.address}}
                       </ng-container>
@@ -108,7 +107,7 @@
                 <div class="col-lg-4">
                   <div class="form-group">
                     <label class="form-control-label" for="email">Email</label>
-                    <span id="email" class="form-control form-control-alternative">
+                    <span id="email" class="form-control form-control-alternative form-control-sm">
                       <ng-container *ngIf="model.relationships.profile.data">
                         {{model.relationships.profile.data.attributes.email}}
                       </ng-container>
@@ -118,7 +117,7 @@
                 <div class="col-lg-4">
                   <div class="form-group">
                     <label class="form-control-label" for="phone">Телефон</label>
-                    <span id="phone" class="form-control form-control-alternative">
+                    <span id="phone" class="form-control form-control-alternative form-control-sm">
                       <ng-container *ngIf="model.relationships.profile.data">
                         {{model.relationships.profile.data.attributes.phone}}
                       </ng-container>
@@ -128,7 +127,7 @@
                 <div class="col-lg-4">
                   <div class="form-group">
                     <label class="form-control-label" for="inn">ИНН</label>
-                    <span id="inn" class="form-control form-control-alternative">
+                    <span id="inn" class="form-control form-control-alternative form-control-sm">
                       <ng-container *ngIf="model.relationships.profile.data">
                         {{model.relationships.profile.data.attributes.inn}}
                       </ng-container>
@@ -137,27 +136,71 @@
                 </div>
               </div>
             </div>
+            <!-- Bank -->
+            <ng-container *ngIf="model != null && model.isServiceLeader()">
+              <h6 class="heading-small text-muted mb-4">Банковская информация</h6>
+              <div class="pl-lg-4" *ngIf="model != null">
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                      <label class="form-control-label" for="bank-bic">БИК</label>
+                      <span id="bank-bic" class="form-control form-control-alternative form-control-sm">
+                        {{model.attributes.bankBic}}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                      <label class="form-control-label" for="bank-name">Наименование банка</label>
+                      <span id="bank-name" class="form-control form-control-alternative form-control-sm">
+                        {{model.attributes.bankName}}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="pl-lg-4" *ngIf="model != null">
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                      <label class="form-control-label" for="checking-account">Расчетный счет</label>
+                      <span id="checking-account" class="form-control form-control-alternative form-control-sm">
+                        {{model.attributes.checkingAccount}}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                      <label class="form-control-label" for="corr-account">Корсчет</label>
+                      <span id="corr-account" class="form-control form-control-alternative form-control-sm">
+                        {{model.attributes.corrAccount}}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
             <!-- Roles -->
             <h6 class="heading-small text-muted mb-4">Роли</h6>
             <div class="pl-lg-4" *ngIf="model != null">
               <div class="row">
                 <div class="col-lg-6">
                   <label class="form-control-label">Роль</label>
-                  <span class="form-control form-control-alternative" *ngFor="let role of model.relationships.roles.data">
+                  <span class="form-control form-control-alternative form-control-sm" *ngFor="let role of model.relationships.roles.data">
                     {{role.attributes.nameRus}}
                   </span>
                 </div>
               </div>
             </div>
             <!-- Balance -->
-            <ng-container *ngIf="model != null && model.attributes.userServiceLeader">
+            <ng-container *ngIf="model != null && model.isServiceLeader()">
               <hr class="my-4" />
               <h6 class="heading-small text-muted mb-4">Баланс</h6>
               <div class="pl-lg-4">
                 <div class="row">
                   <div class="col-lg-6">
                     <label class="form-control-label">Текущий баланс</label>
-                    <span class="form-control form-control-alternative">
+                    <span class="form-control form-control-alternative form-control-sm">
                     {{model.attributes.balance | number : '.2' : 'ru'}} руб.
                   </span>
                   </div>
@@ -171,7 +214,7 @@
               </div>
             </ng-container>
             <!-- Garage -->
-<!--            <ng-container *ngIf="model != null && model.attributes.userClient">-->
+<!--            <ng-container *ngIf="model != null && model.isClient()">-->
 <!--              <hr class="my-4" />-->
 <!--              <h6 class="heading-small text-muted mb-4">Автомобили</h6>-->
 <!--              <div class="pl-lg-4">-->

@@ -61,7 +61,7 @@
                 </span>
               </th>
               <th>
-                <ng-container *ngIf="user.attributes.userClient">
+                <ng-container *ngIf="user.isClient()">
                   {{user.attributes.isAutoRegistered ? 'Да' : 'Нет'}}
                 </ng-container>
               </th>

@@ -96,6 +96,11 @@ public class User extends BaseEntity implements UserDetails, Serializable {
     private Double serviceWorkPrice;
     private Double serviceGoodsCost;
 
+    private String bankBic;
+    private String bankName;
+    private String checkingAccount;
+    private String corrAccount;
+
     @ManyToOne
     @NotFound(action = NotFoundAction.IGNORE)
     @JsonApiRelation(serialize = SerializeType.EAGER)
@@ -174,18 +179,6 @@ public class User extends BaseEntity implements UserDetails, Serializable {
 
     private boolean notEmpty(String field) {
         return field != null && field.length() > 0;
-    }
-
-    public Boolean isUserAdmin() {
-        return UserHelper.isAdmin( this );
-    }
-
-    public Boolean isUserClient() {
-        return UserHelper.isClient( this );
-    }
-
-    public Boolean isUserServiceLeader() {
-        return UserHelper.isServiceLeader( this );
     }
 
     @JsonIgnore

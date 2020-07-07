@@ -52,7 +52,7 @@ export class InfobarComponent implements OnInit {
 
     this.subscribe();
 
-    if ( this.currentUser.attributes.userAdmin )
+    if ( this.currentUser.isAdmin() )
       this.documentController.organizationChange.subscribe( () => {
         this.getAdminData();
       } );
@@ -73,11 +73,11 @@ export class InfobarComponent implements OnInit {
   private getData() {
     if ( this.currentUser == null ) return;
 
-    if ( this.currentUser.attributes.userClient )
+    if ( this.currentUser.isClient() )
       this.getClientData();
-    else if ( this.currentUser.attributes.userServiceLeader )
+    else if ( this.currentUser.isServiceLeader() )
       this.getServiceLeaderData();
-    else if ( this.currentUser.attributes.userAdmin )
+    else if ( this.currentUser.isAdmin() )
       this.getAdminData();
   }
 

@@ -96,7 +96,7 @@ export class DocumentAddComponent implements OnInit {
   ngOnInit(): void {
     this.setDates();
     const subscription = this.userService.currentUserIsLoaded.subscribe( (currentUser) => {
-      if ( !this.model.hasOneRelated('executor') && currentUser.attributes.userServiceLeader
+      if ( !this.model.hasOneRelated('executor') && currentUser.isServiceLeader()
         && currentUser.relationships.profile.data)
         this.model.addRelationship( currentUser.relationships.profile.data, 'executor' );
 

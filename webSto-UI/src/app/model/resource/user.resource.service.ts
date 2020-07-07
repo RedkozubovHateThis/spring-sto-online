@@ -24,10 +24,31 @@ export class UserResource extends Resource {
     isCurrentSubscriptionEmpty: null,
     isBalanceInvalid: null,
 
-    userAdmin: null,
-    userClient: null,
-    userServiceLeader: null
+    bankBic: null,
+    bankName: null,
+    checkingAccount: null,
+    corrAccount: null
   };
+
+  public isServiceLeader = (): boolean => {
+    return this.hasRole('SERVICE_LEADER');
+  };
+  public isAdmin = (): boolean => {
+    return this.hasRole('ADMIN');
+  };
+  public isClient = (): boolean => {
+    return this.hasRole('CLIENT');
+  };
+
+  private hasRole = (roleName: string): boolean => {
+    if ( !this.relationships.roles.data || !this.relationships.roles.data.length )
+      return false;
+
+    const role: UserRoleResource =
+      this.relationships.roles.data.find( (eachRole: UserRoleResource) => eachRole.attributes.name === roleName );
+
+    return !!role;
+  }
 
   public relationships = {
     roles: new DocumentCollection<UserRoleResource>(),

@@ -41,7 +41,8 @@ export class UserAddComponent implements OnInit {
 
   setRole() {
     if ( this.selectedRole ) {
-      this.model.addRelationships( [ this.selectedRole ], 'roles' );
+      this.model.relationships.roles = this.userRoleResourceService.newCollection();
+      this.model.addRelationship( this.selectedRole, 'roles' );
     }
   }
 

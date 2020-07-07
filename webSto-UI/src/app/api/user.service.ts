@@ -247,19 +247,19 @@ export class UserService implements TransferService<UserResource>, RestService<U
   }
 
   isNotClient(): boolean {
-    return this.currentUser != null && ( this.currentUser.attributes.userAdmin || this.currentUser.attributes.userServiceLeader );
+    return this.currentUser != null && ( this.currentUser.isAdmin() || this.currentUser.isServiceLeader() );
   }
 
   isClient(): boolean {
-    return this.currentUser != null && this.currentUser.attributes.userClient;
+    return this.currentUser != null && this.currentUser.isClient();
   }
 
   isServiceLeader(): boolean {
-    return this.currentUser != null && this.currentUser.attributes.userServiceLeader;
+    return this.currentUser != null && this.currentUser.isServiceLeader();
   }
 
   isAdmin(): boolean {
-    return this.currentUser != null && this.currentUser.attributes.userAdmin;
+    return this.currentUser != null && this.currentUser.isAdmin();
   }
 
   isSameUser(model: UserResource) {

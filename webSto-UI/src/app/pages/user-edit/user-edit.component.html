@@ -33,14 +33,14 @@
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="input-username">Логин</label>
-                    <input type="text" id="input-username" class="form-control form-control-alternative" placeholder="Логин"
-                           [disabled]="!model.is_new" [(ngModel)]="model.attributes.username" name="username">
+                    <input type="text" id="input-username" class="form-control form-control-alternative form-control-sm" placeholder="Логин (заполняется автоматически)"
+                           disabled [(ngModel)]="model.attributes.username" name="username">
                   </div>
                 </div>
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="input-first-name">Имя</label>
-                    <input type="email" id="input-first-name" class="form-control form-control-alternative" placeholder="Имя"
+                    <input type="email" id="input-first-name" class="form-control form-control-alternative form-control-sm" placeholder="Имя"
                            [(ngModel)]="model.attributes.firstName" name="firstName">
                   </div>
                 </div>
@@ -49,30 +49,30 @@
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="input-last-name">Фамилия</label>
-                    <input type="text" id="input-last-name" class="form-control form-control-alternative" placeholder="Фамилия"
+                    <input type="text" id="input-last-name" class="form-control form-control-alternative form-control-sm" placeholder="Фамилия"
                            [(ngModel)]="model.attributes.lastName" name="lastName">
                   </div>
                 </div>
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="input-middle-name">Отчество</label>
-                    <input type="text" id="input-middle-name" class="form-control form-control-alternative" placeholder="Отчество"
+                    <input type="text" id="input-middle-name" class="form-control form-control-alternative form-control-sm" placeholder="Отчество"
                            [(ngModel)]="model.attributes.middleName" name="middleName">
                   </div>
                 </div>
               </div>
-              <div class="row" *ngIf="model.attributes.userServiceLeader">
+              <div class="row" *ngIf="model.isServiceLeader()">
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="input-service-work-price">Стоимость работа по н/ч</label>
-                    <input type="number" step="100" min="0" id="input-service-work-price" class="form-control form-control-alternative" placeholder="Стоимость работа по Н/Ч"
+                    <input type="number" step="100" min="0" id="input-service-work-price" class="form-control form-control-alternative form-control-sm" placeholder="Стоимость работа по Н/Ч"
                            [(ngModel)]="model.attributes.serviceWorkPrice" name="serviceWorkPrice">
                   </div>
                 </div>
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="input-service-goods-cost">Наценка на з/ч, %</label>
-                    <input type="number" step="0.1" min="0" id="input-service-goods-cost" class="form-control form-control-alternative" placeholder="Наценка на з/ч, %"
+                    <input type="number" step="0.1" min="0" id="input-service-goods-cost" class="form-control form-control-alternative form-control-sm" placeholder="Наценка на з/ч, %"
                            [(ngModel)]="model.attributes.serviceGoodsCost" name="serviceGoodsCost">
                   </div>
                 </div>
@@ -81,20 +81,19 @@
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="input-password">Пароль</label>
-                    <input type="password" id="input-password" class="form-control form-control-alternative" placeholder="Пароль"
+                    <input type="password" id="input-password" class="form-control form-control-alternative form-control-sm" placeholder="Пароль"
                            [(ngModel)]="password" name="password">
                   </div>
                 </div>
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="input-re-password">Подтверждение пароля</label>
-                    <input type="password" id="input-re-password" class="form-control form-control-alternative" placeholder="Подтверждение пароля"
+                    <input type="password" id="input-re-password" class="form-control form-control-alternative form-control-sm" placeholder="Подтверждение пароля"
                            [(ngModel)]="rePassword" name="rePassword">
                   </div>
                 </div>
               </div>
             </div>
-            <hr class="my-4" />
             <!-- Address -->
             <h6 class="heading-small text-muted mb-4">Контактная информация</h6>
             <div class="pl-lg-4" *ngIf="model != null && model.relationships.profile.data">
@@ -102,14 +101,14 @@
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="input-name">Полное наименование (ФИО физического лица или название Организации/ИП)</label>
-                    <input type="text" id="input-name" class="form-control form-control-alternative" placeholder="Полное наименование (ФИО физ. лица или назв. Организации/ИП)"
+                    <input type="text" id="input-name" class="form-control form-control-alternative form-control-sm" placeholder="Полное наименование (ФИО физ. лица или назв. Организации/ИП)"
                            [(ngModel)]="model.relationships.profile.data.attributes.name" name="name">
                   </div>
                 </div>
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="input-address">Адрес</label>
-                    <input type="text" id="input-address" class="form-control form-control-alternative" placeholder="Адрес"
+                    <input type="text" id="input-address" class="form-control form-control-alternative form-control-sm" placeholder="Адрес"
                            [(ngModel)]="model.relationships.profile.data.attributes.address" name="address">
                   </div>
                 </div>
@@ -118,33 +117,73 @@
                 <div class="col-lg-4">
                   <div class="form-group">
                     <label class="form-control-label" for="input-email">Email</label>
-                    <input type="text" id="input-email" class="form-control form-control-alternative" placeholder="Email (не обязательно к заполнению)"
+                    <input type="text" id="input-email" class="form-control form-control-alternative form-control-sm" placeholder="Email (не обязательно к заполнению)"
                            [(ngModel)]="model.relationships.profile.data.attributes.email" name="email">
                   </div>
                 </div>
                 <div class="col-lg-4">
                   <div class="form-group">
                     <label class="form-control-label" for="input-phone">Телефон</label>
-                    <input type="text" id="input-phone" class="form-control form-control-alternative" placeholder="Телефон"
+                    <input type="text" id="input-phone" class="form-control form-control-alternative form-control-sm" placeholder="Телефон"
                            [(ngModel)]="model.relationships.profile.data.attributes.phone" name="phone">
                   </div>
                 </div>
                 <div class="col-lg-4">
                   <div class="form-group">
                     <label class="form-control-label" for="input-inn">ИНН</label>
-                    <input type="text" id="input-inn" class="form-control form-control-alternative" placeholder="ИНН"
+                    <input type="text" id="input-inn" class="form-control form-control-alternative form-control-sm" placeholder="ИНН"
                            [(ngModel)]="model.relationships.profile.data.attributes.inn" name="inn">
                   </div>
                 </div>
               </div>
             </div>
+            <!-- Bank -->
+            <ng-container *ngIf="model != null && model.isServiceLeader()">
+              <h6 class="heading-small text-muted mb-4">Банковская информация</h6>
+              <div class="pl-lg-4" *ngIf="model != null">
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                      <label class="form-control-label" for="input-bank-bic">БИК</label>
+                      <input type="text" id="input-bank-bic" class="form-control form-control-alternative form-control-sm" placeholder="БИК"
+                             [(ngModel)]="model.attributes.bankBic" name="bankBic">
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                      <label class="form-control-label" for="input-bank-name">Наименование банка</label>
+                      <input type="text" id="input-bank-name" class="form-control form-control-alternative form-control-sm" placeholder="Наименование банка"
+                             [(ngModel)]="model.attributes.bankName" name="bankBic">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="pl-lg-4" *ngIf="model != null">
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                      <label class="form-control-label" for="input-checking-account">Расчетный счет</label>
+                      <input type="text" id="input-checking-account" class="form-control form-control-alternative form-control-sm" placeholder="Расчетный счет"
+                             [(ngModel)]="model.attributes.checkingAccount" name="checkingAccount">
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                      <label class="form-control-label" for="input-corr-account">Корсчет</label>
+                      <input type="text" id="input-corr-account" class="form-control form-control-alternative form-control-sm" placeholder="Корсчет"
+                             [(ngModel)]="model.attributes.corrAccount" name="corrAccount">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
             <!-- Roles -->
             <h6 class="heading-small text-muted mb-4">Роли</h6>
             <div class="pl-lg-4" *ngIf="model != null">
               <ng-container *ngIf="model.is_new; else roleName">
                 <div class="row">
                   <div class="col-lg-6">
-                    <select id="role-select" class="form-control form-control-alternative" [ngModelOptions]="{standalone: true}"
+                    <select id="role-select" class="form-control form-control-alternative form-control-sm" [ngModelOptions]="{standalone: true}"
                             [(ngModel)]="selectedRole" (ngModelChange)="setRole()">
                       <option *ngFor="let role of roles.data" [selected]="selectedRole != null && selectedRole.id === role.id" [ngValue]="role">
                         {{role.attributes.nameRus}}
@@ -157,14 +196,14 @@
                 <div class="row">
                   <div class="col-lg-6">
                     <label class="form-control-label">Роль</label>
-                    <span class="form-control form-control-alternative" *ngFor="let role of model.relationships.roles.data">
+                    <span class="form-control form-control-alternative form-control-sm" *ngFor="let role of model.relationships.roles.data">
                     {{role.attributes.nameRus}}
                   </span>
                   </div>
                 </div>
               </ng-template>
             </div>
-<!--            <ng-container *ngIf="userService.isSameUser( model ) && model.attributes.userServiceLeader">-->
+<!--            <ng-container *ngIf="userService.isSameUser( model ) && model.isServiceLeader()">-->
 <!--              <hr class="my-4" />-->
 <!--              &lt;!&ndash; Subscriptions &ndash;&gt;-->
 <!--              <h6 class="heading-small text-muted mb-4">Тариф по умолчанию</h6>-->
@@ -231,7 +270,7 @@
 <!--              </div>-->
 <!--            </ng-container>-->
             <!-- Garage -->
-<!--            <ng-container *ngIf="model != null && model.attributes.userClient && ( userService.isSameUser(model) || userService.isAdmin() )">-->
+<!--            <ng-container *ngIf="model != null && model.isClient() && ( userService.isSameUser(model) || userService.isAdmin() )">-->
 <!--              <hr class="my-4" />-->
 <!--              <h6 class="heading-small text-muted mb-4">Автомобили</h6>-->
 <!--              <div class="pl-lg-4">-->
