@@ -95,8 +95,10 @@ export class DocumentAddComponent implements OnInit {
     this.model.attributes.status = 'CREATED';
     this.model.attributes.paidStatus = 'NOT_PAID';
     this.model.attributes.clientIsCustomer = true;
-    if ( this.userService.isServiceLeader() && this.userService.currentUser.relationships.profile.data )
+    if ( this.userService.isServiceLeader() && this.userService.currentUser.relationships.profile.data ) {
       this.model.addRelationship( this.userService.currentUser.relationships.profile.data, 'executor' );
+      this.model.attributes.masterFio = this.userService.currentUser.attributes.fullFio;
+    }
     this.model.addRelationship( profileResourceService.new(), 'client' );
     this.model.addRelationship( vehicleResourceService.new(), 'vehicle' );
     this.model.addRelationship( vehicleMileageResourceService.new(), 'vehicleMileage' );
@@ -106,8 +108,10 @@ export class DocumentAddComponent implements OnInit {
     this.setDates();
     const subscription = this.userService.currentUserIsLoaded.subscribe( (currentUser) => {
       if ( !this.model.hasOneRelated('executor') && currentUser.isServiceLeader()
-        && currentUser.relationships.profile.data)
+        && currentUser.relationships.profile.data) {
         this.model.addRelationship( currentUser.relationships.profile.data, 'executor' );
+        this.model.attributes.masterFio = this.userService.currentUser.attributes.fullFio;
+      }
 
       subscription.unsubscribe();
     } );
@@ -146,6 +150,7 @@ export class DocumentAddComponent implements OnInit {
   checkData(): boolean {
     const client: ProfileResource = this.model.relationships.client.data;
     const executor: ProfileResource = this.model.relationships.executor.data;
+    const customer: CustomerResource = this.model.relationships.customer.data;
     const vehicle: VehicleResource = this.model.relationships.vehicle.data;
     const vehicleMileage: VehicleMileageResource = this.model.relationships.vehicleMileage.data;
 
@@ -158,8 +163,28 @@ export class DocumentAddComponent implements OnInit {
       return false;
     }
     else if ( !client.attributes.name || client.attributes.name.length === 0 ) {
-      this.toastrService.error('Не указано полное имя клиента!', 'Внимание!');
+      this.toastrService.error('Не указано полное наименование клиента!', 'Внимание!');
       return false;
+    }
+
+    if ( !this.model.attributes.clientIsCustomer ) {
+      console.log(customer);
+      if ( !customer || !customer.type || !Object.keys( customer.attributes ).length ) {
+        this.toastrService.error('Не указан заказчик!', 'Внимание!');
+        return false;
+      }
+      else if ( !customer.attributes.phone || customer.attributes.phone.length === 0 ) {
+        this.toastrService.error('Не указан телефон заказчика!', 'Внимание!');
+        return false;
+      }
+      else if ( !customer.attributes.name || customer.attributes.name.length === 0 ) {
+        this.toastrService.error('Не указано полное наименование заказчика!', 'Внимание!');
+        return false;
+      }
+      else if ( !customer.attributes.inn || customer.attributes.inn.length === 0 ) {
+        this.toastrService.error('Не указан ИНН заказчика!', 'Внимание!');
+        return false;
+      }
     }
 
     if ( !executor || !executor.type || !Object.keys( executor.attributes ).length ) {
@@ -198,8 +223,12 @@ export class DocumentAddComponent implements OnInit {
     //   this.toastrService.error('Не указан номер заказ-наряда!', 'Внимание!');
     //   return false;
     // }
-    else if ( !this.model.attributes.startDate ) {
+    if ( !this.model.attributes.startDate ) {
       this.toastrService.error('Не указана дата начала ремонта!', 'Внимание!');
+      return false;
+    }
+    else if ( !this.model.attributes.masterFio || this.model.attributes.masterFio.length === 0 ) {
+      this.toastrService.error('Не указано ФИО мастера!', 'Внимание!');
       return false;
     }
 
@@ -434,7 +463,8 @@ export class DocumentAddComponent implements OnInit {
   }
 
   createCustomer() {
-    if ( !this.model.relationships.customer.data && !this.model.attributes.clientIsCustomer )
+    const customer: CustomerResource = this.model.relationships.customer.data;
+    if ( !this.model.attributes.clientIsCustomer && ( !customer || !customer.type || !Object.keys( customer.attributes ).length ) )
       this.newCustomer();
   }
 

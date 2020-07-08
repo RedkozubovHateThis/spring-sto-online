@@ -165,6 +165,7 @@ export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource
   checkData(): boolean {
     const client: ProfileResource = this.model.relationships.client.data;
     const executor: ProfileResource = this.model.relationships.executor.data;
+    const customer: CustomerResource = this.model.relationships.customer.data;
     const vehicle: VehicleResource = this.model.relationships.vehicle.data;
     const vehicleMileage: VehicleMileageResource = this.model.relationships.vehicleMileage.data;
 
@@ -177,7 +178,24 @@ export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource
       return false;
     }
     else if ( !client.attributes.name || client.attributes.name.length === 0 ) {
-      this.toastrService.error('Не указано полное имя клиента!', 'Внимание!');
+      this.toastrService.error('Не указано полное наименование клиента!', 'Внимание!');
+      return false;
+    }
+
+    if ( !this.model.attributes.clientIsCustomer && ( !customer || !customer.type || !Object.keys( customer.attributes ).length ) ) {
+      this.toastrService.error('Не указан заказчик!', 'Внимание!');
+      return false;
+    }
+    else if ( !this.model.attributes.clientIsCustomer && ( !customer.attributes.phone || customer.attributes.phone.length === 0 ) ) {
+      this.toastrService.error('Не указан телефон заказчика!', 'Внимание!');
+      return false;
+    }
+    else if ( !this.model.attributes.clientIsCustomer && ( !customer.attributes.name || customer.attributes.name.length === 0 ) ) {
+      this.toastrService.error('Не указано полное наименование заказчика!', 'Внимание!');
+      return false;
+    }
+    else if ( !this.model.attributes.clientIsCustomer && ( !customer.attributes.inn || customer.attributes.inn.length === 0 ) ) {
+      this.toastrService.error('Не указан ИНН заказчика!', 'Внимание!');
       return false;
     }
 
@@ -219,6 +237,10 @@ export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource
     }
     else if ( !this.model.attributes.startDate ) {
       this.toastrService.error('Не указана дата начала ремонта!', 'Внимание!');
+      return false;
+    }
+    else if ( !this.model.attributes.masterFio || this.model.attributes.masterFio.length === 0 ) {
+      this.toastrService.error('Не указано ФИО мастера!', 'Внимание!');
       return false;
     }
 
@@ -452,7 +474,8 @@ export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource
   }
 
   createCustomer() {
-    if ( !this.model.relationships.customer.data && !this.model.attributes.clientIsCustomer )
+    const customer: CustomerResource = this.model.relationships.customer.data;
+    if ( !this.model.attributes.clientIsCustomer && ( !customer || !customer.type || !Object.keys( customer.attributes ).length ) )
       this.newCustomer();
   }
 

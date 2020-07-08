@@ -43,7 +43,8 @@ export class ServiceDocumentResource extends Resource {
     deleted: false,
     cost: null,
     reason: null,
-    clientIsCustomer: true
+    clientIsCustomer: true,
+    masterFio: null
   };
 
   public relationships = {

@@ -39,6 +39,7 @@ public class ServiceDocument extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String reason;
     private Boolean clientIsCustomer;
+    private String masterFio;
 
     @OneToMany(mappedBy = "document")
     @NotFound(action = NotFoundAction.IGNORE)

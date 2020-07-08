@@ -84,6 +84,14 @@
                     </span>
                 </div>
               </div>
+              <div class="row form-group">
+                <div class="col-lg-12">
+                  <label class="form-control-label" for="master-fio">ФИО мастера</label>
+                  <span class="form-control form-control-sm form-control-alternative" id="master-fio" *ngIf="model != null">
+                    {{model.attributes.masterFio}}
+                  </span>
+                </div>
+              </div>
 
             </div>
 
