@@ -74,33 +74,42 @@ public class ReportServiceImpl implements ReportService {
         Profile client = document.getClient();
         if ( client == null ) throw new DataNotFoundException();
 
-        fillOrganizationParameters(parameters, executioner);
+        Customer customer = document.getCustomer();
+        if ( !document.getClientIsCustomer() && customer == null ) throw new DataNotFoundException();
+
+        fillOrganizationParameters(parameters, executioner, document);
         fillOrderParameters(parameters, document);
-        fillCustomerParameters(parameters, client);
+        fillCustomerParameters(parameters, client, customer, document.getClientIsCustomer());
         fillVehicleParameters(parameters, vehicle, vehicleMileage);
         fillRepairParameters(parameters, document);
 
     }
 
-    private void fillOrganizationParameters(Map<String, Object> parameters, Profile executioner) throws DataNotFoundException {
+    private void fillOrganizationParameters(Map<String, Object> parameters, Profile executioner, ServiceDocument document) throws DataNotFoundException {
         parameters.put( "organizationName", getFieldText(executioner.getName(), "не указан") );
         parameters.put( "organizationInn", getFieldText(executioner.getInn(), "не указан") );
         parameters.put( "organizationAddress", getFieldText(executioner.getAddress(), "не указан") );
         parameters.put( "organizationPhone", getFieldText(executioner.getPhone(), "не указан") );
         parameters.put( "organizationEmail", getFieldText(executioner.getEmail(), "не указан") );
-        if ( executioner.getUser() != null )
-            parameters.put( "executionerFio", executioner.getUser().getFio() );
+        parameters.put( "executionerFio", document.getMasterFio() );
     }
 
     private void fillOrderParameters(Map<String, Object> parameters, ServiceDocument document) {
         parameters.put( "orderNum", document.getNumber() );
-        parameters.put( "orderStartDate", DateHelper.formatDateTime( document.getStartDate() ) );
+        parameters.put( "orderStartDate", DateHelper.formatDate( document.getStartDate() ) );
     }
 
-    private void fillCustomerParameters(Map<String, Object> parameters, Profile client) throws DataNotFoundException {
-        parameters.put( "customerName", getFieldText(client.getName(), "не указан") );
-        parameters.put( "customerAddress", getFieldText(client.getAddress(), "не указан") );
-        parameters.put( "customerPhone", getFieldText(client.getPhone(), "не указан") );
+    private void fillCustomerParameters(Map<String, Object> parameters, Profile client, Customer customer, boolean clientIsCustomer) throws DataNotFoundException {
+        if ( clientIsCustomer ) {
+            parameters.put( "customerName", getFieldText(client.getName(), "не указан") );
+            parameters.put( "customerAddress", getFieldText(client.getAddress(), "не указан") );
+            parameters.put( "customerPhone", getFieldText(client.getPhone(), "не указан") );
+        }
+        else {
+            parameters.put( "customerName", getFieldText(customer.getName(), "не указан") );
+            parameters.put( "customerAddress", getFieldText(customer.getAddress(), "не указан") );
+            parameters.put( "customerPhone", getFieldText(customer.getPhone(), "не указан") );
+        }
     }
 
     private void fillVehicleParameters(Map<String, Object> parameters, Vehicle vehicle, VehicleMileage vehicleMileage) throws DataNotFoundException {

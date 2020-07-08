@@ -55,12 +55,16 @@ export class DeleteButtonComponent<R extends Resource> implements OnInit {
         this.onDelete.emit();
       }, error => {
         this.isDeleting = false;
-        if ( error.error.responseText )
-          this.toastrService.error(error.error.responseText, 'Внимание!');
-        else
-          this.toastrService.error('Ошибка удаления!', 'Внимание!');
+        this.showError(error, 'Ошибка удаления');
       } );
     }
+  }
+
+  showError(error: any, defaultMessage: string) {
+    if ( error.errors && Array.isArray( error.errors ) )
+      this.toastrService.error( `${defaultMessage}: ${error.errors[0].detail}`, 'Внимание!' );
+    else
+      this.toastrService.error( `${defaultMessage}!`, 'Внимание!' );
   }
 
   open(content) {

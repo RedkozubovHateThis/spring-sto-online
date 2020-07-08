@@ -18,7 +18,7 @@
               </button>
               <app-delete-button *ngIf="model != null && ( userService.isAdmin() || ( userService.isServiceLeader() && model.attributes.status !== 'COMPLETED' ) )"
                                  [model]="model"
-                                 [restService]="userService"
+                                 [restService]="documentService"
                                  [modalTitle]="'Заказ-наряд №' + model.attributes.number"
                                  (onDelete)="location.back()"
                                  style="margin-right: .5rem"
