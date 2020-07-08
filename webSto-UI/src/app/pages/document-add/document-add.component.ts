@@ -25,6 +25,8 @@ import {ServiceWorkDictionaryService} from '../../api/service-work.dictionary.se
 import {ServiceWorkDictionaryResource} from '../../model/resource/service-work-dictionary.resource.service';
 import {ServiceAddonDictionaryResource} from '../../model/resource/service-addon-dictionary.resource.service';
 import {ServiceAddonDictionaryService} from '../../api/service-addon.dictionary.service';
+import {CustomerResource, CustomerResourceService} from '../../model/resource/customer.resource.service';
+import {CustomerService} from '../../api/customer.service';
 
 @Component({
   selector: 'app-document-add',
@@ -36,12 +38,15 @@ export class DocumentAddComponent implements OnInit {
   @ViewChild('clientModal', {static: false}) private clientModal;
   @ViewChild('vehicleModal', {static: false}) private vehicleModal;
   @ViewChild('executorModal', {static: false}) private executorModal;
+  @ViewChild('customerModal', {static: false}) private customerModal;
   private vinSearch = '';
   private phoneOrEmailSearch = '';
 
   private vehicleEdit = false;
   private clientEdit = false;
+  private customerEdit = false;
   private clientRegister = false;
+  private showExecutor = false;
   private isSaving = false;
   protected model: ServiceDocumentResource;
   private startDate: moment.Moment;
@@ -67,9 +72,11 @@ export class DocumentAddComponent implements OnInit {
   private vehicleDictionaryNameSearch = '';
   private serviceWorkDictionaryNameSearch = '';
   private serviceAddonDictionaryNameSearch = '';
+  private customerSearch = '';
   private vehicleDictionaries: DocumentCollection<VehicleDictionaryResource> = new DocumentCollection<VehicleDictionaryResource>();
   private serviceWorkDictionaries: DocumentCollection<ServiceWorkDictionaryResource> = new DocumentCollection<ServiceWorkDictionaryResource>();
   private serviceAddonDictionaries: DocumentCollection<ServiceAddonDictionaryResource> = new DocumentCollection<ServiceAddonDictionaryResource>();
+  private customers: DocumentCollection<CustomerResource> = new DocumentCollection<CustomerResource>();
 
   constructor(private documentService: DocumentService, protected route: ActivatedRoute, private toastrService: ToastrService,
               private userService: UserService, private httpClient: HttpClient, private router: Router,
@@ -81,11 +88,13 @@ export class DocumentAddComponent implements OnInit {
               private serviceAddonService: ServiceAddonService, private modalService: NgbModal,
               private vehicleDictionaryService: VehicleDictionaryService,
               private serviceWorkDictionaryService: ServiceWorkDictionaryService,
-              private serviceAddonDictionaryService: ServiceAddonDictionaryService) {
+              private serviceAddonDictionaryService: ServiceAddonDictionaryService,
+              private customerResourceService: CustomerResourceService, private customerService: CustomerService) {
     this.model = serviceDocumentResourceService.new();
     this.model.attributes.startDate = new Date().getTime();
     this.model.attributes.status = 'CREATED';
     this.model.attributes.paidStatus = 'NOT_PAID';
+    this.model.attributes.clientIsCustomer = true;
     if ( this.userService.isServiceLeader() && this.userService.currentUser.relationships.profile.data )
       this.model.addRelationship( this.userService.currentUser.relationships.profile.data, 'executor' );
     this.model.addRelationship( profileResourceService.new(), 'client' );
@@ -237,17 +246,22 @@ export class DocumentAddComponent implements OnInit {
       this.profileService.saveExecutorProfile( this.model ).subscribe( (savedExecutor) => {
         this.vehicleService.saveVehicle( this.model ).subscribe( (savedVehicle) => {
           this.vehicleService.saveVehicleMileage( this.model ).subscribe( (savedVehicleMileage) => {
-            this.documentService.saveServiceDocument(this.model).subscribe( (savedModel) => {
-              this.serviceWorkService.saveServiceWorks( this.model, this.serviceWorks );
-              this.serviceAddonService.saveServiceAddons( this.model, this.serviceAddons );
-              this.model = savedModel;
-              this.isSaving = false;
-              this.toastrService.success('Заказ-наряд успешно сохранен!');
-              this.router.navigate(['documents', this.model.id, 'edit']);
+            this.customerService.saveCustomer( this.model ).subscribe( (savedCustomer) => {
+              this.documentService.saveServiceDocument(this.model).subscribe( (savedModel) => {
+                this.serviceWorkService.saveServiceWorks( this.model, this.serviceWorks );
+                this.serviceAddonService.saveServiceAddons( this.model, this.serviceAddons );
+                this.model = savedModel;
+                this.isSaving = false;
+                this.toastrService.success('Заказ-наряд успешно сохранен!');
+                this.router.navigate(['documents', this.model.id, 'edit']);
+              }, (error) => {
+                this.showError(error, 'Ошибка сохранения заказ-наряда');
+                this.isSaving = false;
+              }  );
             }, (error) => {
               this.showError(error, 'Ошибка сохранения заказ-наряда');
               this.isSaving = false;
-            }  );
+            } );
           }, (error) => {
             this.showError(error, 'Ошибка сохранения пробега');
             this.isSaving = false;
@@ -368,6 +382,9 @@ export class DocumentAddComponent implements OnInit {
   openServiceAddonDictionariesModal() {
     this.modalService.open(this.serviceAddonDictionaryModal, { size: 'lg' });
   }
+  openCustomersModal() {
+    this.modalService.open(this.customerModal, { size: 'lg' });
+  }
 
   searchVehicleDictionaries() {
     if ( !this.vehicleDictionaryNameSearch || this.vehicleDictionaryNameSearch.length < 3 ) return;
@@ -398,10 +415,30 @@ export class DocumentAddComponent implements OnInit {
     this.newServiceAddon(serviceAddonDictionaryResource.attributes.name);
     this.modalService.dismissAll();
   }
+  searchCustomers() {
+    if ( !this.customerSearch || this.customerSearch.length < 3 ) return;
+
+    this.customerService.findByPhoneOrEmail( this.customerSearch ).subscribe( (customers) => {
+      this.customers = customers;
+    } );
+  }
 
   updateVehicle(vehicleDictionary: VehicleDictionaryResource) {
     const vehicle = this.model.relationships.vehicle.data;
     vehicle.attributes.modelName = vehicleDictionary.attributes.name;
     this.modalService.dismissAll();
+  }
+  setCustomer(customer: CustomerResource) {
+    this.model.addRelationship(customer, 'customer');
+    this.modalService.dismissAll();
+  }
+
+  createCustomer() {
+    if ( !this.model.relationships.customer.data && !this.model.attributes.clientIsCustomer )
+      this.newCustomer();
+  }
+
+  newCustomer() {
+    this.model.addRelationship( this.customerResourceService.new(), 'customer' );
   }
 }

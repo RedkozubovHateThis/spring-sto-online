@@ -1,5 +1,6 @@
 package io.swagger.service;
 
+import io.swagger.postgres.model.Customer;
 import io.swagger.postgres.model.security.Profile;
 import io.swagger.postgres.model.security.User;
 
@@ -12,6 +13,8 @@ public interface UserService {
     boolean isEmailValid(String email);
 
     void processPhone(Profile profile);
+
+    void processPhone(Customer customer);
 
     String processPhone(String phone);
 

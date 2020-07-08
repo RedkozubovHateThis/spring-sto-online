@@ -17,6 +17,8 @@ import {IDataCollection} from 'ngx-jsonapi/interfaces/data-collection';
 import {IDocumentResource} from 'ngx-jsonapi/interfaces/data-object';
 import {subscribeOn} from 'rxjs/operators';
 import {environment} from '../../environments/environment';
+import {ProfileResourceService} from '../model/resource/profile.resource.service';
+import {CustomerResourceService} from '../model/resource/customer.resource.service';
 
 @Injectable()
 export class DocumentService implements TransferService<ServiceDocumentResource>, RestService<ServiceDocumentResource> {
@@ -28,7 +30,9 @@ export class DocumentService implements TransferService<ServiceDocumentResource>
               private serviceWorkResourceService: ServiceWorkResourceService,
               private serviceAddonResourceService: ServiceAddonResourceService,
               private vehicleResourceService: VehicleResourceService, private userService: UserService,
-              private vehicleMileageResourceService: VehicleMileageResourceService) {
+              private vehicleMileageResourceService: VehicleMileageResourceService,
+              private profileResourceService: ProfileResourceService,
+              private customerResourceService: CustomerResourceService) {
     serviceDocumentResourceService.register();
   }
 

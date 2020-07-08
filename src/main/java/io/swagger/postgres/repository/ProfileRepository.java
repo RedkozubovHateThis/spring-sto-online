@@ -11,10 +11,15 @@ import java.util.List;
 @Repository
 public interface ProfileRepository extends JpaRepository<Profile, Long> {
 
-    @Query("SELECT DISTINCT p FROM Profile AS p WHERE lower(p.phone) LIKE lower(:phone) OR lower(p.email) LIKE lower(:email) OR lower(p.name) LIKE lower(:fio)")
+    @Query("SELECT DISTINCT p FROM Profile AS p " +
+            "WHERE lower(p.phone) LIKE lower(:phone) " +
+            "OR lower(p.email) LIKE lower(:email) " +
+            "OR lower(p.name) LIKE lower(:fio) " +
+            "OR lower(p.inn) LIKE lower(:inn)")
     List<Profile> findAllByPhoneOrEmail(@Param("phone") String phone,
                                         @Param("email") String email,
-                                        @Param("fio") String fio);
+                                        @Param("fio") String fio,
+                                        @Param("inn") String inn);
 
     @Query(nativeQuery = true, value = "SELECT DISTINCT p.* FROM service_document AS sd\n" +
             "INNER JOIN profile AS p ON sd.client_id = p.id AND p.deleted = FALSE\n" +

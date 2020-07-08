@@ -28,7 +28,7 @@
         <div class="card-body">
           <form>
             <h6 class="heading-small text-muted mb-4">Личные данные</h6>
-            <div class="pl-lg-4" *ngIf="model != null">
+            <div *ngIf="model != null">
               <div class="row">
                 <div class="col-lg-6">
                   <div class="form-group">
@@ -96,7 +96,7 @@
             </div>
             <!-- Address -->
             <h6 class="heading-small text-muted mb-4">Контактная информация</h6>
-            <div class="pl-lg-4" *ngIf="model != null && model.relationships.profile.data">
+            <div *ngIf="model != null && model.relationships.profile.data">
               <div class="row">
                 <div class="col-lg-6">
                   <div class="form-group">
@@ -140,7 +140,7 @@
             <!-- Bank -->
             <ng-container *ngIf="model != null && model.isServiceLeader()">
               <h6 class="heading-small text-muted mb-4">Банковская информация</h6>
-              <div class="pl-lg-4" *ngIf="model != null">
+              <div *ngIf="model != null">
                 <div class="row">
                   <div class="col-lg-6">
                     <div class="form-group">
@@ -158,7 +158,7 @@
                   </div>
                 </div>
               </div>
-              <div class="pl-lg-4" *ngIf="model != null">
+              <div *ngIf="model != null">
                 <div class="row">
                   <div class="col-lg-6">
                     <div class="form-group">
@@ -179,7 +179,7 @@
             </ng-container>
             <!-- Roles -->
             <h6 class="heading-small text-muted mb-4">Роли</h6>
-            <div class="pl-lg-4" *ngIf="model != null">
+            <div *ngIf="model != null">
               <ng-container *ngIf="model.is_new; else roleName">
                 <div class="row">
                   <div class="col-lg-6">
@@ -207,7 +207,7 @@
 <!--              <hr class="my-4" />-->
 <!--              &lt;!&ndash; Subscriptions &ndash;&gt;-->
 <!--              <h6 class="heading-small text-muted mb-4">Тариф по умолчанию</h6>-->
-<!--              <div class="pl-lg-4">-->
+<!--              <div>-->
 <!--                <div class="row">-->
 <!--                  <ng-container *ngFor="let subscriptionType of subscriptionTypes">-->
 <!--                    <div class="col" *ngIf="!subscriptionType.isFree && !subscriptionType.isInactive">-->
@@ -273,7 +273,7 @@
 <!--            <ng-container *ngIf="model != null && model.isClient() && ( userService.isSameUser(model) || userService.isAdmin() )">-->
 <!--              <hr class="my-4" />-->
 <!--              <h6 class="heading-small text-muted mb-4">Автомобили</h6>-->
-<!--              <div class="pl-lg-4">-->
+<!--              <div>-->
 <!--                <div class="row">-->
 <!--                  <div class="col">-->
 <!--                    <label class="form-control-label" for="vin-number-search">Поиск автомобиля по VIN-номеру</label>-->
@@ -329,7 +329,7 @@
 <!--              <hr class="my-4" />-->
 <!--              &lt;!&ndash; Shops &ndash;&gt;-->
 <!--              <h6 class="heading-small text-muted mb-4">Магазины</h6>-->
-<!--              <div class="pl-lg-4">-->
+<!--              <div>-->
 <!--                <div class="row">-->
 <!--                  <ng-container *ngFor="let shop of shops">-->
 <!--                    <div class="col-auto">-->

@@ -32,7 +32,8 @@ export class ProfileService {
       remotefilter: {
         phone: search,
         email: search,
-        fio: search
+        fio: search,
+        inn: search
       }
     });
   }

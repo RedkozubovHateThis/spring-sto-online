@@ -6,6 +6,7 @@ import {ServiceAddonResource} from './service-addon.resource.service';
 import {VehicleResource} from './vehicle.resource.service';
 import {VehicleMileageResource} from './vehicle-mileage.resource.service';
 import {ProfileResource} from './profile.resource.service';
+import {CustomerResource} from './customer.resource.service';
 
 const statuses: IStatus[] = [
     {
@@ -41,7 +42,8 @@ export class ServiceDocumentResource extends Resource {
     paidStatus: 'NOT_PAID',
     deleted: false,
     cost: null,
-    reason: null
+    reason: null,
+    clientIsCustomer: true
   };
 
   public relationships = {
@@ -49,6 +51,7 @@ export class ServiceDocumentResource extends Resource {
     serviceAddons: new DocumentCollection<ServiceAddonResource>(),
     executor: new DocumentResource<ProfileResource>(),
     client: new DocumentResource<ProfileResource>(),
+    customer: new DocumentResource<CustomerResource>(),
     vehicle: new DocumentResource<VehicleResource>(),
     vehicleMileage: new DocumentResource<VehicleMileageResource>(),
   };

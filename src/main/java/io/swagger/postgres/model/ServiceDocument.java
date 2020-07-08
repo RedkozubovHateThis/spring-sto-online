@@ -38,6 +38,7 @@ public class ServiceDocument extends BaseEntity {
     private Double cost;
     @Column(columnDefinition = "TEXT")
     private String reason;
+    private Boolean clientIsCustomer;
 
     @OneToMany(mappedBy = "document")
     @NotFound(action = NotFoundAction.IGNORE)
@@ -68,4 +69,9 @@ public class ServiceDocument extends BaseEntity {
     @NotFound(action = NotFoundAction.IGNORE)
     @JsonApiRelation(serialize = SerializeType.EAGER)
     private VehicleMileage vehicleMileage;
+
+    @OneToOne
+    @NotFound(action = NotFoundAction.IGNORE)
+    @JsonApiRelation(serialize = SerializeType.EAGER)
+    private Customer customer;
 }

@@ -15,6 +15,7 @@ import {ServiceAddonResource} from '../../model/resource/service-addon.resource.
 import {VehicleMileageResourceService} from '../../model/resource/vehicle-mileage.resource.service';
 import {ServiceWorkService} from '../../api/service-work.service';
 import {ServiceAddonService} from '../../api/service-addon.service';
+import {CustomerResourceService} from '../../model/resource/customer.resource.service';
 
 @Component({
   selector: 'app-documents',
@@ -24,6 +25,7 @@ import {ServiceAddonService} from '../../api/service-addon.service';
 export class DocumentComponent extends ModelTransfer<ServiceDocumentResource, string> implements OnInit {
 
   private isLoading: boolean = false;
+  private showExecutor = false;
   private serviceWorks: DocumentCollection<ServiceWorkResource> = new DocumentCollection<ServiceWorkResource>();
   private serviceAddons: DocumentCollection<ServiceAddonResource> = new DocumentCollection<ServiceAddonResource>();
 
@@ -31,7 +33,8 @@ export class DocumentComponent extends ModelTransfer<ServiceDocumentResource, st
               private userService: UserService, private httpClient: HttpClient, private router: Router,
               private location: Location,
               private serviceWorkService: ServiceWorkService,
-              private serviceAddonService: ServiceAddonService) {
+              private serviceAddonService: ServiceAddonService,
+              private customerResourceService: CustomerResourceService) {
     super(documentService, route);
   }
 

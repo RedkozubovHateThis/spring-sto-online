@@ -32,7 +32,7 @@
         <div class="card-body">
           <form>
             <h6 class="heading-small text-muted mb-4">Личные данные</h6>
-            <div class="pl-lg-4" *ngIf="model != null">
+            <div *ngIf="model != null">
               <div class="row">
                 <div class="col-lg-6">
                   <div class="form-group">
@@ -80,7 +80,7 @@
             </div>
             <!-- Address -->
             <h6 class="heading-small text-muted mb-4">Контактная информация</h6>
-            <div class="pl-lg-4" *ngIf="model != null">
+            <div *ngIf="model != null">
               <div class="row">
                 <div class="col-lg-6">
                   <div class="form-group">
@@ -139,7 +139,7 @@
             <!-- Bank -->
             <ng-container *ngIf="model != null && model.isServiceLeader()">
               <h6 class="heading-small text-muted mb-4">Банковская информация</h6>
-              <div class="pl-lg-4" *ngIf="model != null">
+              <div *ngIf="model != null">
                 <div class="row">
                   <div class="col-lg-6">
                     <div class="form-group">
@@ -159,7 +159,7 @@
                   </div>
                 </div>
               </div>
-              <div class="pl-lg-4" *ngIf="model != null">
+              <div *ngIf="model != null">
                 <div class="row">
                   <div class="col-lg-6">
                     <div class="form-group">
@@ -182,7 +182,7 @@
             </ng-container>
             <!-- Roles -->
             <h6 class="heading-small text-muted mb-4">Роли</h6>
-            <div class="pl-lg-4" *ngIf="model != null">
+            <div *ngIf="model != null">
               <div class="row">
                 <div class="col-lg-6">
                   <label class="form-control-label">Роль</label>
@@ -196,7 +196,7 @@
             <ng-container *ngIf="model != null && model.isServiceLeader()">
               <hr class="my-4" />
               <h6 class="heading-small text-muted mb-4">Баланс</h6>
-              <div class="pl-lg-4">
+              <div>
                 <div class="row">
                   <div class="col-lg-6">
                     <label class="form-control-label">Текущий баланс</label>
@@ -217,7 +217,7 @@
 <!--            <ng-container *ngIf="model != null && model.isClient()">-->
 <!--              <hr class="my-4" />-->
 <!--              <h6 class="heading-small text-muted mb-4">Автомобили</h6>-->
-<!--              <div class="pl-lg-4">-->
+<!--              <div>-->
 <!--                <div class="row">-->
 <!--                  <ng-container *ngFor="let vinNumber of model.attributes.vinNumbers">-->
 <!--                    <div class="col-lg-6 col-sm-12 mb-2">-->
@@ -249,7 +249,7 @@
 <!--              <hr class="my-4" />-->
 <!--              &lt;!&ndash; Shops &ndash;&gt;-->
 <!--              <h6 class="heading-small text-muted mb-4">Магазины</h6>-->
-<!--              <div class="pl-lg-4">-->
+<!--              <div>-->
 <!--                <div class="row">-->
 <!--                  <ng-container *ngFor="let shop of shops">-->
 <!--                    <div class="col-auto" *ngIf="containsShop(model, shop.id)">-->

@@ -214,37 +214,53 @@
                 </div>
               </div>
 
-              <ng-container *ngIf="model.relationships.client.data">
+              <ng-container *ngIf="model.relationships.client.data as client">
                 <div class="row form-group">
                   <div class="col-lg-12">
                     <label class="form-control-label" for="name-input">Полное наименование (ФИО физического лица или название Организации/ИП)</label>
                     <input class="form-control form-control-sm form-control-alternative" id="name-input"
                            [disabled]="!clientEdit && !model.relationships.client.data.is_new"
-                           [(ngModel)]="model.relationships.client.data.attributes.name" placeholder="Полное наименование (ФИО физ. лица или назв. Организации/ИП)">
+                           [(ngModel)]="client.attributes.name" placeholder="Полное наименование (ФИО физ. лица или назв. Организации/ИП)">
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="inn-input">ИНН</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="inn-input"
+                           [disabled]="!clientEdit && !client.is_new"
+                           [(ngModel)]="client.attributes.inn" placeholder="ИНН">
                   </div>
                 </div>
                 <div class="row form-group">
                   <div class="col-lg-12">
                     <label class="form-control-label" for="phone-input">Телефон</label>
                     <input class="form-control form-control-sm form-control-alternative" id="phone-input"
-                           [disabled]="!clientEdit && !model.relationships.client.data.is_new"
-                           [(ngModel)]="model.relationships.client.data.attributes.phone" placeholder="Телефон">
+                           [disabled]="!clientEdit && !client.is_new"
+                           [(ngModel)]="client.attributes.phone" placeholder="Телефон">
                   </div>
                 </div>
                 <div class="row form-group">
                   <div class="col-lg-12">
                     <label class="form-control-label" for="email-input">Email</label>
                     <input class="form-control form-control-sm form-control-alternative" id="email-input"
-                           [disabled]="!clientEdit && !model.relationships.client.data.is_new"
-                           [(ngModel)]="model.relationships.client.data.attributes.email" placeholder="Email (не обязательно к заполнению)">
+                           [disabled]="!clientEdit && !client.is_new"
+                           [(ngModel)]="client.attributes.email" placeholder="Email (не обязательно к заполнению)">
                   </div>
                 </div>
                 <div class="row form-group">
                   <div class="col-lg-12">
                     <label class="form-control-label" for="address-input">Адрес</label>
                     <input class="form-control form-control-sm form-control-alternative" id="address-input"
-                           [disabled]="!clientEdit && !model.relationships.client.data.is_new"
-                           [(ngModel)]="model.relationships.client.data.attributes.address" placeholder="Адрес (не обязательно к заполнению)">
+                           [disabled]="!clientEdit && !client.is_new"
+                           [(ngModel)]="client.attributes.address" placeholder="Адрес (не обязательно к заполнению)">
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col">
+                    <div class="form-check">
+                      <input id="client-is-customer-check" type="checkbox" class="form-check-input" [(ngModel)]="model.attributes.clientIsCustomer" (ngModelChange)="createCustomer()">
+                      <label class="form-control-label" for="client-is-customer-check">Клиент является заказчиком</label>
+                    </div>
                   </div>
                 </div>
               </ng-container>
@@ -257,7 +273,7 @@
 
             </div>
 
-            <div class="col-md-3 mb-3">
+            <div class="col-md-3 mb-3" *ngIf="showExecutor || ( model != null && model.attributes.clientIsCustomer )">
 
               <div class="row">
                 <div class="col-md">
@@ -276,13 +292,21 @@
                 </div>
               </div>
 
-              <ng-container *ngIf="model.relationships.executor.data">
+              <ng-container *ngIf="model.relationships.executor.data as executor">
                 <div class="row form-group">
                   <div class="col-lg-12">
                     <label class="form-control-label" for="executor-name-input">Полное наименование (ФИО физического лица или название Организации/ИП)</label>
                     <input class="form-control form-control-sm form-control-alternative" id="executor-name-input"
                            disabled
-                           [(ngModel)]="model.relationships.executor.data.attributes.name" placeholder="Полное наименование (ФИО физ. лица или назв. Организации/ИП)">
+                           [(ngModel)]="executor.attributes.name" placeholder="Полное наименование (ФИО физ. лица или назв. Организации/ИП)">
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="executor-inn-input">ИНН</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="executor-inn-input"
+                           disabled
+                           [(ngModel)]="executor.attributes.inn" placeholder="ИНН">
                   </div>
                 </div>
                 <div class="row form-group">
@@ -290,7 +314,7 @@
                     <label class="form-control-label" for="executor-phone-input">Телефон</label>
                     <input class="form-control form-control-sm form-control-alternative" id="executor-phone-input"
                            disabled
-                           [(ngModel)]="model.relationships.executor.data.attributes.phone" placeholder="Телефон">
+                           [(ngModel)]="executor.attributes.phone" placeholder="Телефон">
                   </div>
                 </div>
                 <div class="row form-group">
@@ -298,7 +322,7 @@
                     <label class="form-control-label" for="executor-email-input">Email</label>
                     <input class="form-control form-control-sm form-control-alternative" id="executor-email-input"
                            disabled
-                           [(ngModel)]="model.relationships.executor.data.attributes.email" placeholder="Email (не обязательно к заполнению)">
+                           [(ngModel)]="executor.attributes.email" placeholder="Email (не обязательно к заполнению)">
                   </div>
                 </div>
                 <div class="row form-group">
@@ -306,8 +330,105 @@
                     <label class="form-control-label" for="executor-address-input">Адрес</label>
                     <input class="form-control form-control-sm form-control-alternative" id="executor-address-input"
                            disabled
-                           [(ngModel)]="model.relationships.executor.data.attributes.address" placeholder="Адрес">
+                           [(ngModel)]="executor.attributes.address" placeholder="Адрес">
                   </div>
+                </div>
+                <div class="row form-group" *ngIf="!model.attributes.clientIsCustomer">
+                  <div class="col">
+                    <button class="btn btn-sm btn-buro-blue btn-block" (click)="showExecutor = false">Показать заказчика</button>
+                  </div>
+                </div>
+              </ng-container>
+
+            </div>
+
+            <div class="col-md-3 mb-3" *ngIf="!showExecutor && model != null && !model.attributes.clientIsCustomer">
+
+              <div class="row">
+                <div class="col-md">
+                  <h6 class="heading-small text-muted">Заказчик</h6>
+                </div>
+                <div class="col-md-auto">
+                  <div class="btn-group btn-group-sm">
+                    <button
+                      class="btn btn-sn btn-buro-blue"
+                      title="Добавить нового"
+                      (click)="newCustomer()"
+                      [disabled]="model.relationships.customer.data && model.relationships.customer.data.is_new"
+                    >
+                      <i class="fas fa-file"></i>
+                    </button>
+                    <button
+                      class="btn btn-sn btn-buro-blue"
+                      title="Найти ранее добавленного"
+                      (click)="openCustomersModal()"
+                    >
+                      <i class="fas fa-search"></i>
+                    </button>
+                    <button
+                      class="btn btn-sn btn-buro-blue"
+                      [class.active]="customerEdit"
+                      (click)="customerEdit = !customerEdit"
+                      title="Редактировать текущего"
+                      [disabled]="!model.relationships.customer.data || model.relationships.customer.data.is_new"
+                    >
+                      <i class="fas fa-edit"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <ng-container *ngIf="model.relationships.customer.data as customer">
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="customer-name-input">Полное наименование (ФИО физического лица или название Организации/ИП)</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="customer-name-input"
+                           [disabled]="!customerEdit && !customer.is_new"
+                           [(ngModel)]="customer.attributes.name" placeholder="Полное наименование (ФИО физ. лица или назв. Организации/ИП)">
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="customer-inn-input">ИНН</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="customer-inn-input"
+                           [disabled]="!customerEdit && !customer.is_new"
+                           [(ngModel)]="customer.attributes.inn" placeholder="ИНН">
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="customer-phone-input">Телефон</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="customer-phone-input"
+                           [disabled]="!customerEdit && !customer.is_new"
+                           [(ngModel)]="customer.attributes.phone" placeholder="Телефон">
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="customer-email-input">Email</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="customer-email-input"
+                           [disabled]="!customerEdit && !customer.is_new"
+                           [(ngModel)]="customer.attributes.email" placeholder="Email (не обязательно к заполнению)">
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="customer-address-input">Адрес</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="customer-address-input"
+                           [disabled]="!customerEdit && !customer.is_new"
+                           [(ngModel)]="customer.attributes.address" placeholder="Адрес">
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col">
+                    <button class="btn btn-sm btn-buro-blue btn-block" (click)="showExecutor = true">Показать исполнителя</button>
+                  </div>
+                </div>
+              </ng-container>
+
+              <ng-container *ngIf="customerEdit">
+                <div class="alert alert-warning">
+                  Внимание! Все изменения, внесенные в информацию о заказчике, отразятся на всех заказ-нарядах, где указан данный заказчик!
                 </div>
               </ng-container>
 
@@ -499,7 +620,7 @@
     <div class="row form-group">
       <div class="col">
         <div class="input-group input-group-alternative input-group-sm">
-          <input id="client-select-ahead" type="text" placeholder="Введите ФИО, телефон или email (мин. 3 символа)"
+          <input id="client-select-ahead" type="text" placeholder="Введите ФИО, ИНН, телефон или email (мин. 3 символа)"
                  class="form-control form-control-sm" [(ngModel)]="phoneOrEmailSearch" (keyup.enter)="searchClients()"/>
           <div class="input-group-append">
             <button class="btn btn-buro-blue" type="button" (click)="searchClients()" [disabled]="!phoneOrEmailSearch || phoneOrEmailSearch.length < 3">
@@ -516,6 +637,7 @@
           <thead class="thead-light">
             <tr>
               <th scope="col">Полное наименование</th>
+              <th scope="col">ИНН</th>
               <th scope="col">Телефон</th>
               <th scope="col">Почта</th>
               <th scope="col">Адрес</th>
@@ -528,6 +650,9 @@
                   {{client.attributes.name}}
                 </td>
                 <td>
+                  {{client.attributes.inn}}
+                </td>
+                <td>
                   {{client.attributes.phone}}
                 </td>
                 <td>
@@ -535,6 +660,70 @@
                 </td>
                 <td>
                   {{client.attributes.address}}
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-buro-blue" (click)="modal.dismiss()">Закрыть</button>
+  </div>
+</ng-template>
+
+<ng-template #customerModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">Поиск клиентов</h3>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row form-group">
+      <div class="col">
+        <div class="input-group input-group-alternative input-group-sm">
+          <input id="customer-select-ahead" type="text" placeholder="Введите ФИО, ИНН, телефон или email (мин. 3 символа)"
+                 class="form-control form-control-sm" [(ngModel)]="customerSearch" (keyup.enter)="searchCustomers()"/>
+          <div class="input-group-append">
+            <button class="btn btn-buro-blue" type="button" (click)="searchCustomers()" [disabled]="!customerSearch || customerSearch.length < 3">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <table class="table align-items-center table-flush table-hover table-sm">
+          <thead class="thead-light">
+            <tr>
+              <th scope="col">Полное наименование</th>
+              <th scope="col">ИНН</th>
+              <th scope="col">Телефон</th>
+              <th scope="col">Почта</th>
+              <th scope="col">Адрес</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let customer of customers.data">
+              <tr style="cursor: pointer;" (click)="setCustomer(customer)">
+                <td>
+                  {{customer.attributes.name}}
+                </td>
+                <td>
+                  {{customer.attributes.inn}}
+                </td>
+                <td>
+                  {{customer.attributes.phone}}
+                </td>
+                <td>
+                  {{customer.attributes.email}}
+                </td>
+                <td>
+                  {{customer.attributes.address}}
                 </td>
               </tr>
             </ng-container>
@@ -562,6 +751,7 @@
           <thead class="thead-light">
             <tr>
               <th scope="col">Полное наименование</th>
+              <th scope="col">ИНН</th>
               <th scope="col">Телефон</th>
               <th scope="col">Почта</th>
               <th scope="col">Адрес</th>
@@ -572,6 +762,9 @@
               <tr style="cursor: pointer;" (click)="setExecutor(executor)">
                 <td>
                   {{executor.attributes.name}}
+                </td>
+                <td>
+                  {{executor.attributes.inn}}
                 </td>
                 <td>
                   {{executor.attributes.phone}}
