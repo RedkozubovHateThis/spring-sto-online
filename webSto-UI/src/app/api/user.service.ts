@@ -151,6 +151,7 @@ export class UserService implements TransferService<UserResource>, RestService<U
   saveUser(user: UserResource, message: string, router?: Router) {
     this.isSaving = true;
     const isNew = user.is_new;
+    user.prepareRecord();
 
     const profile = user.relationships.profile.data;
 

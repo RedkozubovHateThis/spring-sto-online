@@ -67,6 +67,22 @@ export class UserResource extends Resource {
         return this.attributes.username;
   }
 
+  public prepareRecord = () => {
+    this.parseValue('serviceWorkPrice');
+    this.parseValue('serviceGoodsCost');
+  }
+
+  private parseValue = (fieldName: string): void => {
+    const field = this.attributes[fieldName];
+    if ( field && typeof field === 'string' && field.includes(',') ) {
+      try {
+        this.attributes[fieldName] = parseFloat(field.replace(',', '\.'));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }
+
   public relationships = {
     roles: new DocumentCollection<UserRoleResource>(),
     currentSubscription: new DocumentResource<SubscriptionResource>(),

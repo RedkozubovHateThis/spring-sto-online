@@ -14,6 +14,23 @@ export class ServiceWorkResource extends Resource {
     deleted: false
   };
 
+  public prepareRecord = () => {
+    this.parseValue('priceNorm');
+    this.parseValue('price');
+    this.parseValue('timeValue');
+  }
+
+  private parseValue = (fieldName: string): void => {
+    const field = this.attributes[fieldName];
+    if ( field && typeof field === 'string' && field.includes(',') ) {
+      try {
+        this.attributes[fieldName] = parseFloat(field.replace(',', '\.'));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }
+
   public relationships = {
     document: new DocumentResource<ServiceDocumentResource>()
   };
