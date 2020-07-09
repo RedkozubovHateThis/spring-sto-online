@@ -382,7 +382,6 @@ export class DocumentAddComponent implements OnInit {
   calculateTotalCost() {
     let cost = 0;
     this.serviceWorks.forEach( (serviceWork) => {
-      serviceWork.prepareRecord();
 
       if ( serviceWork.attributes.count > 0 ) {
         if ( serviceWork.attributes.byPrice )
@@ -395,7 +394,6 @@ export class DocumentAddComponent implements OnInit {
       }
     } );
     this.serviceAddons.forEach( (serviceAddon) => {
-      serviceAddon.prepareRecord();
 
       if ( serviceAddon.attributes.count > 0 ) {
         cost += serviceAddon.attributes.cost > 0 ? serviceAddon.attributes.cost * serviceAddon.attributes.count : 0;
