@@ -1,8 +1,10 @@
 package io.swagger.controller;
 
+import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.response.exception.DataNotFoundException;
+import io.swagger.response.report.ReportType;
 import io.swagger.service.ReportService;
 import net.sf.jasperreports.engine.JRException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,13 +32,23 @@ public class ReportController {
     @Value("${domain.demo}")
     private Boolean demoDomain;
 
-    @GetMapping("{documentId}")
-    public ResponseEntity getOrderResponse(@PathVariable("documentId") Long documentId) {
+    @GetMapping("{documentId}/{reportType}")
+    public ResponseEntity getOrderResponse(@PathVariable("documentId") Long documentId,
+                                           @PathVariable("reportType") ReportType reportType) {
 
         User currentUser = userRepository.findCurrentUser();
 
+        if ( !UserHelper.isAdmin( currentUser ) && !UserHelper.isServiceLeader( currentUser ) )
+            return ResponseEntity.status(404).build();
+
         try {
-            byte[] response = reportService.getOrderReport(documentId);
+            byte[] response;
+            switch(reportType) {
+                case ORDER: response = reportService.getOrderReport(documentId, "order.jasper"); break;
+                case ORDER_ACT: response = reportService.getOrderReport(documentId, "orderAct.jasper"); break;
+                case ORDER_PAYMENT: response = reportService.getOrderPaymentReport(documentId); break;
+                default: return ResponseEntity.status(400).build();
+            }
 
             return ResponseEntity.ok()
                     .header( HttpHeaders.CONTENT_DISPOSITION, "attachment" )

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fontFamilies>
+    <fontFamily name="Calibri">
+        <normal>
+            <ttf><![CDATA[fonts/Calibri/Calibri.ttf]]></ttf>
+            <pdf><![CDATA[fonts/Calibri/Calibri.ttf]]></pdf>
+        </normal>
+        <bold>
+            <ttf><![CDATA[fonts/Calibri/Calibri-Bold.ttf]]></ttf>
+            <pdf><![CDATA[fonts/Calibri/Calibri-Bold.ttf]]></pdf>
+        </bold>
+        <italic>
+            <ttf><![CDATA[fonts/Calibri/Calibri-Italic.ttf]]></ttf>
+            <pdf><![CDATA[fonts/Calibri/Calibri-Italic.ttf]]></pdf>
+        </italic>
+        <boldItalic>
+            <ttf><![CDATA[fonts/Calibri/Calibri-Bold-Italic.ttf]]></ttf>
+            <pdf><![CDATA[fonts/Calibri/Calibri-Bold-Italic.ttf]]></pdf>
+        </boldItalic>
+        <pdfEncoding><![CDATA[Identity-H]]></pdfEncoding>
+        <pdfEmbedded><![CDATA[true]]></pdfEmbedded>
+        <exportFonts/>
+    </fontFamily>
+</fontFamilies>

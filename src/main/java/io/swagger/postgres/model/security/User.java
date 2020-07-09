@@ -90,6 +90,7 @@ public class User extends BaseEntity implements UserDetails, Serializable {
     private Double serviceGoodsCost;
 
     private String bankBic;
+    @Column(columnDefinition = "text")
     private String bankName;
     private String checkingAccount;
     private String corrAccount;

@@ -4,6 +4,7 @@ import io.swagger.helper.DateHelper;
 import io.swagger.helper.fwMoney;
 import io.swagger.postgres.model.*;
 import io.swagger.postgres.model.security.Profile;
+import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.ServiceDocumentRepository;
 import io.swagger.response.exception.DataNotFoundException;
 import io.swagger.service.ReportService;
@@ -40,18 +41,37 @@ public class ReportServiceImpl implements ReportService {
     private Boolean demoDomain;
 
     @Override
-    public byte[] getOrderReport(Long documentId) throws IOException, JRException, DataNotFoundException {
+    public byte[] getOrderReport(Long documentId, String orderName) throws IOException, JRException, DataNotFoundException {
 
         ServiceDocument document = serviceDocumentRepository.findById( documentId ).orElse(null);
         if ( document == null ) throw new DataNotFoundException();
-
-        String orderName = "orderSimple.jasper";
 
         File template = new File( reportsCatalog + orderName );
         InputStream templateStream = new FileInputStream(template);
 
         Map<String, Object> parameters = new HashMap<>();
         fillOrderReportParameters( parameters, document );
+        JRBeanCollectionDataSource serviceData = new JRBeanCollectionDataSource( getServiceWorkData( parameters, document ) );
+        parameters.put("serviceData", serviceData);
+
+        JasperPrint jasperPrint = JasperFillManager.fillReport(templateStream, parameters, new JREmptyDataSource());
+
+        return JasperExportManager.exportReportToPdf( jasperPrint );
+    }
+
+    @Override
+    public byte[] getOrderPaymentReport(Long documentId) throws IOException, JRException, DataNotFoundException {
+
+        ServiceDocument document = serviceDocumentRepository.findById( documentId ).orElse(null);
+        if ( document == null ) throw new DataNotFoundException();
+
+        String orderName = "orderPayment.jasper";
+
+        File template = new File( reportsCatalog + orderName );
+        InputStream templateStream = new FileInputStream(template);
+
+        Map<String, Object> parameters = new HashMap<>();
+        fillOrderPaymentReportParameters( parameters, document );
         JRBeanCollectionDataSource serviceData = new JRBeanCollectionDataSource( getServiceWorkData( parameters, document ) );
         parameters.put("serviceData", serviceData);
 
@@ -85,6 +105,24 @@ public class ReportServiceImpl implements ReportService {
 
     }
 
+    private void fillOrderPaymentReportParameters(Map<String, Object> parameters, ServiceDocument document) throws DataNotFoundException {
+
+        Profile executioner = document.getExecutor();
+        if ( executioner == null ) throw new DataNotFoundException();
+
+        Profile client = document.getClient();
+        if ( client == null ) throw new DataNotFoundException();
+
+        Customer customer = document.getCustomer();
+        if ( !document.getClientIsCustomer() && customer == null ) throw new DataNotFoundException();
+
+        fillOrganizationParameters(parameters, executioner, document);
+        fillBankParameters(parameters, executioner, document);
+        fillOrderParameters(parameters, document);
+        fillCustomerParameters(parameters, client, customer, document.getClientIsCustomer());
+
+    }
+
     private void fillOrganizationParameters(Map<String, Object> parameters, Profile executioner, ServiceDocument document) throws DataNotFoundException {
         parameters.put( "organizationName", getFieldText(executioner.getName(), "не указан") );
         parameters.put( "organizationInn", getFieldText(executioner.getInn(), "не указан") );
@@ -92,6 +130,18 @@ public class ReportServiceImpl implements ReportService {
         parameters.put( "organizationPhone", getFieldText(executioner.getPhone(), "не указан") );
         parameters.put( "organizationEmail", getFieldText(executioner.getEmail(), "не указан") );
         parameters.put( "executionerFio", document.getMasterFio() );
+    }
+
+    private void fillBankParameters(Map<String, Object> parameters, Profile executioner, ServiceDocument document) throws DataNotFoundException {
+        if ( executioner.getUser() == null )
+            throw new DataNotFoundException();
+
+        User executionerUser = executioner.getUser();
+
+        parameters.put( "bankName", getFieldText(executionerUser.getBankName(), "не указан") );
+        parameters.put( "bankBic", getFieldText(executionerUser.getBankBic(), "не указан") );
+        parameters.put( "checkingAccount", getFieldText(executionerUser.getCheckingAccount(), "не указан") );
+        parameters.put( "corrAccount", getFieldText(executionerUser.getCorrAccount(), "не указан") );
     }
 
     private void fillOrderParameters(Map<String, Object> parameters, ServiceDocument document) {
@@ -144,6 +194,7 @@ public class ReportServiceImpl implements ReportService {
         fwMoney totalSumString = new fwMoney( totalSum );
         parameters.put("totalSumString", totalSumString.num2str());
         parameters.put("totalSum", totalSum);
+        parameters.put("totalCount", result.size());
 
         return result;
 

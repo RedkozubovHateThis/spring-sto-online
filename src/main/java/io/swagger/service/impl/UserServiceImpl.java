@@ -46,6 +46,9 @@ public class UserServiceImpl implements UserService {
     @Value("${domain.url}")
     private String domainUrl;
 
+    @Value("${domain.demo}")
+    private Boolean demoDomain;
+
     @Override
     public String preparePhone(String phone) {
         String preparedPhone = phone.replaceAll("[^+\\d]", "");
@@ -146,12 +149,14 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
 
-        String smsText = String.format("По вашему автомобилю добавлен новый заказ-наряд. " +
-                "Логин для входа в систему: ваш телефон, пароль: %s. " +
-                "Сервис BUROMOTORS: %s/login", rawPassword, domainUrl);
-        logger.info(" [ SCHEDULER ] Prepared sms text: \"{}\"", smsText );
+        if ( !demoDomain ) {
+            String smsText = String.format("По вашему автомобилю добавлен новый заказ-наряд. " +
+                    "Логин для входа в систему: ваш телефон, пароль: %s. " +
+                    "Сервис BUROMOTORS: %s/login", rawPassword, domainUrl);
+            logger.info(" [ SCHEDULER ] Prepared sms text: \"{}\"", smsText );
 
-        smsService.sendSmsAsync( profile.getPhone(), smsText );
+            smsService.sendSmsAsync( profile.getPhone(), smsText );
+        }
 
     }
 }
