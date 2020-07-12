@@ -1,6 +1,9 @@
 package io.swagger.controller;
 
+import io.swagger.helper.ServiceDocumentSpecificationBuilder;
+import io.swagger.helper.ServiceWorkDictionarySpecificationBuilder;
 import io.swagger.helper.UserHelper;
+import io.swagger.postgres.model.ServiceDocument;
 import io.swagger.postgres.model.ServiceWorkDictionary;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.UserRepository;
@@ -12,10 +15,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -36,18 +42,38 @@ public class ServiceWorkDictionaryController {
     private ServiceWorkDictionaryResourceProcessor serviceWorkDictionaryResourceProcessor;
 
     @GetMapping
-    public ResponseEntity findServiceWorkDictionaries(JsonApiParams params) throws Exception {
+    public ResponseEntity findAll(JsonApiParams params) throws Exception {
         User currentUser = userRepository.findCurrentUser();
 
         if ( !UserHelper.isAdmin( currentUser ) && !UserHelper.isServiceLeader( currentUser ) )
             return ResponseEntity.status(404).build();
 
         FilterPayload filterPayload = params.getFilterPayload();
-        if ( filterPayload.getName() == null || filterPayload.getName().length() < 3 )
+        Pageable pageable = params.getPageable();
+
+        Specification<ServiceWorkDictionary> specification =
+                ServiceWorkDictionarySpecificationBuilder.buildSpecification( filterPayload );
+
+        return ResponseEntity.ok(
+                serviceWorkDictionaryResourceProcessor.toResourcePage(
+                        serviceWorkDictionaryRepository.findAll(specification, pageable), params.getInclude(),
+                        serviceWorkDictionaryRepository.count(specification), pageable
+                )
+        );
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity findServiceWorkDictionaries(@RequestParam("name") String name) throws Exception {
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( !UserHelper.isAdmin( currentUser ) && !UserHelper.isServiceLeader( currentUser ) )
+            return ResponseEntity.status(404).build();
+
+        if ( name == null || name.length() < 3 )
             return ResponseEntity.status(400).build();
 
         List<ServiceWorkDictionary> serviceWorkDictionaries = serviceWorkDictionaryRepository.findAllByName(
-                String.format("%%%s%%", filterPayload.getName())
+                String.format("%%%s%%", name)
         );
         if ( serviceWorkDictionaries.size() == 0 )
             return ResponseEntity.status(404).build();

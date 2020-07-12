@@ -56,6 +56,8 @@ import {ServiceAddonDictionaryService} from './api/service-addon.dictionary.serv
 import {environment} from '../environments/environment';
 import {CustomerResourceService} from './model/resource/customer.resource.service';
 import {CustomerService} from './api/customer.service';
+import {ServiceWorkDictionaryController} from './controller/service-work-dictionary.controller';
+import {ServiceAddonDictionaryController} from './controller/service-addon-dictionary.controller';
 
 registerLocaleData(localeRu, 'ru');
 
@@ -121,6 +123,8 @@ registerLocaleData(localeRu, 'ru');
     VehicleDictionaryService,
     ServiceWorkDictionaryService,
     ServiceAddonDictionaryService,
+    ServiceWorkDictionaryController,
+    ServiceAddonDictionaryController,
     CustomerResourceService,
     CustomerService,
     {

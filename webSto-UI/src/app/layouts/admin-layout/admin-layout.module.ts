@@ -25,6 +25,7 @@ import {DocumentsComponent} from '../../pages/documents/documents.component';
 import {DocumentComponent} from '../../pages/document/document.component';
 import {DocumentEditComponent} from '../../pages/document-edit/document-edit.component';
 import {DocumentAddComponent} from '../../pages/document-add/document-add.component';
+import {ServiceWorkDictionariesComponent} from '../../pages/service-work-dictionaries/service-work-dictionaries.component';
 
 @NgModule({
   imports: [
@@ -54,7 +55,8 @@ import {DocumentAddComponent} from '../../pages/document-add/document-add.compon
     EventMessagesComponent,
     UserAddComponent,
     BalanceComponent,
-    SubscriptionComponent
+    SubscriptionComponent,
+    ServiceWorkDictionariesComponent
   ]
 })
 

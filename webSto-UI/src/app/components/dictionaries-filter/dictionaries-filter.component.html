@@ -1,0 +1,66 @@
+<div class="card shadow">
+  <div class="card-body">
+
+    <div class="row">
+      <div class="col-sm mb-3">
+        <h3 class="text-muted mb-0">
+          Фильтры
+        </h3>
+      </div>
+      <div class="col-auto mb-3">
+        <button class="btn btn-sm btn-buro-blue" (click)="resetFilters()" *ngIf="filter.name">
+          Сбросить
+        </button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="name-input">Наименование</label>
+      <div class="input-group input-group-alternative input-group-sm">
+        <input id="name-input" class="form-control" placeholder="Наименование"
+               [(ngModel)]="filter.name" (keyup.enter)="emitChange()">
+        <div class="input-group-append">
+          <button class="btn btn-buro-blue" type="button" (click)="emitChange()">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <h3 class="text-muted">
+          Сортировка
+        </h3>
+      </div>
+      <div *ngIf="filter.sort !== 'name' || filter.direction !== 'desc'" class="col-auto text-muted">
+        <button class="btn btn-sm btn-buro-blue" (click)="resetSort()">
+          Сбросить
+        </button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="sort-select">Сортировать по:</label>
+      <select id="sort-select" class="form-control form-control-sm form-control-alternative"
+              [(ngModel)]="filter.sort" (change)="emitChange()">
+        <option [selected]="'name' === filter.sort" [ngValue]="'name'">
+          Наименование
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="direction-select">Порядок сортировки:</label>
+      <select id="direction-select" class="form-control form-control-sm form-control-alternative"
+              [(ngModel)]="filter.direction" (change)="emitChange()">
+        <option [selected]="'asc' === filter.direction" [ngValue]="'asc'">
+          По возрастанию
+        </option>
+        <option [selected]="'desc' === filter.direction" [ngValue]="'desc'">
+          По убыванию
+        </option>
+      </select>
+    </div>
+  </div>
+</div>

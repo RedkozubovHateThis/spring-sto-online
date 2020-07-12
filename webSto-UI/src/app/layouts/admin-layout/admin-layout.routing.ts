@@ -12,6 +12,7 @@ import {DocumentsComponent} from '../../pages/documents/documents.component';
 import {DocumentComponent} from '../../pages/document/document.component';
 import {DocumentEditComponent} from '../../pages/document-edit/document-edit.component';
 import {DocumentAddComponent} from '../../pages/document-add/document-add.component';
+import {ServiceWorkDictionariesComponent} from '../../pages/service-work-dictionaries/service-work-dictionaries.component';
 
 export const AdminLayoutRoutes: Routes = [
   { path: 'user-profile',   component: UserProfileComponent },
@@ -23,6 +24,7 @@ export const AdminLayoutRoutes: Routes = [
   { path: 'documents/add',  component: DocumentAddComponent },
   { path: 'documents/:id',  component: DocumentComponent },
   { path: 'documents/:id/edit',  component: DocumentEditComponent },
+  { path: 'serviceWorks',  component: ServiceWorkDictionariesComponent },
   // { path: 'reports',        component: ReportsComponent },
   // { path: 'event-messages', component: EventMessagesComponent },
   // { path: 'balance',        component: BalanceComponent },

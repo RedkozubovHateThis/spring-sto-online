@@ -17,6 +17,7 @@ import {PaginationComponent} from './pagination/pagination.component';
 import {DeleteButtonComponent} from './delete-button/delete-button.component';
 import {LoadingBarComponent} from './loading-bar/loading-bar.component';
 import {RoleChangeButtonComponent} from './role-change-button/role-change-button.component';
+import {DictionariesFilterComponent} from './dictionaries-filter/dictionaries-filter.component';
 
 @NgModule({
   imports: [
@@ -39,7 +40,8 @@ import {RoleChangeButtonComponent} from './role-change-button/role-change-button
     PaginationComponent,
     DeleteButtonComponent,
     LoadingBarComponent,
-    RoleChangeButtonComponent
+    RoleChangeButtonComponent,
+    DictionariesFilterComponent
   ],
   exports: [
     FooterComponent,
@@ -53,7 +55,8 @@ import {RoleChangeButtonComponent} from './role-change-button/role-change-button
     PaginationComponent,
     DeleteButtonComponent,
     LoadingBarComponent,
-    RoleChangeButtonComponent
+    RoleChangeButtonComponent,
+    DictionariesFilterComponent
   ]
 })
 export class ComponentsModule { }
