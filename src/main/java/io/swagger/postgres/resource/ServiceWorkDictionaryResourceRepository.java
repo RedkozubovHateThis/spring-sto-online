@@ -60,7 +60,7 @@ public class ServiceWorkDictionaryResourceRepository implements ResourceReposito
     public void delete(Long aLong) {
         User currentUser = userRepository.findCurrentUser();
 
-        if ( !UserHelper.isServiceLeader( currentUser ) && !UserHelper.isAdmin( currentUser ) )
+        if ( !UserHelper.isAdmin( currentUser ) )
             throw new ForbiddenException("Вам запрещено удалять справочники работ!");
 
         ServiceWorkDictionary serviceWorkDictionary = serviceWorkDictionaryRepository.findById(aLong).orElse(null);

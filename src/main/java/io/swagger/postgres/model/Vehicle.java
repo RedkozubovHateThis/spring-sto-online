@@ -17,7 +17,7 @@ import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@JsonApiResource(type = "vehicle", resourcePath = "vehicles", deletable = false)
+@JsonApiResource(type = "vehicle", resourcePath = "vehicles")
 @Where(clause = "deleted=false")
 @Entity
 public class Vehicle extends BaseEntity {

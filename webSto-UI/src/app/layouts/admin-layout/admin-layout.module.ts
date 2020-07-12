@@ -28,6 +28,7 @@ import {DocumentAddComponent} from '../../pages/document-add/document-add.compon
 import {ServiceWorkDictionariesComponent} from '../../pages/service-work-dictionaries/service-work-dictionaries.component';
 import {ServiceAddonDictionariesComponent} from '../../pages/service-addon-dictionaries/service-addon-dictionaries.component';
 import {VehiclesComponent} from '../../pages/vehicles/vehicles.component';
+import {VehicleDictionariesComponent} from '../../pages/vehicles-dictionaries/vehicle-dictionaries.component';
 
 @NgModule({
   imports: [
@@ -60,6 +61,7 @@ import {VehiclesComponent} from '../../pages/vehicles/vehicles.component';
     SubscriptionComponent,
     ServiceWorkDictionariesComponent,
     ServiceAddonDictionariesComponent,
+    VehicleDictionariesComponent,
     VehiclesComponent
   ]
 })

@@ -20,7 +20,7 @@ import {environment} from '../../environments/environment';
 import {VehiclesFilter} from '../model/vehiclesFilter';
 
 @Injectable()
-export class VehicleService {
+export class VehicleService implements RestService<VehicleResource> {
 
   constructor(private vehicleResourceService: VehicleResourceService, private http: HttpClient) {
     vehicleResourceService.register();
@@ -103,6 +103,12 @@ export class VehicleService {
         subscriber.complete();
       } );
     } );
+  }
+
+  delete(model: VehicleResource): Observable<void> {
+    return this.vehicleResourceService.delete(model.id, {
+      beforepath: environment.getBeforeUrl()
+    });
   }
 
 }

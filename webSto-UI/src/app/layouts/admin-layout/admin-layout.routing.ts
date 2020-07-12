@@ -15,6 +15,7 @@ import {DocumentAddComponent} from '../../pages/document-add/document-add.compon
 import {ServiceWorkDictionariesComponent} from '../../pages/service-work-dictionaries/service-work-dictionaries.component';
 import {ServiceAddonDictionariesComponent} from '../../pages/service-addon-dictionaries/service-addon-dictionaries.component';
 import {VehiclesComponent} from '../../pages/vehicles/vehicles.component';
+import {VehicleDictionariesComponent} from '../../pages/vehicles-dictionaries/vehicle-dictionaries.component';
 
 export const AdminLayoutRoutes: Routes = [
   { path: 'user-profile',   component: UserProfileComponent },
@@ -29,6 +30,7 @@ export const AdminLayoutRoutes: Routes = [
   { path: 'serviceWorks',  component: ServiceWorkDictionariesComponent },
   { path: 'serviceAddons',  component: ServiceAddonDictionariesComponent },
   { path: 'vehiclesAdded',  component: VehiclesComponent },
+  { path: 'vehicles',  component: VehicleDictionariesComponent },
   // { path: 'reports',        component: ReportsComponent },
   // { path: 'event-messages', component: EventMessagesComponent },
   // { path: 'balance',        component: BalanceComponent },

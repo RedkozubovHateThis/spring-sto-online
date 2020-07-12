@@ -60,7 +60,7 @@ public class ServiceAddonDictionaryResourceRepository implements ResourceReposit
     public void delete(Long aLong) {
         User currentUser = userRepository.findCurrentUser();
 
-        if ( !UserHelper.isServiceLeader( currentUser ) && !UserHelper.isAdmin( currentUser ) )
+        if ( !UserHelper.isAdmin( currentUser ) )
             throw new ForbiddenException("Вам запрещено удалять справочники товаров!");
 
         ServiceAddonDictionary serviceAddonDictionary = serviceAddonDictionaryRepository.findById(aLong).orElse(null);

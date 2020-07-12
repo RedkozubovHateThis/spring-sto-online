@@ -1,6 +1,9 @@
 package io.swagger.controller;
 
+import io.swagger.helper.ServiceWorkDictionarySpecificationBuilder;
 import io.swagger.helper.UserHelper;
+import io.swagger.helper.VehicleDictionarySpecificationBuilder;
+import io.swagger.postgres.model.ServiceWorkDictionary;
 import io.swagger.postgres.model.VehicleDictionary;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.UserRepository;
@@ -12,10 +15,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -36,18 +42,38 @@ public class VehicleDictionaryController {
     private VehicleDictionaryResourceProcessor vehicleDictionaryResourceProcessor;
 
     @GetMapping
-    public ResponseEntity findVehicleDictionaries(JsonApiParams params) throws Exception {
+    public ResponseEntity findAll(JsonApiParams params) throws Exception {
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( !UserHelper.isAdmin( currentUser ) )
+            return ResponseEntity.status(404).build();
+
+        FilterPayload filterPayload = params.getFilterPayload();
+        Pageable pageable = params.getPageable();
+
+        Specification<VehicleDictionary> specification =
+                VehicleDictionarySpecificationBuilder.buildSpecification( filterPayload );
+
+        return ResponseEntity.ok(
+                vehicleDictionaryResourceProcessor.toResourcePage(
+                        vehicleDictionaryRepository.findAll(specification, pageable), params.getInclude(),
+                        vehicleDictionaryRepository.count(specification), pageable
+                )
+        );
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity findVehicleDictionaries(@RequestParam("name") String name) throws Exception {
         User currentUser = userRepository.findCurrentUser();
 
         if ( !UserHelper.isAdmin( currentUser ) && !UserHelper.isServiceLeader( currentUser ) )
             return ResponseEntity.status(404).build();
 
-        FilterPayload filterPayload = params.getFilterPayload();
-        if ( filterPayload.getName() == null || filterPayload.getName().length() < 3 )
+        if ( name == null || name.length() < 3 )
             return ResponseEntity.status(400).build();
 
         List<VehicleDictionary> vehicleDictionaries = vehicleDictionaryRepository.findAllByName(
-                String.format("%%%s%%", filterPayload.getName())
+                String.format("%%%s%%", name)
         );
         if ( vehicleDictionaries.size() == 0 )
             return ResponseEntity.status(404).build();

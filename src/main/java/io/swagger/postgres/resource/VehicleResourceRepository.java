@@ -1,10 +1,16 @@
 package io.swagger.postgres.resource;
 
 import io.crnk.core.exception.BadRequestException;
+import io.crnk.core.exception.ForbiddenException;
+import io.crnk.core.exception.ResourceNotFoundException;
 import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepository;
 import io.crnk.core.resource.list.ResourceList;
+import io.swagger.helper.UserHelper;
+import io.swagger.postgres.model.ServiceWork;
 import io.swagger.postgres.model.Vehicle;
+import io.swagger.postgres.model.security.User;
+import io.swagger.postgres.repository.UserRepository;
 import io.swagger.postgres.repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,6 +19,9 @@ import java.util.Collection;
 
 @Component
 public class VehicleResourceRepository implements ResourceRepository<Vehicle, Long> {
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private VehicleRepository vehicleRepository;
@@ -72,6 +81,18 @@ public class VehicleResourceRepository implements ResourceRepository<Vehicle, Lo
 
     @Override
     public void delete(Long aLong) {
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( !UserHelper.isAdmin( currentUser ) )
+            throw new ForbiddenException("Вам запрещено удалять автомобили!");
+
+        Vehicle vehicle = vehicleRepository.findById(aLong).orElse(null);
+
+        if ( vehicle == null )
+            throw new ResourceNotFoundException("Автомобиль не найден!");
+
+        vehicle.setDeleted(true);
+        vehicleRepository.save(vehicle);
     }
 
     private void prepareVinNumber(Vehicle vehicle) {
