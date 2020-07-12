@@ -43,7 +43,7 @@ public class ServiceAddonDictionaryController {
     public ResponseEntity findAll(JsonApiParams params) throws Exception {
         User currentUser = userRepository.findCurrentUser();
 
-        if ( !UserHelper.isAdmin( currentUser ) && !UserHelper.isServiceLeader( currentUser ) )
+        if ( !UserHelper.isAdmin( currentUser ) )
             return ResponseEntity.status(404).build();
 
         FilterPayload filterPayload = params.getFilterPayload();

@@ -1,0 +1,131 @@
+<!-- Page content -->
+<div class="container-fluid mt--7" *ngIf="userService.isAdmin()">
+  <!-- Table -->
+  <div class="row">
+    <div class="col-xl-9 mb-5 mb-xl-0">
+      <div class="card shadow">
+        <div class="card-header border-0">
+          <app-loading-bar [isLoading]="isLoading"></app-loading-bar>
+          <div class="row">
+
+            <div class="col-sm mb-3">
+              <h3 class="mb-0">
+                Справочник товаров
+              </h3>
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-sm btn-buro-blue" (click)="addNew()"
+                 *ngIf="userService.isAdmin()">
+                Добавить
+              </button>
+              <button class="btn btn-sm btn-buro-blue" (click)="requestData()"
+                      [disabled]="isLoading">
+                Обновить
+              </button>
+            </div>
+
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush table-hover table-sm">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">Марка/модель</th>
+                <th scope="col">Регистрационный номер</th>
+                <th scope="col">VIN-номер</th>
+                <th scope="col">Год</th>
+                <th scope="col" style="width: 28px;">&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="vehicleController.all != null">
+            <ng-container *ngFor="let vehicle of vehicleController.all.data, let i = index" [attr.data-index]="i">
+              <tr>
+                <th scope="row" style="cursor: pointer;" (click)="navigate(vehicle)">
+                  {{vehicle.attributes.modelName}}
+                </th>
+                <th scope="row" style="cursor: pointer;" (click)="navigate(vehicle)">
+                  {{vehicle.attributes.regNumber}}
+                </th>
+                <th scope="row" style="cursor: pointer;" (click)="navigate(vehicle)">
+                  {{vehicle.attributes.vinNumber}}
+                </th>
+                <th scope="row" style="cursor: pointer;" (click)="navigate(vehicle)">
+                  {{vehicle.attributes.year}}
+                </th>
+                <th>
+                  <app-delete-button
+                    [restService]="vehicleService"
+                    [model]="vehicle"
+                    [modalTitle]="vehicle.attributes.modelName"
+                    [isIcon]="true"
+                    (onDelete)="requestData()"
+                  ></app-delete-button>
+                </th>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <div class="card-footer py-4 table-responsive">
+          <app-loading-bar [isLoading]="isLoading" [atTop]="true"></app-loading-bar>
+          <app-pagination *ngIf="vehicleController.all != null"
+                          [totalRecords]="vehicleController.all.page.total_resources"
+                          [page]="vehicleController.filter.page"
+                          [size]="vehicleController.filter.size"
+                          [disabled]="isLoading"
+                          (onSizeChange)="setSize($event)"
+                          (onPageChange)="goToPage($event)"></app-pagination>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3">
+      <app-vehicles-filter
+        (onChange)="applyFilter()"
+        [filter]="vehicleController.filter"
+      ></app-vehicles-filter>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<ng-template #editModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">Данные автомобиля: {{vehicleController.selectedModel.is_new ? 'добавление' : 'редактирование'}}</h3>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" *ngIf="vehicleController.selectedModel as model">
+    <div class="row form-group">
+      <div class="col-lg-6">
+        <label class="form-control-label" for="model-name-input">Марка/модель</label>
+        <input class="form-control form-control-sm form-control-alternative" id="model-name-input"
+               [(ngModel)]="model.attributes.modelName" placeholder="Марка/модель">
+      </div>
+      <div class="col-lg-6">
+        <label class="form-control-label" for="reg-number-input">Регистрационный номер</label>
+        <input id="reg-number-input" class="form-control form-control-sm form-control-alternative"
+               [(ngModel)]="model.attributes.modelName" placeholder="Регистрационный номер">
+      </div>
+    </div>
+    <div class="row form-group">
+      <div class="col-lg-6">
+        <label class="form-control-label" for="vin-number-input">VIN-номер</label>
+        <input class="form-control form-control-sm form-control-alternative" id="vin-number-input"
+               [(ngModel)]="model.attributes.vinNumber" placeholder="VIN-номер">
+      </div>
+      <div class="col-lg-6">
+        <label class="form-control-label" for="year-input">Год выпуска</label>
+        <input id="year-input" class="form-control form-control-sm form-control-alternative"
+               [(ngModel)]="model.attributes.year" placeholder="Год выпуска" type="number">
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-buro-blue" (click)="save(vehicleController.selectedModel)" [disabled]="isSaving">
+      Сохранить
+      <span *ngIf="isSaving">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+    </button>
+    <button type="button" class="btn btn-sm btn-buro-blue" (click)="modal.dismiss()">Закрыть</button>
+  </div>
+</ng-template>

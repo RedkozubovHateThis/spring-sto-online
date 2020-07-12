@@ -1,6 +1,9 @@
 package io.swagger.controller;
 
+import io.swagger.helper.ServiceWorkDictionarySpecificationBuilder;
 import io.swagger.helper.UserHelper;
+import io.swagger.helper.VehicleSpecificationBuilder;
+import io.swagger.postgres.model.ServiceWorkDictionary;
 import io.swagger.postgres.model.Vehicle;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.*;
@@ -11,7 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,22 +38,40 @@ public class VehicleController {
     private VehicleResourceProcessor vehicleResourceProcessor;
 
     @GetMapping
-    public ResponseEntity findVehicles(JsonApiParams params) throws Exception {
+    public ResponseEntity findAll(JsonApiParams params) throws Exception {
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( !UserHelper.isAdmin( currentUser ) )
+            return ResponseEntity.status(404).build();
+
+        FilterPayload filterPayload = params.getFilterPayload();
+        Pageable pageable = params.getPageable();
+
+        Specification<Vehicle> specification =
+                VehicleSpecificationBuilder.buildSpecification( filterPayload );
+
+        return ResponseEntity.ok(
+                vehicleResourceProcessor.toResourcePage(
+                        vehicleRepository.findAll(specification, pageable), params.getInclude(),
+                        vehicleRepository.count(specification), pageable
+                )
+        );
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity findVehicles(@RequestParam("search") String search) throws Exception {
         User currentUser = userRepository.findCurrentUser();
 
         if ( !UserHelper.isAdmin( currentUser ) && !UserHelper.isServiceLeader( currentUser ) )
             return ResponseEntity.status(404).build();
 
-        FilterPayload filterPayload = params.getFilterPayload();
-        if ( filterPayload.getVinNumber() == null || filterPayload.getVinNumber().length() < 3 ||
-                filterPayload.getModelName() == null || filterPayload.getModelName().length() < 3 ||
-                filterPayload.getRegNumber() == null || filterPayload.getRegNumber().length() < 3 )
+        if ( search == null || search.length() < 3 )
             return ResponseEntity.status(400).build();
 
         List<Vehicle> vehicles = vehicleRepository.findAllByVinNumberOrRegNumberOrModelName(
-                String.format("%%%s%%", filterPayload.getVinNumber()),
-                String.format("%%%s%%", filterPayload.getRegNumber()),
-                String.format("%%%s%%", filterPayload.getModelName())
+                String.format("%%%s%%", search),
+                String.format("%%%s%%", search),
+                String.format("%%%s%%", search)
         );
         if ( vehicles.size() == 0 )
             return ResponseEntity.status(404).build();
@@ -68,6 +91,7 @@ public class VehicleController {
         private String vinNumber;
         private String regNumber;
         private String modelName;
+        private Integer year;
     }
 
     @Data
@@ -84,6 +108,8 @@ public class VehicleController {
                 filterPayload.setModelName( getFilter().get("modelName").get(0) );
             if ( getFilter().containsKey("regNumber") && getFilter().get("regNumber").size() > 0 )
                 filterPayload.setRegNumber( getFilter().get("regNumber").get(0) );
+            if ( getFilter().containsKey("year") && getFilter().get("year").size() > 0 )
+                filterPayload.setYear( Integer.parseInt( getFilter().get("year").get(0), 10) );
 
             return filterPayload;
         }

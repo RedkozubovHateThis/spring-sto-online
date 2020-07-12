@@ -1,0 +1,114 @@
+<div class="card shadow">
+  <div class="card-body">
+
+    <div class="row">
+      <div class="col-sm mb-3">
+        <h3 class="text-muted mb-0">
+          Фильтры
+        </h3>
+      </div>
+      <div class="col-auto mb-3">
+        <button class="btn btn-sm btn-buro-blue" (click)="resetFilters()" *ngIf="filter.modelName || filter.regNumber || filter.vinNumber || filter.year">
+          Сбросить
+        </button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="model-name-input">Марка/модель</label>
+      <div class="input-group input-group-alternative input-group-sm">
+        <input id="model-name-input" class="form-control" placeholder="Марка/модель"
+               [(ngModel)]="filter.modelName" (keyup.enter)="emitChange()">
+        <div class="input-group-append">
+          <button class="btn btn-buro-blue" type="button" (click)="emitChange()">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="reg-number-input">Регистрационный номер</label>
+      <div class="input-group input-group-alternative input-group-sm">
+        <input id="reg-number-input" class="form-control" placeholder="Регистрационный номер"
+               [(ngModel)]="filter.regNumber" (keyup.enter)="emitChange()">
+        <div class="input-group-append">
+          <button class="btn btn-buro-blue" type="button" (click)="emitChange()">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="vin-number-input">VIN-номер</label>
+      <div class="input-group input-group-alternative input-group-sm">
+        <input id="vin-number-input" class="form-control" placeholder="VIN-номер"
+               [(ngModel)]="filter.vinNumber" (keyup.enter)="emitChange()">
+        <div class="input-group-append">
+          <button class="btn btn-buro-blue" type="button" (click)="emitChange()">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="year-input">Год выпуска</label>
+      <div class="input-group input-group-alternative input-group-sm">
+        <input id="year-input" class="form-control" placeholder="Год выпуска" type="number"
+               [(ngModel)]="filter.year" (keyup.enter)="emitChange()">
+        <div class="input-group-append">
+          <button class="btn btn-buro-blue" type="button" (click)="emitChange()">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <h3 class="text-muted">
+          Сортировка
+        </h3>
+      </div>
+      <div *ngIf="filter.sort !== 'modelName' || filter.direction !== 'desc'" class="col-auto text-muted">
+        <button class="btn btn-sm btn-buro-blue" (click)="resetSort()">
+          Сбросить
+        </button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="sort-select">Сортировать по:</label>
+      <select id="sort-select" class="form-control form-control-sm form-control-alternative"
+              [(ngModel)]="filter.sort" (change)="emitChange()">
+        <option [selected]="'modelName' === filter.sort" [ngValue]="'modelName'">
+          Марка/модель
+        </option>
+        <option [selected]="'regNumber' === filter.sort" [ngValue]="'regNumber'">
+          Регистрационный номер
+        </option>
+        <option [selected]="'vinNumber' === filter.sort" [ngValue]="'vinNumber'">
+          VIN-номер
+        </option>
+        <option [selected]="'year' === filter.sort" [ngValue]="'year'">
+          Год
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="direction-select">Порядок сортировки:</label>
+      <select id="direction-select" class="form-control form-control-sm form-control-alternative"
+              [(ngModel)]="filter.direction" (change)="emitChange()">
+        <option [selected]="'asc' === filter.direction" [ngValue]="'asc'">
+          По возрастанию
+        </option>
+        <option [selected]="'desc' === filter.direction" [ngValue]="'desc'">
+          По убыванию
+        </option>
+      </select>
+    </div>
+  </div>
+</div>

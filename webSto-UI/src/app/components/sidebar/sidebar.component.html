@@ -115,6 +115,10 @@
            *ngIf="userService.isAdmin()">
             <i class="fas fa-list text-buro-blue"></i> Товары
         </a>
+        <a routerLinkActive="active" [routerLink]="['/vehiclesAdded']" class="nav-link"
+           *ngIf="userService.isAdmin()">
+            <i class="fas fa-list text-buro-blue"></i> Автомобили (добавленные)
+        </a>
 <!--        <a routerLinkActive="active" [routerLink]="['/reports']" class="nav-link"-->
 <!--           *ngIf="userService.isNotClient()">-->
 <!--            <i class="fas fa-copy text-buro-blue"></i> Отчеты-->

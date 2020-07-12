@@ -18,6 +18,7 @@ import {DeleteButtonComponent} from './delete-button/delete-button.component';
 import {LoadingBarComponent} from './loading-bar/loading-bar.component';
 import {RoleChangeButtonComponent} from './role-change-button/role-change-button.component';
 import {DictionariesFilterComponent} from './dictionaries-filter/dictionaries-filter.component';
+import {VehiclesFilterComponent} from './vehicles-filter/vehicles-filter.component';
 
 @NgModule({
   imports: [
@@ -41,7 +42,8 @@ import {DictionariesFilterComponent} from './dictionaries-filter/dictionaries-fi
     DeleteButtonComponent,
     LoadingBarComponent,
     RoleChangeButtonComponent,
-    DictionariesFilterComponent
+    DictionariesFilterComponent,
+    VehiclesFilterComponent
   ],
   exports: [
     FooterComponent,
@@ -56,7 +58,8 @@ import {DictionariesFilterComponent} from './dictionaries-filter/dictionaries-fi
     DeleteButtonComponent,
     LoadingBarComponent,
     RoleChangeButtonComponent,
-    DictionariesFilterComponent
+    DictionariesFilterComponent,
+    VehiclesFilterComponent
   ]
 })
 export class ComponentsModule { }

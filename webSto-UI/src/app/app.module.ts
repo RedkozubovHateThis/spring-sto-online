@@ -58,6 +58,7 @@ import {CustomerResourceService} from './model/resource/customer.resource.servic
 import {CustomerService} from './api/customer.service';
 import {ServiceWorkDictionaryController} from './controller/service-work-dictionary.controller';
 import {ServiceAddonDictionaryController} from './controller/service-addon-dictionary.controller';
+import {VehicleController} from './controller/vehicle.controller';
 
 registerLocaleData(localeRu, 'ru');
 
@@ -127,6 +128,7 @@ registerLocaleData(localeRu, 'ru');
     ServiceAddonDictionaryController,
     CustomerResourceService,
     CustomerService,
+    VehicleController,
     {
       provide: HTTP_INTERCEPTORS,
       useFactory(userService: UserService, router: Router) {
