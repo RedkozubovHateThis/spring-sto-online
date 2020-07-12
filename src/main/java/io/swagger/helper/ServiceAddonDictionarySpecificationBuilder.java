@@ -24,7 +24,7 @@ public class ServiceAddonDictionarySpecificationBuilder {
                 
                 if ( filterPayload.getName() != null && filterPayload.getName().length() > 0 ) {
                     predicates.add(
-                            cb.equal(
+                            cb.like(
                                     cb.lower( root.get( ServiceAddonDictionary_.name ) ),
                                     ( "%" + filterPayload.getName() + "%" ).toLowerCase()
                             )
