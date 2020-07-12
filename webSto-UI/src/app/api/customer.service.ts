@@ -1,41 +1,63 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Router} from '@angular/router';
-import {TransferService} from './transfer.service';
-import {ToastrService} from 'ngx-toastr';
 import {RestService} from './rest.service';
-import {ServiceDocumentResource, ServiceDocumentResourceService} from '../model/resource/service-document.resource.service';
-import {ServiceWorkResource, ServiceWorkResourceService} from '../model/resource/service-work.resource.service';
-import {ServiceAddonResource, ServiceAddonResourceService} from '../model/resource/service-addon.resource.service';
-import {VehicleResource, VehicleResourceService} from '../model/resource/vehicle.resource.service';
-import {VehicleMileageResource, VehicleMileageResourceService} from '../model/resource/vehicle-mileage.resource.service';
-import {DocumentsFilter} from '../model/documentsFilter';
+import {ServiceDocumentResource} from '../model/resource/service-document.resource.service';
 import {Observable} from 'rxjs';
-import {DocumentCollection, DocumentResource} from 'ngx-jsonapi';
+import {DocumentCollection} from 'ngx-jsonapi';
 import {UserService} from './user.service';
 import {IDataCollection} from 'ngx-jsonapi/interfaces/data-collection';
 import {IDocumentResource} from 'ngx-jsonapi/interfaces/data-object';
-import {subscribeOn} from 'rxjs/operators';
 import {CustomerResource, CustomerResourceService} from '../model/resource/customer.resource.service';
 import {environment} from '../../environments/environment';
+import {CustomersFilter} from '../model/customersFilter';
 
 @Injectable()
-export class CustomerService {
+export class CustomerService implements RestService<CustomerResource> {
 
   constructor(private customerResourceService: CustomerResourceService, private http: HttpClient, private userService: UserService) {
     customerResourceService.register();
   }
 
-  findByPhoneOrEmail(search: string): Observable<DocumentCollection<CustomerResource>> {
+  getAll(filter: CustomersFilter): Observable<DocumentCollection<CustomerResource>> {
+    const params = {
+      name: filter.name != null ? filter.name : '',
+      inn: filter.inn != null ? filter.inn : '',
+      phone: filter.phone != null ? filter.phone : '',
+      email: filter.email != null ? filter.email : '',
+    };
     return this.customerResourceService.all({
       beforepath: `${environment.getBeforeUrl()}/external`,
-      remotefilter: {
-        phone: search,
-        email: search,
-        fio: search,
-        inn: search
-      }
+      sort: [`${filter.direction === 'desc' ? '-' : ''}${filter.sort}`],
+      page: { number: filter.page, size: filter.size },
+      remotefilter: params
     });
+  }
+
+  findByPhoneOrEmail(search: string): Observable<DocumentCollection<CustomerResource>> {
+    return new Observable<DocumentCollection<CustomerResource>>( (subscriber) => {
+      this.http.get<IDataCollection>(`${environment.getApiUrl()}external/customers/search`, { params: { search } }).subscribe( (data) => {
+        const collection = this.customerResourceService.newCollection();
+        collection.fill( data );
+        subscriber.next( collection );
+        subscriber.complete();
+      }, (error) => {
+        subscriber.error( error );
+        subscriber.complete();
+      } );
+    } );
+  }
+
+  save(model: CustomerResource): Observable<CustomerResource> {
+    return new Observable<CustomerResource>( (subscriber) => {
+      model.save({ beforepath: environment.getBeforeUrl() }).subscribe( (data: IDocumentResource) => {
+        // model.fill(data);
+        subscriber.next(model);
+        subscriber.complete();
+      }, ( error ) => {
+        subscriber.error( error );
+        subscriber.complete();
+      } );
+    } );
   }
 
   saveCustomer(serviceDocument: ServiceDocumentResource): Observable<CustomerResource> {
@@ -55,6 +77,12 @@ export class CustomerService {
         subscriber.complete();
       } );
     } );
+  }
+
+  delete(model: CustomerResource): Observable<void> {
+    return this.customerResourceService.delete(model.id, {
+      beforepath: environment.getBeforeUrl()
+    });
   }
 
 }

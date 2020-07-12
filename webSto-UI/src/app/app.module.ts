@@ -60,6 +60,7 @@ import {ServiceWorkDictionaryController} from './controller/service-work-diction
 import {ServiceAddonDictionaryController} from './controller/service-addon-dictionary.controller';
 import {VehicleController} from './controller/vehicle.controller';
 import {VehicleDictionaryController} from './controller/vehicle-dictionary.controller';
+import {CustomerController} from './controller/customer.controller';
 
 registerLocaleData(localeRu, 'ru');
 
@@ -131,6 +132,7 @@ registerLocaleData(localeRu, 'ru');
     CustomerService,
     VehicleController,
     VehicleDictionaryController,
+    CustomerController,
     {
       provide: HTTP_INTERCEPTORS,
       useFactory(userService: UserService, router: Router) {

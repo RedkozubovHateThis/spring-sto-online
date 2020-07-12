@@ -1,7 +1,10 @@
 package io.swagger.controller;
 
+import io.swagger.helper.CustomerSpecificationBuilder;
+import io.swagger.helper.ServiceAddonDictionarySpecificationBuilder;
 import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.Customer;
+import io.swagger.postgres.model.ServiceAddonDictionary;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.CustomerRepository;
 import io.swagger.postgres.repository.UserRepository;
@@ -11,9 +14,12 @@ import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -32,24 +38,41 @@ public class CustomerController {
     private CustomerResourceProcessor customerResourceProcessor;
 
     @GetMapping
-    public ResponseEntity findCustomers(JsonApiParams params) throws Exception {
+    public ResponseEntity findAll(JsonApiParams params) throws Exception {
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( !UserHelper.isAdmin( currentUser ) )
+            return ResponseEntity.status(403).build();
+
+        FilterPayload filterPayload = params.getFilterPayload();
+        Pageable pageable = params.getPageable();
+
+        Specification<Customer> specification =
+                CustomerSpecificationBuilder.buildSpecification( filterPayload );
+
+        return ResponseEntity.ok(
+                customerResourceProcessor.toResourcePage(
+                        customerRepository.findAll(specification, pageable), params.getInclude(),
+                        customerRepository.count(specification), pageable
+                )
+        );
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity findCustomers(@RequestParam("search") String search) throws Exception {
         User currentUser = userRepository.findCurrentUser();
 
         if ( !UserHelper.isAdmin( currentUser ) && !UserHelper.isServiceLeader( currentUser ) )
             return ResponseEntity.status(404).build();
 
-        FilterPayload filterPayload = params.getFilterPayload();
-        if ( filterPayload.getPhone() == null || filterPayload.getPhone().length() < 3 ||
-                filterPayload.getEmail() == null || filterPayload.getEmail().length() < 3 ||
-                filterPayload.getFio() == null || filterPayload.getFio().length() < 3 ||
-                filterPayload.getInn() == null || filterPayload.getInn().length() < 3 )
+        if ( search == null || search.length() < 3 )
             return ResponseEntity.status(400).build();
 
         List<Customer> customers = customerRepository.findAllByPhoneOrEmail(
-                String.format("%%%s%%", filterPayload.getPhone()),
-                String.format("%%%s%%", filterPayload.getEmail()),
-                String.format("%%%s%%", filterPayload.getFio()),
-                String.format("%%%s%%", filterPayload.getInn())
+                String.format("%%%s%%", search),
+                String.format("%%%s%%", search),
+                String.format("%%%s%%", search),
+                String.format("%%%s%%", search)
         );
         if ( customers.size() == 0 )
             return ResponseEntity.status(404).build();

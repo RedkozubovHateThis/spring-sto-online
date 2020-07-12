@@ -1,0 +1,142 @@
+<!-- Page content -->
+<div class="container-fluid mt--7" *ngIf="userService.isAdmin()">
+  <!-- Table -->
+  <div class="row">
+    <div class="col-xl-9 mb-5 mb-xl-0">
+      <div class="card shadow">
+        <div class="card-header border-0">
+          <app-loading-bar [isLoading]="isLoading"></app-loading-bar>
+          <div class="row">
+
+            <div class="col-sm mb-3">
+              <h3 class="mb-0">
+                Справочник заказчиков
+              </h3>
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-sm btn-buro-blue" (click)="addNew()"
+                 *ngIf="userService.isAdmin()">
+                Добавить
+              </button>
+              <button class="btn btn-sm btn-buro-blue" (click)="requestData()"
+                      [disabled]="isLoading">
+                Обновить
+              </button>
+            </div>
+
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush table-hover table-sm">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">Полное наименование</th>
+                <th scope="col">ИНН</th>
+                <th scope="col">Телефон</th>
+                <th scope="col">Email</th>
+                <th scope="col">Адрес</th>
+                <th scope="col" style="width: 28px;">&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="customerController.all != null">
+            <ng-container *ngFor="let customer of customerController.all.data, let i = index" [attr.data-index]="i">
+              <tr>
+                <th scope="row" style="cursor: pointer;" (click)="navigate(customer)">
+                  {{customer.attributes.name}}
+                </th>
+                <th scope="row" style="cursor: pointer;" (click)="navigate(customer)">
+                  {{customer.attributes.inn}}
+                </th>
+                <th scope="row" style="cursor: pointer;" (click)="navigate(customer)">
+                  {{customer.attributes.phone}}
+                </th>
+                <th scope="row" style="cursor: pointer;" (click)="navigate(customer)">
+                  {{customer.attributes.email}}
+                </th>
+                <th scope="row" style="cursor: pointer;" (click)="navigate(customer)">
+                  {{customer.attributes.address}}
+                </th>
+                <th>
+                  <app-delete-button
+                    [restService]="customerService"
+                    [model]="customer"
+                    [modalTitle]="customer.attributes.name"
+                    [isIcon]="true"
+                    (onDelete)="requestData()"
+                  ></app-delete-button>
+                </th>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <div class="card-footer py-4 table-responsive">
+          <app-loading-bar [isLoading]="isLoading" [atTop]="true"></app-loading-bar>
+          <app-pagination *ngIf="customerController.all != null"
+                          [totalRecords]="customerController.all.page.total_resources"
+                          [page]="customerController.filter.page"
+                          [size]="customerController.filter.size"
+                          [disabled]="isLoading"
+                          (onSizeChange)="setSize($event)"
+                          (onPageChange)="goToPage($event)"></app-pagination>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3">
+      <app-customer-filter
+        (onChange)="applyFilter()"
+        [filter]="customerController.filter"
+      ></app-customer-filter>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<ng-template #editModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">Данные заказчика: {{customerController.selectedModel.is_new ? 'добавление' : 'редактирование'}}</h3>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" *ngIf="customerController.selectedModel as model">
+    <div class="row form-group">
+      <div class="col">
+        <label class="form-control-label" for="name-input">Полное наименование (ФИО физического лица или название Организации/ИП)</label>
+        <input class="form-control form-control-sm form-control-alternative" id="name-input"
+               [(ngModel)]="model.attributes.name" placeholder="Полное наименование (ФИО физ. лица или назв. Организации/ИП)">
+      </div>
+    </div>
+    <div class="row form-group">
+      <div class="col-lg-6">
+        <label class="form-control-label" for="inn-input">ИНН</label>
+        <input class="form-control form-control-sm form-control-alternative" id="inn-input"
+               [(ngModel)]="model.attributes.inn" placeholder="ИНН">
+      </div>
+      <div class="col-lg-6">
+        <label class="form-control-label" for="phone-input">Телефон</label>
+        <input id="phone-input" class="form-control form-control-sm form-control-alternative"
+               [(ngModel)]="model.attributes.phone" placeholder="Телефон">
+      </div>
+    </div>
+    <div class="row form-group">
+      <div class="col-lg-6">
+        <label class="form-control-label" for="email-input">Email</label>
+        <input class="form-control form-control-sm form-control-alternative" id="email-input"
+               [(ngModel)]="model.attributes.email" placeholder="Email">
+      </div>
+      <div class="col-lg-6">
+        <label class="form-control-label" for="address-input">Адрес</label>
+        <input id="address-input" class="form-control form-control-sm form-control-alternative"
+               [(ngModel)]="model.attributes.address" placeholder="Адрес">
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-buro-blue" (click)="save(customerController.selectedModel)" [disabled]="isSaving">
+      Сохранить
+      <span *ngIf="isSaving">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+    </button>
+    <button type="button" class="btn btn-sm btn-buro-blue" (click)="modal.dismiss()">Закрыть</button>
+  </div>
+</ng-template>

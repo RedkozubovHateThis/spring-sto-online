@@ -19,6 +19,7 @@ import {LoadingBarComponent} from './loading-bar/loading-bar.component';
 import {RoleChangeButtonComponent} from './role-change-button/role-change-button.component';
 import {DictionariesFilterComponent} from './dictionaries-filter/dictionaries-filter.component';
 import {VehiclesFilterComponent} from './vehicles-filter/vehicles-filter.component';
+import {CustomerFilterComponent} from './customer-filter/customer-filter.component';
 
 @NgModule({
   imports: [
@@ -43,7 +44,8 @@ import {VehiclesFilterComponent} from './vehicles-filter/vehicles-filter.compone
     LoadingBarComponent,
     RoleChangeButtonComponent,
     DictionariesFilterComponent,
-    VehiclesFilterComponent
+    VehiclesFilterComponent,
+    CustomerFilterComponent
   ],
   exports: [
     FooterComponent,
@@ -59,7 +61,8 @@ import {VehiclesFilterComponent} from './vehicles-filter/vehicles-filter.compone
     LoadingBarComponent,
     RoleChangeButtonComponent,
     DictionariesFilterComponent,
-    VehiclesFilterComponent
+    VehiclesFilterComponent,
+    CustomerFilterComponent
   ]
 })
 export class ComponentsModule { }

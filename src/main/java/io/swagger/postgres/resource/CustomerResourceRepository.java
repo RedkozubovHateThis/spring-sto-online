@@ -1,11 +1,17 @@
 package io.swagger.postgres.resource;
 
 import io.crnk.core.exception.BadRequestException;
+import io.crnk.core.exception.ForbiddenException;
+import io.crnk.core.exception.ResourceNotFoundException;
 import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepository;
 import io.crnk.core.resource.list.ResourceList;
+import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.Customer;
+import io.swagger.postgres.model.ServiceWorkDictionary;
+import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.CustomerRepository;
+import io.swagger.postgres.repository.UserRepository;
 import io.swagger.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,6 +20,9 @@ import java.util.Collection;
 
 @Component
 public class CustomerResourceRepository implements ResourceRepository<Customer, Long> {
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private CustomerRepository customerRepository;
@@ -104,5 +113,17 @@ public class CustomerResourceRepository implements ResourceRepository<Customer, 
 
     @Override
     public void delete(Long aLong) {
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( !UserHelper.isAdmin( currentUser ) )
+            throw new ForbiddenException("Вам запрещено удалять заказчиков!");
+
+        Customer customer = customerRepository.findById(aLong).orElse(null);
+
+        if ( customer == null )
+            throw new ResourceNotFoundException("Заказчик не найден!");
+
+        customer.setDeleted(true);
+        customerRepository.save(customer);
     }
 }

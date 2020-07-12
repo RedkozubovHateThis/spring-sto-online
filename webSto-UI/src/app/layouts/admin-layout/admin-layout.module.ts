@@ -29,6 +29,7 @@ import {ServiceWorkDictionariesComponent} from '../../pages/service-work-diction
 import {ServiceAddonDictionariesComponent} from '../../pages/service-addon-dictionaries/service-addon-dictionaries.component';
 import {VehiclesComponent} from '../../pages/vehicles/vehicles.component';
 import {VehicleDictionariesComponent} from '../../pages/vehicles-dictionaries/vehicle-dictionaries.component';
+import {CustomersComponent} from '../../pages/customers/customers.component';
 
 @NgModule({
   imports: [
@@ -62,7 +63,8 @@ import {VehicleDictionariesComponent} from '../../pages/vehicles-dictionaries/ve
     ServiceWorkDictionariesComponent,
     ServiceAddonDictionariesComponent,
     VehicleDictionariesComponent,
-    VehiclesComponent
+    VehiclesComponent,
+    CustomersComponent
   ]
 })
 

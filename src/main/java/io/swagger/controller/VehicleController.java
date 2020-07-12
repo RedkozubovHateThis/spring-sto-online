@@ -42,7 +42,7 @@ public class VehicleController {
         User currentUser = userRepository.findCurrentUser();
 
         if ( !UserHelper.isAdmin( currentUser ) )
-            return ResponseEntity.status(404).build();
+            return ResponseEntity.status(403).build();
 
         FilterPayload filterPayload = params.getFilterPayload();
         Pageable pageable = params.getPageable();

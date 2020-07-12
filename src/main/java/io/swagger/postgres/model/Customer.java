@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
@@ -16,7 +17,8 @@ import java.io.Serializable;
 @EqualsAndHashCode(of = "id", callSuper = true)
 @Entity
 @Data
-@JsonApiResource(type = "customer", resourcePath = "customers", deletable = false)
+@Where(clause = "deleted=false")
+@JsonApiResource(type = "customer", resourcePath = "customers")
 public class Customer extends BaseEntity implements Serializable {
 
     private String name;
