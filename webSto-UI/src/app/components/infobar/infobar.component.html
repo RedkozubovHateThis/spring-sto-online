@@ -1,260 +1,260 @@
 <div class="header bg-gradient-invert-buro-orange pb-8 pt-5 pt-md-8">
-  <div class="container-fluid">
-    <div class="header-body">
-      <!-- Card stats -->
-      <div class="row">
-        <div class="col-xl-3 col-lg-6">
-          <div class="card card-stats mb-4 mb-xl-0">
+<!--  <div class="container-fluid">-->
+<!--    <div class="header-body">-->
+<!--      &lt;!&ndash; Card stats &ndash;&gt;-->
+<!--      <div class="row">-->
+<!--        <div class="col-xl-3 col-lg-6">-->
+<!--          <div class="card card-stats mb-4 mb-xl-0">-->
 
-            <div class="card-body" *ngIf="userService.isClient()">
-              <div class="row mb-1">
-                <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">Всего заказ-нарядов</h5>
-                </div>
-                <div class="col-auto" *ngIf="clientInfo != null">
-                  <span class="h4 font-weight-bold mb-0">{{clientInfo.totalDocuments}}</span>
-                </div>
-              </div>
-              <div class="row mb-1">
-                <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">Заказ-нарядов в статусе "Оформлен"</h5>
-                </div>
-                <div class="col-auto" *ngIf="clientInfo != null">
-                  <span class="h4 font-weight-bold mb-0">{{clientInfo.totalDone}}</span>
-                </div>
-              </div>
-              <div class="row mb-1">
-                <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">Заказ-нарядов в статусе "Черновик"</h5>
-                </div>
-                <div class="col-auto" *ngIf="clientInfo != null">
-                  <span class="h4 font-weight-bold mb-0">{{clientInfo.totalDraft}}</span>
-                </div>
-              </div>
-            </div>
+<!--            <div class="card-body" *ngIf="userService.isClient()">-->
+<!--              <div class="row mb-1">-->
+<!--                <div class="col">-->
+<!--                  <h5 class="card-title text-uppercase text-muted mb-0">Всего заказ-нарядов</h5>-->
+<!--                </div>-->
+<!--                <div class="col-auto" *ngIf="clientInfo != null">-->
+<!--                  <span class="h4 font-weight-bold mb-0">{{clientInfo.totalDocuments}}</span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div class="row mb-1">-->
+<!--                <div class="col">-->
+<!--                  <h5 class="card-title text-uppercase text-muted mb-0">Заказ-нарядов в статусе "Оформлен"</h5>-->
+<!--                </div>-->
+<!--                <div class="col-auto" *ngIf="clientInfo != null">-->
+<!--                  <span class="h4 font-weight-bold mb-0">{{clientInfo.totalDone}}</span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div class="row mb-1">-->
+<!--                <div class="col">-->
+<!--                  <h5 class="card-title text-uppercase text-muted mb-0">Заказ-нарядов в статусе "Черновик"</h5>-->
+<!--                </div>-->
+<!--                <div class="col-auto" *ngIf="clientInfo != null">-->
+<!--                  <span class="h4 font-weight-bold mb-0">{{clientInfo.totalDraft}}</span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
 
-            <div class="card-body" *ngIf="userService.isServiceLeader()">
-              <div class="row mb-1">
-                <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">Остаток оплаченных заказ-нарядов</h5>
-                </div>
-                <div class="col-auto" *ngIf="serviceLeaderInfo != null">
-                  <span class="h4 font-weight-bold mb-0"
-                        [ngClass]="{
-                        'text-warning': serviceLeaderInfo.documentsRemains > 0 && serviceLeaderInfo.documentsRemains <= 3,
-                        'text-danger': serviceLeaderInfo.documentsRemains === 0
-                        }">
-                    {{serviceLeaderInfo.documentsRemains}}
-                  </span>
-                </div>
-              </div>
-              <div class="row mb-1">
-                <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">Количество заказ-нарядов по тарифу</h5>
-                </div>
-                <div class="col-auto" *ngIf="serviceLeaderInfo != null">
-                  <span class="h4 font-weight-bold mb-0">{{serviceLeaderInfo.totalDocuments}}</span>
-                </div>
-              </div>
-            </div>
+<!--            <div class="card-body" *ngIf="userService.isServiceLeader()">-->
+<!--              <div class="row mb-1">-->
+<!--                <div class="col">-->
+<!--                  <h5 class="card-title text-uppercase text-muted mb-0">Остаток оплаченных заказ-нарядов</h5>-->
+<!--                </div>-->
+<!--                <div class="col-auto" *ngIf="serviceLeaderInfo != null">-->
+<!--                  <span class="h4 font-weight-bold mb-0"-->
+<!--                        [ngClass]="{-->
+<!--                        'text-warning': serviceLeaderInfo.documentsRemains > 0 && serviceLeaderInfo.documentsRemains <= 3,-->
+<!--                        'text-danger': serviceLeaderInfo.documentsRemains === 0-->
+<!--                        }">-->
+<!--                    {{serviceLeaderInfo.documentsRemains}}-->
+<!--                  </span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div class="row mb-1">-->
+<!--                <div class="col">-->
+<!--                  <h5 class="card-title text-uppercase text-muted mb-0">Количество заказ-нарядов по тарифу</h5>-->
+<!--                </div>-->
+<!--                <div class="col-auto" *ngIf="serviceLeaderInfo != null">-->
+<!--                  <span class="h4 font-weight-bold mb-0">{{serviceLeaderInfo.totalDocuments}}</span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
 
-            <div class="card-body" *ngIf="userService.isAdmin()">
-              <div class="row mb-1">
-                <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">Всего автосервисов</h5>
-                </div>
-                <div class="col-auto" *ngIf="moderatorInfo != null">
-                  <span class="h4 font-weight-bold mb-0">{{moderatorInfo.servicesCount}}</span>
-                </div>
-              </div>
-              <div class="row mb-1">
-                <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">Всего модераторов</h5>
-                </div>
-                <div class="col-auto" *ngIf="moderatorInfo != null">
-                  <span class="h4 font-weight-bold mb-0">{{moderatorInfo.moderatorsCount}}</span>
-                </div>
-              </div>
-            </div>
+<!--            <div class="card-body" *ngIf="userService.isAdmin()">-->
+<!--              <div class="row mb-1">-->
+<!--                <div class="col">-->
+<!--                  <h5 class="card-title text-uppercase text-muted mb-0">Всего автосервисов</h5>-->
+<!--                </div>-->
+<!--                <div class="col-auto" *ngIf="moderatorInfo != null">-->
+<!--                  <span class="h4 font-weight-bold mb-0">{{moderatorInfo.servicesCount}}</span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div class="row mb-1">-->
+<!--                <div class="col">-->
+<!--                  <h5 class="card-title text-uppercase text-muted mb-0">Всего модераторов</h5>-->
+<!--                </div>-->
+<!--                <div class="col-auto" *ngIf="moderatorInfo != null">-->
+<!--                  <span class="h4 font-weight-bold mb-0">{{moderatorInfo.moderatorsCount}}</span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
 
-          </div>
-        </div>
-        <div class="col-xl-3 col-lg-6">
-          <div class="card card-stats mb-4 mb-xl-0">
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="col-xl-3 col-lg-6">-->
+<!--          <div class="card card-stats mb-4 mb-xl-0">-->
 
-            <div class="card-body" *ngIf="userService.isClient()">
-              <div class="row mb-1">
-                <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">Итоговая сумма ремонта</h5>
-                </div>
-                <div class="col-auto" *ngIf="clientInfo != null">
-                  <span class="h4 font-weight-bold mb-0">{{clientInfo.totalRepairSum | number : '.2' : 'ru'}}</span>
-                </div>
-              </div>
-            </div>
+<!--            <div class="card-body" *ngIf="userService.isClient()">-->
+<!--              <div class="row mb-1">-->
+<!--                <div class="col">-->
+<!--                  <h5 class="card-title text-uppercase text-muted mb-0">Итоговая сумма ремонта</h5>-->
+<!--                </div>-->
+<!--                <div class="col-auto" *ngIf="clientInfo != null">-->
+<!--                  <span class="h4 font-weight-bold mb-0">{{clientInfo.totalRepairSum | number : '.2' : 'ru'}}</span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
 
-            <div class="card-body" *ngIf="userService.isServiceLeader()">
-              <div class="row mb-1">
-                <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">Наименование тарифа</h5>
-                </div>
-                <div class="col-auto" *ngIf="serviceLeaderInfo != null">
-                  <span class="h4 font-weight-bold mb-0">{{serviceLeaderInfo.subscribeName}}</span>
-                </div>
-              </div>
-              <div class="row mb-1">
-                <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">Окончание оплаченного периода</h5>
-                </div>
-                <div class="col-auto" *ngIf="serviceLeaderInfo != null">
-                  <span class="h4 font-weight-bold mb-0"
-                        [ngClass]="{
-                        'text-warning': isLessThen3DaysRemains( serviceLeaderInfo.subscribeEndDate ),
-                        'text-danger': isExpired( serviceLeaderInfo.subscribeEndDate )
-                        }">
-                    {{serviceLeaderInfo.subscribeEndDate | date : 'dd.MM.yyyy'}}
-                  </span>
-                </div>
-              </div>
-            </div>
+<!--            <div class="card-body" *ngIf="userService.isServiceLeader()">-->
+<!--              <div class="row mb-1">-->
+<!--                <div class="col">-->
+<!--                  <h5 class="card-title text-uppercase text-muted mb-0">Наименование тарифа</h5>-->
+<!--                </div>-->
+<!--                <div class="col-auto" *ngIf="serviceLeaderInfo != null">-->
+<!--                  <span class="h4 font-weight-bold mb-0">{{serviceLeaderInfo.subscribeName}}</span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div class="row mb-1">-->
+<!--                <div class="col">-->
+<!--                  <h5 class="card-title text-uppercase text-muted mb-0">Окончание оплаченного периода</h5>-->
+<!--                </div>-->
+<!--                <div class="col-auto" *ngIf="serviceLeaderInfo != null">-->
+<!--                  <span class="h4 font-weight-bold mb-0"-->
+<!--                        [ngClass]="{-->
+<!--                        'text-warning': isLessThen3DaysRemains( serviceLeaderInfo.subscribeEndDate ),-->
+<!--                        'text-danger': isExpired( serviceLeaderInfo.subscribeEndDate )-->
+<!--                        }">-->
+<!--                    {{serviceLeaderInfo.subscribeEndDate | date : 'dd.MM.yyyy'}}-->
+<!--                  </span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
 
-            <div class="card-body" *ngIf="userService.isAdmin()">
-              <div class="row mb-1">
-                <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">Остаток оплаченных заказ-нарядов</h5>
-                </div>
-                <div class="col-auto" *ngIf="moderatorInfo != null">
-                  <span class="h4 font-weight-bold mb-0"
-                        [ngClass]="{
-                        'text-warning': moderatorInfo.documentsRemainsAll > 0 && moderatorInfo.documentsRemainsAll <= 3,
-                        'text-danger': moderatorInfo.documentsRemainsAll === 0
-                        }">{{moderatorInfo.documentsRemainsAll}}</span>
-                </div>
-              </div>
-              <div class="row mb-1">
-                <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">Количество заказ-нарядов по тарифу</h5>
-                </div>
-                <div class="col-auto" *ngIf="moderatorInfo != null">
-                  <span class="h4 font-weight-bold mb-0">{{moderatorInfo.totalDocumentsAll}}</span>
-                </div>
-              </div>
-            </div>
+<!--            <div class="card-body" *ngIf="userService.isAdmin()">-->
+<!--              <div class="row mb-1">-->
+<!--                <div class="col">-->
+<!--                  <h5 class="card-title text-uppercase text-muted mb-0">Остаток оплаченных заказ-нарядов</h5>-->
+<!--                </div>-->
+<!--                <div class="col-auto" *ngIf="moderatorInfo != null">-->
+<!--                  <span class="h4 font-weight-bold mb-0"-->
+<!--                        [ngClass]="{-->
+<!--                        'text-warning': moderatorInfo.documentsRemainsAll > 0 && moderatorInfo.documentsRemainsAll <= 3,-->
+<!--                        'text-danger': moderatorInfo.documentsRemainsAll === 0-->
+<!--                        }">{{moderatorInfo.documentsRemainsAll}}</span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div class="row mb-1">-->
+<!--                <div class="col">-->
+<!--                  <h5 class="card-title text-uppercase text-muted mb-0">Количество заказ-нарядов по тарифу</h5>-->
+<!--                </div>-->
+<!--                <div class="col-auto" *ngIf="moderatorInfo != null">-->
+<!--                  <span class="h4 font-weight-bold mb-0">{{moderatorInfo.totalDocumentsAll}}</span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
 
-          </div>
-        </div>
-        <div class="col-xl-3 col-lg-6">
-          <div class="card card-stats mb-4 mb-xl-0">
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="col-xl-3 col-lg-6">-->
+<!--          <div class="card card-stats mb-4 mb-xl-0">-->
 
-            <div class="card-body" *ngIf="userService.isClient()">
-              <div class="row mb-1">
-                <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">Общее количество АМТС, проходивших ремонт</h5>
-                </div>
-                <div class="col-auto" *ngIf="clientInfo != null">
-                  <span class="h4 font-weight-bold mb-0">{{clientInfo.totalVehicles}}</span>
-                </div>
-              </div>
-            </div>
+<!--            <div class="card-body" *ngIf="userService.isClient()">-->
+<!--              <div class="row mb-1">-->
+<!--                <div class="col">-->
+<!--                  <h5 class="card-title text-uppercase text-muted mb-0">Общее количество АМТС, проходивших ремонт</h5>-->
+<!--                </div>-->
+<!--                <div class="col-auto" *ngIf="clientInfo != null">-->
+<!--                  <span class="h4 font-weight-bold mb-0">{{clientInfo.totalVehicles}}</span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
 
-            <div class="card-body" *ngIf="userService.isServiceLeader()">
-              <div class="row mb-1">
-                <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">Текущий баланс</h5>
-                </div>
-                <div class="col-auto" *ngIf="serviceLeaderInfo != null">
-                  <span class="h4 font-weight-bold mb-0" [ngClass]="{'text-danger': serviceLeaderInfo.balance < 0}">
-                    {{serviceLeaderInfo.balance | number : '.2' : 'ru'}}
-                  </span>
-                </div>
-              </div>
-              <div class="row mb-1">
-                <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">Продление тарифа возможно</h5>
-                </div>
-                <div class="col-auto" *ngIf="serviceLeaderInfo != null && serviceLeaderInfo.balanceValid != null">
-                  <span class="h4 font-weight-bold mb-0" [ngClass]="{'text-danger': !serviceLeaderInfo.balanceValid}">
-                    {{serviceLeaderInfo.balanceValid ? 'Да' : 'Нет'}}
-                  </span>
-                </div>
-              </div>
-            </div>
+<!--            <div class="card-body" *ngIf="userService.isServiceLeader()">-->
+<!--              <div class="row mb-1">-->
+<!--                <div class="col">-->
+<!--                  <h5 class="card-title text-uppercase text-muted mb-0">Текущий баланс</h5>-->
+<!--                </div>-->
+<!--                <div class="col-auto" *ngIf="serviceLeaderInfo != null">-->
+<!--                  <span class="h4 font-weight-bold mb-0" [ngClass]="{'text-danger': serviceLeaderInfo.balance < 0}">-->
+<!--                    {{serviceLeaderInfo.balance | number : '.2' : 'ru'}}-->
+<!--                  </span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div class="row mb-1">-->
+<!--                <div class="col">-->
+<!--                  <h5 class="card-title text-uppercase text-muted mb-0">Продление тарифа возможно</h5>-->
+<!--                </div>-->
+<!--                <div class="col-auto" *ngIf="serviceLeaderInfo != null && serviceLeaderInfo.balanceValid != null">-->
+<!--                  <span class="h4 font-weight-bold mb-0" [ngClass]="{'text-danger': !serviceLeaderInfo.balanceValid}">-->
+<!--                    {{serviceLeaderInfo.balanceValid ? 'Да' : 'Нет'}}-->
+<!--                  </span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
 
-            <div class="card-body" *ngIf="userService.isAdmin()">
-              <div class="row mb-1">
-                <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">
-                    <span *ngIf="moderatorInfo == null || !moderatorInfo.byService">Общий баланс</span>
-                    <span *ngIf="moderatorInfo != null && moderatorInfo.byService">Баланс автосервиса</span>
-                  </h5>
-                </div>
-                <div class="col-auto" *ngIf="moderatorInfo != null">
-                  <span class="h4 font-weight-bold mb-0" [ngClass]="{'text-danger': moderatorInfo.balanceAll < 0}">
-                    {{moderatorInfo.balanceAll | number : '.2' : 'ru'}}
-                  </span>
-                </div>
-              </div>
-              <div class="row mb-1" *ngIf="moderatorInfo != null && moderatorInfo.balanceValid != null">
-                <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">Продление тарифа возможно</h5>
-                </div>
-                <div class="col-auto">
-                  <span class="h4 font-weight-bold mb-0" [ngClass]="{'text-danger': !moderatorInfo.balanceValid}">
-                    {{moderatorInfo.balanceValid ? 'Да' : 'Нет'}}
-                  </span>
-                </div>
-              </div>
-            </div>
+<!--            <div class="card-body" *ngIf="userService.isAdmin()">-->
+<!--              <div class="row mb-1">-->
+<!--                <div class="col">-->
+<!--                  <h5 class="card-title text-uppercase text-muted mb-0">-->
+<!--                    <span *ngIf="moderatorInfo == null || !moderatorInfo.byService">Общий баланс</span>-->
+<!--                    <span *ngIf="moderatorInfo != null && moderatorInfo.byService">Баланс автосервиса</span>-->
+<!--                  </h5>-->
+<!--                </div>-->
+<!--                <div class="col-auto" *ngIf="moderatorInfo != null">-->
+<!--                  <span class="h4 font-weight-bold mb-0" [ngClass]="{'text-danger': moderatorInfo.balanceAll < 0}">-->
+<!--                    {{moderatorInfo.balanceAll | number : '.2' : 'ru'}}-->
+<!--                  </span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div class="row mb-1" *ngIf="moderatorInfo != null && moderatorInfo.balanceValid != null">-->
+<!--                <div class="col">-->
+<!--                  <h5 class="card-title text-uppercase text-muted mb-0">Продление тарифа возможно</h5>-->
+<!--                </div>-->
+<!--                <div class="col-auto">-->
+<!--                  <span class="h4 font-weight-bold mb-0" [ngClass]="{'text-danger': !moderatorInfo.balanceValid}">-->
+<!--                    {{moderatorInfo.balanceValid ? 'Да' : 'Нет'}}-->
+<!--                  </span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
 
-          </div>
-        </div>
-        <div class="col-xl-3 col-lg-6">
-          <div class="card card-stats mb-4 mb-xl-0">
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="col-xl-3 col-lg-6">-->
+<!--          <div class="card card-stats mb-4 mb-xl-0">-->
 
-            <div class="card-body" *ngIf="userService.isClient()">
-              <div class="row mb-1">
-                <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">Общее количество автосервисов, проводивших ремонт</h5>
-                </div>
-                <div class="col-auto" *ngIf="clientInfo != null">
-                  <span class="h4 font-weight-bold mb-0">{{clientInfo.totalServices}}</span>
-                </div>
-              </div>
-            </div>
+<!--            <div class="card-body" *ngIf="userService.isClient()">-->
+<!--              <div class="row mb-1">-->
+<!--                <div class="col">-->
+<!--                  <h5 class="card-title text-uppercase text-muted mb-0">Общее количество автосервисов, проводивших ремонт</h5>-->
+<!--                </div>-->
+<!--                <div class="col-auto" *ngIf="clientInfo != null">-->
+<!--                  <span class="h4 font-weight-bold mb-0">{{clientInfo.totalServices}}</span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
 
-            <div class="card-body" *ngIf="userService.isServiceLeader()">
-              <div class="row mb-1">
-                <div class="col-auto">
-                  <h5 class="card-title text-uppercase text-muted mb-0">Модератор</h5>
-                </div>
-                <div class="col text-right" *ngIf="serviceLeaderInfo != null">
-                  <span class="h4 font-weight-bold mb-0">{{serviceLeaderInfo.moderatorFio}}</span>
-                </div>
-              </div>
-              <div class="row mb-1">
-                <div class="col-auto">
-                  <h5 class="card-title text-uppercase text-muted mb-0">Автосервис</h5>
-                </div>
-                <div class="col text-right" *ngIf="serviceLeaderInfo != null">
-                  <span class="h4 font-weight-bold mb-0">{{serviceLeaderInfo.serviceName}}</span>
-                </div>
-              </div>
-            </div>
+<!--            <div class="card-body" *ngIf="userService.isServiceLeader()">-->
+<!--              <div class="row mb-1">-->
+<!--                <div class="col-auto">-->
+<!--                  <h5 class="card-title text-uppercase text-muted mb-0">Модератор</h5>-->
+<!--                </div>-->
+<!--                <div class="col text-right" *ngIf="serviceLeaderInfo != null">-->
+<!--                  <span class="h4 font-weight-bold mb-0">{{serviceLeaderInfo.moderatorFio}}</span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div class="row mb-1">-->
+<!--                <div class="col-auto">-->
+<!--                  <h5 class="card-title text-uppercase text-muted mb-0">Автосервис</h5>-->
+<!--                </div>-->
+<!--                <div class="col text-right" *ngIf="serviceLeaderInfo != null">-->
+<!--                  <span class="h4 font-weight-bold mb-0">{{serviceLeaderInfo.serviceName}}</span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
 
-            <div class="card-body" *ngIf="userService.isAdmin()">
-              <div class="row mb-1">
-                <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">Заказ-нарядов в статусе "Черновик"</h5>
-                </div>
-                <div class="col-auto" *ngIf="moderatorInfo != null">
-                  <span class="h4 font-weight-bold mb-0">{{moderatorInfo.totalDraftAll}}</span>
-                </div>
-              </div>
-            </div>
+<!--            <div class="card-body" *ngIf="userService.isAdmin()">-->
+<!--              <div class="row mb-1">-->
+<!--                <div class="col">-->
+<!--                  <h5 class="card-title text-uppercase text-muted mb-0">Заказ-нарядов в статусе "Черновик"</h5>-->
+<!--                </div>-->
+<!--                <div class="col-auto" *ngIf="moderatorInfo != null">-->
+<!--                  <span class="h4 font-weight-bold mb-0">{{moderatorInfo.totalDraftAll}}</span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
 
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
 </div>
