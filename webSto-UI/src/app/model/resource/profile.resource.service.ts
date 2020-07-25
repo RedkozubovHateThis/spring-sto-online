@@ -43,6 +43,7 @@ export class ProfileResource extends Resource {
   };
 
   public isCreatedByUser(user: UserResource): boolean {
+    if ( user.isAdmin() ) return true;
     if ( !user.relationships.profile.data ) return false;
     if ( !this.relationships.createdBy.data ) return false;
 
