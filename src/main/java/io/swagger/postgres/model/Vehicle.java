@@ -2,6 +2,8 @@ package io.swagger.postgres.model;
 
 import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiResource;
+import io.crnk.core.resource.annotations.SerializeType;
+import io.swagger.postgres.model.security.Profile;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.NotFound;
@@ -37,4 +39,9 @@ public class Vehicle extends BaseEntity {
     @NotFound(action = NotFoundAction.IGNORE)
     @JsonApiRelation
     private Set<ServiceDocument> documents = new HashSet<>();
+
+    @ManyToOne
+    @NotFound(action = NotFoundAction.IGNORE)
+    @JsonApiRelation(serialize = SerializeType.EAGER)
+    private Profile createdBy;
 }

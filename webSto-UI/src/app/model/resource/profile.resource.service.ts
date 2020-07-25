@@ -1,11 +1,29 @@
 import {Injectable} from '@angular/core';
-import {Autoregister, DocumentCollection, DocumentResource, Resource, Service} from 'ngx-jsonapi';
-import {UserRoleResource} from './user-role.resource.service';
-import {SubscriptionResource} from './subscription.resource.service';
+import {Autoregister, DocumentCollection, DocumentResource, Resource, Service, IAttributes} from 'ngx-jsonapi';
 import {UserResource} from './user.resource.service';
+import { IRelationships } from 'ngx-jsonapi/interfaces/relationship';
+
+export interface IProfileAttributes extends IAttributes {
+  name: string;
+  address: string;
+  phone: string;
+  email: string;
+  inn: string;
+  deleted: boolean;
+  autoRegister: boolean;
+  byFio: boolean;
+  firstName: string;
+  middleName: string;
+  lastName: string;
+}
+
+export interface IProfileRelationships extends IRelationships {
+  user: DocumentResource<UserResource>;
+  createdBy: DocumentResource<ProfileResource>;
+}
 
 export class ProfileResource extends Resource {
-  public attributes = {
+  public attributes: IProfileAttributes = {
     name: null,
     address: null,
     phone: null,
@@ -19,9 +37,17 @@ export class ProfileResource extends Resource {
     lastName: null
   };
 
-  public relationships = {
-    user: new DocumentResource<UserResource>()
+  public relationships: IProfileRelationships = {
+    user: new DocumentResource<UserResource>(),
+    createdBy: new DocumentResource<ProfileResource>()
   };
+
+  public isCreatedByUser(user: UserResource): boolean {
+    if ( !user.relationships.profile.data ) return false;
+    if ( !this.relationships.createdBy.data ) return false;
+
+    return user.relationships.profile.data.id === this.relationships.createdBy.data.id;
+  }
 }
 
 @Injectable()

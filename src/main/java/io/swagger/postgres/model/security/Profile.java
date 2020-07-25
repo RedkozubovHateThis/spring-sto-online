@@ -2,6 +2,7 @@ package io.swagger.postgres.model.security;
 
 import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiResource;
+import io.crnk.core.resource.annotations.SerializeType;
 import io.swagger.postgres.model.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,6 +10,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import java.io.Serializable;
@@ -41,5 +43,10 @@ public class Profile extends BaseEntity implements Serializable {
     @NotFound(action = NotFoundAction.IGNORE)
     @JsonApiRelation
     private User user;
+
+    @ManyToOne
+    @NotFound(action = NotFoundAction.IGNORE)
+    @JsonApiRelation(serialize = SerializeType.EAGER)
+    private Profile createdBy;
 
 }

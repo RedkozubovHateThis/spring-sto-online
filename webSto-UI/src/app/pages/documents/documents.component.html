@@ -53,12 +53,12 @@
                 <th style="cursor: pointer;" (click)="navigate(serviceDocument)">{{serviceDocument.attributes.startDate | date : 'dd.MM.yyyy HH:mm'}}</th>
                 <th style="cursor: pointer;" (click)="navigate(serviceDocument)">
                   <span class="badge badge-dot">
-                    <i class="bg-{{serviceDocument.statusStyle()}}"></i>{{serviceDocument.statusRus()}}
+                    <i class="bg-{{serviceDocument.statusStyle}}"></i>{{serviceDocument.statusRus}}
                   </span>
                 </th>
                 <th style="cursor: pointer;" (click)="navigate(serviceDocument)">
                   <span class="badge badge-dot">
-                    <i class="bg-{{serviceDocument.paidStatusStyle()}}"></i>{{serviceDocument.paidStatusRus()}}
+                    <i class="bg-{{serviceDocument.paidStatusStyle}}"></i>{{serviceDocument.paidStatusRus}}
                   </span>
                 </th>
                 <th style="cursor: pointer;" class="wrap-column" (click)="navigate(serviceDocument)" *ngIf="userService.isAdmin() || userService.isServiceLeader()">

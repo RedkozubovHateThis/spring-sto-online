@@ -7,6 +7,7 @@ import {VehicleResource} from './vehicle.resource.service';
 import {VehicleMileageResource} from './vehicle-mileage.resource.service';
 import {ProfileResource} from './profile.resource.service';
 import {CustomerResource} from './customer.resource.service';
+import IStatus from '../IStatus';
 
 const statuses: IStatus[] = [
     {
@@ -57,7 +58,7 @@ export class ServiceDocumentResource extends Resource {
     vehicleMileage: new DocumentResource<VehicleMileageResource>(),
   };
 
-  public statusRus = (): string => {
+  get statusRus(): string {
     const { status } = this.attributes;
 
     if ( !status ) return 'Не указан';
@@ -67,7 +68,7 @@ export class ServiceDocumentResource extends Resource {
 
     return 'Не найден';
   }
-  public paidStatusRus = (): string => {
+  get paidStatusRus(): string {
     const { paidStatus } = this.attributes;
 
     if ( !paidStatus ) return 'Не указан';
@@ -78,7 +79,7 @@ export class ServiceDocumentResource extends Resource {
     return 'Не найден';
   }
 
-  public statusStyle = (): string => {
+  get statusStyle(): string {
     const { status } = this.attributes;
 
     if ( !status ) return 'warn';
@@ -88,7 +89,7 @@ export class ServiceDocumentResource extends Resource {
 
     return 'warn';
   }
-  public paidStatusStyle = (): string => {
+  get paidStatusStyle(): string {
     const { paidStatus } = this.attributes;
 
     if ( !paidStatus ) return 'warn';
@@ -99,11 +100,29 @@ export class ServiceDocumentResource extends Resource {
     return 'warn';
   }
 
-  public getStatuses = (): IStatus[] => {
+  get allStatuses(): IStatus[] {
     return statuses;
   }
-  public getPaidStatuses = (): IStatus[] => {
+  get allPaidStatuses(): IStatus[] {
     return paidStatuses;
+  }
+
+  public isCustomerCreatedByUser(user: UserResource): boolean {
+    if ( !this.relationships.customer.data ) return false;
+
+    return this.relationships.customer.data.isCreatedByUser( user );
+  }
+
+  public isClientCreatedByUser(user: UserResource): boolean {
+    if ( !this.relationships.client.data ) return false;
+
+    return this.relationships.client.data.isCreatedByUser( user );
+  }
+
+  public isVehicleCreatedByUser(user: UserResource): boolean {
+    if ( !this.relationships.vehicle.data ) return false;
+
+    return this.relationships.vehicle.data.isCreatedByUser( user );
   }
 }
 

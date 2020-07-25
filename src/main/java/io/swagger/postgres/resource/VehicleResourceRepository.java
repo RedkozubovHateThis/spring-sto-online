@@ -48,6 +48,13 @@ public class VehicleResourceRepository implements ResourceRepository<Vehicle, Lo
 
     @Override
     public <S extends Vehicle> S save(S s) {
+
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( UserHelper.isServiceLeader( currentUser ) && currentUser.getProfile() != null && s.getId() == null ) {
+            s.setCreatedBy( currentUser.getProfile() );
+        }
+
         if ( s.getVinNumber() == null || s.getVinNumber().length() == 0 )
             throw new BadRequestException("VIN-номер не может быть пустым!");
         if ( s.getModelName() == null || s.getModelName().length() == 0 )

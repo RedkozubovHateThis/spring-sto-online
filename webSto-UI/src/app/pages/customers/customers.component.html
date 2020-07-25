@@ -102,7 +102,7 @@
   <div class="modal-body" *ngIf="customerController.selectedModel as model">
     <div class="row form-group">
       <div class="col">
-        <label class="form-control-label" for="name-input"><span title="ФИО физического лица или название Организации/ИП" class="title-helper">Полное наименование</span></label>
+        <label class="form-control-label" for="name-input"><span [ngbTooltip]="'ФИО физического лица или название Организации/ИП'" class="title-helper">Полное наименование</span></label>
         <input class="form-control form-control-sm form-control-alternative" id="name-input"
                [(ngModel)]="model.attributes.name" placeholder="Полное наименование (ФИО физ. лица или назв. Организации/ИП)">
       </div>

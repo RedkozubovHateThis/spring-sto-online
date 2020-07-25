@@ -42,7 +42,7 @@
                   <label class="form-control-label" for="status-select">Состояние</label>
                   <select id="status-select" class="form-control form-control-sm form-control-alternative"
                           [(ngModel)]="model.attributes.status">
-                    <option *ngFor="let status of model.getStatuses()" [selected]="model.attributes.status === status.id" [ngValue]="status.id">
+                    <option *ngFor="let status of model.allStatuses" [selected]="model.attributes.status === status.id" [ngValue]="status.id">
                       {{status.name}}
                     </option>
                   </select>
@@ -53,7 +53,7 @@
                   <label class="form-control-label" for="paid-status-select">Статус оплаты</label>
                   <select id="paid-status-select" class="form-control form-control-sm form-control-alternative"
                           [(ngModel)]="model.attributes.paidStatus">
-                    <option *ngFor="let status of model.getPaidStatuses()" [selected]="model.attributes.paidStatus === status.id" [ngValue]="status.id">
+                    <option *ngFor="let status of model.allPaidStatuses" [selected]="model.attributes.paidStatus === status.id" [ngValue]="status.id">
                       {{status.name}}
                     </option>
                   </select>
@@ -99,7 +99,7 @@
                   <div class="btn-group btn-group-sm">
                     <button
                       class="btn btn-sn btn-buro-blue"
-                      title="Добавить новый"
+                      [ngbTooltip]="'Добавить новый'"
                       (click)="newVehicle()"
                       [disabled]="model.relationships.vehicle.data && model.relationships.vehicle.data.is_new"
                     >
@@ -107,7 +107,7 @@
                     </button>
                     <button
                       class="btn btn-sn btn-buro-blue"
-                      title="Найти ранее добавленный"
+                      [ngbTooltip]="'Найти ранее добавленный'"
                       (click)="openVehiclesModal()"
                     >
                       <i class="fas fa-search"></i>
@@ -115,9 +115,10 @@
                     <button
                       class="btn btn-sn btn-buro-blue"
                       [class.active]="vehicleEdit"
-                      title="Редактировать текущий"
+                      [ngbTooltip]="'Редактировать текущий'"
                       (click)="vehicleEdit = !vehicleEdit"
-                      [disabled]="!model.relationships.vehicle.data || model.relationships.vehicle.data.is_new"
+                      [disabled]="!model.relationships.vehicle.data || model.relationships.vehicle.data.is_new
+                      || !model.isVehicleCreatedByUser( userService.currentUser )"
                     >
                       <i class="fas fa-edit"></i>
                     </button>
@@ -125,18 +126,18 @@
                 </div>
               </div>
 
-              <ng-container *ngIf="model.relationships.vehicle.data">
+              <ng-container *ngIf="model.relationships.vehicle.data as vehicle">
                 <div class="row form-group">
                   <div class="col-lg-12">
                     <label class="form-control-label" for="model-input">Марка/модель</label>
                     <div class="input-group input-group-alternative input-group-sm">
                       <input class="form-control form-control-sm form-control-alternative" id="model-input"
                              [disabled]="!vehicleEdit && !model.relationships.vehicle.data.is_new"
-                             [(ngModel)]="model.relationships.vehicle.data.attributes.modelName" placeholder="Марка/модель">
+                             [(ngModel)]="vehicle.attributes.modelName" placeholder="Марка/модель">
                       <div class="input-group-append">
                         <button class="btn btn-buro-blue" type="button" (click)="openVehicleDictionariesModal()"
-                                title="Найти в справочнике"
-                                [disabled]="!vehicleEdit && !model.relationships.vehicle.data.is_new">
+                                [ngbTooltip]="'Найти в справочнике'"
+                                [disabled]="!vehicleEdit && !vehicle.is_new">
                           <i class="fas fa-search"></i>
                         </button>
                       </div>
@@ -149,7 +150,7 @@
                     <label class="form-control-label" for="reg-number-input">Регистрационный номер</label>
                     <input class="form-control form-control-sm form-control-alternative" id="reg-number-input"
                            [disabled]="!vehicleEdit && !model.relationships.vehicle.data.is_new"
-                           [(ngModel)]="model.relationships.vehicle.data.attributes.regNumber" placeholder="Регистрационный номер">
+                           [(ngModel)]="vehicle.attributes.regNumber" placeholder="Регистрационный номер">
                   </div>
                 </div>
 
@@ -158,7 +159,7 @@
                     <label class="form-control-label" for="vin-number-input">VIN-номер</label>
                     <input class="form-control form-control-sm form-control-alternative" id="vin-number-input"
                            [disabled]="!vehicleEdit && !model.relationships.vehicle.data.is_new"
-                           [(ngModel)]="model.relationships.vehicle.data.attributes.vinNumber" placeholder="VIN-номер">
+                           [(ngModel)]="vehicle.attributes.vinNumber" placeholder="VIN-номер">
                   </div>
                 </div>
 
@@ -167,7 +168,7 @@
                     <label class="form-control-label" for="year-input">Год выпуска</label>
                     <input class="form-control form-control-sm form-control-alternative" id="year-input" type="number"
                            [disabled]="!vehicleEdit && !model.relationships.vehicle.data.is_new"
-                           [(ngModel)]="model.relationships.vehicle.data.attributes.year" placeholder="Год выпуска">
+                           [(ngModel)]="vehicle.attributes.year" placeholder="Год выпуска">
                   </div>
                   <div class="col-lg-6">
                     <label class="form-control-label" for="mileage-number-input">Пробег</label>
@@ -175,10 +176,16 @@
                            [(ngModel)]="model.relationships.vehicleMileage.data.attributes.mileage" placeholder="Пробег">
                   </div>
                 </div>
+
+                <ng-container *ngIf="!vehicle.is_new && !vehicle.isCreatedByUser( userService.currentUser )">
+                  <div class="alert alert-warning alert-sm">
+                    Внимание! Данный автомобиль добавлен другим пользователем, и его редактирование запрещено!
+                  </div>
+                </ng-container>
               </ng-container>
 
               <ng-container *ngIf="vehicleEdit">
-                <div class="alert alert-warning">
+                <div class="alert alert-warning alert-sm">
                   Внимание! Все изменения, внесенные в информацию об автомобиле, отразятся на всех заказ-нарядах, где указан данный автомобиль!
                 </div>
               </ng-container>
@@ -195,7 +202,7 @@
                   <div class="btn-group btn-group-sm">
                     <button
                       class="btn btn-sn btn-buro-blue"
-                      title="Добавить нового"
+                      [ngbTooltip]="'Добавить нового'"
                       (click)="newClient()"
                       [disabled]="model.relationships.client.data && model.relationships.client.data.is_new"
                     >
@@ -203,7 +210,7 @@
                     </button>
                     <button
                       class="btn btn-sn btn-buro-blue"
-                      title="Найти ранее добавленного"
+                      [ngbTooltip]="'Найти ранее добавленного'"
                       (click)="openClientsModal()"
                     >
                       <i class="fas fa-search"></i>
@@ -212,8 +219,9 @@
                       class="btn btn-sn btn-buro-blue"
                       [class.active]="clientEdit"
                       (click)="clientEdit = !clientEdit"
-                      title="Редактировать текущего"
-                      [disabled]="!model.relationships.client.data || model.relationships.client.data.is_new"
+                      [ngbTooltip]="'Редактировать текущего'"
+                      [disabled]="!model.relationships.client.data || model.relationships.client.data.is_new
+                      || !model.isClientCreatedByUser( userService.currentUser )"
                     >
                       <i class="fas fa-edit"></i>
                     </button>
@@ -224,7 +232,7 @@
               <ng-container *ngIf="model.relationships.client.data as client">
                 <div class="row form-group">
                   <div class="col-lg-12">
-                    <label class="form-control-label" for="name-input"><span title="ФИО физического лица или название Организации/ИП" class="title-helper">Полное наименование</span></label>
+                    <label class="form-control-label" for="name-input"><span [ngbTooltip]="'ФИО физического лица или название Организации/ИП'" class="title-helper">Полное наименование</span></label>
                     <input class="form-control form-control-sm form-control-alternative" id="name-input"
                            [disabled]="!clientEdit && !model.relationships.client.data.is_new"
                            [(ngModel)]="client.attributes.name" [placeholder]="client.attributes.byFio ? 'Необязательно к заполнению' :'Полное наименование (ФИО физ. лица или назв. Организации/ИП)'">
@@ -297,10 +305,16 @@
                     </div>
                   </div>
                 </div>
+
+                <ng-container *ngIf="!client.is_new && !client.isCreatedByUser( userService.currentUser )">
+                  <div class="alert alert-warning alert-sm">
+                    Внимание! Данный клиент добавлен другим пользователем, и его редактирование запрещено!
+                  </div>
+                </ng-container>
               </ng-container>
 
               <ng-container *ngIf="clientEdit">
-                <div class="alert alert-warning">
+                <div class="alert alert-warning alert-sm">
                   Внимание! Все изменения, внесенные в информацию о клиенте, отразятся на всех заказ-нарядах, где указан данный клиент!
                 </div>
               </ng-container>
@@ -317,7 +331,7 @@
                   <div class="btn-group btn-group-sm">
                     <button
                       class="btn btn-sn btn-buro-blue"
-                      title="Выбрать"
+                      [ngbTooltip]="'Выбрать'"
                       (click)="openExecutorsModal()"
                     >
                       <i class="fas fa-list"></i>
@@ -329,7 +343,7 @@
               <ng-container *ngIf="model.relationships.executor.data as executor">
                 <div class="row form-group">
                   <div class="col-lg-12">
-                    <label class="form-control-label" for="executor-name-input"><span title="ФИО физического лица или название Организации/ИП" class="title-helper">Полное наименование</span></label>
+                    <label class="form-control-label" for="executor-name-input"><span [ngbTooltip]="'ФИО физического лица или название Организации/ИП'" class="title-helper">Полное наименование</span></label>
                     <input class="form-control form-control-sm form-control-alternative" id="executor-name-input"
                            disabled
                            [(ngModel)]="executor.attributes.name" placeholder="Полное наименование (ФИО физ. лица или назв. Организации/ИП)">
@@ -386,7 +400,7 @@
                   <div class="btn-group btn-group-sm">
                     <button
                       class="btn btn-sn btn-buro-blue"
-                      title="Добавить нового"
+                      [ngbTooltip]="'Добавить нового'"
                       (click)="newCustomer()"
                       [disabled]="model.relationships.customer.data && model.relationships.customer.data.is_new"
                     >
@@ -394,7 +408,7 @@
                     </button>
                     <button
                       class="btn btn-sn btn-buro-blue"
-                      title="Найти ранее добавленного"
+                      [ngbTooltip]="'Найти ранее добавленного'"
                       (click)="openCustomersModal()"
                     >
                       <i class="fas fa-search"></i>
@@ -403,8 +417,9 @@
                       class="btn btn-sn btn-buro-blue"
                       [class.active]="customerEdit"
                       (click)="customerEdit = !customerEdit"
-                      title="Редактировать текущего"
-                      [disabled]="!model.relationships.customer.data || model.relationships.customer.data.is_new"
+                      [ngbTooltip]="'Редактировать текущего'"
+                      [disabled]="!model.relationships.customer.data || model.relationships.customer.data.is_new
+                      || !model.isCustomerCreatedByUser( userService.currentUser )"
                     >
                       <i class="fas fa-edit"></i>
                     </button>
@@ -415,7 +430,7 @@
               <ng-container *ngIf="model.relationships.customer.data as customer">
                 <div class="row form-group">
                   <div class="col-lg-12">
-                    <label class="form-control-label" for="customer-name-input"><span title="ФИО физического лица или название Организации/ИП" class="title-helper">Полное наименование</span></label>
+                    <label class="form-control-label" for="customer-name-input"><span [ngbTooltip]="'ФИО физического лица или название Организации/ИП'" class="title-helper">Полное наименование</span></label>
                     <input class="form-control form-control-sm form-control-alternative" id="customer-name-input"
                            [disabled]="!customerEdit && !customer.is_new"
                            [(ngModel)]="customer.attributes.name" placeholder="Полное наименование (ФИО физ. лица или назв. Организации/ИП)">
@@ -458,10 +473,16 @@
                     <button class="btn btn-sm btn-buro-blue btn-block" (click)="showExecutor = true">Показать исполнителя</button>
                   </div>
                 </div>
+
+                <ng-container *ngIf="!customer.is_new && !customer.isCreatedByUser( userService.currentUser )">
+                  <div class="alert alert-warning alert-sm">
+                    Внимание! Данный заказчик добавлен другим пользователем, и его редактирование запрещено!
+                  </div>
+                </ng-container>
               </ng-container>
 
               <ng-container *ngIf="customerEdit">
-                <div class="alert alert-warning">
+                <div class="alert alert-warning alert-sm">
                   Внимание! Все изменения, внесенные в информацию о заказчике, отразятся на всех заказ-нарядах, где указан данный заказчик!
                 </div>
               </ng-container>

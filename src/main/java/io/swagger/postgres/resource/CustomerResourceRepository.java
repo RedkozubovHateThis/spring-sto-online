@@ -53,6 +53,12 @@ public class CustomerResourceRepository implements ResourceRepository<Customer, 
     @Override
     public <S extends Customer> S save(S s) {
 
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( UserHelper.isServiceLeader( currentUser ) && currentUser.getProfile() != null && s.getId() == null ) {
+            s.setCreatedBy( currentUser.getProfile() );
+        }
+
         if ( s.getPhone() == null || s.getPhone().isEmpty() )
             throw new BadRequestException("Телефон не может быть пустым!");
         if ( !userService.isPhoneValid( s.getPhone() ) )

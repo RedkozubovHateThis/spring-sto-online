@@ -4,9 +4,11 @@ import io.crnk.core.exception.BadRequestException;
 import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepository;
 import io.crnk.core.resource.list.ResourceList;
+import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.security.Profile;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.ProfileRepository;
+import io.swagger.postgres.repository.UserRepository;
 import io.swagger.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +24,9 @@ public class ProfileResourceRepository implements ResourceRepository<Profile, Lo
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public Class<Profile> getResourceClass() {
@@ -45,6 +50,12 @@ public class ProfileResourceRepository implements ResourceRepository<Profile, Lo
 
     @Override
     public <S extends Profile> S save(S s) {
+
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( UserHelper.isServiceLeader( currentUser ) && currentUser.getProfile() != null && s.getId() == null ) {
+            s.setCreatedBy( currentUser.getProfile() );
+        }
 
         if ( s.getId() == null && s.getByFio() != null && s.getByFio() &&
                 ( s.getName() == null || s.getName().length() == 0 ) ) {

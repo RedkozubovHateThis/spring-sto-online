@@ -100,7 +100,7 @@
               <div class="row">
                 <div class="col-lg-6">
                   <div class="form-group">
-                    <label class="form-control-label" for="input-name"><span title="ФИО физического лица или название Организации/ИП" class="title-helper">Полное наименование</span></label>
+                    <label class="form-control-label" for="input-name"><span [ngbTooltip]="'ФИО физического лица или название Организации/ИП'" class="title-helper">Полное наименование</span></label>
                     <input type="text" id="input-name" class="form-control form-control-alternative form-control-sm" placeholder="Полное наименование (ФИО физ. лица или назв. Организации/ИП)"
                            [(ngModel)]="model.relationships.profile.data.attributes.name" name="name">
                   </div>
