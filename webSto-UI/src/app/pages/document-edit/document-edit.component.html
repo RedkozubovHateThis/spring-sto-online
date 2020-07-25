@@ -224,7 +224,7 @@
               <ng-container *ngIf="model.relationships.client.data as client">
                 <div class="row form-group">
                   <div class="col-lg-12">
-                    <label class="form-control-label" for="name-input">Полное наименование (ФИО физического лица или название Организации/ИП)</label>
+                    <label class="form-control-label" for="name-input"><span title="ФИО физического лица или название Организации/ИП" class="title-helper">Полное наименование</span></label>
                     <input class="form-control form-control-sm form-control-alternative" id="name-input"
                            [disabled]="!clientEdit && !model.relationships.client.data.is_new"
                            [(ngModel)]="client.attributes.name" placeholder="Полное наименование (ФИО физ. лица или назв. Организации/ИП)">
@@ -302,7 +302,7 @@
               <ng-container *ngIf="model.relationships.executor.data as executor">
                 <div class="row form-group">
                   <div class="col-lg-12">
-                    <label class="form-control-label" for="executor-name-input">Полное наименование (ФИО физического лица или название Организации/ИП)</label>
+                    <label class="form-control-label" for="executor-name-input"><span title="ФИО физического лица или название Организации/ИП" class="title-helper">Полное наименование</span></label>
                     <input class="form-control form-control-sm form-control-alternative" id="executor-name-input"
                            disabled
                            [(ngModel)]="executor.attributes.name" placeholder="Полное наименование (ФИО физ. лица или назв. Организации/ИП)">
@@ -388,7 +388,7 @@
               <ng-container *ngIf="model.relationships.customer.data as customer">
                 <div class="row form-group">
                   <div class="col-lg-12">
-                    <label class="form-control-label" for="customer-name-input">Полное наименование (ФИО физического лица или название Организации/ИП)</label>
+                    <label class="form-control-label" for="customer-name-input"><span title="ФИО физического лица или название Организации/ИП" class="title-helper">Полное наименование</span></label>
                     <input class="form-control form-control-sm form-control-alternative" id="customer-name-input"
                            [disabled]="!customerEdit && !customer.is_new"
                            [(ngModel)]="customer.attributes.name" placeholder="Полное наименование (ФИО физ. лица или назв. Организации/ИП)">

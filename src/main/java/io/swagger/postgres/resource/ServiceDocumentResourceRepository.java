@@ -96,7 +96,7 @@ public class ServiceDocumentResourceRepository implements ResourceRepository<Ser
 //        if ( isServiceDocumentExists )
 //            throw new BadRequestException("Заказ-наряд с таким номером уже существует!");
 
-        if ( s.getId() == null && s.getNumber() == null || s.getNumber().length() == 0 )
+        if ( s.getId() == null && ( s.getNumber() == null || s.getNumber().length() == 0 ) )
             generateNumber(s);
 
         return serviceDocumentRepository.save( s );

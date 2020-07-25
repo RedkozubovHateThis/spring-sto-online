@@ -160,7 +160,9 @@
               <ng-container *ngIf="model.relationships.client.data">
                 <div class="row form-group">
                   <div class="col-lg-12">
-                    <label class="form-control-label" for="name">Полное наименование (ФИО физического лица или название Организации/ИП)</label>
+                    <label class="form-control-label" for="name">
+                      <span title="ФИО физического лица или название Организации/ИП" class="title-helper">Полное наименование</span>
+                    </label>
                     <span class="form-control form-control-sm form-control-alternative" id="name">
                       {{model.relationships.client.data.attributes.name}}
                     </span>
@@ -221,7 +223,7 @@
               <ng-container *ngIf="model.relationships.executor.data">
                 <div class="row form-group">
                   <div class="col-lg-12">
-                    <label class="form-control-label" for="executor-name">Полное наименование (ФИО физического лица или название Организации/ИП)</label>
+                    <label class="form-control-label" for="executor-name"><span title="ФИО физического лица или название Организации/ИП" class="title-helper">Полное наименование</span></label>
                     <span class="form-control form-control-sm form-control-alternative" id="executor-name">
                       {{model.relationships.executor.data.attributes.name}}
                     </span>
@@ -279,7 +281,7 @@
               <ng-container *ngIf="model.relationships.customer.data">
                 <div class="row form-group">
                   <div class="col-lg-12">
-                    <label class="form-control-label" for="customer-name">Полное наименование (ФИО физического лица или название Организации/ИП)</label>
+                    <label class="form-control-label" for="customer-name"><span title="ФИО физического лица или название Организации/ИП" class="title-helper">Полное наименование</span></label>
                     <span class="form-control form-control-sm form-control-alternative" id="customer-name">
                       {{model.relationships.customer.data.attributes.name}}
                     </span>

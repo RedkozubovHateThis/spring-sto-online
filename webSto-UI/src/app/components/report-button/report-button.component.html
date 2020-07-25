@@ -11,18 +11,15 @@
     <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
   </button>
   <div ngbDropdownMenu aria-labelledby="reports-dropdown">
-    <button class="dropdown-item" (click)="downloadReport('ORDER', 'Заказ-наряд')" [disabled]="isDownloading"
-            *ngIf="userService.isNotClient()">
+    <button class="dropdown-item" (click)="downloadReport('ORDER', 'Заказ-наряд')" [disabled]="isDownloading">
       Заказ-наряд
       <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
     </button>
-    <button class="dropdown-item" (click)="downloadReport('ORDER_ACT', 'Акт об оказании услуг')" [disabled]="isDownloading"
-            *ngIf="userService.isNotClient()">
+    <button class="dropdown-item" (click)="downloadReport('ORDER_ACT', 'Акт об оказании услуг')" [disabled]="isDownloading">
       Акт об оказании услуг
       <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
     </button>
-    <button class="dropdown-item" (click)="downloadReport('ORDER_PAYMENT', 'Счет на оплату')" [disabled]="isDownloading"
-            *ngIf="userService.isNotClient()">
+    <button class="dropdown-item" (click)="downloadReport('ORDER_PAYMENT', 'Счет на оплату')" [disabled]="isDownloading">
       Счет на оплату
       <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
     </button>

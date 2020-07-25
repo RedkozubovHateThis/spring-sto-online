@@ -64,29 +64,29 @@ public class CustomerResourceRepository implements ResourceRepository<Customer, 
 
         userService.processPhone(s);
 
-        Boolean isExistsByPhone;
-
-        if ( s.getId() != null )
-            isExistsByPhone = customerRepository.isCustomerExistsPhoneNotSelf( s.getPhone(), s.getId() );
-        else
-            isExistsByPhone = customerRepository.isCustomerExistsPhone( s.getPhone() );
-
-        if ( isExistsByPhone )
-            throw new BadRequestException("Данный телефон уже указан у другого заказчика!");
-
-        if ( s.getEmail() != null ) {
-
-            Boolean isExistsByEmail;
-
-            if ( s.getId() != null )
-                isExistsByEmail = customerRepository.isCustomerExistsEmailNotSelf( s.getEmail(), s.getId() );
-            else
-                isExistsByEmail = customerRepository.isCustomerExistsEmail( s.getEmail() );
-
-            if ( isExistsByEmail )
-                throw new BadRequestException("Данная почта уже указана у другого заказчика!");
-
-        }
+//        Boolean isExistsByPhone;
+//
+//        if ( s.getId() != null )
+//            isExistsByPhone = customerRepository.isCustomerExistsPhoneNotSelf( s.getPhone(), s.getId() );
+//        else
+//            isExistsByPhone = customerRepository.isCustomerExistsPhone( s.getPhone() );
+//
+//        if ( isExistsByPhone )
+//            throw new BadRequestException("Данный телефон уже указан у другого заказчика!");
+//
+//        if ( s.getEmail() != null ) {
+//
+//            Boolean isExistsByEmail;
+//
+//            if ( s.getId() != null )
+//                isExistsByEmail = customerRepository.isCustomerExistsEmailNotSelf( s.getEmail(), s.getId() );
+//            else
+//                isExistsByEmail = customerRepository.isCustomerExistsEmail( s.getEmail() );
+//
+//            if ( isExistsByEmail )
+//                throw new BadRequestException("Данная почта уже указана у другого заказчика!");
+//
+//        }
 
         if ( s.getInn() != null ) {
 

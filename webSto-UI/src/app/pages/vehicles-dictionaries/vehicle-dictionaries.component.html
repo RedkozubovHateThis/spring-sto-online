@@ -10,7 +10,7 @@
 
             <div class="col-sm mb-3">
               <h3 class="mb-0">
-                Справочник автомобилей
+                Справочник марки-модели
               </h3>
             </div>
             <div class="col-auto">
@@ -78,7 +78,7 @@
 <!-- Modal -->
 <ng-template #editModal let-modal>
   <div class="modal-header">
-    <h3 class="modal-title">Данные автомобиля: {{vehicleDictionaryController.selectedModel.is_new ? 'добавление' : 'редактирование'}}</h3>
+    <h3 class="modal-title">Данные марки-модели: {{vehicleDictionaryController.selectedModel.is_new ? 'добавление' : 'редактирование'}}</h3>
     <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
       <span aria-hidden="true">&times;</span>
     </button>

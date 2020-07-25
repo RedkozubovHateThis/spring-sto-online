@@ -125,11 +125,11 @@ export class DocumentAddComponent implements OnInit {
   }
 
   setStartDate(e) {
-    const startDate = moment(e, 'dd.MM.yyyy HH.mm');
+    const startDate = moment(e, 'DD.MM.YYYY HH:mm');
     this.model.attributes.startDate = startDate.toDate().getTime();
   }
   setEndDate(e) {
-    const endDate = moment(e, 'dd.MM.yyyy HH.mm');
+    const endDate = moment(e, 'DD.MM.YYYY HH:mm');
     this.model.attributes.endDate = endDate.toDate().getTime();
   }
 
@@ -168,7 +168,6 @@ export class DocumentAddComponent implements OnInit {
     }
 
     if ( !this.model.attributes.clientIsCustomer ) {
-      console.log(customer);
       if ( !customer || !customer.type || !Object.keys( customer.attributes ).length ) {
         this.toastrService.error('Не указан заказчик!', 'Внимание!');
         return false;

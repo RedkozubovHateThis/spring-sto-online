@@ -117,11 +117,11 @@
         </a>
         <a routerLinkActive="active" [routerLink]="['/vehicles']" class="nav-link"
            *ngIf="userService.isAdmin()">
-            <i class="fas fa-list text-buro-blue"></i> Автомобили
+            <i class="fas fa-list text-buro-blue"></i> Марки-модели
         </a>
         <a routerLinkActive="active" [routerLink]="['/vehiclesAdded']" class="nav-link"
            *ngIf="userService.isAdmin()">
-            <i class="fas fa-list text-buro-blue"></i> Автомобили (добавленные)
+            <i class="fas fa-list text-buro-blue"></i> Автомобили
         </a>
         <a routerLinkActive="active" [routerLink]="['/customers']" class="nav-link"
            *ngIf="userService.isAdmin()">

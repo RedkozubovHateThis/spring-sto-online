@@ -140,11 +140,11 @@ export class DocumentEditComponent extends ModelTransfer<ServiceDocumentResource
   }
 
   setStartDate(e) {
-    const startDate = moment(e, 'dd.MM.yyyy HH.mm');
-    this.model.attributes.startDate = startDate.toDate().getTime();
+    const startDate = moment(e, 'DD.MM.YYYY HH:mm');
+    this.model.attributes.startDate = startDate.valueOf();
   }
   setEndDate(e) {
-    const endDate = moment(e, 'dd.MM.yyyy HH.mm');
+    const endDate = moment(e, 'DD.MM.YYYY HH:mm');
     this.model.attributes.endDate = endDate.toDate().getTime();
   }
 

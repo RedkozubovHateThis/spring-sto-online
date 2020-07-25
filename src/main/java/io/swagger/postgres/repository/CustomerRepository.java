@@ -22,30 +22,30 @@ public interface CustomerRepository extends JpaRepository<Customer, Long>, JpaSp
                                         @Param("fio") String fio,
                                         @Param("inn") String inn);
 
-    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT p.id FROM profile AS p " +
-            "WHERE p.phone = :phone )")
+    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT c.id FROM customer AS c " +
+            "WHERE c.phone = :phone )")
     Boolean isCustomerExistsPhone(@Param("phone") String phone);
 
-    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT p.id FROM profile AS p " +
-            "WHERE p.email = :email )")
+    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT c.id FROM customer AS c " +
+            "WHERE c.email = :email )")
     Boolean isCustomerExistsEmail(@Param("email") String email);
 
-    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT p.id FROM profile AS p " +
-            "WHERE p.inn = :inn )")
+    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT c.id FROM customer AS c " +
+            "WHERE c.inn = :inn )")
     Boolean isCustomerExistsInn(@Param("inn") String inn);
 
-    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT p.id FROM profile AS p " +
-            "WHERE p.inn = :inn AND p.id <> :userId )")
+    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT c.id FROM customer AS c " +
+            "WHERE c.inn = :inn AND c.id <> :userId )")
     Boolean isCustomerExistsInnNotSelf(@Param("inn") String inn,
                                       @Param("userId") Long userId);
 
-    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT p.id FROM profile AS p " +
-            "WHERE p.phone = :phone AND p.id <> :userId )")
+    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT c.id FROM customer AS c " +
+            "WHERE c.phone = :phone AND c.id <> :userId )")
     Boolean isCustomerExistsPhoneNotSelf(@Param("phone") String phone,
                                         @Param("userId") Long userId);
 
-    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT p.id FROM profile AS p " +
-            "WHERE p.email = :email AND p.id <> :userId )")
+    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT c.id FROM customer AS c " +
+            "WHERE c.email = :email AND c.id <> :userId )")
     Boolean isCustomerExistsEmailNotSelf(@Param("email") String email,
                                         @Param("userId") Long userId);
 }

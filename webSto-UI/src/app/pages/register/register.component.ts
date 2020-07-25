@@ -15,10 +15,10 @@ export class RegisterComponent implements OnInit {
               private toastrService: ToastrService) { }
 
   private addForm: FormGroup;
-  private isRegistering: boolean = false;
+  private isRegistering = false;
   private selectedRole = 'CLIENT';
   private roles = [
-    { name: 'Клиент', id: 'CLIENT' },
+    { name: 'Автовладелец', id: 'CLIENT' },
     { name: 'Руководитель сервиса', id: 'SERVICE_LEADER' }
   ];
 
@@ -30,7 +30,7 @@ export class RegisterComponent implements OnInit {
       lastName: ['', Validators.required],
       middleName: ['', Validators.required],
       name: ['', Validators.required],
-      address: ['', Validators.required],
+      address: [null],
       phone: ['', Validators.required],
       email: [null],
       inn: [null],

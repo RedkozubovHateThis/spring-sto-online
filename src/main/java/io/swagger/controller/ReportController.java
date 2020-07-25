@@ -36,11 +36,6 @@ public class ReportController {
     public ResponseEntity getOrderResponse(@PathVariable("documentId") Long documentId,
                                            @PathVariable("reportType") ReportType reportType) {
 
-        User currentUser = userRepository.findCurrentUser();
-
-        if ( !UserHelper.isAdmin( currentUser ) && !UserHelper.isServiceLeader( currentUser ) )
-            return ResponseEntity.status(404).build();
-
         try {
             byte[] response;
             switch(reportType) {

@@ -46,6 +46,7 @@ export class PasswordChangeButtonComponent implements OnInit {
       this.rePassword = null;
 
       this.toastrService.success('Пароль успешно изменен!');
+      this.modalService.dismissAll();
     }, error => {
       this.isChanging = false;
       if ( [400, 404, 403].includes(error.status) )
