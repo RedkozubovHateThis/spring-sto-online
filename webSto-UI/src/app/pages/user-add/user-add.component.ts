@@ -8,6 +8,7 @@ import {DocumentCollection} from 'ngx-jsonapi';
 import {UserRoleResource, UserRoleResourceService} from '../../model/resource/user-role.resource.service';
 import {UserResource, UserResourceService} from '../../model/resource/user.resource.service';
 import {ProfileResourceService} from '../../model/resource/profile.resource.service';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-user-add',
@@ -34,7 +35,9 @@ export class UserAddComponent implements OnInit {
   }
 
   requestRoles() {
-    this.userRoleResourceService.all().subscribe( (roles) => {
+    this.userRoleResourceService.all({
+      beforepath: environment.getBeforeUrl()
+    }).subscribe( (roles) => {
       this.roles = roles;
     } );
   }
