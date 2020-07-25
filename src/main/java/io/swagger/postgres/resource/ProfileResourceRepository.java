@@ -46,6 +46,11 @@ public class ProfileResourceRepository implements ResourceRepository<Profile, Lo
     @Override
     public <S extends Profile> S save(S s) {
 
+        if ( s.getId() == null && s.getByFio() != null && s.getByFio() &&
+                ( s.getName() == null || s.getName().length() == 0 ) ) {
+            s.setName( String.format( "%s %s %s", s.getLastName(), s.getFirstName(), s.getMiddleName() ) );
+        }
+
         if ( s.getPhone() == null || s.getPhone().isEmpty() )
             throw new BadRequestException("Телефон не может быть пустым!");
         if ( !userService.isPhoneValid( s.getPhone() ) )

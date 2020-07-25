@@ -12,7 +12,11 @@ export class ProfileResource extends Resource {
     email: null,
     inn: null,
     deleted: false,
-    autoRegister: false
+    autoRegister: false,
+    byFio: false,
+    firstName: null,
+    middleName: null,
+    lastName: null
   };
 
   public relationships = {

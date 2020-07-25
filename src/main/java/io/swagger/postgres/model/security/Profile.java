@@ -28,6 +28,14 @@ public class Profile extends BaseEntity implements Serializable {
 
     @Transient
     private Boolean autoRegister;
+    @Transient
+    private Boolean byFio;
+    @Transient
+    private String firstName;
+    @Transient
+    private String lastName;
+    @Transient
+    private String middleName;
 
     @OneToOne(mappedBy = "profile")
     @NotFound(action = NotFoundAction.IGNORE)

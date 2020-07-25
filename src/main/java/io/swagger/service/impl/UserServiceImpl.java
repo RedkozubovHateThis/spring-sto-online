@@ -140,6 +140,12 @@ public class UserServiceImpl implements UserService {
         user.setEnabled(true);
         user.setIsAutoRegistered(true);
 
+        if ( profile.getByFio() ) {
+            user.setFirstName( profile.getFirstName() );
+            user.setLastName( profile.getLastName() );
+            user.setMiddleName( profile.getMiddleName() );
+        }
+
         String rawPassword = passwordGenerationService.generatePassword();
 
         user.setPassword( userPasswordEncoder.encode(rawPassword) );
@@ -155,7 +161,7 @@ public class UserServiceImpl implements UserService {
                     "Сервис BUROMOTORS: %s/login", rawPassword, domainUrl);
             logger.info(" [ SCHEDULER ] Prepared sms text: \"{}\"", smsText );
 
-            smsService.sendSmsAsync( profile.getPhone(), smsText );
+//            smsService.sendSmsAsync( profile.getPhone(), smsText );
         }
 
     }

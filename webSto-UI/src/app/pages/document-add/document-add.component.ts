@@ -162,8 +162,14 @@ export class DocumentAddComponent implements OnInit {
       this.toastrService.error('Не указан телефон клиента!', 'Внимание!');
       return false;
     }
-    else if ( !client.attributes.name || client.attributes.name.length === 0 ) {
+    else if ( !client.attributes.byFio && ( !client.attributes.name || client.attributes.name.length === 0 ) ) {
       this.toastrService.error('Не указано полное наименование клиента!', 'Внимание!');
+      return false;
+    }
+    else if ( client.attributes.byFio && ( !client.attributes.firstName || client.attributes.firstName.length === 0 ||
+      !client.attributes.lastName || client.attributes.lastName.length === 0 ||
+      !client.attributes.middleName || client.attributes.middleName.length === 0 ) ) {
+      this.toastrService.error('Не указаны ФИО клиента!', 'Внимание!');
       return false;
     }
 
@@ -323,6 +329,10 @@ export class DocumentAddComponent implements OnInit {
 
   newClient() {
     const profile: ProfileResource = this.profileResourceService.new();
+    profile.attributes.byFio = false;
+    profile.attributes.firstName = '';
+    profile.attributes.lastName = '';
+    profile.attributes.middleName = '';
     this.model.addRelationship( profile, 'client' );
     this.clientRegister = true;
     this.clientEdit = false;
