@@ -79,7 +79,7 @@ registerLocaleData(localeRu, 'ru');
     ReactiveFormsModule,
     HttpClientModule,
     ToastrModule.forRoot({
-      timeOut: 3000
+      timeOut: 10000
     }),
     NgxJsonapiModule.forRoot({
       url: environment.baseUrl

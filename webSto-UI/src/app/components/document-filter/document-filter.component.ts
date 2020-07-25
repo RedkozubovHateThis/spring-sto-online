@@ -8,6 +8,8 @@ import {ServiceDocumentResource} from '../../model/resource/service-document.res
 import {ProfileResource} from '../../model/resource/profile.resource.service';
 import {DocumentCollection} from 'ngx-jsonapi';
 import {ProfileService} from '../../api/profile.service';
+import {CustomerResource} from '../../model/resource/customer.resource.service';
+import {CustomerService} from '../../api/customer.service';
 
 @Component({
   selector: 'app-document-filter',
@@ -16,7 +18,7 @@ import {ProfileService} from '../../api/profile.service';
 })
 export class DocumentFilterComponent implements OnInit {
 
-  constructor(private userService: UserService, private profileService: ProfileService) {}
+  constructor(private userService: UserService, private profileService: ProfileService, private customerService: CustomerService) {}
 
   @Input()
   private filter: DocumentsFilter;
@@ -60,8 +62,12 @@ export class DocumentFilterComponent implements OnInit {
   private selectedClient: ProfileResource;
   private clients: DocumentCollection<ProfileResource> = new DocumentCollection<ProfileResource>();
   private executors: DocumentCollection<ProfileResource> = new DocumentCollection<ProfileResource>();
+  private customers: DocumentCollection<CustomerResource> = new DocumentCollection<CustomerResource>();
 
   ngOnInit(): void {
+    this.customerService.getAllCustomers().subscribe( (response) => {
+      this.customers = response;
+    } );
     this.profileService.getAllExecutors().subscribe( (response) => {
       this.executors = response;
     } );
@@ -107,7 +113,7 @@ export class DocumentFilterComponent implements OnInit {
       debounceTime(750),
       distinctUntilChanged(),
       map(term => term === '' ? []
-        : this.clients.data.filter(client => client.attributes.name.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10))
+        : this.clients.data.filter(client => client.attributes.name && client.attributes.name.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10))
     )
 
   emitChange() {
@@ -125,6 +131,7 @@ export class DocumentFilterComponent implements OnInit {
     this.filter.organization = null;
     this.filter.vehicle = null;
     this.filter.client = null;
+    this.filter.customer = null;
     this.filter.vinNumber = null;
     this.filter.fromDate = null;
     this.filter.toDate = null;

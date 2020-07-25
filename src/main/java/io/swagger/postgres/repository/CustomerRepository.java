@@ -1,6 +1,7 @@
 package io.swagger.postgres.repository;
 
 import io.swagger.postgres.model.Customer;
+import io.swagger.postgres.model.security.Profile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -48,4 +49,9 @@ public interface CustomerRepository extends JpaRepository<Customer, Long>, JpaSp
             "WHERE c.email = :email AND c.id <> :userId )")
     Boolean isCustomerExistsEmailNotSelf(@Param("email") String email,
                                         @Param("userId") Long userId);
+
+    @Query(nativeQuery = true, value = "SELECT DISTINCT c.* FROM service_document AS sd\n" +
+            "INNER JOIN customer AS c ON sd.customer_id = c.id AND c.deleted = FALSE\n" +
+            "WHERE sd.executor_id = :executorId AND sd.deleted = FALSE")
+    List<Customer> findCustomersByExecutorId(@Param("executorId") Long executorId);
 }

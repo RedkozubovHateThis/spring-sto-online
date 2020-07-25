@@ -7,15 +7,19 @@ import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepository;
 import io.crnk.core.resource.list.ResourceList;
 import io.swagger.helper.UserHelper;
+import io.swagger.postgres.model.ServiceDocument;
 import io.swagger.postgres.model.ServiceWork;
 import io.swagger.postgres.model.Vehicle;
 import io.swagger.postgres.model.security.User;
+import io.swagger.postgres.repository.ServiceDocumentRepository;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.postgres.repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class VehicleResourceRepository implements ResourceRepository<Vehicle, Long> {
@@ -25,6 +29,9 @@ public class VehicleResourceRepository implements ResourceRepository<Vehicle, Lo
 
     @Autowired
     private VehicleRepository vehicleRepository;
+
+    @Autowired
+    private ServiceDocumentRepository serviceDocumentRepository;
 
     @Override
     public Class<Vehicle> getResourceClass() {
@@ -97,6 +104,16 @@ public class VehicleResourceRepository implements ResourceRepository<Vehicle, Lo
 
         if ( vehicle == null )
             throw new ResourceNotFoundException("Автомобиль не найден!");
+
+        List<ServiceDocument> serviceDocuments = serviceDocumentRepository.findByVehicleIdOrderByNumber( vehicle.getId() );
+        if ( serviceDocuments.size() > 0 ) {
+            if ( serviceDocuments.size() > 10 )
+                throw new BadRequestException( String.format( "Данный автомобиль указан в %s заказ-нарядах!", serviceDocuments.size() ) );
+            else {
+                List<String> documentsNumbers = serviceDocuments.stream().map( ServiceDocument::getNumber ).collect(Collectors.toList() );
+                throw new BadRequestException( String.format( "Данный автомобиль указан в следующих заказ-нарядах: %s!", String.join(",", documentsNumbers) ) );
+            }
+        }
 
         vehicle.setDeleted(true);
         vehicleRepository.save(vehicle);

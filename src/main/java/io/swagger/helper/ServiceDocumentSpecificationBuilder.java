@@ -1,10 +1,7 @@
 package io.swagger.helper;
 
 import io.swagger.controller.ServiceDocumentController;
-import io.swagger.postgres.model.ServiceDocument;
-import io.swagger.postgres.model.ServiceDocument_;
-import io.swagger.postgres.model.Vehicle;
-import io.swagger.postgres.model.Vehicle_;
+import io.swagger.postgres.model.*;
 import io.swagger.postgres.model.enums.ServiceDocumentStatus;
 import io.swagger.postgres.model.security.Profile;
 import io.swagger.postgres.model.security.Profile_;
@@ -75,6 +72,14 @@ public class ServiceDocumentSpecificationBuilder {
                             cb.between(
                                     root.get( ServiceDocument_.startDate ),
                                     filterPayload.getFromDate(), filterPayload.getToDate()
+                            )
+                    );
+                }
+                if ( !UserHelper.isClient( currentUser ) && filterPayload.getCustomer() != null ) {
+                    Join<ServiceDocument, Customer> customerJoin = root.join( ServiceDocument_.customer );
+                    predicates.add(
+                            cb.equal(
+                                    customerJoin.get( Customer_.id ), filterPayload.getCustomer()
                             )
                     );
                 }

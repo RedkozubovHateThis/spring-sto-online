@@ -161,7 +161,7 @@ public class UserServiceImpl implements UserService {
                     "Сервис BUROMOTORS: %s/login", rawPassword, domainUrl);
             logger.info(" [ SCHEDULER ] Prepared sms text: \"{}\"", smsText );
 
-//            smsService.sendSmsAsync( profile.getPhone(), smsText );
+            smsService.sendSmsAsync( profile.getPhone(), smsText );
         }
 
     }

@@ -73,6 +73,7 @@ public class ServiceDocumentController {
         private String vehicle;
         private String vinNumber;
         private Long client;
+        private Long customer;
         private Date fromDate;
         private Date toDate;
 
@@ -98,6 +99,8 @@ public class ServiceDocumentController {
                 filterPayload.setVinNumber( getFilter().get("vinNumber").get(0) );
             if ( getFilter().containsKey("client") && getFilter().get("client").size() > 0 )
                 filterPayload.setClient( Long.parseLong( getFilter().get("client").get(0), 10 ) );
+            if ( getFilter().containsKey("customer") && getFilter().get("customer").size() > 0 )
+                filterPayload.setCustomer( Long.parseLong( getFilter().get("customer").get(0), 10 ) );
             if ( getFilter().containsKey("fromDate") && getFilter().get("fromDate").size() > 0 )
                 filterPayload.setFromDate( DATE_FORMAT.parse( getFilter().get("fromDate").get(0) ) );
             if ( getFilter().containsKey("toDate") && getFilter().get("toDate").size() > 0 )

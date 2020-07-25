@@ -9,6 +9,7 @@ export class DocumentsFilter extends PageFilter {
   vehicle: string;
   vinNumber: string;
   client: string;
+  customer: string;
   sort: string;
   direction: string;
   fromDate: string;
@@ -21,6 +22,7 @@ export class DocumentsFilter extends PageFilter {
     this.organization = null;
     this.vehicle = null;
     this.client = null;
+    this.customer = null;
     this.vinNumber = null;
     this.fromDate = null;
     this.toDate = null;
@@ -43,6 +45,9 @@ export class DocumentsFilter extends PageFilter {
 
     if ( queryParams.client ) this.client = queryParams.client;
     // else this.client = null;
+
+    if ( queryParams.customer ) this.customer = queryParams.customer;
+    // else this.customer = null;
 
     if ( queryParams.vehicle ) this.vehicle = queryParams.vehicle;
     // else this.vehicle = null;

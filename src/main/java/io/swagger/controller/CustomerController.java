@@ -5,6 +5,7 @@ import io.swagger.helper.ServiceAddonDictionarySpecificationBuilder;
 import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.Customer;
 import io.swagger.postgres.model.ServiceAddonDictionary;
+import io.swagger.postgres.model.security.Profile;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.CustomerRepository;
 import io.swagger.postgres.repository.UserRepository;
@@ -54,6 +55,33 @@ public class CustomerController {
                 customerResourceProcessor.toResourcePage(
                         customerRepository.findAll(specification, pageable), params.getInclude(),
                         customerRepository.count(specification), pageable
+                )
+        );
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity findAllClients() throws Exception {
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( !UserHelper.isServiceLeader( currentUser ) && !UserHelper.isAdmin( currentUser ) )
+            return ResponseEntity.status(404).build();
+
+        List<Customer> customers;
+
+        if ( UserHelper.isAdmin( currentUser ) )
+            customers = customerRepository.findAll();
+        else {
+            if ( currentUser.getProfile() == null )
+                return ResponseEntity.status(404).build();
+            customers = customerRepository.findCustomersByExecutorId( currentUser.getProfile().getId() );
+        }
+
+        return ResponseEntity.ok(
+                customerResourceProcessor.toResourceList(
+                        customers,
+                        null,
+                        (long) customers.size(),
+                        null
                 )
         );
     }

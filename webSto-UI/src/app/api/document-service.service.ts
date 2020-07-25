@@ -46,6 +46,7 @@ export class DocumentService implements TransferService<ServiceDocumentResource>
       client: filter.client != null ? filter.client : '',
       fromDate: filter.fromDate != null ? filter.fromDate : '',
       toDate: filter.toDate != null ? filter.toDate : '',
+      customer: filter.customer != null ? filter.customer : '',
     };
     return this.serviceDocumentResourceService.all({
       beforepath: `${environment.getBeforeUrl()}/external`,
@@ -60,6 +61,9 @@ export class DocumentService implements TransferService<ServiceDocumentResource>
   }
 
   saveServiceDocument(model: ServiceDocumentResource): Observable<ServiceDocumentResource> {
+    if ( model.attributes.clientIsCustomer && model.relationships.customer.data && model.relationships.customer.data.id )
+      model.removeRelationship('customer', model.relationships.customer.data.id);
+    console.log(model);
     return new Observable<ServiceDocumentResource>( (subscriber) => {
       model.save({ beforepath: environment.getBeforeUrl() }).subscribe( (data: IDocumentResource) => {
         // model.fill(data);

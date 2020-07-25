@@ -8,15 +8,19 @@ import io.crnk.core.repository.ResourceRepository;
 import io.crnk.core.resource.list.ResourceList;
 import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.Customer;
+import io.swagger.postgres.model.ServiceDocument;
 import io.swagger.postgres.model.ServiceWorkDictionary;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.CustomerRepository;
+import io.swagger.postgres.repository.ServiceDocumentRepository;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class CustomerResourceRepository implements ResourceRepository<Customer, Long> {
@@ -29,6 +33,9 @@ public class CustomerResourceRepository implements ResourceRepository<Customer, 
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ServiceDocumentRepository serviceDocumentRepository;
 
     @Override
     public Class<Customer> getResourceClass() {
@@ -128,6 +135,16 @@ public class CustomerResourceRepository implements ResourceRepository<Customer, 
 
         if ( customer == null )
             throw new ResourceNotFoundException("Заказчик не найден!");
+
+        List<ServiceDocument> serviceDocuments = serviceDocumentRepository.findByCustomerIdOrderByNumber( customer.getId() );
+        if ( serviceDocuments.size() > 0 ) {
+            if ( serviceDocuments.size() > 10 )
+                throw new BadRequestException( String.format( "Данный заказчик указан в %s заказ-нарядах!", serviceDocuments.size() ) );
+            else {
+                List<String> documentsNumbers = serviceDocuments.stream().map( ServiceDocument::getNumber ).collect(Collectors.toList() );
+                throw new BadRequestException( String.format( "Данный заказчик указан в следующих заказ-нарядах: %s!", String.join(",", documentsNumbers) ) );
+            }
+        }
 
         customer.setDeleted(true);
         customerRepository.save(customer);
