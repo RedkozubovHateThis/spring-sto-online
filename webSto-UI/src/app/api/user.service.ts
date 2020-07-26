@@ -71,13 +71,14 @@ export class UserService implements TransferService<UserResource>, RestService<U
     return this.http.get(`${environment.getApiUrl()}open/report/compiled`, {headers, params, responseType: 'blob'});
   }
 
-  logout() {
+  logout(redirect = true) {
     localStorage.setItem('isAuthenticated', 'false');
     this.currentUser = null;
     localStorage.setItem( 'token', null );
     localStorage.removeItem( 'demoDomain' );
     this.currentUserIsLoggedOut.next();
-    this.router.navigate(['/login']);
+    if ( redirect )
+      this.router.navigate(['/login']);
   }
 
   isTokenExists(): boolean {

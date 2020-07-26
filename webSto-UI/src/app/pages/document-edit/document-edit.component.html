@@ -237,7 +237,7 @@
                     <label class="form-control-label" for="name-input"><span [ngbTooltip]="'ФИО физического лица или название Организации/ИП'" class="title-helper">Полное наименование</span></label>
                     <input class="form-control form-control-sm form-control-alternative" id="name-input"
                            [disabled]="!clientEdit && !model.relationships.client.data.is_new"
-                           [(ngModel)]="client.attributes.name" [placeholder]="client.attributes.byFio ? 'Необязательно к заполнению' :'Полное наименование (ФИО физ. лица или назв. Организации/ИП)'">
+                           [(ngModel)]="client.attributes.name" [placeholder]="client.attributes.byFio ? 'Необязательно к заполнению' :'ФИО физ. лица или назв. Организации/ИП'">
                   </div>
                 </div>
                 <ng-container *ngIf="client.is_new && client.attributes.byFio">
@@ -348,7 +348,7 @@
                     <label class="form-control-label" for="executor-name-input"><span [ngbTooltip]="'ФИО физического лица или название Организации/ИП'" class="title-helper">Полное наименование</span></label>
                     <input class="form-control form-control-sm form-control-alternative" id="executor-name-input"
                            disabled
-                           [(ngModel)]="executor.attributes.name" placeholder="Полное наименование (ФИО физ. лица или назв. Организации/ИП)">
+                           [(ngModel)]="executor.attributes.name" placeholder="ФИО физ. лица или назв. Организации/ИП">
                   </div>
                 </div>
                 <div class="row form-group">
@@ -435,7 +435,7 @@
                     <label class="form-control-label" for="customer-name-input"><span [ngbTooltip]="'ФИО физического лица или название Организации/ИП'" class="title-helper">Полное наименование</span></label>
                     <input class="form-control form-control-sm form-control-alternative" id="customer-name-input"
                            [disabled]="!customerEdit && !customer.is_new"
-                           [(ngModel)]="customer.attributes.name" placeholder="Полное наименование (ФИО физ. лица или назв. Организации/ИП)">
+                           [(ngModel)]="customer.attributes.name" placeholder="ФИО физ. лица или назв. Организации/ИП">
                   </div>
                 </div>
                 <div class="row form-group">
@@ -690,8 +690,9 @@
 
     <div class="row">
       <div class="col">
-        <table class="table align-items-center table-flush table-hover table-sm">
-          <thead class="thead-light">
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush table-hover table-sm">
+            <thead class="thead-light">
             <tr>
               <th scope="col">Полное наименование</th>
               <th scope="col">ИНН</th>
@@ -699,8 +700,8 @@
               <th scope="col">Почта</th>
               <th scope="col">Адрес</th>
             </tr>
-          </thead>
-          <tbody>
+            </thead>
+            <tbody>
             <ng-container *ngFor="let client of clients.data">
               <tr style="cursor: pointer;" (click)="setClient(client)">
                 <td>
@@ -720,8 +721,9 @@
                 </td>
               </tr>
             </ng-container>
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -754,8 +756,9 @@
 
     <div class="row">
       <div class="col">
-        <table class="table align-items-center table-flush table-hover table-sm">
-          <thead class="thead-light">
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush table-hover table-sm">
+            <thead class="thead-light">
             <tr>
               <th scope="col">Полное наименование</th>
               <th scope="col">ИНН</th>
@@ -763,8 +766,8 @@
               <th scope="col">Почта</th>
               <th scope="col">Адрес</th>
             </tr>
-          </thead>
-          <tbody>
+            </thead>
+            <tbody>
             <ng-container *ngFor="let customer of customers.data">
               <tr style="cursor: pointer;" (click)="setCustomer(customer)">
                 <td>
@@ -784,8 +787,9 @@
                 </td>
               </tr>
             </ng-container>
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -804,8 +808,9 @@
   <div class="modal-body">
     <div class="row">
       <div class="col">
-        <table class="table align-items-center table-flush table-hover table-sm">
-          <thead class="thead-light">
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush table-hover table-sm">
+            <thead class="thead-light">
             <tr>
               <th scope="col">Полное наименование</th>
               <th scope="col">ИНН</th>
@@ -813,8 +818,8 @@
               <th scope="col">Почта</th>
               <th scope="col">Адрес</th>
             </tr>
-          </thead>
-          <tbody>
+            </thead>
+            <tbody>
             <ng-container *ngFor="let executor of executors.data">
               <tr style="cursor: pointer;" (click)="setExecutor(executor)">
                 <td>
@@ -834,8 +839,9 @@
                 </td>
               </tr>
             </ng-container>
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -868,34 +874,36 @@
 
     <div class="row">
       <div class="col">
-        <table class="table align-items-center table-flush table-hover table-sm">
-          <thead class="thead-light">
-          <tr>
-            <th scope="col">Марка/модель</th>
-            <th scope="col">Рег. номер</th>
-            <th scope="col">VIN-номер</th>
-            <th scope="col">Год выпуска</th>
-          </tr>
-          </thead>
-          <tbody>
-          <ng-container *ngFor="let vehicle of vehicles.data">
-            <tr style="cursor: pointer;" (click)="setVehicle(vehicle)">
-              <td>
-                {{vehicle.attributes.modelName}}
-              </td>
-              <td>
-                {{vehicle.attributes.regNumber}}
-              </td>
-              <td>
-                {{vehicle.attributes.vinNumber}}
-              </td>
-              <td>
-                {{vehicle.attributes.year}}
-              </td>
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush table-hover table-sm">
+            <thead class="thead-light">
+            <tr>
+              <th scope="col">Марка/модель</th>
+              <th scope="col">Рег. номер</th>
+              <th scope="col">VIN-номер</th>
+              <th scope="col">Год выпуска</th>
             </tr>
-          </ng-container>
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+            <ng-container *ngFor="let vehicle of vehicles.data">
+              <tr style="cursor: pointer;" (click)="setVehicle(vehicle)">
+                <td>
+                  {{vehicle.attributes.modelName}}
+                </td>
+                <td>
+                  {{vehicle.attributes.regNumber}}
+                </td>
+                <td>
+                  {{vehicle.attributes.vinNumber}}
+                </td>
+                <td>
+                  {{vehicle.attributes.year}}
+                </td>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -929,22 +937,24 @@
 
     <div class="row">
       <div class="col">
-        <table class="table align-items-center table-flush table-hover table-sm">
-          <thead class="thead-light">
-          <tr>
-            <th scope="col">Марка/модель</th>
-          </tr>
-          </thead>
-          <tbody>
-          <ng-container *ngFor="let vehicleDictionary of vehicleDictionaries.data">
-            <tr style="cursor: pointer;" (click)="updateVehicle(vehicleDictionary)">
-              <td>
-                {{vehicleDictionary.attributes.name}}
-              </td>
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush table-hover table-sm">
+            <thead class="thead-light">
+            <tr>
+              <th scope="col">Марка/модель</th>
             </tr>
-          </ng-container>
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+            <ng-container *ngFor="let vehicleDictionary of vehicleDictionaries.data">
+              <tr style="cursor: pointer;" (click)="updateVehicle(vehicleDictionary)">
+                <td>
+                  {{vehicleDictionary.attributes.name}}
+                </td>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -978,22 +988,24 @@
 
     <div class="row">
       <div class="col">
-        <table class="table align-items-center table-flush table-hover table-sm">
-          <thead class="thead-light">
-          <tr>
-            <th scope="col">Наименование</th>
-          </tr>
-          </thead>
-          <tbody>
-          <ng-container *ngFor="let serviceWorkDictionary of serviceWorkDictionaries.data">
-            <tr style="cursor: pointer;" (click)="newServiceWorkFromDictionary(serviceWorkDictionary)">
-              <td>
-                {{serviceWorkDictionary.attributes.name}}
-              </td>
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush table-hover table-sm">
+            <thead class="thead-light">
+            <tr>
+              <th scope="col">Наименование</th>
             </tr>
-          </ng-container>
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+            <ng-container *ngFor="let serviceWorkDictionary of serviceWorkDictionaries.data">
+              <tr style="cursor: pointer;" (click)="newServiceWorkFromDictionary(serviceWorkDictionary)">
+                <td>
+                  {{serviceWorkDictionary.attributes.name}}
+                </td>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -1027,22 +1039,24 @@
 
     <div class="row">
       <div class="col">
-        <table class="table align-items-center table-flush table-hover table-sm">
-          <thead class="thead-light">
-          <tr>
-            <th scope="col">Наименование</th>
-          </tr>
-          </thead>
-          <tbody>
-          <ng-container *ngFor="let serviceAddonDictionary of serviceAddonDictionaries.data">
-            <tr style="cursor: pointer;" (click)="newServiceAddonFromDictionary(serviceAddonDictionary)">
-              <td>
-                {{serviceAddonDictionary.attributes.name}}
-              </td>
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush table-hover table-sm">
+            <thead class="thead-light">
+            <tr>
+              <th scope="col">Наименование</th>
             </tr>
-          </ng-container>
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+            <ng-container *ngFor="let serviceAddonDictionary of serviceAddonDictionaries.data">
+              <tr style="cursor: pointer;" (click)="newServiceAddonFromDictionary(serviceAddonDictionary)">
+                <td>
+                  {{serviceAddonDictionary.attributes.name}}
+                </td>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>

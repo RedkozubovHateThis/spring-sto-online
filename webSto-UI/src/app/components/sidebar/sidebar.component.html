@@ -11,48 +11,48 @@
     </a>
     <!-- User -->
     <ul class="nav align-items-center d-md-none">
-      <li class="nav-item" ngbDropdown placement="auto" *ngIf="userService.currentUser != null">
-        <a class="nav-link pr-0" style="cursor: pointer;" role="button" ngbDropdownToggle>
-          <div class="media align-items-center">
-            <span class="avatar avatar-sm rounded-circle">
-              <i class="fas fa-bell"></i>
-            </span>
-          </div>
-        </a>
-        <div class="dropdown-menu-arrow dropdown-menu-right event-list" ngbDropdownMenu>
-          <ng-container *ngIf="eventMessageResponseService.messages.length === 0">
-            <div class="dropdown-item-text small text-muted">
-              Уведомления не найдены...
-            </div>
-          </ng-container>
-          <ng-container *ngIf="eventMessageResponseService.messages.length > 0">
-            <div class="dropdown-item-text small" *ngFor="let message of eventMessageResponseService.messages">
-              {{message.messageDate | date : 'dd.MM.yyyy HH:mm'}}
-              <div *ngIf="message.messageType === 'DOCUMENT_CHANGE'">
-                Пользователь <a [routerLink]="['/users', message.fromId]">{{message.fromFio}}</a> изменил документ <a [routerLink]="['/documents', message.documentId]">{{message.documentName}}</a>:
-                <div class="text-muted">
-                  {{message.additionalInformation}}
-                </div>
-              </div>
-              <div *ngIf="message.messageType === 'MODERATOR_REPLACEMENT'">
-                Модератор {{message.fromFio}} назначил вас своим замещающим
-              </div>
-              <div *ngIf="message.messageType === 'USER_REGISTER'">
-                Пользователь {{message.fromFio}} зарегистрировался на сайте
-              </div>
-              <div *ngIf="message.messageType === 'USER_AUTODEALER'">
-                Пользователь {{message.fromFio}} совершил привязку к системе АвтоДилер
-              </div>
-              <div *ngIf="message.messageType === 'USER_APPROVE'">
-                Модератор {{message.fromFio}} подтвердил привязку к системе АвтоДилер
-              </div>
-              <div *ngIf="message.messageType === 'USER_REJECT'">
-                Модератор {{message.fromFio}} отменил привязку к системе АвтоДилер
-              </div>
-            </div>
-          </ng-container>
-        </div>
-      </li>
+<!--      <li class="nav-item" ngbDropdown placement="auto" *ngIf="userService.currentUser != null">-->
+<!--        <a class="nav-link pr-0" style="cursor: pointer;" role="button" ngbDropdownToggle>-->
+<!--          <div class="media align-items-center">-->
+<!--            <span class="avatar avatar-sm rounded-circle">-->
+<!--              <i class="fas fa-bell"></i>-->
+<!--            </span>-->
+<!--          </div>-->
+<!--        </a>-->
+<!--        <div class="dropdown-menu-arrow dropdown-menu-right event-list" ngbDropdownMenu>-->
+<!--          <ng-container *ngIf="eventMessageResponseService.messages.length === 0">-->
+<!--            <div class="dropdown-item-text small text-muted">-->
+<!--              Уведомления не найдены...-->
+<!--            </div>-->
+<!--          </ng-container>-->
+<!--          <ng-container *ngIf="eventMessageResponseService.messages.length > 0">-->
+<!--            <div class="dropdown-item-text small" *ngFor="let message of eventMessageResponseService.messages">-->
+<!--              {{message.messageDate | date : 'dd.MM.yyyy HH:mm'}}-->
+<!--              <div *ngIf="message.messageType === 'DOCUMENT_CHANGE'">-->
+<!--                Пользователь <a [routerLink]="['/users', message.fromId]">{{message.fromFio}}</a> изменил документ <a [routerLink]="['/documents', message.documentId]">{{message.documentName}}</a>:-->
+<!--                <div class="text-muted">-->
+<!--                  {{message.additionalInformation}}-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div *ngIf="message.messageType === 'MODERATOR_REPLACEMENT'">-->
+<!--                Модератор {{message.fromFio}} назначил вас своим замещающим-->
+<!--              </div>-->
+<!--              <div *ngIf="message.messageType === 'USER_REGISTER'">-->
+<!--                Пользователь {{message.fromFio}} зарегистрировался на сайте-->
+<!--              </div>-->
+<!--              <div *ngIf="message.messageType === 'USER_AUTODEALER'">-->
+<!--                Пользователь {{message.fromFio}} совершил привязку к системе АвтоДилер-->
+<!--              </div>-->
+<!--              <div *ngIf="message.messageType === 'USER_APPROVE'">-->
+<!--                Модератор {{message.fromFio}} подтвердил привязку к системе АвтоДилер-->
+<!--              </div>-->
+<!--              <div *ngIf="message.messageType === 'USER_REJECT'">-->
+<!--                Модератор {{message.fromFio}} отменил привязку к системе АвтоДилер-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </ng-container>-->
+<!--        </div>-->
+<!--      </li>-->
       <li class="nav-item" ngbDropdown placement="auto">
         <a class="nav-link" role="button" ngbDropdownToggle>
           <div class="media align-items-center">
@@ -70,7 +70,7 @@
             <span>Профиль</span>
           </a>
           <div class="dropdown-divider"></div>
-          <a href="#!" class="dropdown-item">
+          <a class="dropdown-item" [routerLink]="['/login']" (click)="logout()">
             <i class="fa fa-sign-out-alt text-buro-blue"></i>
             <span>Выйти</span>
           </a>

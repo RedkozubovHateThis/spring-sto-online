@@ -25,7 +25,7 @@ export class NavbarComponent implements OnInit {
     return this.userService.currentUser ? this.userService.currentUser.getTitle() : '';
   }
   logout() {
-    this.userService.logout();
+    this.userService.logout(false);
   }
 
 }
