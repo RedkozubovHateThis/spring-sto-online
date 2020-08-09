@@ -57,8 +57,10 @@ public class ProfileResourceRepository implements ResourceRepository<Profile, Lo
             s.setCreatedBy( currentUser.getProfile() );
         }
 
-        if ( s.getId() == null && s.getByFio() != null && s.getByFio() &&
-                ( s.getName() == null || s.getName().length() == 0 ) ) {
+        boolean isNewByFio = s.getId() == null && s.getByFio() != null && s.getByFio() &&
+                ( s.getName() == null || s.getName().length() == 0 );
+        boolean isNotNewByFio = s.getId() != null && s.getByFio() != null && s.getByFio();
+        if ( isNewByFio || isNotNewByFio ) {
             s.setName( String.format( "%s %s %s", s.getLastName(), s.getFirstName(), s.getMiddleName() ) );
         }
 
@@ -121,6 +123,14 @@ public class ProfileResourceRepository implements ResourceRepository<Profile, Lo
             }
             catch(Exception e) {
                 throw new BadRequestException("Ошибка регистрации нового клиента!");
+            }
+        }
+        else if ( !wasNew && s.getByFio() != null && s.getByFio() ) {
+            try {
+                userService.updateUser(s);
+            }
+            catch(Exception e) {
+                throw new BadRequestException("Ошибка сохранения клиента!");
             }
         }
 

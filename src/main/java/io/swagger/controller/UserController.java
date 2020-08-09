@@ -99,7 +99,8 @@ public class UserController {
         user.setBalance( existingUser.getBalance() );
         userRepository.save( user );
 
-        webSocketController.sendCounterRefreshMessage( user, true );
+        webSocketController.sendCounterRefreshMessage( user );
+        webSocketController.sendCounterRefreshMessageToAdmins();
 
         return ResponseEntity.ok(user);
 

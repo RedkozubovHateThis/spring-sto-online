@@ -40,14 +40,14 @@ export class UserResource extends Resource {
     return this.hasRole('CLIENT');
   };
 
-  private hasRole = (roleName: string): boolean => {
+  public hasRole = (roleName: string): boolean => {
     if ( !this.relationships.roles.data || !this.relationships.roles.data.length )
       return false;
 
     const role: UserRoleResource =
       this.relationships.roles.data.find( (eachRole: UserRoleResource) => eachRole.attributes.name === roleName );
 
-    return !!role;
+    return typeof role !== 'undefined' && role != null;
   }
 
   public getTitle = (): string => {

@@ -22,21 +22,26 @@ public class WebSocketController {
     @Autowired
     private UserRepository userRepository;
 
-    public void sendCounterRefreshMessage(User user, Boolean toAdmins) {
+    public void sendCounterRefreshMessage(User user) {
 
         try {
             template.convertAndSend( String.format( "/topic/counters/%s", user.getId() ), user.getId() );
+        }
+        catch ( IllegalArgumentException iae ) {
+            logger.error( "Counter refresh message sending error: {}", iae.getMessage() );
+        }
 
-            if ( toAdmins ) {
+    }
 
-                List<Long> adminsIds = userRepository.collectUserIdsByRoleName("ADMIN");
+    public void sendCounterRefreshMessageToAdmins() {
 
-                for (Long adminsId : adminsIds) {
-                    template.convertAndSend(
-                            String.format( "/topic/counters/%s", adminsId ), adminsId
-                    );
-                }
+        try {
+            List<Long> adminsIds = userRepository.collectUserIdsByRoleName("ADMIN");
 
+            for (Long adminsId : adminsIds) {
+                template.convertAndSend(
+                        String.format( "/topic/counters/%s", adminsId ), adminsId
+                );
             }
         }
         catch ( IllegalArgumentException iae ) {

@@ -1,9 +1,6 @@
 export class ClientInfo {
   totalDocuments: number;
-  totalDone: number;
-  totalDraft: number;
-
-  totalRepairSum: number;
+  totalSum: number;
   totalVehicles: number;
   totalServices: number;
 }

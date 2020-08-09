@@ -1,14 +1,19 @@
 export class ServiceLeaderInfo {
-  documentsRemains: number;
   totalDocuments: number;
+  totalDocumentsCreated: number;
+  totalDocumentsCompleted: number;
 
-  subscribeName: number;
-  subscribeEndDate: Date;
+  totalSum: number;
+  totalVehicles: number;
+  totalClients: number;
 
-  balance: number;
-  balanceValid: boolean;
+  totalBalance: number;
+  adSubscriptionEndDate: number;
+  adSubscriptionAvailable: boolean;
+  operatorSubscriptionEndDate: number;
+  operatorSubscriptionAvailable: boolean;
 
-  moderatorFio: string;
-  serviceName: string;
+  averageAdView: number;
+  adEfficiency: number;
 }
 

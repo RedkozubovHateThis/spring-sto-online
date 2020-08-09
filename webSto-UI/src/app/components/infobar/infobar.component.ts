@@ -6,9 +6,9 @@ import {WebSocketService} from '../../api/webSocket.service';
 import {InfobarService} from '../../api/infobar.service';
 import {ClientInfo} from '../../model/info/clientInfo';
 import {ServiceLeaderInfo} from '../../model/info/serviceLeaderInfo';
-import {AdminInfo} from '../../model/info/adminInfo';
 import {DocumentController} from '../../controller/document.controller';
 import {UserResource} from '../../model/resource/user.resource.service';
+import {UserRoleResource} from '../../model/resource/user-role.resource.service';
 
 @Component({
   selector: 'app-infobar',
@@ -20,19 +20,16 @@ export class InfobarComponent implements OnInit {
   constructor(private infobarService: InfobarService, private userService: UserService,
               private webSocketService: WebSocketService, private documentController: DocumentController) {}
 
-  private currentUser: UserResource;
   private subscription: StompSubscription;
   private onConnect: Subscription;
 
   private clientInfo: ClientInfo;
   private serviceLeaderInfo: ServiceLeaderInfo;
-  private moderatorInfo: AdminInfo;
-  private isLoading: boolean = false;
+  private isLoading = false;
 
   private readonly daysRemainsWarn = 1000 * 60 * 60 * 24 * 3;
 
   ngOnInit(): void {
-
     if ( this.userService.currentUser == null ) {
       const subscription: Subscription = this.userService.currentUserIsLoaded.subscribe( currentUser => {
         this.ngOnInit();
@@ -42,8 +39,6 @@ export class InfobarComponent implements OnInit {
       return;
     }
 
-    this.currentUser = this.userService.currentUser;
-
     this.getData();
 
     this.onConnect = this.webSocketService.clientIsConnected.subscribe( client => {
@@ -52,7 +47,7 @@ export class InfobarComponent implements OnInit {
 
     this.subscribe();
 
-    if ( this.currentUser.isAdmin() )
+    if ( this.userService.currentUser.isAdmin() )
       this.documentController.organizationChange.subscribe( () => {
         this.getAdminData();
       } );
@@ -60,7 +55,7 @@ export class InfobarComponent implements OnInit {
 
   subscribe() {
 
-    if ( !this.webSocketService.client ) { return; }
+    if ( !this.webSocketService.client ) return;
 
     const me = this;
 
@@ -71,20 +66,20 @@ export class InfobarComponent implements OnInit {
   }
 
   private getData() {
-    if ( this.currentUser == null ) return;
+    if ( this.userService.currentUser == null ) return;
 
-    if ( this.currentUser.isClient() )
+    if ( this.userService.currentUser.isClient() )
       this.getClientData();
-    else if ( this.currentUser.isServiceLeader() )
+    else if ( this.userService.currentUser.isServiceLeader() )
       this.getServiceLeaderData();
-    else if ( this.currentUser.isAdmin() )
+    else if ( this.userService.currentUser.isAdmin() )
       this.getAdminData();
   }
 
   private getClientData() {
     this.isLoading = true;
-    this.infobarService.getClientInfo().subscribe( data => {
-      this.clientInfo = data as ClientInfo;
+    this.infobarService.getClientInfo().subscribe( (data) => {
+      this.clientInfo = data;
       this.isLoading = false;
     }, () => {
       this.isLoading = false;
@@ -93,7 +88,7 @@ export class InfobarComponent implements OnInit {
 
   private getServiceLeaderData() {
     this.isLoading = true;
-    this.infobarService.getServiceLeaderInfo().subscribe( data => {
+    this.infobarService.getServiceLeaderInfo().subscribe( (data) => {
       this.serviceLeaderInfo = data as ServiceLeaderInfo;
       this.isLoading = false;
     }, () => {
@@ -102,13 +97,13 @@ export class InfobarComponent implements OnInit {
   }
 
   private getAdminData() {
-    // this.isLoading = true;
-    // this.infobarService.getModeratorInfo( this.documentResponseController.filter.organization ).subscribe( data => {
-    //   this.moderatorInfo = data as AdminInfo;
-    //   this.isLoading = false;
-    // }, () => {
-    //   this.isLoading = false;
-    // } );
+    this.isLoading = true;
+    this.infobarService.getAdminInfo( this.documentController.filter.organization ).subscribe( (data) => {
+      this.serviceLeaderInfo = data;
+      this.isLoading = false;
+    }, () => {
+      this.isLoading = false;
+    } );
   }
 
   private isLessThen3DaysRemains(endDate: any): boolean {

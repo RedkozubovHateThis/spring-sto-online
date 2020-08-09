@@ -140,7 +140,7 @@ public class UserServiceImpl implements UserService {
         user.setEnabled(true);
         user.setIsAutoRegistered(true);
 
-        if ( profile.getByFio() ) {
+        if ( profile.getByFio() != null && profile.getByFio() ) {
             user.setFirstName( profile.getFirstName() );
             user.setLastName( profile.getLastName() );
             user.setMiddleName( profile.getMiddleName() );
@@ -163,6 +163,28 @@ public class UserServiceImpl implements UserService {
 
             smsService.sendSmsAsync( profile.getPhone(), smsText );
         }
+
+    }
+
+    @Override
+    public void updateUser(Profile profile) throws Exception {
+
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( !UserHelper.isAdmin(currentUser) && !UserHelper.isServiceLeader(currentUser) )
+            throw new Exception();
+
+        User user = profile.getUser();
+        if ( user == null ) {
+            generateUser(profile);
+            return;
+        }
+
+        user.setFirstName( profile.getFirstName() );
+        user.setLastName( profile.getLastName() );
+        user.setMiddleName( profile.getMiddleName() );
+
+        userRepository.save(user);
 
     }
 }

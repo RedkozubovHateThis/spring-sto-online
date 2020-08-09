@@ -146,4 +146,17 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
             "WHERE em.document_id IS NOT NULL " +
             "AND em.target_user_id = :targetUserId")
     List<Integer> collectDocumentIds(@Param("targetUserId") Long targetUserId);
+
+    @Query(nativeQuery = true, value = "SELECT SUM(u.balance) FROM users AS u " +
+            "INNER JOIN users_user_roles AS uur ON u.id = uur.user_id " +
+            "INNER JOIN user_role AS ur ON uur.user_role_id = ur.id " +
+            "WHERE u.enabled = TRUE " +
+            "AND ur.name = 'SERVICE_LEADER'")
+    Double countTotalBalance();
+
+    @Query(nativeQuery = true, value = "SELECT u.balance FROM users AS u " +
+            "INNER JOIN profile AS p ON u.profile_id = p.id AND p.deleted = FALSE " +
+            "WHERE u.enabled = TRUE " +
+            "AND p.id = :profileId")
+    Double getBalanceByProfileId(@Param("profileId") Long profileId);
 }

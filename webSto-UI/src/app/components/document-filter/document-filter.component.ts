@@ -138,6 +138,7 @@ export class DocumentFilterComponent implements OnInit {
     this.fromDate = null;
     this.toDate = null;
     this.selectedClient = null;
+    this.onOrganizationChange.emit();
     this.emitChange();
   }
 

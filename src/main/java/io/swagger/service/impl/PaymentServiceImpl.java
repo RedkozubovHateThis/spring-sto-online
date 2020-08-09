@@ -359,7 +359,8 @@ public class PaymentServiceImpl implements PaymentService {
 
         generateAddonPaymentRecord( user, subscriptionAddon, now );
 
-        webSocketController.sendCounterRefreshMessage( user, true );
+        webSocketController.sendCounterRefreshMessage( user );
+        webSocketController.sendCounterRefreshMessageToAdmins();
 
     }
 
@@ -387,7 +388,8 @@ public class PaymentServiceImpl implements PaymentService {
 
             userRepository.save( user );
 
-            webSocketController.sendCounterRefreshMessage( user, true );
+            webSocketController.sendCounterRefreshMessage( user );
+            webSocketController.sendCounterRefreshMessageToAdmins();
         }
         else
             throw new PaymentException("Текущий тариф не найден/истек!");
@@ -526,7 +528,8 @@ public class PaymentServiceImpl implements PaymentService {
 
         userRepository.save( paymentUser );
 
-        webSocketController.sendCounterRefreshMessage( paymentUser, true );
+        webSocketController.sendCounterRefreshMessage( paymentUser );
+        webSocketController.sendCounterRefreshMessageToAdmins();
 
     }
 

@@ -1,10 +1,11 @@
 package io.swagger.controller;
 
 import io.swagger.helper.UserHelper;
+import io.swagger.postgres.model.enums.ServiceDocumentStatus;
 import io.swagger.postgres.model.security.User;
+import io.swagger.postgres.repository.ServiceDocumentRepository;
 import io.swagger.postgres.repository.SubscriptionTypeRepository;
 import io.swagger.postgres.repository.UserRepository;
-import io.swagger.response.info.AdminInfo;
 import io.swagger.response.info.ClientInfo;
 import io.swagger.response.info.ServiceLeaderInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +16,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
+
 @RestController
 @RequestMapping("/infoBar")
 public class InfoBarController {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private ServiceDocumentRepository serviceDocumentRepository;
 
     @Autowired
     private SubscriptionTypeRepository subscriptionTypeRepository;
@@ -32,17 +37,15 @@ public class InfoBarController {
     public ResponseEntity getClientInfo() {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.isClient( currentUser ) )
+        if ( !UserHelper.isClient( currentUser ) || currentUser.getProfile() == null )
             return ResponseEntity.notFound().build();
 
         ClientInfo clientInfo = new ClientInfo();
 
-//        clientInfo.setTotalDocuments( documentsRepository.countByClientId( currentUser.getClientId() ) );
-//        clientInfo.setTotalDone( documentsRepository.countByClientIdAndState( currentUser.getClientId(), 4 ) );
-//        clientInfo.setTotalDraft( documentsRepository.countByClientIdAndState( currentUser.getClientId(), 2 ) );
-//        clientInfo.setTotalRepairSum( calculateTotalRepairSum( currentUser ) );
-//        clientInfo.setTotalVehicles( modelRepository.countVehiclesByClientId( currentUser.getClientId() ) );
-//        clientInfo.setTotalServices( organizationRepository.countServicesByClientId( currentUser.getClientId() ) );
+        clientInfo.setTotalDocuments( serviceDocumentRepository.countByClientId( currentUser.getProfile().getId() ) );
+        clientInfo.setTotalSum( serviceDocumentRepository.countTotalSumByClientId( currentUser.getProfile().getId() ) );
+        clientInfo.setTotalVehicles( serviceDocumentRepository.countVehiclesByClientId( currentUser.getProfile().getId() ) );
+        clientInfo.setTotalServices( serviceDocumentRepository.countServicesByClientId( currentUser.getProfile().getId() ) );
 
         return ResponseEntity.ok( clientInfo );
     }
@@ -51,160 +54,92 @@ public class InfoBarController {
     public ResponseEntity getServiceLeaderInfo() {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.isServiceLeader( currentUser ) )
+        if ( !UserHelper.isServiceLeader( currentUser ) || currentUser.getProfile() == null )
             return ResponseEntity.notFound().build();
 
-        ServiceLeaderInfo serviceLeaderInfo = new ServiceLeaderInfo();
-
-//        Subscription subscription = currentUser.getCurrentSubscription();
-//
-//        if ( subscription != null ) {
-//
-//            Integer documentsCount = documentsRepository.countDocumentsByOrganizationIdAndDates( currentUser.getOrganizationId(),
-//                    subscription.getStartDate(), subscription.getEndDate() );
-//            serviceLeaderInfo.setDocumentsRemains( Math.max( subscription.getDocumentsCount() - documentsCount, 0 ) );
-//            serviceLeaderInfo.setTotalDocuments( subscription.getDocumentsCount() );
-//            serviceLeaderInfo.setSubscribeName( subscription.getName() );
-//            serviceLeaderInfo.setSubscribeEndDate( subscription.getEndDate() );
-//
-//            SubscriptionType renewalType = null;
-//
-//            if ( currentUser.getSubscriptionTypeId() != null )
-//                renewalType = subscriptionTypeRepository.findOne( currentUser.getSubscriptionTypeId() );
-//
-//            if ( renewalType == null )
-//                serviceLeaderInfo.setBalanceValid(
-//                        subscription.getIsRenewable() && currentUser.getBalance() - subscription.getType().getCost() > 0
-//                );
-//            else
-//                serviceLeaderInfo.setBalanceValid(
-//                        currentUser.getBalance() - renewalType.getCost() > 0
-//                );
-//
-//        }
-//
-//        serviceLeaderInfo.setBalance( currentUser.getBalance() );
-//
-//        serviceLeaderInfo.setModeratorFio( currentUser.getModeratorFio() );
-//
-//        Organization organization = organizationRepository.findOne( currentUser.getOrganizationId() );
-//        serviceLeaderInfo.setServiceName( organization != null ? organization.getShortName() : null );
+        ServiceLeaderInfo serviceLeaderInfo = buildInfo( currentUser, currentUser.getProfile().getId(), true );
 
         return ResponseEntity.ok( serviceLeaderInfo );
     }
 
     @GetMapping("/admin")
-    public ResponseEntity getModeratorInfo(@RequestParam(value = "organizationId", required = false) Integer organizationId) {
+    public ResponseEntity getAdminInfo(@RequestParam(value = "organizationId", required = false) Long organizationId) {
 
         User currentUser = userRepository.findCurrentUser();
         if ( !UserHelper.isAdmin( currentUser ) )
             return ResponseEntity.notFound().build();
 
-        AdminInfo adminInfo = new AdminInfo();
-//        adminInfo.setServicesCount( userRepository.countUsersByRoleNames( Collections.singletonList("SERVICE_LEADER") ) );
-//        adminInfo.setModeratorsCount( userRepository.countUsersByRoleName("MODERATOR") );
-//
-//        if ( organizationId != null ) {
-//
-//            User serviceLeader = userRepository.findUserByOrganizationId( organizationId );
-//
-//            if ( serviceLeader != null && serviceLeader.getOrganizationId() != null && serviceLeader.getIsApproved() ) {
-//
-//                adminInfo.setByService(true);
-//                Subscription subscription = serviceLeader.getCurrentSubscription();
-//
-//                if ( subscription != null ) {
-//
-//                    Integer documentCount =
-//                            documentsRepository.countDocumentsByOrganizationIdAndDates( serviceLeader.getOrganizationId(),
-//                                    subscription.getStartDate(), subscription.getEndDate() );
-//                    adminInfo.setDocumentsRemainsAll( Math.max( subscription.getDocumentsCount() - documentCount, 0 ) );
-//                    adminInfo.setTotalDocumentsAll( subscription.getDocumentsCount() );
-//
-//                    SubscriptionType renewalType = null;
-//
-//                    if ( serviceLeader.getSubscriptionTypeId() != null )
-//                        renewalType = subscriptionTypeRepository.findOne( serviceLeader.getSubscriptionTypeId() );
-//
-//                    if ( renewalType == null )
-//                        adminInfo.setBalanceValid(
-//                                subscription.getIsRenewable() && serviceLeader.getBalance() - subscription.getType().getCost() > 0
-//                        );
-//                    else
-//                        adminInfo.setBalanceValid(
-//                                serviceLeader.getBalance() - renewalType.getCost() > 0
-//                        );
-//
-//                }
-//                else {
-//                    adminInfo.setDocumentsRemainsAll( 0 );
-//                    adminInfo.setTotalDocumentsAll( 0 );
-//                }
-//
-//                adminInfo.setTotalDraftAll( documentsRepository.countByOrganizationIdAndState( serviceLeader.getOrganizationId(), 2 ) );
-//                adminInfo.setBalanceAll( serviceLeader.getBalance() );
-//
-//            }
-//
-//        }
-//        else {
-//
-//            int documentsRemainsAll = 0;
-//            int totalDocumentsAll = 0;
-//            double balanceAll = 0.0;
-//
-//            List<User> serviceLeaders = userRepository.findUsersByRoleNames( Arrays.asList( "SERVICE_LEADER", "FREELANCER" ) );
-//            for (User serviceLeader : serviceLeaders) {
-//
-//                if ( serviceLeader.getOrganizationId() == null || !serviceLeader.getIsApproved() )
-//                    continue;
-//
-//                balanceAll += serviceLeader.getBalance();
-//
-//                Subscription subscription = serviceLeader.getCurrentSubscription();
-//
-//                if ( subscription == null )
-//                    continue;
-//
-//                Integer documentCount =
-//                        documentsRepository.countDocumentsByOrganizationIdAndDates( serviceLeader.getOrganizationId(),
-//                                subscription.getStartDate(), subscription.getEndDate() );
-//
-//                totalDocumentsAll += subscription.getDocumentsCount();
-//                documentsRemainsAll += subscription.getDocumentsCount() - documentCount;
-//            }
-//
-//            adminInfo.setDocumentsRemainsAll( Math.max( documentsRemainsAll, 0 ) );
-//            adminInfo.setTotalDocumentsAll( totalDocumentsAll );
-//            adminInfo.setBalanceAll( balanceAll );
-//            adminInfo.setTotalDraftAll( documentsRepository.countByState( 2 ) );
-//
-//        }
+        ServiceLeaderInfo serviceLeaderInfo = buildInfo(currentUser, organizationId, false);
 
-        return ResponseEntity.ok(adminInfo);
+        return ResponseEntity.ok(serviceLeaderInfo);
     }
 
-//    private Double calculateTotalRepairSum(User currentUser) {
-//        List<DocumentServiceDetail> documents = documentsRepository.findByClientIdAndState( currentUser.getClientId(), 4 );
-//
-//        return documents.stream().mapToDouble( document -> {
-//            double totalSum = 0.0;
-//
-//            try {
-//                totalSum += document.getDocumentOutHeader().getDocumentOut().getServiceWorks()
-//                        .stream()
-//                        .mapToDouble( serviceWork -> serviceWork.getServiceWorkTotalCost( true ) ).sum();
-//            }
-//            catch(NullPointerException ignored) {}
-//
-//            try {
-//                totalSum += document.getDocumentOutHeader().getDocumentOut().getServiceGoodsAddons()
-//                        .stream()
-//                        .mapToDouble( serviceGoodsAddon -> serviceGoodsAddon.getServiceGoodsCost( true ) ).sum();
-//            }
-//            catch(NullPointerException ignored) {}
-//
-//            return totalSum;
-//        } ).sum();
-//    }
+    private ServiceLeaderInfo buildInfo(User currentUser, Long organizationId, Boolean byServiceLeader) {
+        ServiceLeaderInfo serviceLeaderInfo = new ServiceLeaderInfo();
+
+        Long totalDocuments = 0L;
+        Long totalDocumentsCreated = 0L;
+        Long totalDocumentsCompleted = 0L;
+
+        Double totalSum = 0.0;
+        Long totalVehicles = 0L;
+        Long totalClients = 0L;
+
+        Double totalBalance = 0.0;
+        Date adSubscriptionEndDate = null;
+        Boolean adSubscriptionAvailable = null;
+        Date operatorSubscriptionEndDate = null;
+        Boolean operatorSubscriptionAvailable = null;
+        Integer averageAdView = 0;
+        Integer adEfficiency = 0;
+
+        Double balance;
+        if ( byServiceLeader )
+            balance = currentUser.getBalance();
+        else {
+            if ( organizationId != null )
+                balance = userRepository.getBalanceByProfileId( organizationId );
+            else
+                balance = userRepository.countTotalBalance();
+        }
+
+        if ( balance != null )
+            totalBalance += balance;
+
+        if ( organizationId != null ) {
+            totalDocuments += serviceDocumentRepository.countByExecutorId( organizationId );
+            totalDocumentsCompleted += serviceDocumentRepository.countByExecutorIdAndStatus( organizationId, ServiceDocumentStatus.COMPLETED.toString() );
+            totalDocumentsCreated += serviceDocumentRepository.countByExecutorIdAndStatus( organizationId, ServiceDocumentStatus.CREATED.toString() );
+            totalSum += serviceDocumentRepository.countTotalSumByExecutorId( organizationId );
+            totalVehicles += serviceDocumentRepository.countVehiclesByExecutorId( organizationId );
+            totalClients += serviceDocumentRepository.countClientsByExecutorId( organizationId );
+        }
+        else {
+            totalDocuments += serviceDocumentRepository.count();
+            totalDocumentsCompleted += serviceDocumentRepository.countByStatus( ServiceDocumentStatus.COMPLETED.toString() );
+            totalDocumentsCreated += serviceDocumentRepository.countByStatus( ServiceDocumentStatus.CREATED.toString() );
+            totalSum += serviceDocumentRepository.countTotalSum();
+            totalVehicles += serviceDocumentRepository.countVehicles();
+            totalClients += serviceDocumentRepository.countClients();
+        }
+
+        serviceLeaderInfo.setTotalDocuments( totalDocuments );
+        serviceLeaderInfo.setTotalDocumentsCompleted( totalDocumentsCompleted );
+        serviceLeaderInfo.setTotalDocumentsCreated( totalDocumentsCreated );
+
+        serviceLeaderInfo.setTotalSum( totalSum );
+        serviceLeaderInfo.setTotalVehicles( totalVehicles );
+        serviceLeaderInfo.setTotalClients( totalClients );
+
+        serviceLeaderInfo.setTotalBalance( totalBalance );
+        serviceLeaderInfo.setAdSubscriptionEndDate( adSubscriptionEndDate );
+        serviceLeaderInfo.setAdSubscriptionAvailable( adSubscriptionAvailable );
+        serviceLeaderInfo.setOperatorSubscriptionEndDate( operatorSubscriptionEndDate );
+        serviceLeaderInfo.setOperatorSubscriptionAvailable( operatorSubscriptionAvailable );
+
+        serviceLeaderInfo.setAverageAdView( averageAdView );
+        serviceLeaderInfo.setAdEfficiency( adEfficiency );
+
+        return serviceLeaderInfo;
+    }
 }

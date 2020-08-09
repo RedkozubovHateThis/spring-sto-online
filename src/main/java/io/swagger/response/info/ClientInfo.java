@@ -5,12 +5,9 @@ import lombok.Data;
 @Data
 public class ClientInfo {
 
-    private Integer totalDocuments;
-    private Integer totalDone;
-    private Integer totalDraft;
-
-    private Double totalRepairSum;
-    private Integer totalVehicles;
-    private Integer totalServices;
+    private Long totalDocuments;
+    private Double totalSum;
+    private Long totalVehicles;
+    private Long totalServices;
 
 }

@@ -104,7 +104,7 @@
         (onChange)="applyFilter()"
         [filter]="documentController.filter"
         [document]="selected"
-        (onOrganizationChange)="documentService.emitOrganizationChange()"
+        (onOrganizationChange)="documentController.emitOrganizationChange()"
       ></app-document-filter>
     </div>
   </div>

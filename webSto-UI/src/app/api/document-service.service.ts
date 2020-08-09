@@ -92,8 +92,4 @@ export class DocumentService implements TransferService<ServiceDocumentResource>
     this.transferModel = model;
   }
 
-  emitOrganizationChange() {
-
-  }
-
 }

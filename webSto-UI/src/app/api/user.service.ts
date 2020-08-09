@@ -109,26 +109,34 @@ export class UserService implements TransferService<UserResource>, RestService<U
     this.userResourceService.get('currentUser', {
       beforepath: `${environment.getBeforeUrl()}/external`
     }).subscribe((result) => {
-      this.setCurrentUserData( result );
-      localStorage.setItem('isAuthenticated', 'true');
+      // TODO: подумать над этим костылем
+      setTimeout(() => {
+        this.setCurrentUserData( result );
 
-      const redirectUrl: string = localStorage.getItem('redirectUrl');
+        localStorage.setItem('isAuthenticated', 'true');
 
-      if ( redirectUrl != null && redirectUrl.length > 0 ) {
-        this.router.navigate([redirectUrl]);
-        localStorage.removeItem('redirectUrl');
-      }
-      this.router.navigate(['/documents']);
+        const redirectUrl: string = localStorage.getItem('redirectUrl');
+
+        if ( redirectUrl != null && redirectUrl.length > 0 ) {
+          this.router.navigate([redirectUrl]);
+          localStorage.removeItem('redirectUrl');
+        }
+        this.router.navigate(['/documents']);
+      }, 250);
     });
 
   }
 
   getCurrentUser() {
     this.userResourceService.get('currentUser', {
-      beforepath: `${environment.getBeforeUrl()}/external`
+      beforepath: `${environment.getBeforeUrl()}/external`,
+      include: ['roles']
     }).subscribe((result) => {
-      this.setCurrentUserData( result );
-      this.currentUserIsLoaded.next( this.currentUser );
+      // TODO: подумать над этим костылем
+      setTimeout(() => {
+        this.setCurrentUserData( result );
+        this.currentUserIsLoaded.next( this.currentUser );
+      }, 250);
     });
 
   }

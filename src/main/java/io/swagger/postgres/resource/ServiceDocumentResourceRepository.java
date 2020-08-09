@@ -8,6 +8,7 @@ import io.crnk.core.repository.MetaRepository;
 import io.crnk.core.repository.ResourceRepository;
 import io.crnk.core.resource.list.ResourceList;
 import io.crnk.core.resource.meta.MetaInformation;
+import io.swagger.controller.WebSocketController;
 import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.ServiceDocument;
 import io.swagger.postgres.model.enums.ServiceDocumentPaidStatus;
@@ -30,6 +31,9 @@ public class ServiceDocumentResourceRepository implements ResourceRepository<Ser
 
     @Autowired
     private ServiceDocumentRepository serviceDocumentRepository;
+
+    @Autowired
+    private WebSocketController webSocketController;
 
     @Override
     public Class<ServiceDocument> getResourceClass() {
@@ -99,7 +103,10 @@ public class ServiceDocumentResourceRepository implements ResourceRepository<Ser
         if ( s.getId() == null && ( s.getNumber() == null || s.getNumber().length() == 0 ) )
             generateNumber(s);
 
-        return serviceDocumentRepository.save( s );
+        serviceDocumentRepository.save( s );
+        sendCounterRefreshMessage( s );
+
+        return s;
     }
 
     @Override
@@ -129,6 +136,7 @@ public class ServiceDocumentResourceRepository implements ResourceRepository<Ser
 
         serviceDocument.setDeleted( true );
         serviceDocumentRepository.save( serviceDocument );
+        sendCounterRefreshMessage( serviceDocument );
     }
 
     @Override
@@ -148,5 +156,19 @@ public class ServiceDocumentResourceRepository implements ResourceRepository<Ser
         long count = serviceDocumentRepository.countAllByExecutorId(executor.getId());
         String documentNumber = String.format("%s%s", shortFio, count + 1);
         serviceDocument.setNumber( documentNumber );
+    }
+
+    private void sendCounterRefreshMessage(ServiceDocument serviceDocument) {
+        try {
+            Profile executor = serviceDocument.getExecutor();
+            Profile client = serviceDocument.getClient();
+
+            if ( executor != null && executor.getUser() != null )
+                webSocketController.sendCounterRefreshMessage( executor.getUser() );
+            if ( client != null && client.getUser() != null )
+                webSocketController.sendCounterRefreshMessage( client.getUser() );
+            webSocketController.sendCounterRefreshMessageToAdmins();
+        }
+        catch(Exception ignored) {}
     }
 }

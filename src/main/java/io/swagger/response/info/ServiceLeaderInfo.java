@@ -7,16 +7,21 @@ import java.util.Date;
 @Data
 public class ServiceLeaderInfo {
 
-    private Integer documentsRemains;
-    private Integer totalDocuments;
+    private Long totalDocuments;
+    private Long totalDocumentsCreated;
+    private Long totalDocumentsCompleted;
 
-    private String subscribeName;
-    private Date subscribeEndDate;
+    private Double totalSum;
+    private Long totalVehicles;
+    private Long totalClients;
 
-    private Double balance;
-    private Boolean balanceValid;
+    private Double totalBalance;
+    private Date adSubscriptionEndDate;
+    private Boolean adSubscriptionAvailable;
+    private Date operatorSubscriptionEndDate;
+    private Boolean operatorSubscriptionAvailable;
 
-    private String moderatorFio;
-    private String serviceName;
+    private Integer averageAdView;
+    private Integer adEfficiency;
 
 }
