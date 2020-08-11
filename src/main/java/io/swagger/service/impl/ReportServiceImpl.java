@@ -5,8 +5,13 @@ import io.swagger.helper.fwMoney;
 import io.swagger.postgres.model.*;
 import io.swagger.postgres.model.security.Profile;
 import io.swagger.postgres.model.security.User;
+import io.swagger.postgres.repository.ProfileRepository;
 import io.swagger.postgres.repository.ServiceDocumentRepository;
 import io.swagger.response.exception.DataNotFoundException;
+import io.swagger.response.report.ClientDocumentResponse;
+import io.swagger.response.report.ClientRegisteredResponse;
+import io.swagger.response.report.ClientResponse;
+import io.swagger.response.report.ExecutorResponse;
 import io.swagger.service.ReportService;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -33,12 +38,16 @@ public class ReportServiceImpl implements ReportService {
 
     @Autowired
     private ServiceDocumentRepository serviceDocumentRepository;
+    @Autowired
+    private ProfileRepository profileRepository;
 
     @Value("${reports.catalog}")
     private String reportsCatalog;
 
     @Value("${domain.demo}")
     private Boolean demoDomain;
+
+    /* ------------------------------- DOCUMENTS REPORTS ------------------------------- */
 
     @Override
     public byte[] getOrderReport(Long documentId, String orderName) throws IOException, JRException, DataNotFoundException {
@@ -205,5 +214,262 @@ public class ReportServiceImpl implements ReportService {
             return returnText;
 
         return field;
+    }
+
+    /* ------------------------------- STATISTICS REPORTS ------------------------------- */
+
+    @Override
+    public List<ClientResponse> getClientsResponses(Long profileId, Date startDate, Date endDate) {
+        List<ClientResponse> clientResponses = new ArrayList<>();
+        List<ServiceDocument> serviceDocuments;
+
+        if ( startDate != null && endDate != null )
+            serviceDocuments = serviceDocumentRepository.findByStartDateBetweenAndExecutorIdOrderByStartDate(startDate, endDate, profileId);
+        else
+            serviceDocuments = serviceDocumentRepository.findByExecutorIdOrderByStartDate(profileId);
+
+        for (ServiceDocument serviceDocument : serviceDocuments) {
+            Profile client = serviceDocument.getClient();
+
+            if ( client == null ) continue;
+
+            ClientResponse clientResponse = filterClientResponse(clientResponses, client.getId());
+
+            if ( clientResponse == null ) {
+                clientResponse = new ClientResponse(client);
+                clientResponses.add( clientResponse );
+            }
+
+            clientResponse.addClientResponse( serviceDocument );
+        }
+
+        return clientResponses;
+    }
+
+    private ClientResponse filterClientResponse(List<ClientResponse> clientResponses, Long clientId) {
+        if ( clientResponses.size() == 0 ) return null;
+
+        return clientResponses
+                .stream()
+                .filter( clientResponse -> clientResponse.getClientId().equals( clientId ))
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
+    public byte[] getClientsReport(Long profileId, Date startDate, Date endDate) throws IOException, JRException, DataNotFoundException {
+        File template = new File( reportsCatalog + "clients.jasper" );
+        InputStream templateStream = new FileInputStream(template);
+
+        String title = String.format("Отчет о реализации за период с %s по %s", DateHelper.formatDate(startDate), DateHelper.formatDate(endDate));
+
+        Map<String, Object> parameters = new HashMap<>();
+        JRBeanCollectionDataSource reportData = new JRBeanCollectionDataSource( getClientsReportData( profileId, startDate, endDate) );
+        parameters.put("reportData", reportData);
+        parameters.put("reportTitle", title);
+
+        JasperPrint jasperPrint = JasperFillManager.fillReport(templateStream, parameters, new JREmptyDataSource());
+
+        return JasperExportManager.exportReportToPdf( jasperPrint );
+    }
+
+    private List<Map<String, Object>> getClientsReportData(Long profileId, Date startDate, Date endDate) throws DataNotFoundException {
+        List<ClientResponse> responses = getClientsResponses(profileId, startDate, endDate);
+//        if ( demoDomain && responses.size() == 0 )
+//            responses = getClientFakeResponses(startDate, endDate);
+
+        if ( responses.size() == 0 ) throw new DataNotFoundException();
+
+        List<Map<String, Object>> result = new ArrayList<>();
+        double total = 0.0;
+
+        for ( ClientResponse response : responses ) {
+
+            result.add( response.buildReportData() );
+            total += response.getTotal();
+
+            for ( ClientDocumentResponse clientDocumentResponse : response.getClientDocumentResponses() ) {
+                result.add( clientDocumentResponse.buildReportData() );
+            }
+
+        }
+
+        Map<String, Object> totalRow = new HashMap<>();
+        totalRow.put("isBold", true);
+        totalRow.put("fullName", "ИТОГ");
+        totalRow.put("total", total);
+
+        result.add( totalRow );
+
+        return result;
+    }
+
+    @Override
+    public List<ClientResponse> getVehiclesResponses(Long profileId, String vinNumber, Date startDate, Date endDate) {
+        List<ClientResponse> clientResponses = new ArrayList<>();
+        List<ServiceDocument> serviceDocuments;
+
+        if ( startDate != null && endDate != null )
+            serviceDocuments = serviceDocumentRepository.findByVehicleVinNumberAndStartDateBetweenAndExecutorId(startDate, endDate, profileId, "%" + vinNumber + "%");
+        else
+            serviceDocuments = serviceDocumentRepository.findByVehicleVinNumberAndExecutorId(profileId, "%" + vinNumber + "%");
+
+        for (ServiceDocument serviceDocument : serviceDocuments) {
+            Vehicle vehicle = serviceDocument.getVehicle();
+
+            if ( vehicle == null ) continue;
+
+            ClientResponse clientResponse = filterClientResponse(clientResponses, vehicle.getId());
+
+            if ( clientResponse == null ) {
+                clientResponse = new ClientResponse(vehicle);
+                clientResponses.add( clientResponse );
+            }
+
+            clientResponse.addClientResponse( serviceDocument );
+        }
+
+        return clientResponses;
+    }
+
+    @Override
+    public byte[] getVehiclesReport(Long profileId, String vinNumber, Date startDate, Date endDate) throws IOException, JRException, DataNotFoundException {
+        File template = new File( reportsCatalog + "clients.jasper" );
+        InputStream templateStream = new FileInputStream(template);
+
+        String title;
+
+        if ( startDate != null && endDate != null )
+            title = String.format("Отчет о ремонтах автомобиля за период с %s по %s", DateHelper.formatDate(startDate), DateHelper.formatDate(endDate));
+        else
+            title = "Отчет о ремонтах автомобиля";
+
+        Map<String, Object> parameters = new HashMap<>();
+        JRBeanCollectionDataSource reportData = new JRBeanCollectionDataSource( getVehiclesReportData( profileId, vinNumber, startDate, endDate) );
+        parameters.put("reportData", reportData);
+        parameters.put("reportTitle", title);
+
+        JasperPrint jasperPrint = JasperFillManager.fillReport(templateStream, parameters, new JREmptyDataSource());
+
+        return JasperExportManager.exportReportToPdf( jasperPrint );
+    }
+
+    private List<Map<String, Object>> getVehiclesReportData(Long profileId, String vinNumber, Date startDate, Date endDate) throws DataNotFoundException {
+        List<ClientResponse> responses = getVehiclesResponses(profileId, vinNumber, startDate, endDate);
+//        if ( demoDomain && responses.size() == 0 )
+//            responses = getClientFakeResponses(startDate, endDate);
+
+        if ( responses.size() == 0 ) throw new DataNotFoundException();
+
+        List<Map<String, Object>> result = new ArrayList<>();
+        double total = 0.0;
+
+        for ( ClientResponse response : responses ) {
+
+            result.add( response.buildReportData() );
+            total += response.getTotal();
+
+            for ( ClientDocumentResponse clientDocumentResponse : response.getClientDocumentResponses() ) {
+                result.add( clientDocumentResponse.buildReportData() );
+            }
+
+        }
+
+        Map<String, Object> totalRow = new HashMap<>();
+        totalRow.put("isBold", true);
+        totalRow.put("fullName", "ИТОГ");
+        totalRow.put("total", total);
+
+        result.add( totalRow );
+
+        return result;
+    }
+
+    @Override
+    public List<ExecutorResponse> getRegisteredResponses(Long profileId) {
+        List<ExecutorResponse> executorResponses = new ArrayList<>();
+        List<Profile> clients;
+
+        if ( profileId != null )
+            clients = profileRepository.findClientsByCreatedBy(profileId);
+        else
+            clients = profileRepository.findClients();
+
+        for (Profile client : clients) {
+            Profile createdBy = client.getCreatedBy();
+
+            if ( createdBy == null ) {
+                ExecutorResponse executorResponse = filterExecutorResponse(executorResponses, null);
+
+                if ( executorResponse == null ) {
+                    executorResponse = new ExecutorResponse("Самостоятельная регистрация");
+                    executorResponses.add( executorResponse );
+                }
+
+                executorResponse.addRegisteredResponse( client );
+            }
+            else {
+                ExecutorResponse executorResponse = filterExecutorResponse(executorResponses, createdBy.getId());
+
+                if ( executorResponse == null ) {
+                    executorResponse = new ExecutorResponse(createdBy);
+                    executorResponses.add( executorResponse );
+                }
+
+                executorResponse.addRegisteredResponse( client );
+            }
+        }
+
+        return executorResponses;
+    }
+
+    private ExecutorResponse filterExecutorResponse(List<ExecutorResponse> executorResponses, Long registeredById) {
+        if ( executorResponses.size() == 0 ) return null;
+
+        return executorResponses
+                .stream()
+                .filter( clientResponse -> clientResponse.getRegisteredById() == null && registeredById == null ||
+                        ( clientResponse.getRegisteredById() != null && clientResponse.getRegisteredById().equals( registeredById ) ) )
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
+    public byte[] getRegisteredReport(Long profileId) throws IOException, JRException, DataNotFoundException {
+        File template = new File( reportsCatalog + "registered.jasper" );
+        InputStream templateStream = new FileInputStream(template);
+
+        String title = "Отчет о зарегистрированных клиентах";
+
+        Map<String, Object> parameters = new HashMap<>();
+        JRBeanCollectionDataSource reportData = new JRBeanCollectionDataSource( getRegisteredReportData( profileId ) );
+        parameters.put("reportData", reportData);
+        parameters.put("reportTitle", title);
+
+        JasperPrint jasperPrint = JasperFillManager.fillReport(templateStream, parameters, new JREmptyDataSource());
+
+        return JasperExportManager.exportReportToPdf( jasperPrint );
+    }
+
+    private List<Map<String, Object>> getRegisteredReportData(Long profileId) throws DataNotFoundException {
+        List<ExecutorResponse> responses = getRegisteredResponses(profileId);
+//        if ( demoDomain && responses.size() == 0 )
+//            responses = getClientFakeResponses(startDate, endDate);
+
+        if ( responses.size() == 0 ) throw new DataNotFoundException();
+
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        for ( ExecutorResponse response : responses ) {
+
+            result.add( response.buildReportData() );
+
+            for ( ClientRegisteredResponse clientDocumentResponse : response.getClientRegisteredResponses() ) {
+                result.add( clientDocumentResponse.buildReportData() );
+            }
+
+        }
+
+        return result;
     }
 }

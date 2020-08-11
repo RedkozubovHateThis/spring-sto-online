@@ -64,4 +64,21 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
             "WHERE p.email = :email AND p.id <> :userId )")
     Boolean isProfileExistsEmailNotSelf(@Param("email") String email,
                                         @Param("userId") Long userId);
+
+    @Query(nativeQuery = true, value = "SELECT DISTINCT p.* FROM users AS u " +
+            "INNER JOIN users_user_roles AS uur ON u.id = uur.user_id " +
+            "INNER JOIN user_role AS ur ON uur.user_role_id = ur.id " +
+            "INNER JOIN profile AS p on u.profile_id = p.id AND p.deleted = FALSE " +
+            "WHERE ur.name = 'CLIENT' " +
+            "ORDER BY p.name")
+    List<Profile> findClients();
+
+    @Query(nativeQuery = true, value = "SELECT DISTINCT p.* FROM users AS u " +
+            "INNER JOIN users_user_roles AS uur ON u.id = uur.user_id " +
+            "INNER JOIN user_role AS ur ON uur.user_role_id = ur.id " +
+            "INNER JOIN profile AS p on u.profile_id = p.id AND p.deleted = FALSE " +
+            "WHERE ur.name = 'CLIENT' " +
+            "AND p.created_by_id = :createById " +
+            "ORDER BY p.name")
+    List<Profile> findClientsByCreatedBy(@Param("createById") Long createdById);
 }

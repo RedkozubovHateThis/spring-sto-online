@@ -107,6 +107,10 @@
            *ngIf="userService.isAdmin()">
             <i class="fas fa-users text-buro-blue"></i> Пользователи
         </a>
+        <a routerLinkActive="active" [routerLink]="['/reports']" class="nav-link"
+           *ngIf="userService.isNotClient()">
+          <i class="fas fa-copy text-buro-blue"></i> Отчеты
+        </a>
         <a routerLinkActive="active" [routerLink]="['/serviceWorks']" class="nav-link"
            *ngIf="userService.isAdmin()">
             <i class="fas fa-list text-buro-blue"></i> Работы
@@ -127,10 +131,6 @@
            *ngIf="userService.isAdmin()">
             <i class="fas fa-list text-buro-blue"></i> Заказчики
         </a>
-<!--        <a routerLinkActive="active" [routerLink]="['/reports']" class="nav-link"-->
-<!--           *ngIf="userService.isNotClient()">-->
-<!--            <i class="fas fa-copy text-buro-blue"></i> Отчеты-->
-<!--        </a>-->
 <!--        <a routerLinkActive="active" [routerLink]="['/event-messages']" class="nav-link">-->
 <!--          <i class="fas fa-bell text-buro-blue"></i> Уведомления-->
 <!--        </a>-->

@@ -6,4 +6,8 @@ public class DataNotFoundException extends Exception {
         super();
     }
 
+    public DataNotFoundException(String message) {
+        super(message);
+    }
+
 }

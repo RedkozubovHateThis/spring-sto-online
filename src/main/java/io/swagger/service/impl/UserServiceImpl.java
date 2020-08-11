@@ -9,6 +9,8 @@ import io.swagger.postgres.model.security.UserRole;
 import io.swagger.postgres.repository.EventMessageRepository;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.postgres.repository.UserRoleRepository;
+import io.swagger.response.api.FnsApiResponse;
+import io.swagger.response.exception.DataNotFoundException;
 import io.swagger.service.PasswordGenerationService;
 import io.swagger.service.SmsService;
 import io.swagger.service.UserService;
@@ -16,9 +18,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -43,11 +55,20 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder userPasswordEncoder;
 
+    private RestTemplate restTemplate = new RestTemplate();
+
     @Value("${domain.url}")
     private String domainUrl;
 
     @Value("${domain.demo}")
     private Boolean demoDomain;
+
+    @Value("${api.fns.url}")
+    private String apiFnsUrl;
+    @Value("${api.fns.key}")
+    private String apiFnsKey;
+    @Value("${api.fns.enabled}")
+    private Boolean apiFnsEnabled;
 
     @Override
     public String preparePhone(String phone) {
@@ -186,5 +207,41 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
 
+    }
+
+    @Override
+    public Boolean isInnCorrect(String inn) throws DataNotFoundException {
+        if ( !apiFnsEnabled ) return true;
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Authorization", "Token " + apiFnsKey);
+            headers.add("Content-Type", "application/json");
+            headers.add("Accept", "application/json");
+
+            Map<String, Object> body = new HashMap<>();
+            body.put("query", inn);
+
+            HttpEntity<Map<String, Object>> httpEntity = new HttpEntity<>(body, headers);
+
+            UriComponentsBuilder uri = UriComponentsBuilder
+                    .fromHttpUrl(apiFnsUrl)
+                    .queryParam("req", inn)
+                    .queryParam("key", apiFnsKey);
+            ResponseEntity<FnsApiResponse> response = restTemplate.exchange( uri.toUriString(), HttpMethod.POST, httpEntity, FnsApiResponse.class );
+
+            if ( response.getStatusCodeValue() == 200 ) {
+                FnsApiResponse responseBody = response.getBody();
+
+                if ( responseBody != null && responseBody.getSuggestions() != null && responseBody.getSuggestions().size() > 0 )
+                    return true;
+                else
+                    throw new DataNotFoundException("Организация/ИП под данному ИНН не найдены!");
+            }
+            else
+                throw new DataNotFoundException("Ошибка запроса данных при проверке ИНН! Пожалуйста, повторите запрос позже!");
+        }
+        catch(RestClientException rce) {
+            throw new DataNotFoundException("Ошибка запроса данных при проверке ИНН! Пожалуйста, повторите запрос позже!");
+        }
     }
 }

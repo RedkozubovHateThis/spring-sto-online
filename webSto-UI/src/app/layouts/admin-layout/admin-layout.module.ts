@@ -30,6 +30,7 @@ import {ServiceAddonDictionariesComponent} from '../../pages/service-addon-dicti
 import {VehiclesComponent} from '../../pages/vehicles/vehicles.component';
 import {VehicleDictionariesComponent} from '../../pages/vehicles-dictionaries/vehicle-dictionaries.component';
 import {CustomersComponent} from '../../pages/customers/customers.component';
+import {ReportsComponent} from '../../pages/reports/reports.component';
 
 @NgModule({
   imports: [
@@ -55,7 +56,7 @@ import {CustomersComponent} from '../../pages/customers/customers.component';
     UserComponent,
     UserEditComponent,
     FileSelectDirective,
-    // ReportsComponent,
+    ReportsComponent,
     EventMessagesComponent,
     UserAddComponent,
     BalanceComponent,

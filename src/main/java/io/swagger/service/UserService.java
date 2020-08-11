@@ -3,6 +3,7 @@ package io.swagger.service;
 import io.swagger.postgres.model.Customer;
 import io.swagger.postgres.model.security.Profile;
 import io.swagger.postgres.model.security.User;
+import io.swagger.response.exception.DataNotFoundException;
 
 public interface UserService {
 
@@ -21,4 +22,6 @@ public interface UserService {
     void generateUser(Profile profile) throws Exception;
 
     void updateUser(Profile profile) throws Exception;
+
+    Boolean isInnCorrect(String inn) throws DataNotFoundException;
 }

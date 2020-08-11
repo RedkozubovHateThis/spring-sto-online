@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -66,4 +67,29 @@ public interface ServiceDocumentRepository extends JpaRepository<ServiceDocument
 
     List<ServiceDocument> findByVehicleIdOrderByNumber(Long vehicleId);
     List<ServiceDocument> findByCustomerIdOrderByNumber(Long customerId);
+
+    List<ServiceDocument> findByStartDateBetweenOrderByStartDate(Date startDate, Date endDate);
+    List<ServiceDocument> findByStartDateBetweenAndExecutorIdOrderByStartDate(Date startDate, Date endDate, Long executorId);
+    List<ServiceDocument> findByExecutorIdOrderByStartDate(Long executorId);
+
+    @Query(nativeQuery = true, value = "SELECT sd.* FROM service_document AS sd " +
+            "INNER JOIN vehicle AS v ON sd.vehicle_id = v.id AND v.deleted = FALSE " +
+            "WHERE upper(v.vin_number) LIKE upper(:vinNumber) " +
+            "AND sd.deleted = FALSE " +
+            "AND sd.executor_id = :executorId " +
+            "ORDER BY sd.start_date")
+    List<ServiceDocument> findByVehicleVinNumberAndExecutorId(@Param("executorId") Long executorId,
+                                                              @Param("vinNumber") String vinNumber);
+
+    @Query(nativeQuery = true, value = "SELECT sd.* FROM service_document AS sd " +
+            "INNER JOIN vehicle AS v ON sd.vehicle_id = v.id AND v.deleted = FALSE " +
+            "WHERE upper(v.vin_number) LIKE upper(:vinNumber) " +
+            "AND sd.deleted = FALSE " +
+            "AND sd.executor_id = :executorId " +
+            "AND sd.start_date BETWEEN :startDate AND :endDate " +
+            "ORDER BY sd.start_date")
+    List<ServiceDocument> findByVehicleVinNumberAndStartDateBetweenAndExecutorId(@Param("startDate") Date startDate,
+                                                                                 @Param("endDate") Date endDate,
+                                                                                 @Param("executorId") Long executorId,
+                                                                                 @Param("vinNumber") String vinNumber);
 }

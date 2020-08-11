@@ -9,6 +9,7 @@ import io.swagger.postgres.repository.UserRoleRepository;
 import io.swagger.response.RegisterModel;
 import io.swagger.response.api.ApiResponse;
 import io.swagger.response.api.PasswordRestoreData;
+import io.swagger.response.exception.DataNotFoundException;
 import io.swagger.service.MailSendService;
 import io.swagger.service.PasswordGenerationService;
 import io.swagger.service.SmsService;
@@ -128,12 +129,18 @@ public class oAuthController {
         if ( role != null )
             user.getRoles().add(role);
 
-        else if ( roleName.equals("SERVICE_LEADER") ) {
+        if ( roleName.equals("SERVICE_LEADER") ) {
             if ( registerModel.getInn() == null || registerModel.getInn().isEmpty() )
                 return ResponseEntity.status(400).body("ИНН не может быть пустым!");
 
             if ( profileRepository.isProfileExistsInn( registerModel.getInn() ) )
                 return ResponseEntity.status(400).body("Пользователь с таким ИНН уже существует!");
+
+            try {
+                userService.isInnCorrect( registerModel.getInn() );
+            } catch (DataNotFoundException e) {
+                return ResponseEntity.status(400).body(e.getMessage());
+            }
         }
 
         profileRepository.save(profile);
