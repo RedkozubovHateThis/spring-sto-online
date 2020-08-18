@@ -1,10 +1,18 @@
 package io.swagger.controller;
 
+import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.UploadFile;
+import io.swagger.postgres.model.enums.DictionaryType;
+import io.swagger.postgres.model.enums.ImportType;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.UploadFileRepository;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.response.UploadFileResponse;
+import io.swagger.response.api.ApiResponse;
+import io.swagger.response.exception.DataNotFoundException;
+import io.swagger.service.DictionaryService;
+import io.swagger.service.impl.DictionaryServiceImpl;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -19,7 +27,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Date;
 import java.util.UUID;
 
@@ -31,6 +41,8 @@ public class FileController {
     private UserRepository userRepository;
     @Autowired
     private UploadFileRepository uploadFileRepository;
+    @Autowired
+    private DictionaryService dictionaryService;
 
     @Value("${files.catalog}")
     private String fileCatalog;
@@ -69,6 +81,48 @@ public class FileController {
         catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Ошибка загрузки файла!");
+        }
+
+    }
+
+    @PostMapping("/dictionaries/update")
+    public ResponseEntity updateDictionary(@RequestParam("file") MultipartFile file,
+                                           @RequestParam("importType") ImportType importType,
+                                           @RequestParam("dictionaryType") DictionaryType dictionaryType,
+                                           @RequestParam("sheetNumber") Integer sheetNumber,
+                                           @RequestParam("colNumber") Integer colNumber,
+                                           @RequestParam("startRow") Integer startRow) {
+
+        User currentUser = userRepository.findCurrentUser();
+        if ( !UserHelper.isAdmin( currentUser ) ) return ResponseEntity.status(401).build();
+
+        try {
+            Path xlsxFile = Files.createTempFile(dictionaryType.toString(), ".xlsx" );
+            file.transferTo( xlsxFile );
+
+            switch ( dictionaryType ) {
+                case SERVICE_WORK: {
+                    dictionaryService.importServiceWorksDictionaries(importType, new File(xlsxFile.toUri()), sheetNumber, colNumber, startRow);
+                    break;
+                }
+                case SERVICE_ADDON: {
+                    dictionaryService.importServiceAddonsDictionaries(importType, new File(xlsxFile.toUri()), sheetNumber, colNumber, startRow);
+                    break;
+                }
+                case VEHICLE: {
+                    dictionaryService.importVehicleDictionaries(importType, new File(xlsxFile.toUri()), sheetNumber, colNumber, startRow);
+                    break;
+                }
+            }
+
+            return ResponseEntity.ok().build();
+        }
+        catch(IOException ioe) {
+            return ResponseEntity.status(404).body( new ApiResponse( "Ошибка обработки файла!" ) );
+        } catch (InvalidFormatException e) {
+            return ResponseEntity.status(404).body( new ApiResponse( "Неверный формат файла!" ) );
+        } catch (DataNotFoundException e) {
+            return ResponseEntity.status(404).body( new ApiResponse( e.getMessage() ) );
         }
 
     }

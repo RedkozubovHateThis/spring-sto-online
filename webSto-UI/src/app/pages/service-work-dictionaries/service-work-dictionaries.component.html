@@ -22,6 +22,11 @@
                       [disabled]="isLoading">
                 Обновить
               </button>
+              <app-dictionary-update-button
+                [modalTitle]="'Работы'"
+                [dictionaryType]="'SERVICE_WORK'"
+                (onUpdate)="requestData()"
+              ></app-dictionary-update-button>
             </div>
 
           </div>

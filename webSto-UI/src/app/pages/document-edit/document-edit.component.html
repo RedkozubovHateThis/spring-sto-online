@@ -237,7 +237,7 @@
                     <label class="form-control-label" for="name-input"><span [ngbTooltip]="'ФИО физического лица или название Организации/ИП'" class="title-helper">Полное наименование</span></label>
                     <input class="form-control form-control-sm form-control-alternative" id="name-input"
                            [disabled]="!clientEdit && !model.relationships.client.data.is_new"
-                           [(ngModel)]="client.attributes.name" [placeholder]="client.attributes.byFio ? 'Необязательно к заполнению' :'ФИО физ. лица или назв. Организации/ИП'">
+                           [(ngModel)]="client.attributes.name" placeholder="ФИО физ. лица или назв. Организации/ИП">
                   </div>
                 </div>
                 <ng-container *ngIf="client.attributes.byFio && (clientEdit || client.is_new)">
@@ -268,7 +268,7 @@
                     <label class="form-control-label" for="inn-input">ИНН</label>
                     <input class="form-control form-control-sm form-control-alternative" id="inn-input"
                            [disabled]="!clientEdit && !client.is_new"
-                           [(ngModel)]="client.attributes.inn" placeholder="ИНН">
+                           [(ngModel)]="client.attributes.inn" placeholder="ИНН (не обязательно к заполнению)">
                   </div>
                 </div>
                 <div class="row form-group">
@@ -451,7 +451,7 @@
                     <label class="form-control-label" for="customer-phone-input">Телефон</label>
                     <input class="form-control form-control-sm form-control-alternative" id="customer-phone-input"
                            [disabled]="!customerEdit && !customer.is_new"
-                           [(ngModel)]="customer.attributes.phone" placeholder="Телефон">
+                           [(ngModel)]="customer.attributes.phone" placeholder="Телефон (не обязательно к заполнению)">
                   </div>
                 </div>
                 <div class="row form-group">
@@ -467,7 +467,7 @@
                     <label class="form-control-label" for="customer-address-input">Адрес</label>
                     <input class="form-control form-control-sm form-control-alternative" id="customer-address-input"
                            [disabled]="!customerEdit && !customer.is_new"
-                           [(ngModel)]="customer.attributes.address" placeholder="Адрес">
+                           [(ngModel)]="customer.attributes.address" placeholder="Адрес (не обязательно к заполнению)">
                   </div>
                 </div>
                 <div class="row form-group">

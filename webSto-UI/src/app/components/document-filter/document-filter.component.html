@@ -8,10 +8,10 @@
         </h3>
       </div>
       <div class="col-auto mb-3">
-        <app-report-button [model]="document" [withPrint]="false" [disabled]="document != null && document.attributes.status !== 'COMPLETED'"
+        <app-report-button [model]="document" [withPrint]="false" [disabled]="document != null && document.attributes.status == 'IN_WORK'"
                            *ngIf="userService.currentUser != null">
         </app-report-button>
-        <app-report-button [model]="document" [disabled]="document != null && document.attributes.status !== 'COMPLETED'"
+        <app-report-button [model]="document" [disabled]="document != null && document.attributes.status == 'IN_WORK'"
                            *ngIf="userService.currentUser != null">
         </app-report-button>
         <button class="btn btn-sm btn-buro-blue" style="margin-left: 0.5rem;" (click)="resetFilters()" *ngIf="filter.state || filter.paidState || filter.organization ||

@@ -14,4 +14,7 @@ public interface VehicleDictionaryRepository extends JpaRepository<VehicleDictio
 
     @Query("SELECT DISTINCT vd FROM VehicleDictionary AS vd WHERE lower(vd.name) LIKE lower(:name)")
     List<VehicleDictionary> findAllByName(@Param("name") String name);
+
+    @Query(nativeQuery = true, value = "SELECT EXISTS(SELECT vd.id FROM vehicle_dictionary AS vd WHERE vd.name = :name AND vd.deleted = FALSE)")
+    Boolean isExistsByName(@Param("name") String name);
 }

@@ -66,16 +66,18 @@ public class CustomerResourceRepository implements ResourceRepository<Customer, 
             s.setCreatedBy( currentUser.getProfile() );
         }
 
-        if ( s.getPhone() == null || s.getPhone().isEmpty() )
-            throw new BadRequestException("Телефон не может быть пустым!");
-        if ( !userService.isPhoneValid( s.getPhone() ) )
+        if ( s.getInn() == null || s.getInn().isEmpty() )
+            throw new BadRequestException("ИНН не может быть пустым!");
+//        if ( s.getPhone() == null || s.getPhone().isEmpty() )
+//            throw new BadRequestException("Телефон не может быть пустым!");
+        if ( s.getPhone() != null && !s.getPhone().isEmpty() && !userService.isPhoneValid( s.getPhone() ) )
             throw new BadRequestException("Неверный номер телефона!");
         if ( s.getEmail() != null && s.getEmail().length() == 0 )
             s.setEmail(null);
-        if ( s.getInn() != null && s.getInn().length() == 0 )
-            s.setInn(null);
-
-        userService.processPhone(s);
+        if ( s.getPhone() != null && s.getPhone().length() == 0 )
+            s.setPhone(null);
+        else
+            userService.processPhone(s);
 
 //        Boolean isExistsByPhone;
 //
@@ -101,19 +103,15 @@ public class CustomerResourceRepository implements ResourceRepository<Customer, 
 //
 //        }
 
-        if ( s.getInn() != null ) {
+        Boolean isExistsByInn;
 
-            Boolean isExistsByInn;
+        if ( s.getId() != null )
+            isExistsByInn = customerRepository.isCustomerExistsInnNotSelf( s.getInn(), s.getId() );
+        else
+            isExistsByInn = customerRepository.isCustomerExistsInn( s.getInn() );
 
-            if ( s.getId() != null )
-                isExistsByInn = customerRepository.isCustomerExistsInnNotSelf( s.getInn(), s.getId() );
-            else
-                isExistsByInn = customerRepository.isCustomerExistsInn( s.getInn() );
-
-            if ( isExistsByInn )
-                throw new BadRequestException("Данный ИНН уже указан у другого заказчика!");
-
-        }
+        if ( isExistsByInn )
+            throw new BadRequestException("Данный ИНН уже указан у другого заказчика!");
 
         return customerRepository.save(s);
     }

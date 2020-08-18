@@ -11,9 +11,14 @@ import IStatus from '../IStatus';
 
 const statuses: IStatus[] = [
     {
-      name: 'В работе',
+      name: 'Заявка',
       id: 'CREATED',
       style: 'danger'
+    },
+    {
+      name: 'В работе',
+      id: 'IN_WORK',
+      style: 'warning'
     },
     {
       name: 'Оформлен',

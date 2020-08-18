@@ -20,6 +20,8 @@ import {RoleChangeButtonComponent} from './role-change-button/role-change-button
 import {DictionariesFilterComponent} from './dictionaries-filter/dictionaries-filter.component';
 import {VehiclesFilterComponent} from './vehicles-filter/vehicles-filter.component';
 import {CustomerFilterComponent} from './customer-filter/customer-filter.component';
+import {DictionaryUpdateButtonComponent} from './dictionary-update-button/dictionary-update-button.component';
+import {FileUploadModule} from 'ng2-file-upload';
 
 @NgModule({
   imports: [
@@ -28,7 +30,8 @@ import {CustomerFilterComponent} from './customer-filter/customer-filter.compone
     NgbModule,
     FormsModule,
     PdfViewerModule,
-    DpDatePickerModule
+    DpDatePickerModule,
+    FileUploadModule
   ],
   declarations: [
     FooterComponent,
@@ -45,7 +48,8 @@ import {CustomerFilterComponent} from './customer-filter/customer-filter.compone
     RoleChangeButtonComponent,
     DictionariesFilterComponent,
     VehiclesFilterComponent,
-    CustomerFilterComponent
+    CustomerFilterComponent,
+    DictionaryUpdateButtonComponent
   ],
   exports: [
     FooterComponent,
@@ -62,7 +66,8 @@ import {CustomerFilterComponent} from './customer-filter/customer-filter.compone
     RoleChangeButtonComponent,
     DictionariesFilterComponent,
     VehiclesFilterComponent,
-    CustomerFilterComponent
+    CustomerFilterComponent,
+    DictionaryUpdateButtonComponent
   ]
 })
 export class ComponentsModule { }

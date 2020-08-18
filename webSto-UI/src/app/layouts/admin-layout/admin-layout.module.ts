@@ -13,7 +13,6 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {UsersComponent} from '../../pages/users/users.component';
 import {UserComponent} from '../../pages/user/user.component';
 import {UserEditComponent} from 'src/app/pages/user-edit/user-edit.component';
-import {FileSelectDirective} from 'ng2-file-upload';
 import {ComponentsModule} from '../../components/components.module';
 import {DpDatePickerModule} from 'ng2-date-picker';
 import {EventMessagesComponent} from '../../pages/event-messages/event-messages.component';
@@ -55,7 +54,6 @@ import {ReportsComponent} from '../../pages/reports/reports.component';
     UsersComponent,
     UserComponent,
     UserEditComponent,
-    FileSelectDirective,
     ReportsComponent,
     EventMessagesComponent,
     UserAddComponent,

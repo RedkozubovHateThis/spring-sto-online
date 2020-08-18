@@ -178,10 +178,10 @@ export class DocumentAddComponent implements OnInit {
         this.toastrService.error('Не указан заказчик!', 'Внимание!');
         return false;
       }
-      else if ( !customer.attributes.phone || customer.attributes.phone.length === 0 ) {
-        this.toastrService.error('Не указан телефон заказчика!', 'Внимание!');
-        return false;
-      }
+      // else if ( !customer.attributes.phone || customer.attributes.phone.length === 0 ) {
+      //   this.toastrService.error('Не указан телефон заказчика!', 'Внимание!');
+      //   return false;
+      // }
       else if ( !customer.attributes.name || customer.attributes.name.length === 0 ) {
         this.toastrService.error('Не указано полное наименование заказчика!', 'Внимание!');
         return false;
