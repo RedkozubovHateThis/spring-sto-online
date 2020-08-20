@@ -30,6 +30,7 @@ import {VehiclesComponent} from '../../pages/vehicles/vehicles.component';
 import {VehicleDictionariesComponent} from '../../pages/vehicles-dictionaries/vehicle-dictionaries.component';
 import {CustomersComponent} from '../../pages/customers/customers.component';
 import {ReportsComponent} from '../../pages/reports/reports.component';
+import {ProfilesComponent} from '../../pages/profiles/profiles.component';
 
 @NgModule({
   imports: [
@@ -63,7 +64,8 @@ import {ReportsComponent} from '../../pages/reports/reports.component';
     ServiceAddonDictionariesComponent,
     VehicleDictionariesComponent,
     VehiclesComponent,
-    CustomersComponent
+    CustomersComponent,
+    ProfilesComponent
   ]
 })
 

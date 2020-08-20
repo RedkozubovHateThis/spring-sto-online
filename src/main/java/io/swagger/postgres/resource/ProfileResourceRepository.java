@@ -1,13 +1,17 @@
 package io.swagger.postgres.resource;
 
 import io.crnk.core.exception.BadRequestException;
+import io.crnk.core.exception.ForbiddenException;
+import io.crnk.core.exception.ResourceNotFoundException;
 import io.crnk.core.queryspec.QuerySpec;
 import io.crnk.core.repository.ResourceRepository;
 import io.crnk.core.resource.list.ResourceList;
 import io.swagger.helper.UserHelper;
+import io.swagger.postgres.model.ServiceDocument;
 import io.swagger.postgres.model.security.Profile;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.ProfileRepository;
+import io.swagger.postgres.repository.ServiceDocumentRepository;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +19,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class ProfileResourceRepository implements ResourceRepository<Profile, Long> {
@@ -27,6 +33,9 @@ public class ProfileResourceRepository implements ResourceRepository<Profile, Lo
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ServiceDocumentRepository serviceDocumentRepository;
 
     @Override
     public Class<Profile> getResourceClass() {
@@ -119,7 +128,7 @@ public class ProfileResourceRepository implements ResourceRepository<Profile, Lo
 
         if ( wasNew && s.getAutoRegister() != null && s.getAutoRegister() ) {
             try {
-                userService.generateUser(s);
+                userService.generateUser(s, "CLIENT");
             }
             catch(Exception e) {
                 throw new BadRequestException("Ошибка регистрации нового клиента!");
@@ -145,5 +154,27 @@ public class ProfileResourceRepository implements ResourceRepository<Profile, Lo
 
     @Override
     public void delete(Long aLong) {
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( !UserHelper.isAdmin( currentUser ) )
+            throw new ForbiddenException("Вам запрещено удалять профили!");
+
+        Profile profile = profileRepository.findById(aLong).orElse(null);
+
+        if ( profile == null )
+            throw new ResourceNotFoundException("Профиль не найден!");
+
+        List<ServiceDocument> serviceDocuments = serviceDocumentRepository.findByClientIdOrExecutorIdOrderByNumber( profile.getId(), profile.getId());
+        if ( serviceDocuments.size() > 0 ) {
+            if ( serviceDocuments.size() > 10 )
+                throw new BadRequestException( String.format( "Данный профиль указан в %s заказ-нарядах!", serviceDocuments.size() ) );
+            else {
+                List<String> documentsNumbers = serviceDocuments.stream().map( ServiceDocument::getNumber ).collect(Collectors.toList() );
+                throw new BadRequestException( String.format( "Данный профиль указан в следующих заказ-нарядах: %s!", String.join(",", documentsNumbers) ) );
+            }
+        }
+
+        profile.setDeleted(true);
+        profileRepository.save(profile);
     }
 }

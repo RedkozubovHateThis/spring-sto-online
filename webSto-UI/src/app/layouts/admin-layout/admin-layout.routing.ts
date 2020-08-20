@@ -18,6 +18,7 @@ import {VehiclesComponent} from '../../pages/vehicles/vehicles.component';
 import {VehicleDictionariesComponent} from '../../pages/vehicles-dictionaries/vehicle-dictionaries.component';
 import {CustomersComponent} from '../../pages/customers/customers.component';
 import {ReportsComponent} from '../../pages/reports/reports.component';
+import {ProfilesComponent} from '../../pages/profiles/profiles.component';
 
 export const AdminLayoutRoutes: Routes = [
   { path: 'user-profile',   component: UserProfileComponent },
@@ -35,6 +36,7 @@ export const AdminLayoutRoutes: Routes = [
   { path: 'vehicles',  component: VehicleDictionariesComponent },
   { path: 'customers',  component: CustomersComponent },
   { path: 'reports',        component: ReportsComponent },
+  { path: 'profiles',        component: ProfilesComponent },
   // { path: 'event-messages', component: EventMessagesComponent },
   // { path: 'balance',        component: BalanceComponent },
   // { path: 'subscription',   component: SubscriptionComponent }

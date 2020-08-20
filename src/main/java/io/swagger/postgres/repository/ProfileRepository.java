@@ -2,6 +2,7 @@ package io.swagger.postgres.repository;
 
 import io.swagger.postgres.model.security.Profile;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ProfileRepository extends JpaRepository<Profile, Long> {
+public interface ProfileRepository extends JpaRepository<Profile, Long>, JpaSpecificationExecutor<Profile> {
 
     @Query("SELECT DISTINCT p FROM Profile AS p " +
             "WHERE lower(p.phone) LIKE lower(:phone) " +
@@ -29,7 +30,7 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
     @Query(nativeQuery = true, value = "SELECT DISTINCT p.* FROM users AS u\n" +
             "INNER JOIN users_user_roles AS uur ON u.id = uur.user_id\n" +
             "INNER JOIN user_role AS ur ON uur.user_role_id = ur.id\n" +
-            "INNER JOIN profile AS p ON u.profile_id = p.id\n" +
+            "INNER JOIN profile AS p ON u.profile_id = p.id AND p.deleted = FALSE\n" +
             "WHERE u.enabled = TRUE AND ur.name = 'SERVICE_LEADER'")
     List<Profile> findExecutors();
 
@@ -39,29 +40,29 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
     List<Profile> findExecutorsByClientId(@Param("clientId") Long clientId);
 
     @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT p.id FROM profile AS p " +
-            "WHERE p.phone = :phone )")
+            "WHERE p.phone = :phone AND p.deleted = FALSE )")
     Boolean isProfileExistsPhone(@Param("phone") String phone);
 
     @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT p.id FROM profile AS p " +
-            "WHERE p.email = :email )")
+            "WHERE p.email = :email AND p.deleted = FALSE )")
     Boolean isProfileExistsEmail(@Param("email") String email);
 
     @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT p.id FROM profile AS p " +
-            "WHERE p.inn = :inn )")
+            "WHERE p.inn = :inn AND p.deleted = FALSE )")
     Boolean isProfileExistsInn(@Param("inn") String inn);
 
     @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT p.id FROM profile AS p " +
-            "WHERE p.inn = :inn AND p.id <> :userId )")
+            "WHERE p.inn = :inn AND p.id <> :userId AND p.deleted = FALSE )")
     Boolean isProfileExistsInnNotSelf(@Param("inn") String inn,
                                       @Param("userId") Long userId);
 
     @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT p.id FROM profile AS p " +
-            "WHERE p.phone = :phone AND p.id <> :userId )")
+            "WHERE p.phone = :phone AND p.id <> :userId AND p.deleted = FALSE )")
     Boolean isProfileExistsPhoneNotSelf(@Param("phone") String phone,
                                         @Param("userId") Long userId);
 
     @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT p.id FROM profile AS p " +
-            "WHERE p.email = :email AND p.id <> :userId )")
+            "WHERE p.email = :email AND p.id <> :userId AND p.deleted = FALSE )")
     Boolean isProfileExistsEmailNotSelf(@Param("email") String email,
                                         @Param("userId") Long userId);
 

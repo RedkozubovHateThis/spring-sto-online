@@ -1,5 +1,6 @@
 package io.swagger.controller;
 
+import io.swagger.helper.ProfileSpecificationBuilder;
 import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.security.Profile;
 import io.swagger.postgres.model.security.User;
@@ -7,19 +8,21 @@ import io.swagger.postgres.repository.ProfileRepository;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.postgres.resourceProcessor.ProfileResourceProcessor;
 import io.swagger.response.api.JsonApiParamsBase;
+import io.swagger.service.UserService;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -31,29 +34,48 @@ public class ProfileController {
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private UserService userService;
+    @Autowired
     private ProfileRepository profileRepository;
     @Autowired
     private ProfileResourceProcessor profileResourceProcessor;
 
     @GetMapping
-    public ResponseEntity findProfiles(JsonApiParams params) throws Exception {
+    public ResponseEntity findAll(JsonApiParams params) throws Exception {
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( !UserHelper.isAdmin(currentUser) )
+            return ResponseEntity.status(403).build();
+
+        FilterPayload filterPayload = params.getFilterPayload();
+        Pageable pageable = params.getPageable();
+
+        Specification<Profile> specification =
+                ProfileSpecificationBuilder.buildSpecification( currentUser, filterPayload );
+
+        return ResponseEntity.ok(
+                profileResourceProcessor.toResourcePage(
+                        profileRepository.findAll(specification, pageable), params.getInclude(),
+                        profileRepository.count(specification), pageable
+                )
+        );
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity findProfiles(@RequestParam("search") String search) throws Exception {
         User currentUser = userRepository.findCurrentUser();
 
         if ( !UserHelper.isAdmin( currentUser ) && !UserHelper.isServiceLeader( currentUser ) )
             return ResponseEntity.status(404).build();
 
-        FilterPayload filterPayload = params.getFilterPayload();
-        if ( filterPayload.getPhone() == null || filterPayload.getPhone().length() < 3 ||
-                filterPayload.getEmail() == null || filterPayload.getEmail().length() < 3 ||
-                filterPayload.getFio() == null || filterPayload.getFio().length() < 3 ||
-                filterPayload.getInn() == null || filterPayload.getInn().length() < 3 )
+        if ( search == null || search.length() < 3 )
             return ResponseEntity.status(400).build();
 
         List<Profile> profiles = profileRepository.findAllByPhoneOrEmail(
-                String.format("%%%s%%", filterPayload.getPhone()),
-                String.format("%%%s%%", filterPayload.getEmail()),
-                String.format("%%%s%%", filterPayload.getFio()),
-                String.format("%%%s%%", filterPayload.getInn())
+                String.format("%%%s%%", search),
+                String.format("%%%s%%", search),
+                String.format("%%%s%%", search),
+                String.format("%%%s%%", search)
         );
         if ( profiles.size() == 0 )
             return ResponseEntity.status(404).build();
@@ -66,6 +88,24 @@ public class ProfileController {
                         null
                 )
         );
+    }
+
+    @PutMapping("/register")
+    public ResponseEntity registerProfile(@RequestParam("profileId") Long profileId,
+                                          @RequestParam("roleName") String roleName) throws Exception {
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( !UserHelper.isAdmin( currentUser ) )
+            return ResponseEntity.status(403).build();
+
+        Optional<Profile> profileOptional = profileRepository.findById(profileId);
+
+        if ( !profileOptional.isPresent() )
+            return ResponseEntity.status(404).build();
+
+        userService.generateUser(profileOptional.get(), roleName);
+
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/clients")
@@ -128,6 +168,7 @@ public class ProfileController {
         private String email;
         private String fio;
         private String inn;
+        private String address;
     }
 
     @Data
@@ -146,6 +187,8 @@ public class ProfileController {
                 filterPayload.setFio( getFilter().get("fio").get(0) );
             if ( getFilter().containsKey("inn") && getFilter().get("inn").size() > 0 )
                 filterPayload.setInn( getFilter().get("inn").get(0) );
+            if ( getFilter().containsKey("address") && getFilter().get("address").size() > 0 )
+                filterPayload.setAddress( getFilter().get("address").get(0) );
 
             return filterPayload;
         }

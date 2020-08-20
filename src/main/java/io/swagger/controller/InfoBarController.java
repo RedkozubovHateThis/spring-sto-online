@@ -103,24 +103,23 @@ public class InfoBarController {
                 balance = userRepository.countTotalBalance();
         }
 
-        if ( balance != null )
-            totalBalance += balance;
+        totalBalance += getDouble( balance );
 
         if ( organizationId != null ) {
-            totalDocuments += serviceDocumentRepository.countByExecutorId( organizationId );
-            totalDocumentsCompleted += serviceDocumentRepository.countByExecutorIdAndStatus( organizationId, ServiceDocumentStatus.COMPLETED.toString() );
-            totalDocumentsCreated += serviceDocumentRepository.countByExecutorIdAndStatus( organizationId, ServiceDocumentStatus.CREATED.toString() );
-            totalSum += serviceDocumentRepository.countTotalSumByExecutorId( organizationId );
-            totalVehicles += serviceDocumentRepository.countVehiclesByExecutorId( organizationId );
-            totalClients += serviceDocumentRepository.countClientsByExecutorId( organizationId );
+            totalDocuments += getLong( serviceDocumentRepository.countByExecutorId( organizationId ) );
+            totalDocumentsCompleted += getLong( serviceDocumentRepository.countByExecutorIdAndStatus( organizationId, ServiceDocumentStatus.COMPLETED.toString() ) );
+            totalDocumentsCreated += getLong( serviceDocumentRepository.countByExecutorIdAndStatus( organizationId, ServiceDocumentStatus.CREATED.toString() ) );
+            totalSum += getDouble( serviceDocumentRepository.countTotalSumByExecutorId( organizationId ) );
+            totalVehicles += getLong( serviceDocumentRepository.countVehiclesByExecutorId( organizationId ) );
+            totalClients += getLong( serviceDocumentRepository.countClientsByExecutorId( organizationId ) );
         }
         else {
-            totalDocuments += serviceDocumentRepository.count();
-            totalDocumentsCompleted += serviceDocumentRepository.countByStatus( ServiceDocumentStatus.COMPLETED.toString() );
-            totalDocumentsCreated += serviceDocumentRepository.countByStatus( ServiceDocumentStatus.CREATED.toString() );
-            totalSum += serviceDocumentRepository.countTotalSum();
-            totalVehicles += serviceDocumentRepository.countVehicles();
-            totalClients += serviceDocumentRepository.countClients();
+            totalDocuments += getLong( serviceDocumentRepository.count() );
+            totalDocumentsCompleted += getLong( serviceDocumentRepository.countByStatus( ServiceDocumentStatus.COMPLETED.toString() ) );
+            totalDocumentsCreated += getLong( serviceDocumentRepository.countByStatus( ServiceDocumentStatus.CREATED.toString() ) );
+            totalSum += getDouble( serviceDocumentRepository.countTotalSum() );
+            totalVehicles += getLong( serviceDocumentRepository.countVehicles() );
+            totalClients += getLong( serviceDocumentRepository.countClients() );
         }
 
         serviceLeaderInfo.setTotalDocuments( totalDocuments );
@@ -141,5 +140,19 @@ public class InfoBarController {
         serviceLeaderInfo.setAdEfficiency( adEfficiency );
 
         return serviceLeaderInfo;
+    }
+
+    private Long getLong(Long value) {
+        if ( value == null )
+            return 0L;
+
+        return value;
+    }
+
+    private Double getDouble(Double value) {
+        if ( value == null )
+            return 0.0;
+
+        return value;
     }
 }

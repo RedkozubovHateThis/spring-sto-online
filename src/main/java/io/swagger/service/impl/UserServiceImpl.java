@@ -70,6 +70,9 @@ public class UserServiceImpl implements UserService {
     @Value("${api.fns.enabled}")
     private Boolean apiFnsEnabled;
 
+    @Value("${sms.enabled}")
+    private Boolean smsEnabled;
+
     @Override
     public String preparePhone(String phone) {
         String preparedPhone = phone.replaceAll("[^+\\d]", "");
@@ -147,12 +150,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void generateUser(Profile profile) throws Exception {
+    public void generateUser(Profile profile, String roleName) throws Exception {
 
         User currentUser = userRepository.findCurrentUser();
 
         if ( !UserHelper.isAdmin(currentUser) && !UserHelper.isServiceLeader(currentUser) )
             throw new Exception();
+
+        if ( roleName.equals("SERVICE_LEADER") ) {
+            if ( profile.getInn() == null || profile.getInn().length() == 0 )
+                throw new Exception();
+
+            isInnCorrect( profile.getInn() );
+        }
 
         User user = new User();
         user.setProfile(profile);
@@ -171,18 +181,19 @@ public class UserServiceImpl implements UserService {
 
         user.setPassword( userPasswordEncoder.encode(rawPassword) );
 
-        UserRole userRole = userRoleRepository.findByName("CLIENT");
+        UserRole userRole = userRoleRepository.findByName(roleName);
         if ( userRole != null ) user.getRoles().add( userRole );
 
         userRepository.save(user);
 
         if ( !demoDomain ) {
-            String smsText = String.format("По вашему автомобилю добавлен новый заказ-наряд. " +
+            String smsText = String.format("Вы были зарегистрированы в сервисе BUROMOTORS. " +
                     "Логин для входа в систему: ваш телефон, пароль: %s. " +
                     "Сервис BUROMOTORS: %s/login", rawPassword, domainUrl);
             logger.info(" [ SCHEDULER ] Prepared sms text: \"{}\"", smsText );
 
-//            smsService.sendSmsAsync( profile.getPhone(), smsText );
+            if ( smsEnabled )
+                smsService.sendSmsAsync( profile.getPhone(), smsText );
         }
 
     }
@@ -197,7 +208,7 @@ public class UserServiceImpl implements UserService {
 
         User user = profile.getUser();
         if ( user == null ) {
-            generateUser(profile);
+            generateUser(profile, "CLIENT");
             return;
         }
 

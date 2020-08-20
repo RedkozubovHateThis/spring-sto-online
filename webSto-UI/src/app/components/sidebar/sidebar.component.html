@@ -131,6 +131,10 @@
            *ngIf="userService.isAdmin()">
             <i class="fas fa-list text-buro-blue"></i> Заказчики
         </a>
+        <a routerLinkActive="active" [routerLink]="['/profiles']" class="nav-link"
+           *ngIf="userService.isAdmin()">
+            <i class="fas fa-list text-buro-blue"></i> Профили
+        </a>
 <!--        <a routerLinkActive="active" [routerLink]="['/event-messages']" class="nav-link">-->
 <!--          <i class="fas fa-bell text-buro-blue"></i> Уведомления-->
 <!--        </a>-->

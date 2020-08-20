@@ -66,6 +66,7 @@ public interface ServiceDocumentRepository extends JpaRepository<ServiceDocument
     Long countClients();
 
     List<ServiceDocument> findByVehicleIdOrderByNumber(Long vehicleId);
+    List<ServiceDocument> findByClientIdOrExecutorIdOrderByNumber(Long clientId, Long executorId);
     List<ServiceDocument> findByCustomerIdOrderByNumber(Long customerId);
 
     List<ServiceDocument> findByStartDateBetweenOrderByStartDate(Date startDate, Date endDate);

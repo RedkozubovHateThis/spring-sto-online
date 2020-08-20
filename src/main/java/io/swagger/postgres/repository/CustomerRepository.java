@@ -24,29 +24,29 @@ public interface CustomerRepository extends JpaRepository<Customer, Long>, JpaSp
                                         @Param("inn") String inn);
 
     @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT c.id FROM customer AS c " +
-            "WHERE c.phone = :phone )")
+            "WHERE c.phone = :phone AND c.deleted = FALSE )")
     Boolean isCustomerExistsPhone(@Param("phone") String phone);
 
     @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT c.id FROM customer AS c " +
-            "WHERE c.email = :email )")
+            "WHERE c.email = :email AND c.deleted = FALSE )")
     Boolean isCustomerExistsEmail(@Param("email") String email);
 
     @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT c.id FROM customer AS c " +
-            "WHERE c.inn = :inn )")
+            "WHERE c.inn = :inn AND c.deleted = FALSE )")
     Boolean isCustomerExistsInn(@Param("inn") String inn);
 
     @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT c.id FROM customer AS c " +
-            "WHERE c.inn = :inn AND c.id <> :userId )")
+            "WHERE c.inn = :inn AND c.id <> :userId AND c.deleted = FALSE )")
     Boolean isCustomerExistsInnNotSelf(@Param("inn") String inn,
                                       @Param("userId") Long userId);
 
     @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT c.id FROM customer AS c " +
-            "WHERE c.phone = :phone AND c.id <> :userId )")
+            "WHERE c.phone = :phone AND c.id <> :userId AND c.deleted = FALSE )")
     Boolean isCustomerExistsPhoneNotSelf(@Param("phone") String phone,
                                         @Param("userId") Long userId);
 
     @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT c.id FROM customer AS c " +
-            "WHERE c.email = :email AND c.id <> :userId )")
+            "WHERE c.email = :email AND c.id <> :userId AND c.deleted = FALSE )")
     Boolean isCustomerExistsEmailNotSelf(@Param("email") String email,
                                         @Param("userId") Long userId);
 
