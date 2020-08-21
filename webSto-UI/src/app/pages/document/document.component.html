@@ -15,10 +15,10 @@
                 Назад
               </button>
               <button class="btn btn-sm btn-buro-blue" (click)="navigate( model )"
-                      *ngIf="userService.isAdmin() || userService.isServiceLeader()">
+                      *ngIf="userService.isAdmin() || userService.isServiceLeaderOrFreelancer()">
                 Редактировать
               </button>
-              <app-delete-button *ngIf="model != null && ( userService.isAdmin() || ( userService.isServiceLeader() && model.attributes.status !== 'COMPLETED' ) )"
+              <app-delete-button *ngIf="model != null && ( userService.isAdmin() || ( userService.isServiceLeaderOrFreelancer() && model.attributes.status !== 'COMPLETED' ) )"
                                  [model]="model"
                                  [restService]="documentService"
                                  [modalTitle]="'Заказ-наряд №' + model.attributes.number"

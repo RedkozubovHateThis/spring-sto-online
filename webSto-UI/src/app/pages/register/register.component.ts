@@ -17,10 +17,6 @@ export class RegisterComponent implements OnInit {
   private addForm: FormGroup;
   private isRegistering = false;
   private selectedRole = 'CLIENT';
-  private roles = [
-    { name: 'Автовладелец', id: 'CLIENT' },
-    { name: 'Руководитель сервиса', id: 'SERVICE_LEADER' }
-  ];
 
   ngOnInit() {
     this.addForm = this.formBuilder.group({

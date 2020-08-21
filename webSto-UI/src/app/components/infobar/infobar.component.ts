@@ -70,7 +70,7 @@ export class InfobarComponent implements OnInit {
 
     if ( this.userService.currentUser.isClient() )
       this.getClientData();
-    else if ( this.userService.currentUser.isServiceLeader() )
+    else if ( this.userService.currentUser.isServiceLeaderOrFreelancer() )
       this.getServiceLeaderData();
     else if ( this.userService.currentUser.isAdmin() )
       this.getAdminData();

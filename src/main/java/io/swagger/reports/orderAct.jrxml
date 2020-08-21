@@ -438,10 +438,10 @@
 									<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 										<reportElement stretchType="ContainerHeight" x="0" y="0" width="20" height="17" uuid="4dfa3f78-42a9-45b0-b4f9-72ae92b85746"/>
 										<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
-										<textElement textAlignment="Center" verticalAlignment="Middle">
+										<textElement textAlignment="Right" verticalAlignment="Middle">
 											<font fontName="Calibri" size="11"/>
 										</textElement>
-										<textFieldExpression><![CDATA[$V{number}]]></textFieldExpression>
+										<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 									</textField>
 								</jr:detailCell>
 							</jr:column>

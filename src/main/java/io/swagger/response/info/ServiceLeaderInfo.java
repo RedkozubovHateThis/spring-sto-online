@@ -9,6 +9,7 @@ public class ServiceLeaderInfo {
 
     private Long totalDocuments;
     private Long totalDocumentsCreated;
+    private Long totalDocumentsInWork;
     private Long totalDocumentsCompleted;
 
     private Double totalSum;

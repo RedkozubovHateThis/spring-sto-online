@@ -2,11 +2,9 @@ package io.swagger.helper;
 
 import io.swagger.controller.ServiceDocumentController;
 import io.swagger.postgres.model.*;
-import io.swagger.postgres.model.enums.ServiceDocumentStatus;
 import io.swagger.postgres.model.security.Profile;
 import io.swagger.postgres.model.security.Profile_;
 import io.swagger.postgres.model.security.User;
-import io.swagger.postgres.model.security.User_;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.*;
@@ -36,7 +34,7 @@ public class ServiceDocumentSpecificationBuilder {
                             clientJoin.get( Profile_.id ), filterPayload.getClient()
                     ) );
                 }
-                if ( UserHelper.isServiceLeader( currentUser ) ) {
+                if ( UserHelper.isServiceLeaderOrFreelancer( currentUser ) ) {
                     predicates.add( cb.equal(
                             executorJoin.get( Profile_.id ), currentUser.getProfile().getId()
                     ) );

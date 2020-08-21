@@ -9,7 +9,6 @@ import io.crnk.core.resource.list.ResourceList;
 import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.Customer;
 import io.swagger.postgres.model.ServiceDocument;
-import io.swagger.postgres.model.ServiceWorkDictionary;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.CustomerRepository;
 import io.swagger.postgres.repository.ServiceDocumentRepository;
@@ -62,7 +61,7 @@ public class CustomerResourceRepository implements ResourceRepository<Customer, 
 
         User currentUser = userRepository.findCurrentUser();
 
-        if ( UserHelper.isServiceLeader( currentUser ) && currentUser.getProfile() != null && s.getId() == null ) {
+        if ( UserHelper.isServiceLeaderOrFreelancer( currentUser ) && currentUser.getProfile() != null && s.getId() == null ) {
             s.setCreatedBy( currentUser.getProfile() );
         }
 

@@ -1,9 +1,7 @@
 package io.swagger.controller;
 
-import io.swagger.helper.ServiceWorkDictionarySpecificationBuilder;
 import io.swagger.helper.UserHelper;
 import io.swagger.helper.VehicleSpecificationBuilder;
-import io.swagger.postgres.model.ServiceWorkDictionary;
 import io.swagger.postgres.model.Vehicle;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.*;
@@ -13,16 +11,12 @@ import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/external/vehicles")
@@ -62,7 +56,7 @@ public class VehicleController {
     public ResponseEntity findVehicles(@RequestParam("search") String search) throws Exception {
         User currentUser = userRepository.findCurrentUser();
 
-        if ( !UserHelper.isAdmin( currentUser ) && !UserHelper.isServiceLeader( currentUser ) )
+        if ( !UserHelper.isAdmin( currentUser ) && !UserHelper.isServiceLeaderOrFreelancer( currentUser ) )
             return ResponseEntity.status(404).build();
 
         if ( search == null || search.length() < 3 )

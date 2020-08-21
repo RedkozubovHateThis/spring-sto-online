@@ -61,7 +61,7 @@ public class ServiceWorkResourceRepository implements ResourceRepository<Service
     public void delete(Long aLong) {
         User currentUser = userRepository.findCurrentUser();
 
-        if ( !UserHelper.isServiceLeader( currentUser ) && !UserHelper.isAdmin( currentUser ) )
+        if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) && !UserHelper.isAdmin( currentUser ) )
             throw new ForbiddenException("Вам запрещено удалять работы!");
 
         ServiceWork serviceWork = serviceWorkRepository.findById(aLong).orElse(null);

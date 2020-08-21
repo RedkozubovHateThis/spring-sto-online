@@ -18,6 +18,7 @@ export class RoleChangeButtonComponent implements OnInit {
 
   private roles = [
     { name: 'Автовладелец', id: 'CLIENT', onlyAdmin: false },
+    { name: 'Самозанятый', id: 'FREELANCER', onlyAdmin: false },
     { name: 'Автосервис', id: 'SERVICE_LEADER', onlyAdmin: false },
     { name: 'Администратор', id: 'ADMIN', onlyAdmin: true }
   ];
@@ -53,6 +54,7 @@ export class RoleChangeButtonComponent implements OnInit {
       this.onRoleChange.emit();
 
       this.toastrService.success('Роль успешно изменена!');
+      this.modalService.dismissAll();
     }, error => {
       this.isChanging = false;
       if ( error.error.responseText )

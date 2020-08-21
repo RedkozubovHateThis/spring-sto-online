@@ -15,7 +15,7 @@
             </div>
             <div class="col-auto">
               <a href="#" class="btn btn-sm btn-buro-blue" [routerLink]="['/documents/add']"
-                 *ngIf="userService.isAdmin() || userService.isServiceLeader()">
+                 *ngIf="userService.isAdmin() || userService.isServiceLeaderOrFreelancer()">
                 Добавить
               </a>
               <button class="btn btn-sm btn-buro-blue" (click)="requestData()"
@@ -34,7 +34,7 @@
                 <th scope="col">Дата начала</th>
                 <th scope="col">Состояние</th>
                 <th scope="col">Статус оплаты</th>
-                <th scope="col" *ngIf="userService.isAdmin() || userService.isServiceLeader()">Клиент</th>
+                <th scope="col" *ngIf="userService.isAdmin() || userService.isServiceLeaderOrFreelancer()">Клиент</th>
                 <th scope="col" *ngIf="userService.isAdmin() || userService.isClient()">Автосервис</th>
                 <th scope="col">Автомобиль</th>
                 <th scope="col">Гос. номер</th>
@@ -61,7 +61,7 @@
                     <i class="bg-{{serviceDocument.paidStatusStyle}}"></i>{{serviceDocument.paidStatusRus}}
                   </span>
                 </th>
-                <th style="cursor: pointer;" class="wrap-column" (click)="navigate(serviceDocument)" *ngIf="userService.isAdmin() || userService.isServiceLeader()">
+                <th style="cursor: pointer;" class="wrap-column" (click)="navigate(serviceDocument)" *ngIf="userService.isAdmin() || userService.isServiceLeaderOrFreelancer()">
                   <ng-container *ngIf="serviceDocument.relationships.client.data">
                     {{serviceDocument.relationships.client.data.attributes.name}}
                   </ng-container>

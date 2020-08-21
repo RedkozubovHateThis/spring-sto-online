@@ -15,7 +15,6 @@ import io.swagger.postgres.repository.ServiceDocumentRepository;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -62,7 +61,7 @@ public class ProfileResourceRepository implements ResourceRepository<Profile, Lo
 
         User currentUser = userRepository.findCurrentUser();
 
-        if ( UserHelper.isServiceLeader( currentUser ) && currentUser.getProfile() != null && s.getId() == null ) {
+        if ( UserHelper.isServiceLeaderOrFreelancer( currentUser ) && currentUser.getProfile() != null && s.getId() == null ) {
             s.setCreatedBy( currentUser.getProfile() );
         }
 

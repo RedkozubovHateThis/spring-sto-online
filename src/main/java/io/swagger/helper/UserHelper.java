@@ -56,4 +56,12 @@ public class UserHelper {
         return hasRole( user, "SERVICE_LEADER" );
     }
 
+    public static Boolean isServiceLeaderOrFreelancer() {
+        return hasRole("SERVICE_LEADER") || hasRole("FREELANCER");
+    }
+
+    public static Boolean isServiceLeaderOrFreelancer(User user) {
+        return hasRole( user, "SERVICE_LEADER" ) || hasRole( user, "FREELANCER" );
+    }
+
 }

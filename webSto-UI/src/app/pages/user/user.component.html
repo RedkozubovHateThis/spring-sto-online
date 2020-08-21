@@ -61,7 +61,7 @@
                   </div>
                 </div>
               </div>
-              <div class="row" *ngIf="model.isServiceLeader()">
+              <div class="row" *ngIf="model.isServiceLeaderOrFreelancer()">
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label" for="service-work-price">Стоимость работа по н/ч</label>
@@ -137,7 +137,7 @@
               </div>
             </div>
             <!-- Bank -->
-            <ng-container *ngIf="model != null && model.isServiceLeader()">
+            <ng-container *ngIf="model != null && model.isServiceLeaderOrFreelancer()">
               <h6 class="heading-small text-muted mb-4">Банковская информация</h6>
               <div *ngIf="model != null">
                 <div class="row">
@@ -193,7 +193,7 @@
               </div>
             </div>
             <!-- Balance -->
-            <ng-container *ngIf="model != null && model.isServiceLeader()">
+            <ng-container *ngIf="model != null && model.isServiceLeaderOrFreelancer()">
               <hr class="my-4" />
               <h6 class="heading-small text-muted mb-4">Баланс</h6>
               <div>

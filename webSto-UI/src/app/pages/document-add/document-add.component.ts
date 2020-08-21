@@ -95,7 +95,7 @@ export class DocumentAddComponent implements OnInit {
     this.model.attributes.status = 'CREATED';
     this.model.attributes.paidStatus = 'NOT_PAID';
     this.model.attributes.clientIsCustomer = true;
-    if ( this.userService.isServiceLeader() && this.userService.currentUser.relationships.profile.data ) {
+    if ( this.userService.isServiceLeaderOrFreelancer() && this.userService.currentUser.relationships.profile.data ) {
       this.model.addRelationship( this.userService.currentUser.relationships.profile.data, 'executor' );
       this.model.attributes.masterFio = this.userService.currentUser.attributes.fullFio;
     }
@@ -107,7 +107,7 @@ export class DocumentAddComponent implements OnInit {
   ngOnInit(): void {
     this.setDates();
     const subscription = this.userService.currentUserIsLoaded.subscribe( (currentUser) => {
-      if ( !this.model.hasOneRelated('executor') && currentUser.isServiceLeader()
+      if ( !this.model.hasOneRelated('executor') && currentUser.isServiceLeaderOrFreelancer()
         && currentUser.relationships.profile.data) {
         this.model.addRelationship( currentUser.relationships.profile.data, 'executor' );
         this.model.attributes.masterFio = this.userService.currentUser.attributes.fullFio;

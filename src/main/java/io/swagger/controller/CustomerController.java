@@ -1,11 +1,8 @@
 package io.swagger.controller;
 
 import io.swagger.helper.CustomerSpecificationBuilder;
-import io.swagger.helper.ServiceAddonDictionarySpecificationBuilder;
 import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.Customer;
-import io.swagger.postgres.model.ServiceAddonDictionary;
-import io.swagger.postgres.model.security.Profile;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.CustomerRepository;
 import io.swagger.postgres.repository.UserRepository;
@@ -63,7 +60,7 @@ public class CustomerController {
     public ResponseEntity findAllClients() throws Exception {
         User currentUser = userRepository.findCurrentUser();
 
-        if ( !UserHelper.isServiceLeader( currentUser ) && !UserHelper.isAdmin( currentUser ) )
+        if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) && !UserHelper.isAdmin( currentUser ) )
             return ResponseEntity.status(404).build();
 
         List<Customer> customers;
@@ -90,7 +87,7 @@ public class CustomerController {
     public ResponseEntity findCustomers(@RequestParam("search") String search) throws Exception {
         User currentUser = userRepository.findCurrentUser();
 
-        if ( !UserHelper.isAdmin( currentUser ) && !UserHelper.isServiceLeader( currentUser ) )
+        if ( !UserHelper.isAdmin( currentUser ) && !UserHelper.isServiceLeaderOrFreelancer( currentUser ) )
             return ResponseEntity.status(404).build();
 
         if ( search == null || search.length() < 3 )

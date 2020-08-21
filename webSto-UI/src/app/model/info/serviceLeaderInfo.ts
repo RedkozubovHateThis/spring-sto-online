@@ -2,6 +2,7 @@ export class ServiceLeaderInfo {
   totalDocuments: number;
   totalDocumentsCreated: number;
   totalDocumentsCompleted: number;
+  totalDocumentsInWork: number;
 
   totalSum: number;
   totalVehicles: number;

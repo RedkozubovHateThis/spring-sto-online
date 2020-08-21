@@ -71,7 +71,7 @@ public class ReportController {
         User currentUser = userRepository.findCurrentUser();
         List<ClientResponse> responses;
 
-        if ( UserHelper.isServiceLeader( currentUser ) && currentUser.getProfile() != null ) {
+        if ( UserHelper.isServiceLeaderOrFreelancer( currentUser ) && currentUser.getProfile() != null ) {
             responses = reportService.getClientsResponses(currentUser.getProfile().getId(), startDate, endDate);
         }
         else if ( UserHelper.isAdmin( currentUser ) ) {
@@ -102,7 +102,7 @@ public class ReportController {
 
             byte[] response;
 
-            if ( UserHelper.isServiceLeader( currentUser ) && currentUser.getProfile() != null ) {
+            if ( UserHelper.isServiceLeaderOrFreelancer( currentUser ) && currentUser.getProfile() != null ) {
                 response = reportService.getClientsReport(currentUser.getProfile().getId(), startDate, endDate);
             }
             else if ( UserHelper.isAdmin( currentUser ) ) {
@@ -140,7 +140,7 @@ public class ReportController {
         User currentUser = userRepository.findCurrentUser();
         List<ClientResponse> responses;
 
-        if ( UserHelper.isServiceLeader( currentUser ) && currentUser.getProfile() != null ) {
+        if ( UserHelper.isServiceLeaderOrFreelancer( currentUser ) && currentUser.getProfile() != null ) {
             responses = reportService.getVehiclesResponses(currentUser.getProfile().getId(), vinNumber, startDate, endDate);
         }
         else if ( UserHelper.isAdmin( currentUser ) ) {
@@ -172,7 +172,7 @@ public class ReportController {
 
             byte[] response;
 
-            if ( UserHelper.isServiceLeader( currentUser ) && currentUser.getProfile() != null ) {
+            if ( UserHelper.isServiceLeaderOrFreelancer( currentUser ) && currentUser.getProfile() != null ) {
                 response = reportService.getVehiclesReport(currentUser.getProfile().getId(), vinNumber, startDate, endDate);
             }
             else if ( UserHelper.isAdmin( currentUser ) ) {
@@ -207,7 +207,7 @@ public class ReportController {
         User currentUser = userRepository.findCurrentUser();
         List<ExecutorResponse> responses;
 
-        if ( UserHelper.isServiceLeader( currentUser ) && currentUser.getProfile() != null ) {
+        if ( UserHelper.isServiceLeaderOrFreelancer( currentUser ) && currentUser.getProfile() != null ) {
             responses = reportService.getRegisteredResponses(currentUser.getProfile().getId());
         }
         else if ( UserHelper.isAdmin( currentUser ) ) {
@@ -232,7 +232,7 @@ public class ReportController {
 
             byte[] response;
 
-            if ( UserHelper.isServiceLeader( currentUser ) && currentUser.getProfile() != null ) {
+            if ( UserHelper.isServiceLeaderOrFreelancer( currentUser ) && currentUser.getProfile() != null ) {
                 response = reportService.getRegisteredReport(currentUser.getProfile().getId());
             }
             else if ( UserHelper.isAdmin( currentUser ) ) {

@@ -57,7 +57,7 @@ public class ServiceDocumentResourceRepository implements ResourceRepository<Ser
 
         if ( UserHelper.isClient( currentUser ) && ( client == null || !client.getId().equals( currentUser.getProfile().getId() ) ) )
             throw new ForbiddenException("Заказ-наряд не найден!");
-        if ( UserHelper.isServiceLeader( currentUser ) && ( executor == null || !executor.getId().equals( currentUser.getProfile().getId() ) ) )
+        if ( UserHelper.isServiceLeaderOrFreelancer( currentUser ) && ( executor == null || !executor.getId().equals( currentUser.getProfile().getId() ) ) )
             throw new ForbiddenException("Заказ-наряд не найден!");
 
         return serviceDocument;
@@ -123,7 +123,7 @@ public class ServiceDocumentResourceRepository implements ResourceRepository<Ser
     public void delete(Long aLong) {
         User currentUser = userRepository.findCurrentUser();
 
-        if ( !UserHelper.isServiceLeader( currentUser ) && !UserHelper.isAdmin( currentUser ) )
+        if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) && !UserHelper.isAdmin( currentUser ) )
             throw new ForbiddenException("Вам запрещено удалять заказ-наряды!");
 
         ServiceDocument serviceDocument = serviceDocumentRepository.findById(aLong).orElse(null);
@@ -131,7 +131,7 @@ public class ServiceDocumentResourceRepository implements ResourceRepository<Ser
         if ( serviceDocument == null )
             throw new ResourceNotFoundException("Заказ-наряд не найден!");
 
-        if ( serviceDocument.getStatus().equals( ServiceDocumentStatus.COMPLETED ) && UserHelper.isServiceLeader( currentUser ) )
+        if ( serviceDocument.getStatus().equals( ServiceDocumentStatus.COMPLETED ) && UserHelper.isServiceLeaderOrFreelancer( currentUser ) )
             throw new BadRequestException("Нельзя удалять завершенные заказ-наряды!");
 
         serviceDocument.setDeleted( true );

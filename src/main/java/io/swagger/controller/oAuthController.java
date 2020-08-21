@@ -71,7 +71,7 @@ public class oAuthController {
         if ( roleName == null )
             return ResponseEntity.status(400).body("Роль не может быть пустой!");
 
-        if ( !roleName.equals("SERVICE_LEADER") && !roleName.equals("CLIENT") )
+        if ( !roleName.equals("SERVICE_LEADER") && !roleName.equals("CLIENT") && !roleName.equals("FREELANCER") )
             return ResponseEntity.status(400).body("Неправильная роль!");
 
         if ( registerModel.getPassword() == null || registerModel.getPassword().isEmpty() )
@@ -129,7 +129,7 @@ public class oAuthController {
         if ( role != null )
             user.getRoles().add(role);
 
-        if ( roleName.equals("SERVICE_LEADER") ) {
+        if ( roleName.equals("SERVICE_LEADER") || roleName.equals("FREELANCER") ) {
             if ( registerModel.getInn() == null || registerModel.getInn().isEmpty() )
                 return ResponseEntity.status(400).body("ИНН не может быть пустым!");
 
@@ -137,7 +137,8 @@ public class oAuthController {
                 return ResponseEntity.status(400).body("Пользователь с таким ИНН уже существует!");
 
             try {
-                userService.isInnCorrect( registerModel.getInn() );
+                if ( roleName.equals("SERVICE_LEADER") )
+                    userService.isInnCorrect( registerModel.getInn() );
             } catch (DataNotFoundException e) {
                 return ResponseEntity.status(400).body(e.getMessage());
             }

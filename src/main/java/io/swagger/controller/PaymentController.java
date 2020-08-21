@@ -56,7 +56,7 @@ public class PaymentController {
     public ResponseEntity registerRequest(@RequestParam("amount") Integer amount) {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.isServiceLeader( currentUser ) )
+        if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) )
             return ResponseEntity.status(403).body( new ApiResponse("Пополнение баланса доступно только для Автосервиса!") );
 
         try {
@@ -74,7 +74,7 @@ public class PaymentController {
     public ResponseEntity registerPromisedRequest(@RequestParam("amount") Integer amount) {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.isServiceLeader( currentUser ) )
+        if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) )
             return ResponseEntity.status(403).body( new ApiResponse("Пополнение баланса доступно только для Автосервиса!") );
 
         try {
@@ -104,7 +104,7 @@ public class PaymentController {
     public ResponseEntity registerPromisedRequest() {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.isServiceLeader( currentUser ) )
+        if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) )
             return ResponseEntity.status(403).body( new ApiResponse("Запрос статуса обещанного платежа доступен только для Автосервиса!") );
 
         try {
@@ -120,7 +120,7 @@ public class PaymentController {
     public ResponseEntity updateRequestExtended(@RequestParam("orderId") String orderId) {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.isServiceLeader( currentUser ) )
+        if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) )
             return ResponseEntity.status(403).body( new ApiResponse("Пополнение баланса доступно только для Автосервиса!") );
 
         try {
@@ -140,7 +140,7 @@ public class PaymentController {
                                   @RequestParam("toDate") @DateTimeFormat(pattern = "dd.MM.yyyy") Date toDate) {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.isServiceLeader( currentUser ) )
+        if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) )
             return ResponseEntity.status(404).build();
 
         List<PaymentRecord> paymentRecords = paymentRecordRepository.findAllByUserId( currentUser.getId(), fromDate, toDate );
@@ -168,7 +168,7 @@ public class PaymentController {
     public ResponseEntity findAllSubscriptionTypes() throws Exception {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.isServiceLeader( currentUser ) && !UserHelper.isAdmin( currentUser ) )
+        if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) && !UserHelper.isAdmin( currentUser ) )
             return ResponseEntity.status(404).build();
 
         List<SubscriptionType> subscriptionTypes = subscriptionTypeRepository.findAllAndOrderBySortPosition();
@@ -198,7 +198,7 @@ public class PaymentController {
     public ResponseEntity findAllSubscriptions() throws Exception {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.isServiceLeader( currentUser ) )
+        if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) )
             return ResponseEntity.status(404).build();
 
         List<Subscription> subscriptions = subscriptionRepository.findAllByUserId( currentUser.getId() );
@@ -218,7 +218,7 @@ public class PaymentController {
     public ResponseEntity buySubscription(@RequestParam("subscriptionTypeId") Long subscriptionTypeId) {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.isServiceLeader( currentUser ) )
+        if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) )
             return ResponseEntity.status(404).build();
 
         try {
@@ -247,7 +247,7 @@ public class PaymentController {
 
         User serviceLeader = userRepository.findById( serviceLeaderId ).orElse( null );
 
-        if ( serviceLeader == null || !UserHelper.isServiceLeader( serviceLeader ) )
+        if ( serviceLeader == null || !UserHelper.isServiceLeaderOrFreelancer( serviceLeader ) )
             return ResponseEntity.status(404).body( new ApiResponse("Нельзя выдать тариф этому пользователю!") );
 
         SubscriptionType subscriptionType = subscriptionTypeRepository.findFreeSubscription();
@@ -276,7 +276,7 @@ public class PaymentController {
                                                @RequestParam("documentsCount") Integer documentsCount) {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.isServiceLeader( currentUser ) )
+        if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) )
             return ResponseEntity.status(404).build();
 
         try {
@@ -298,7 +298,7 @@ public class PaymentController {
     public ResponseEntity updateRenewalSubscription(@RequestParam("subscriptionTypeId") Long subscriptionTypeId) {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.isServiceLeader( currentUser ) )
+        if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) )
             return ResponseEntity.status(404).build();
 
         try {
@@ -357,7 +357,7 @@ public class PaymentController {
     }
 
     private Integer countDocumentsRemains(User user, Subscription subscription) {
-        if ( !UserHelper.isServiceLeader( user ) || subscription == null ) return null;
+        if ( !UserHelper.isServiceLeaderOrFreelancer( user ) || subscription == null ) return null;
 
         Integer count = 0;
 //        Integer count = null;

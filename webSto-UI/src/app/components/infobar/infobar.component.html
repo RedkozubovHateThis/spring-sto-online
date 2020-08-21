@@ -17,7 +17,7 @@
               </div>
             </div>
 
-            <div class="card-body" *ngIf="userService.isServiceLeader() || userService.isAdmin()">
+            <div class="card-body" *ngIf="userService.isServiceLeaderOrFreelancer() || userService.isAdmin()">
               <div class="row mb-1">
                 <div class="col">
                   <h5 class="card-title text-uppercase text-muted mb-0">Всего заказ-нарядов</h5>
@@ -37,6 +37,14 @@
               <div class="row mb-1">
                 <div class="col">
                   <h5 class="card-title text-uppercase text-muted mb-0">В статусе "В работе"</h5>
+                </div>
+                <div class="col-auto" *ngIf="serviceLeaderInfo != null">
+                  <span class="h4 font-weight-bold mb-0">{{serviceLeaderInfo.totalDocumentsInWork}}</span>
+                </div>
+              </div>
+              <div class="row mb-1">
+                <div class="col">
+                  <h5 class="card-title text-uppercase text-muted mb-0">В статусе "Заявка"</h5>
                 </div>
                 <div class="col-auto" *ngIf="serviceLeaderInfo != null">
                   <span class="h4 font-weight-bold mb-0">{{serviceLeaderInfo.totalDocumentsCreated}}</span>
@@ -60,13 +68,13 @@
               </div>
             </div>
 
-            <div class="card-body" *ngIf="userService.isServiceLeader() || userService.isAdmin()">
+            <div class="card-body" *ngIf="userService.isServiceLeaderOrFreelancer() || userService.isAdmin()">
               <div class="row mb-1">
                 <div class="col">
                   <h5 class="card-title text-uppercase text-muted mb-0">Общая сумма ремонтов</h5>
                 </div>
                 <div class="col-auto" *ngIf="serviceLeaderInfo != null">
-                  <span class="h4 font-weight-bold mb-0">{{serviceLeaderInfo.totalSum}}</span>
+                  <span class="h4 font-weight-bold mb-0">{{serviceLeaderInfo.totalSum | number : '.2' : 'ru'}}</span>
                 </div>
               </div>
               <div class="row mb-1">
@@ -103,7 +111,7 @@
               </div>
             </div>
 
-            <div class="card-body" *ngIf="userService.isServiceLeader() || userService.isAdmin()">
+            <div class="card-body" *ngIf="userService.isServiceLeaderOrFreelancer() || userService.isAdmin()">
               <div class="row mb-1">
                 <div class="col">
                   <h5 class="card-title text-uppercase text-muted mb-0">Текущий баланс</h5>
@@ -180,7 +188,7 @@
               </div>
             </div>
 
-            <div class="card-body" *ngIf="userService.isServiceLeader() || userService.isAdmin()">
+            <div class="card-body" *ngIf="userService.isServiceLeaderOrFreelancer() || userService.isAdmin()">
               <div class="row mb-1">
                 <div class="col">
                   <h5 class="card-title text-uppercase text-muted mb-0">Среднее количество просмотров рекламы в день</h5>

@@ -8,7 +8,6 @@ import io.crnk.core.repository.ResourceRepository;
 import io.crnk.core.resource.list.ResourceList;
 import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.ServiceDocument;
-import io.swagger.postgres.model.ServiceWork;
 import io.swagger.postgres.model.Vehicle;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.ServiceDocumentRepository;
@@ -58,7 +57,7 @@ public class VehicleResourceRepository implements ResourceRepository<Vehicle, Lo
 
         User currentUser = userRepository.findCurrentUser();
 
-        if ( UserHelper.isServiceLeader( currentUser ) && currentUser.getProfile() != null && s.getId() == null ) {
+        if ( UserHelper.isServiceLeaderOrFreelancer( currentUser ) && currentUser.getProfile() != null && s.getId() == null ) {
             s.setCreatedBy( currentUser.getProfile() );
         }
 

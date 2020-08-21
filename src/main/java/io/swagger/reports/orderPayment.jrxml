@@ -326,7 +326,7 @@
 		</band>
 	</title>
 	<detail>
-		<band height="45" splitType="Stretch">
+		<band height="47" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<printWhenExpression><![CDATA[$P{serviceData} != null && $P{serviceData}.getRecordCount() > 0]]></printWhenExpression>
 			<frame>
@@ -362,15 +362,15 @@
 										<text><![CDATA[№]]></text>
 									</staticText>
 								</jr:columnHeader>
-								<jr:detailCell style="Table_TD" height="15">
+								<jr:detailCell style="Table_TD" height="17">
 									<property name="com.jaspersoft.studio.unit.height" value="px"/>
 									<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-										<reportElement stretchType="ContainerHeight" x="0" y="0" width="20" height="15" uuid="4dfa3f78-42a9-45b0-b4f9-72ae92b85746"/>
+										<reportElement stretchType="ContainerHeight" x="0" y="0" width="20" height="17" uuid="4dfa3f78-42a9-45b0-b4f9-72ae92b85746"/>
 										<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
-										<textElement textAlignment="Center" verticalAlignment="Middle">
+										<textElement textAlignment="Right" verticalAlignment="Middle">
 											<font fontName="Calibri" size="11"/>
 										</textElement>
-										<textFieldExpression><![CDATA[$V{number}]]></textFieldExpression>
+										<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 									</textField>
 								</jr:detailCell>
 							</jr:column>
@@ -389,10 +389,10 @@
 										<text><![CDATA[Р/З]]></text>
 									</staticText>
 								</jr:columnHeader>
-								<jr:detailCell style="Table_TD" height="15">
+								<jr:detailCell style="Table_TD" height="17">
 									<property name="com.jaspersoft.studio.unit.height" value="px"/>
 									<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-										<reportElement stretchType="ContainerHeight" x="0" y="0" width="20" height="15" uuid="4332387f-5cbf-4374-a682-fffcfc2ee953"/>
+										<reportElement stretchType="ContainerHeight" x="0" y="0" width="20" height="17" uuid="4332387f-5cbf-4374-a682-fffcfc2ee953"/>
 										<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 										<textElement textAlignment="Left" verticalAlignment="Middle">
 											<font fontName="Calibri" size="11"/>
@@ -416,10 +416,11 @@
 										<text><![CDATA[Наименование работ/запчастей]]></text>
 									</staticText>
 								</jr:columnHeader>
-								<jr:detailCell style="Table_TD" height="15">
+								<jr:detailCell style="Table_TD" height="17">
 									<property name="com.jaspersoft.studio.unit.width" value="px"/>
+									<property name="com.jaspersoft.studio.unit.height" value="px"/>
 									<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-										<reportElement stretchType="ContainerHeight" x="0" y="0" width="305" height="15" uuid="5bc42b79-8f5e-4d37-9beb-5a9e36683e91"/>
+										<reportElement stretchType="ContainerHeight" x="0" y="0" width="305" height="17" uuid="5bc42b79-8f5e-4d37-9beb-5a9e36683e91"/>
 										<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 										<textElement textAlignment="Left" verticalAlignment="Middle">
 											<font fontName="Calibri" size="9" isItalic="true"/>
@@ -440,9 +441,9 @@
 										<text><![CDATA[Кол / Н.врем.]]></text>
 									</staticText>
 								</jr:columnHeader>
-								<jr:detailCell style="Table_TD" height="15">
+								<jr:detailCell style="Table_TD" height="17">
 									<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-										<reportElement stretchType="ContainerHeight" x="0" y="0" width="60" height="15" uuid="d9e941dd-f139-477c-ab9a-3f3a9ecbb879"/>
+										<reportElement stretchType="ContainerHeight" x="0" y="0" width="60" height="17" uuid="d9e941dd-f139-477c-ab9a-3f3a9ecbb879"/>
 										<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 										<textElement textAlignment="Right" verticalAlignment="Middle">
 											<font fontName="Calibri" size="11" isItalic="true"/>
@@ -466,10 +467,10 @@
 											<text><![CDATA[Цена]]></text>
 										</staticText>
 									</jr:columnHeader>
-									<jr:detailCell style="Table_TD" height="15">
+									<jr:detailCell style="Table_TD" height="17">
 										<property name="com.jaspersoft.studio.unit.width" value="px"/>
 										<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-											<reportElement stretchType="ContainerHeight" x="0" y="0" width="60" height="15" uuid="b67e6ee0-fd2f-4908-a054-b6d0ddb76770"/>
+											<reportElement stretchType="ContainerHeight" x="0" y="0" width="60" height="17" uuid="b67e6ee0-fd2f-4908-a054-b6d0ddb76770"/>
 											<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 											<textElement textAlignment="Right" verticalAlignment="Middle">
 												<font fontName="Calibri" size="11" isItalic="true"/>
@@ -492,9 +493,9 @@
 											<text><![CDATA[Сумма]]></text>
 										</staticText>
 									</jr:columnHeader>
-									<jr:detailCell style="Table_TD" height="15">
+									<jr:detailCell style="Table_TD" height="17">
 										<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-											<reportElement stretchType="ContainerHeight" x="0" y="0" width="60" height="15" uuid="9e0b29bf-6a54-436d-a296-4a0e3e10e799"/>
+											<reportElement stretchType="ContainerHeight" x="0" y="0" width="60" height="17" uuid="9e0b29bf-6a54-436d-a296-4a0e3e10e799"/>
 											<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
 											<textElement textAlignment="Right" verticalAlignment="Middle">
 												<font fontName="Calibri" size="11"/>

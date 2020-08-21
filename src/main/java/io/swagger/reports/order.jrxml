@@ -48,7 +48,7 @@
 		<field name="priceNorm" class="java.lang.Double"/>
 		<field name="price" class="java.lang.Double"/>
 		<field name="sum" class="java.lang.Double"/>
-		<variable name="number" class="java.lang.Integer" incrementType="Report"/>
+		<variable name="number" class="java.lang.Integer" resetType="None" incrementType="Report" calculation="Count"/>
 	</subDataset>
 	<parameter name="organizationName" class="java.lang.String"/>
 	<parameter name="organizationAddress" class="java.lang.String"/>
@@ -438,10 +438,10 @@
 									<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 										<reportElement stretchType="ContainerHeight" x="0" y="0" width="20" height="17" uuid="4dfa3f78-42a9-45b0-b4f9-72ae92b85746"/>
 										<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2"/>
-										<textElement textAlignment="Center" verticalAlignment="Middle">
+										<textElement textAlignment="Right" verticalAlignment="Middle">
 											<font fontName="Calibri" size="11"/>
 										</textElement>
-										<textFieldExpression><![CDATA[$V{number}]]></textFieldExpression>
+										<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 									</textField>
 								</jr:detailCell>
 							</jr:column>

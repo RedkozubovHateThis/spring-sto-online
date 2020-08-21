@@ -30,10 +30,11 @@
             <div class="form-group">
               <div class="btn-group btn-group-sm btn-block" role="group">
                 <button type="button" class="btn btn-buro-blue" style="width: 100%;" (click)="setSelectedRole('CLIENT')" [ngClass]="{active: 'CLIENT' === selectedRole}">Клиент</button>
+                <button type="button" class="btn btn-buro-blue" style="width: 100%;" (click)="setSelectedRole('FREELANCER')" [ngClass]="{active: 'FREELANCER' === selectedRole}">Самозанятый</button>
                 <button type="button" class="btn btn-buro-blue" style="width: 100%;" (click)="setSelectedRole('SERVICE_LEADER')" [ngClass]="{active: 'SERVICE_LEADER' === selectedRole}">Автосервис</button>
               </div>
             </div>
-            <ng-container *ngIf="selectedRole === 'SERVICE_LEADER'">
+            <ng-container *ngIf="selectedRole === 'SERVICE_LEADER' || selectedRole === 'FREELANCER'">
               <div class="form-group">
                 <div class="input-group input-group-alternative">
                   <div class="input-group-prepend">

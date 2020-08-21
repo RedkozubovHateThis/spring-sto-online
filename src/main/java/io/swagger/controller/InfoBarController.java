@@ -54,7 +54,7 @@ public class InfoBarController {
     public ResponseEntity getServiceLeaderInfo() {
 
         User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.isServiceLeader( currentUser ) || currentUser.getProfile() == null )
+        if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) || currentUser.getProfile() == null )
             return ResponseEntity.notFound().build();
 
         ServiceLeaderInfo serviceLeaderInfo = buildInfo( currentUser, currentUser.getProfile().getId(), true );
@@ -79,6 +79,7 @@ public class InfoBarController {
 
         Long totalDocuments = 0L;
         Long totalDocumentsCreated = 0L;
+        Long totalDocumentsInWork = 0L;
         Long totalDocumentsCompleted = 0L;
 
         Double totalSum = 0.0;
@@ -109,6 +110,7 @@ public class InfoBarController {
             totalDocuments += getLong( serviceDocumentRepository.countByExecutorId( organizationId ) );
             totalDocumentsCompleted += getLong( serviceDocumentRepository.countByExecutorIdAndStatus( organizationId, ServiceDocumentStatus.COMPLETED.toString() ) );
             totalDocumentsCreated += getLong( serviceDocumentRepository.countByExecutorIdAndStatus( organizationId, ServiceDocumentStatus.CREATED.toString() ) );
+            totalDocumentsInWork += getLong( serviceDocumentRepository.countByExecutorIdAndStatus( organizationId, ServiceDocumentStatus.IN_WORK.toString() ) );
             totalSum += getDouble( serviceDocumentRepository.countTotalSumByExecutorId( organizationId ) );
             totalVehicles += getLong( serviceDocumentRepository.countVehiclesByExecutorId( organizationId ) );
             totalClients += getLong( serviceDocumentRepository.countClientsByExecutorId( organizationId ) );
@@ -117,6 +119,7 @@ public class InfoBarController {
             totalDocuments += getLong( serviceDocumentRepository.count() );
             totalDocumentsCompleted += getLong( serviceDocumentRepository.countByStatus( ServiceDocumentStatus.COMPLETED.toString() ) );
             totalDocumentsCreated += getLong( serviceDocumentRepository.countByStatus( ServiceDocumentStatus.CREATED.toString() ) );
+            totalDocumentsInWork += getLong( serviceDocumentRepository.countByStatus( ServiceDocumentStatus.IN_WORK.toString() ) );
             totalSum += getDouble( serviceDocumentRepository.countTotalSum() );
             totalVehicles += getLong( serviceDocumentRepository.countVehicles() );
             totalClients += getLong( serviceDocumentRepository.countClients() );
@@ -125,6 +128,7 @@ public class InfoBarController {
         serviceLeaderInfo.setTotalDocuments( totalDocuments );
         serviceLeaderInfo.setTotalDocumentsCompleted( totalDocumentsCompleted );
         serviceLeaderInfo.setTotalDocumentsCreated( totalDocumentsCreated );
+        serviceLeaderInfo.setTotalDocumentsInWork( totalDocumentsInWork );
 
         serviceLeaderInfo.setTotalSum( totalSum );
         serviceLeaderInfo.setTotalVehicles( totalVehicles );

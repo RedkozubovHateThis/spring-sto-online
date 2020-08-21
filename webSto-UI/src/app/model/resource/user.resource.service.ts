@@ -33,6 +33,9 @@ export class UserResource extends Resource {
   public isServiceLeader = (): boolean => {
     return this.hasRole('SERVICE_LEADER');
   };
+  public isServiceLeaderOrFreelancer = (): boolean => {
+    return this.hasRole('SERVICE_LEADER') || this.hasRole('FREELANCER');
+  };
   public isAdmin = (): boolean => {
     return this.hasRole('ADMIN');
   };

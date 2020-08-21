@@ -26,7 +26,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.HashMap;
@@ -154,14 +153,15 @@ public class UserServiceImpl implements UserService {
 
         User currentUser = userRepository.findCurrentUser();
 
-        if ( !UserHelper.isAdmin(currentUser) && !UserHelper.isServiceLeader(currentUser) )
+        if ( !UserHelper.isAdmin(currentUser) && !UserHelper.isServiceLeaderOrFreelancer(currentUser) )
             throw new Exception();
 
-        if ( roleName.equals("SERVICE_LEADER") ) {
+        if ( roleName.equals("SERVICE_LEADER") || roleName.equals("FREELANCER") ) {
             if ( profile.getInn() == null || profile.getInn().length() == 0 )
                 throw new Exception();
 
-            isInnCorrect( profile.getInn() );
+            if ( roleName.equals("SERVICE_LEADER") )
+                isInnCorrect( profile.getInn() );
         }
 
         User user = new User();
@@ -203,7 +203,7 @@ public class UserServiceImpl implements UserService {
 
         User currentUser = userRepository.findCurrentUser();
 
-        if ( !UserHelper.isAdmin(currentUser) && !UserHelper.isServiceLeader(currentUser) )
+        if ( !UserHelper.isAdmin(currentUser) && !UserHelper.isServiceLeaderOrFreelancer(currentUser) )
             throw new Exception();
 
         User user = profile.getUser();

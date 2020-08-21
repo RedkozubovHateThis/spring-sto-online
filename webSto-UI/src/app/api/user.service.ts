@@ -226,7 +226,7 @@ export class UserService implements TransferService<UserResource>, RestService<U
   }
 
   isNotClient(): boolean {
-    return this.currentUser != null && ( this.currentUser.isAdmin() || this.currentUser.isServiceLeader() );
+    return this.currentUser != null && ( this.currentUser.isAdmin() || this.currentUser.isServiceLeaderOrFreelancer() );
   }
 
   isClient(): boolean {
@@ -235,6 +235,10 @@ export class UserService implements TransferService<UserResource>, RestService<U
 
   isServiceLeader(): boolean {
     return this.currentUser != null && this.currentUser.isServiceLeader();
+  }
+
+  isServiceLeaderOrFreelancer(): boolean {
+    return this.currentUser != null && this.currentUser.isServiceLeaderOrFreelancer();
   }
 
   isAdmin(): boolean {

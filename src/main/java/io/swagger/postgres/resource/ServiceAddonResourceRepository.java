@@ -7,7 +7,6 @@ import io.crnk.core.repository.ResourceRepository;
 import io.crnk.core.resource.list.ResourceList;
 import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.ServiceAddon;
-import io.swagger.postgres.model.ServiceWork;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.ServiceAddonRepository;
 import io.swagger.postgres.repository.UserRepository;
@@ -60,7 +59,7 @@ public class ServiceAddonResourceRepository implements ResourceRepository<Servic
     public void delete(Long aLong) {
         User currentUser = userRepository.findCurrentUser();
 
-        if ( !UserHelper.isServiceLeader( currentUser ) && !UserHelper.isAdmin( currentUser ) )
+        if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) && !UserHelper.isAdmin( currentUser ) )
             throw new ForbiddenException("Вам запрещено удалять товары!");
 
         ServiceAddon serviceAddon = serviceAddonRepository.findById(aLong).orElse(null);

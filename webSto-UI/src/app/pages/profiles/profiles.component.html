@@ -171,6 +171,10 @@
         Как автовладельца
         <span *ngIf="isSaving">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
       </button>
+      <button type="button" class="btn btn-sm btn-buro-blue" (click)="saveAs(profileController.selectedModel, 'FREELANCER')" [disabled]="isSaving">
+        Как самозанятый
+        <span *ngIf="isSaving">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+      </button>
       <button type="button" class="btn btn-sm btn-buro-blue" (click)="saveAs(profileController.selectedModel, 'SERVICE_LEADER')" [disabled]="isSaving">
         Как автосервис
         <span *ngIf="isSaving">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
