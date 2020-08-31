@@ -86,6 +86,13 @@
                   </div>
                 </div>
               </ng-container>
+              <div class="row form-group" *ngIf="totalSum">
+                <div class="col">
+                  <button class="btn btn-sm btn-buro-blue btn-block" (click)="sendPromisedRequest(totalSum)" [disabled]="isProcessing">
+                    {{totalSum | number : '.2' : 'ru'}} руб.
+                  </button>
+                </div>
+              </div>
 
 <!--              <div class="row form-group">-->
 <!--                <div class="col">-->

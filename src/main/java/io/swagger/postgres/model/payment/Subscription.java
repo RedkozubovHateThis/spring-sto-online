@@ -41,16 +41,6 @@ public class Subscription extends BaseEntity implements Serializable {
     @Column(nullable = false)
     private Boolean isRenewable;
 
-    @Column(nullable = false)
-    private Double documentCost;
-    @Column(nullable = false)
-    private Integer documentsCount;
-
-//    @OneToOne(mappedBy = "currentSubscription")
-//    @NotFound(action = NotFoundAction.IGNORE)
-//    @JsonApiRelation
-//    private User asCurrentUser;
-
     @ManyToOne
     @NotFound(action = NotFoundAction.IGNORE)
     @JsonApiRelation
@@ -65,23 +55,11 @@ public class Subscription extends BaseEntity implements Serializable {
     @JsonIgnore
     private Set<SubscriptionAddon> addons = new HashSet<>();
 
-    private Boolean isClosedEarly;
-
     public Subscription() {}
 
     public Subscription(SubscriptionType subscriptionType) {
         this.name = subscriptionType.getName();
         this.type = subscriptionType;
-        this.isRenewable = !subscriptionType.getIsFree();
-        this.documentCost = subscriptionType.getDocumentCost();
-        this.documentsCount = subscriptionType.getDocumentsCount();
-    }
-
-    public void applyAddon(SubscriptionAddon addon) {
-        this.documentsCount += addon.getDocumentsCount();
-    }
-
-    public void updateDocumentsCount(SubscriptionType subscriptionType) {
-        this.documentsCount += subscriptionType.getDocumentsCount();
+        this.isRenewable = true;
     }
 }

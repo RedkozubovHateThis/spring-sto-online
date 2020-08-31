@@ -45,20 +45,4 @@ export class UserComponent extends ModelTransfer<UserResource, string> implement
     this.router.navigate(['/users', user.id, 'edit']);
   }
 
-  private giftSubscription() {
-    this.isLoading = true;
-
-    this.paymentService.giftSubscription(this.model.id).subscribe( subscriptionResponse => {
-      this.isLoading = false;
-      this.toastrService.success('Тариф успешно выдан!');
-    }, error => {
-      this.isLoading = false;
-
-      if ( error.error.responseText )
-        this.toastrService.error(error.error.responseText, 'Внимание!');
-      else
-        this.toastrService.error('Ошибка выдачи тарифа!', 'Внимание!');
-    } );
-  }
-
 }

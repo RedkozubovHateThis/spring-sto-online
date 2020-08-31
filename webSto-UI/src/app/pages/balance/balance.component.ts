@@ -182,4 +182,11 @@ export class BalanceComponent implements OnInit {
     this.isPromised = true;
   }
 
+  get totalSum(): number {
+    if ( this.promisedStatus && this.promisedStatus.availableCosts )
+      return this.promisedStatus.availableCosts.reduce( (prevoius, current) => {
+        return prevoius += current;
+      } );
+  }
+
 }

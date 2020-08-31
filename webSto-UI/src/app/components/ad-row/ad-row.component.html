@@ -1,0 +1,19 @@
+<td colspan="9" *ngIf="currentAd">
+  <div>
+    <h3>
+      {{currentAd.attributes.name}}
+      <ng-container *ngIf="currentAd.attributes.phone">
+        &nbsp;Телефон: {{currentAd.attributes.phone}}
+      </ng-container>
+      <ng-container *ngIf="currentAd.attributes.email">
+        &nbsp;Email: {{currentAd.attributes.email}}
+      </ng-container>
+    </h3>
+  </div>
+  <div>
+    <p>{{currentAd.attributes.description}}</p>
+  </div>
+  <div *ngIf="currentAd.attributes.url">
+    <a [href]="currentAd.url" target="_blank">Перейти на сайт</a>
+  </div>
+</td>

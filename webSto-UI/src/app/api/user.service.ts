@@ -14,6 +14,7 @@ import {SubscriptionTypeResourceService} from '../model/resource/subscription-ty
 import {DocumentCollection} from 'ngx-jsonapi';
 import {ProfileResourceService} from '../model/resource/profile.resource.service';
 import {RegisterModel} from '../model/postgres/registerModel';
+import {AdEntityResourceService} from '../model/resource/ad-entity.resource.service';
 
 @Injectable()
 export class UserService implements TransferService<UserResource>, RestService<UserResource> {
@@ -22,7 +23,8 @@ export class UserService implements TransferService<UserResource>, RestService<U
               private userResourceService: UserResourceService, private userRoleResourceService: UserRoleResourceService,
               private subscriptionResourceService: SubscriptionResourceService,
               private subscriptionTypeResourceService: SubscriptionTypeResourceService,
-              private profileResourceService: ProfileResourceService) {
+              private profileResourceService: ProfileResourceService,
+              private adEntityResourceService: AdEntityResourceService) {
     userResourceService.register();
   }
   currentUser: UserResource;
@@ -122,7 +124,7 @@ export class UserService implements TransferService<UserResource>, RestService<U
           localStorage.removeItem('redirectUrl');
         }
         this.router.navigate(['/documents']);
-      }, 250);
+      }, 500);
     });
 
   }
@@ -136,7 +138,7 @@ export class UserService implements TransferService<UserResource>, RestService<U
       setTimeout(() => {
         this.setCurrentUserData( result );
         this.currentUserIsLoaded.next( this.currentUser );
-      }, 250);
+      }, 500);
     });
 
   }
@@ -157,31 +159,60 @@ export class UserService implements TransferService<UserResource>, RestService<U
     return this.http.get(`${environment.getApiUrl()}oauth/demo/register`);
   }
 
-  saveUser(user: UserResource, message: string, router?: Router) {
+  saveUser(user: UserResource, message: string, saveAdEntity = false) {
     this.isSaving = true;
     const isNew = user.is_new;
 
     const profile = user.relationships.profile.data;
+    const adEntity = user.relationships.adEntity.data;
 
-    profile.save({ beforepath: environment.getBeforeUrl() }).subscribe( (savedProfile) => {
-      user.save({ beforepath: environment.getBeforeUrl() }).subscribe((savedUser) => {
-        this.isSaving = false;
+    if ( saveAdEntity ) {
+      profile.save({ beforepath: environment.getBeforeUrl() }).subscribe( (savedProfile) => {
+        adEntity.save( { beforepath: environment.getBeforeUrl() } ).subscribe( (savedAdEntity) => {
+          user.save({ beforepath: environment.getBeforeUrl() }).subscribe((savedUser) => {
+            this.isSaving = false;
 
-        if ( this.currentUser != null && this.currentUser.id === user.id )
-          this.setCurrentUserData( user );
+            if ( this.currentUser != null && this.currentUser.id === user.id )
+              this.setCurrentUserData( user );
 
-        this.isSaving = false;
-        this.toastrService.success(message);
-        if ( isNew )
-          this.router.navigate(['/users', user.id, 'edit']);
+            this.isSaving = false;
+            this.toastrService.success(message);
+            if ( isNew )
+              this.router.navigate(['/users', user.id, 'edit']);
+          }, (error) => {
+            this.isSaving = false;
+            this.showError(error, 'Ошибка сохранения пользователя');
+          });
+        }, (error) => {
+          this.isSaving = false;
+          this.showError(error, 'Ошибка сохранения рекламного объявления');
+        } );
       }, (error) => {
         this.isSaving = false;
         this.showError(error, 'Ошибка сохранения пользователя');
-      });
-    }, (error) => {
-      this.isSaving = false;
-      this.showError(error, 'Ошибка сохранения пользователя');
-    } );
+      } );
+    }
+    else {
+      profile.save({ beforepath: environment.getBeforeUrl() }).subscribe( (savedProfile) => {
+        user.save({ beforepath: environment.getBeforeUrl() }).subscribe((savedUser) => {
+          this.isSaving = false;
+
+          if ( this.currentUser != null && this.currentUser.id === user.id )
+            this.setCurrentUserData( user );
+
+          this.isSaving = false;
+          this.toastrService.success(message);
+          if ( isNew )
+            this.router.navigate(['/users', user.id, 'edit']);
+        }, (error) => {
+          this.isSaving = false;
+          this.showError(error, 'Ошибка сохранения пользователя');
+        });
+      }, (error) => {
+        this.isSaving = false;
+        this.showError(error, 'Ошибка сохранения пользователя');
+      } );
+    }
   }
 
   showError(error: any, defaultMessage: string) {

@@ -273,13 +273,25 @@ public class UserController {
         Date now = new Date();
 
         users.forEach(user -> {
-            Subscription currentSubscription = user.getCurrentSubscription();
+            Subscription currentAdSubscription = user.getCurrentAdSubscription();
+            Subscription currentOperatorSubscription = user.getCurrentOperatorSubscription();
 
-            if ( currentSubscription != null && currentSubscription.getEndDate().before( now ) ) {
+            if ( currentAdSubscription != null && currentAdSubscription.getEndDate().before( now ) ) {
                 Map<String, String> expired = new HashMap<>();
 
                 expired.put( "fio", user.getFio() );
-                expired.put( "date", DateHelper.formatDate( currentSubscription.getEndDate() ) );
+                expired.put( "date", DateHelper.formatDate( currentAdSubscription.getEndDate() ) );
+                expired.put( "subscription", currentAdSubscription.getName() );
+
+                usersWithExpiredSubscriptions.add( expired );
+            }
+
+            if ( currentOperatorSubscription != null && currentOperatorSubscription.getEndDate().before( now ) ) {
+                Map<String, String> expired = new HashMap<>();
+
+                expired.put( "fio", user.getFio() );
+                expired.put( "date", DateHelper.formatDate( currentOperatorSubscription.getEndDate() ) );
+                expired.put( "subscription", currentOperatorSubscription.getName() );
 
                 usersWithExpiredSubscriptions.add( expired );
             }

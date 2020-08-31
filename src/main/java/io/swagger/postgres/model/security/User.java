@@ -7,6 +7,7 @@ import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
 import io.swagger.helper.UserHelper;
+import io.swagger.postgres.model.AdEntity;
 import io.swagger.postgres.model.BaseEntity;
 import io.swagger.postgres.model.EventMessage;
 import io.swagger.postgres.model.UploadFile;
@@ -65,7 +66,12 @@ public class User extends BaseEntity implements UserDetails, Serializable {
     @OneToOne
     @NotFound(action = NotFoundAction.IGNORE)
     @JsonApiRelation(serialize = SerializeType.EAGER)
-    private Subscription currentSubscription;
+    private Subscription currentAdSubscription;
+
+    @OneToOne
+    @NotFound(action = NotFoundAction.IGNORE)
+    @JsonApiRelation(serialize = SerializeType.EAGER)
+    private Subscription currentOperatorSubscription;
 
     @OrderBy("startDate desc")
     @OneToMany(mappedBy = "user")
@@ -95,15 +101,15 @@ public class User extends BaseEntity implements UserDetails, Serializable {
     private String checkingAccount;
     private String corrAccount;
 
-    @ManyToOne
-    @NotFound(action = NotFoundAction.IGNORE)
-    @JsonApiRelation(serialize = SerializeType.EAGER)
-    private SubscriptionType subscriptionType;
-
     @OneToOne
     @NotFound(action = NotFoundAction.IGNORE)
     @JsonApiRelation(serialize = SerializeType.EAGER)
     private Profile profile;
+
+    @OneToOne
+    @NotFound(action = NotFoundAction.IGNORE)
+    @JsonApiRelation(serialize = SerializeType.EAGER)
+    private AdEntity adEntity;
 
     @Override
     public boolean isAccountNonExpired() {
@@ -190,14 +196,21 @@ public class User extends BaseEntity implements UserDetails, Serializable {
         return balance;
     }
 
-    public Boolean isCurrentSubscriptionEmpty() {
-        return currentSubscription == null;
+    public Boolean isCurrentAdSubscriptionEmpty() {
+        return currentAdSubscription == null;
     }
     public Boolean isBalanceInvalid() {
         return balance != null && balance < 0;
     }
 
-    public Boolean isCurrentSubscriptionExpired() {
-        return currentSubscription != null && currentSubscription.getEndDate().before( new Date() );
+    public Boolean isCurrentAdSubscriptionExpired() {
+        return currentAdSubscription != null && currentAdSubscription.getEndDate().before( new Date() );
+    }
+
+    public Boolean isCurrentOperatorSubscriptionEmpty() {
+        return currentOperatorSubscription == null;
+    }
+    public Boolean isCurrentOperatorSubscriptionExpired() {
+        return currentOperatorSubscription != null && currentOperatorSubscription.getEndDate().before( new Date() );
     }
 }

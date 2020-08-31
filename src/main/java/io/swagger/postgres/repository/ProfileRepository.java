@@ -31,7 +31,7 @@ public interface ProfileRepository extends JpaRepository<Profile, Long>, JpaSpec
             "INNER JOIN users_user_roles AS uur ON u.id = uur.user_id\n" +
             "INNER JOIN user_role AS ur ON uur.user_role_id = ur.id\n" +
             "INNER JOIN profile AS p ON u.profile_id = p.id AND p.deleted = FALSE\n" +
-            "WHERE u.enabled = TRUE AND ur.name = 'SERVICE_LEADER'")
+            "WHERE u.enabled = TRUE AND ( ur.name = 'SERVICE_LEADER' OR ur.name = 'FREELANCER' )")
     List<Profile> findExecutors();
 
     @Query(nativeQuery = true, value = "SELECT DISTINCT p.* FROM service_document AS sd\n" +

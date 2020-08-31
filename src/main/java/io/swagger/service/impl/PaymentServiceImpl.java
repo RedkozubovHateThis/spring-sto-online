@@ -116,7 +116,7 @@ public class PaymentServiceImpl implements PaymentService {
         if ( promisedRecord == null ) {
             response.setIsAvailable(true);
 
-            List<SubscriptionType> subscriptionTypes = subscriptionTypeRepository.findNotFreeAndOrderBySortPosition();
+            List<SubscriptionType> subscriptionTypes = subscriptionTypeRepository.findAllAndOrderBySortPosition();
             response.setAvailableCosts(
                     subscriptionTypes.stream().map(SubscriptionType::getCost).collect( Collectors.toList() )
             );
@@ -136,7 +136,7 @@ public class PaymentServiceImpl implements PaymentService {
             else {
                 response.setIsAvailable( true );
 
-                List<SubscriptionType> subscriptionTypes = subscriptionTypeRepository.findNotFreeAndOrderBySortPosition();
+                List<SubscriptionType> subscriptionTypes = subscriptionTypeRepository.findAllAndOrderBySortPosition();
                 response.setAvailableCosts(
                         subscriptionTypes.stream().map(SubscriptionType::getCost).collect( Collectors.toList() )
                 );
@@ -258,7 +258,7 @@ public class PaymentServiceImpl implements PaymentService {
         if ( subscriptionType == null )
             throw new PaymentException("Тариф не найден!");
 
-        if ( !subscriptionType.getIsFree() && user.getBalance() < subscriptionType.getCost() )
+        if ( user.getBalance() < subscriptionType.getCost() )
             throw new PaymentException("Недостаточно средств для оформления тарифа!");
 
         Date now = new Date();
@@ -266,30 +266,17 @@ public class PaymentServiceImpl implements PaymentService {
         Subscription subscription = new Subscription( subscriptionType );
         boolean isSubscriptionChanged = false;
 
-        Subscription currentSubscription = user.getCurrentSubscription();
-        boolean isCurrentSubscriptionChanged = false;
+        Subscription currentSubscription;
+
+        switch( subscriptionType.getSubscriptionOption() ) {
+            case AD: currentSubscription = user.getCurrentAdSubscription(); break;
+            case OPERATOR: currentSubscription = user.getCurrentOperatorSubscription(); break;
+            default: throw new PaymentException("Указанный тариф не подерживается!");
+        }
 
         if ( currentSubscription != null ) {
             if ( currentSubscription.getEndDate().after( now ) ) {
-
-//                int documentsCount = documentsRepository.countDocumentsByOrganizationIdAndDates(
-//                        user.getOrganizationId(), currentSubscription.getStartDate(), currentSubscription.getEndDate()
-//                );
-                int documentsCount = 0;
-
-                int availableDocuments = Math.max( currentSubscription.getDocumentsCount() - documentsCount, 0 );
-
-                if ( availableDocuments > 0 )
-                    throw new PaymentException("Текущий тариф еще не истек и имеет доступные заказ-наряды!");
-                else {
-                    currentSubscription.setEndDate(
-                            generateEndDate( now, subscriptionType.getDurationDays(), false )
-                    );
-                    currentSubscription.updateDocumentsCount( subscriptionType );
-
-                    currentSubscription.setIsClosedEarly(true);
-                    isCurrentSubscriptionChanged = true;
-                }
+                throw new PaymentException("Текущий тариф еще не истек!");
             }
             else if ( currentSubscription.getEndDate().before( now ) ) {
                 subscription.setStartDate(
@@ -312,19 +299,14 @@ public class PaymentServiceImpl implements PaymentService {
             subscription.setUser( user );
 
             subscriptionRepository.save( subscription );
-            user.setCurrentSubscription( subscription );
-
-            if ( !subscription.getType().getIsFree() && user.getSubscriptionType() == null )
-                user.setSubscriptionType( subscription.getType() );
-
+            switch( subscriptionType.getSubscriptionOption() ) {
+                case AD: user.setCurrentAdSubscription( subscription ); break;
+                case OPERATOR: user.setCurrentOperatorSubscription( subscription ); break;
+                default: throw new PaymentException("Указанный тариф не подерживается!");
+            }
             generatePaymentRecord( user, subscription, null, now );
 
             return subscription;
-        }
-        else if ( isCurrentSubscriptionChanged ) {
-            subscriptionRepository.save( currentSubscription );
-            generatePaymentRecord( user, currentSubscription, null, now );
-            return currentSubscription;
         }
 
         throw new PaymentException("Ошибка покупки тарифа!");
@@ -332,67 +314,17 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public void buySubscriptionAddon(Long subscriptionId, Integer documentsCount, User user) throws PaymentException {
-
-        Subscription subscription = subscriptionRepository.findById( subscriptionId ).orElse( null );
+    public void unsubscribe(Long subscriptionId, User user) throws PaymentException {
+        Subscription subscription = subscriptionRepository.findSubscriptionByIdAndUserId( subscriptionId, user.getId() );
 
         if ( subscription == null )
-            throw new PaymentException("Выбранный тариф не найден!");
+            throw new PaymentException("Выбранная подписка не найдена!");
 
-        Double cost = subscription.getDocumentCost() * documentsCount.doubleValue();
-
-        if ( user.getBalance() < cost )
-            throw new PaymentException("Недостаточно средств для дополнения тарифа!");
-
-        Date now = new Date();
-
-        SubscriptionAddon subscriptionAddon = new SubscriptionAddon();
-        subscriptionAddon.setCost( cost );
-        subscriptionAddon.setDate( now );
-        subscriptionAddon.setDocumentsCount( documentsCount );
-        subscriptionAddon.setSubscription( subscription );
-
-        subscriptionAddonRepository.save( subscriptionAddon );
-
-        subscription.applyAddon( subscriptionAddon );
+        subscription.setIsRenewable(false);
         subscriptionRepository.save( subscription );
-
-        generateAddonPaymentRecord( user, subscriptionAddon, now );
 
         webSocketController.sendCounterRefreshMessage( user );
         webSocketController.sendCounterRefreshMessageToAdmins();
-
-    }
-
-    @Override
-    public void updateRenewalSubscription(Long subscriptionTypeId, User user) throws PaymentException {
-
-        SubscriptionType subscriptionType = subscriptionTypeRepository.findById( subscriptionTypeId ).orElse( null );
-        if ( subscriptionType == null )
-            throw new PaymentException("Тариф не найден!");
-
-//        if ( !subscriptionType.getFree() && user.getBalance() < subscriptionType.getCost() )
-//            throw new PaymentException("Недостаточно средств для продления тарифа!");
-
-        Subscription currentSubscription = user.getCurrentSubscription();
-
-        Date now = new Date();
-
-        if ( currentSubscription != null && currentSubscription.getEndDate().after( now ) ) {
-
-            if ( user.getSubscriptionType() != null &&
-                    user.getSubscriptionType().getId().equals( subscriptionType.getId() ) )
-                user.setSubscriptionType( null );
-            else
-                user.setSubscriptionType( subscriptionType );
-
-            userRepository.save( user );
-
-            webSocketController.sendCounterRefreshMessage( user );
-            webSocketController.sendCounterRefreshMessageToAdmins();
-        }
-        else
-            throw new PaymentException("Текущий тариф не найден/истек!");
     }
 
     private void generatePaymentRecord(User user, Subscription subscription, PaymentRecord expiringRecord, Date now) throws PaymentException {

@@ -2,7 +2,10 @@ package io.swagger.controller;
 
 import io.swagger.helper.UserHelper;
 import io.swagger.postgres.model.enums.ServiceDocumentStatus;
+import io.swagger.postgres.model.payment.Subscription;
+import io.swagger.postgres.model.security.Profile;
 import io.swagger.postgres.model.security.User;
+import io.swagger.postgres.repository.ProfileRepository;
 import io.swagger.postgres.repository.ServiceDocumentRepository;
 import io.swagger.postgres.repository.SubscriptionTypeRepository;
 import io.swagger.postgres.repository.UserRepository;
@@ -24,6 +27,8 @@ public class InfoBarController {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private ProfileRepository profileRepository;
     @Autowired
     private ServiceDocumentRepository serviceDocumentRepository;
 
@@ -95,11 +100,62 @@ public class InfoBarController {
         Integer adEfficiency = 0;
 
         Double balance;
-        if ( byServiceLeader )
+        if ( byServiceLeader ) {
             balance = currentUser.getBalance();
+            Subscription adSubscription = currentUser.getCurrentAdSubscription();
+            Subscription operatorSubscription = currentUser.getCurrentOperatorSubscription();
+
+            if ( adSubscription != null ) {
+                adSubscriptionEndDate = adSubscription.getEndDate();
+                if ( adSubscription.getType() != null && adSubscription.getIsRenewable() )
+                    adSubscriptionAvailable = ( currentUser.getBalance() - adSubscription.getType().getCost() ) > 0;
+                else
+                    adSubscriptionAvailable = false;
+            }
+            if ( operatorSubscription != null ) {
+                operatorSubscriptionEndDate = operatorSubscription.getEndDate();
+                if ( operatorSubscription.getType() != null && operatorSubscription.getIsRenewable() ) {
+                    if ( adSubscription != null && adSubscription.getType() != null && adSubscription.getIsRenewable() )
+                        operatorSubscriptionAvailable = ( currentUser.getBalance() - adSubscription.getType().getCost() - operatorSubscription.getType().getCost() ) > 0;
+                    else
+                        operatorSubscriptionAvailable = ( currentUser.getBalance() - operatorSubscription.getType().getCost() ) > 0;
+                }
+                else
+                    operatorSubscriptionAvailable = false;
+            }
+        }
         else {
-            if ( organizationId != null )
-                balance = userRepository.getBalanceByProfileId( organizationId );
+            if ( organizationId != null ) {
+                Profile profile = profileRepository.findById( organizationId ).orElse(null);
+
+                if ( profile != null && profile.getUser() != null ) {
+                    User serviceLeader = profile.getUser();
+                    balance = serviceLeader.getBalance();
+                    Subscription adSubscription = serviceLeader.getCurrentAdSubscription();
+                    Subscription operatorSubscription = serviceLeader.getCurrentOperatorSubscription();
+
+                    if ( adSubscription != null ) {
+                        adSubscriptionEndDate = adSubscription.getEndDate();
+                        if ( adSubscription.getType() != null && adSubscription.getIsRenewable() )
+                            adSubscriptionAvailable = ( serviceLeader.getBalance() - adSubscription.getType().getCost() ) > 0;
+                        else
+                            adSubscriptionAvailable = false;
+                    }
+                    if ( operatorSubscription != null ) {
+                        operatorSubscriptionEndDate = operatorSubscription.getEndDate();
+                        if ( operatorSubscription.getType() != null && operatorSubscription.getIsRenewable() ) {
+                            if ( adSubscription != null && adSubscription.getType() != null && adSubscription.getIsRenewable() )
+                                operatorSubscriptionAvailable = ( serviceLeader.getBalance() - adSubscription.getType().getCost() - operatorSubscription.getType().getCost() ) > 0;
+                            else
+                                operatorSubscriptionAvailable = ( serviceLeader.getBalance() - operatorSubscription.getType().getCost() ) > 0;
+                        }
+                        else
+                            operatorSubscriptionAvailable = false;
+                    }
+                }
+                else
+                    balance = 0.0;
+            }
             else
                 balance = userRepository.countTotalBalance();
         }

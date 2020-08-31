@@ -302,7 +302,7 @@
                       <label class="form-control-label" for="client-is-customer-check">Клиент является заказчиком</label>
                     </div>
                     <div class="form-check" *ngIf="client.is_new || clientEdit">
-                      <input id="by-fio-check" type="checkbox" class="form-check-input" [(ngModel)]="client.attributes.byFio" (ngModelChange)="createCustomer()">
+                      <input id="by-fio-check" type="checkbox" class="form-check-input" [(ngModel)]="client.attributes.byFio">
                       <label class="form-control-label" for="by-fio-check">Указать ФИО</label>
                     </div>
                   </div>

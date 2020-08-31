@@ -72,34 +72,13 @@ export class PaymentService {
     );
   }
 
-  giftSubscription(serviceLeaderId: string): Observable<SubscriptionResponse> {
+  unsubscribeSubscription(subscriptionId: string): Observable<void> {
     const params = {
-      serviceLeaderId: serviceLeaderId != null ? serviceLeaderId : ''
-    };
-
-    return this.http.put<SubscriptionResponse>(
-      `${environment.getApiUrl()}payment/subscriptions/gift`, {}, {params}
-    );
-  }
-
-  buySubscriptionAddon(subscriptionId: string, documentsCount: number): Observable<void> {
-    const params = {
-      subscriptionId: subscriptionId != null ? subscriptionId : '',
-      documentsCount: documentsCount != null ? documentsCount.toString() : ''
+      subscriptionId: subscriptionId != null ? subscriptionId : ''
     };
 
     return this.http.put<void>(
-      `${environment.getApiUrl()}payment/subscriptions/addon/buy`, {}, {params}
-    );
-  }
-
-  updateRenewalSubscription(subscriptionTypeId: string): Observable<void> {
-    const params = {
-      subscriptionTypeId: subscriptionTypeId != null ? subscriptionTypeId : ''
-    };
-
-    return this.http.put<void>(
-      `${environment.getApiUrl()}payment/subscriptions/updateRenewal`, {}, {params}
+      `${environment.getApiUrl()}payment/subscriptions/unsubscribe`, {}, {params}
     );
   }
 

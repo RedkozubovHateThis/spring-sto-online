@@ -16,6 +16,5 @@ public interface PaymentService {
     PaymentResponse updateRequestExtended(String orderId) throws PaymentException;
     PaymentResponse updateRequestExtended(PaymentRecord paymentRecord) throws PaymentException;
     Subscription buySubscription(Long subscriptionTypeId, User user) throws PaymentException;
-    void buySubscriptionAddon(Long subscriptionId, Integer documentsCount, User user) throws PaymentException;
-    void updateRenewalSubscription(Long subscriptionTypeId, User user) throws PaymentException;
+    void unsubscribe(Long subscriptionId, User user) throws PaymentException;
 }

@@ -43,6 +43,7 @@
             </thead>
             <tbody *ngIf="documentController.all != null">
             <ng-container *ngFor="let serviceDocument of documentController.all.data, let i = index" [attr.data-index]="i">
+              <tr app-ad-row *ngIf="userService.isClient() && adRow === i"></tr>
               <tr>
                 <th scope="row" style="cursor: pointer;" (click)="select(serviceDocument)">
                   {{serviceDocument.attributes.number}}

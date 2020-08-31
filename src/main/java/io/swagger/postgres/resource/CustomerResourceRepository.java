@@ -75,7 +75,7 @@ public class CustomerResourceRepository implements ResourceRepository<Customer, 
             s.setEmail(null);
         if ( s.getPhone() != null && s.getPhone().length() == 0 )
             s.setPhone(null);
-        else
+        else if ( s.getPhone() != null && s.getPhone().length() > 0 )
             userService.processPhone(s);
 
 //        Boolean isExistsByPhone;

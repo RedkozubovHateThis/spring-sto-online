@@ -66,6 +66,15 @@ public class UserResourceRepository implements ResourceRepository<User, Long>, M
         if ( s.getUsername() == null || s.getUsername().isEmpty() )
             s.setUsername( UUID.randomUUID().toString() );
 
+        if ( s.getId() != null ) {
+            User existingUser = userRepository.findById( s.getId() ).orElse(null);
+
+            if ( existingUser == null )
+                throw new ResourceNotFoundException("Пользователь не найден!");
+
+            s.setBalance( existingUser.getBalance() );
+        }
+
         return userRepository.save( s );
     }
 

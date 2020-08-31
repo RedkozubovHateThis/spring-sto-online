@@ -3,7 +3,7 @@ import {Autoregister, DocumentCollection, DocumentResource, Resource, Service} f
 import {UserRoleResource} from './user-role.resource.service';
 import {SubscriptionResource} from './subscription.resource.service';
 import {ProfileResource} from './profile.resource.service';
-import {SubscriptionTypeResource} from './subscription-type.resource.service';
+import {AdEntityResource} from './ad-entity.resource.service';
 
 export class UserResource extends Resource {
   public attributes = {
@@ -20,8 +20,10 @@ export class UserResource extends Resource {
     serviceWorkPrice: null,
     serviceGoodsCost: null,
     balance: null,
-    isCurrentSubscriptionExpired: null,
-    isCurrentSubscriptionEmpty: null,
+    isCurrentAdSubscriptionExpired: null,
+    isCurrentAdSubscriptionEmpty: null,
+    isCurrentOperatorSubscriptionExpired: null,
+    isCurrentOperatorSubscriptionEmpty: null,
     isBalanceInvalid: null,
 
     bankBic: null,
@@ -70,11 +72,20 @@ export class UserResource extends Resource {
         return this.attributes.username;
   }
 
+  public isAdSubscriptionActive = (): boolean => {
+      if ( !this.relationships.currentAdSubscription.data )
+        return false;
+
+      return this.relationships.currentAdSubscription.data.isAdValid();
+  }
+
   public relationships = {
     roles: new DocumentCollection<UserRoleResource>(),
-    currentSubscription: new DocumentResource<SubscriptionResource>(),
+    currentAdSubscription: new DocumentResource<SubscriptionResource>(),
+    currentOperatorSubscription: new DocumentResource<SubscriptionResource>(),
+    allSubscriptions: new DocumentCollection<SubscriptionResource>(),
     profile: new DocumentResource<ProfileResource>(),
-    subscriptionType: new DocumentResource<SubscriptionTypeResource>()
+    adEntity: new DocumentResource<AdEntityResource>()
   };
 }
 

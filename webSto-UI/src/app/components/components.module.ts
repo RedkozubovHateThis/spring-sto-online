@@ -23,6 +23,8 @@ import {CustomerFilterComponent} from './customer-filter/customer-filter.compone
 import {DictionaryUpdateButtonComponent} from './dictionary-update-button/dictionary-update-button.component';
 import {FileUploadModule} from 'ng2-file-upload';
 import {ProfileFilterComponent} from './profile-filter/profile-filter.component';
+import {AdEntityFilterComponent} from './ad-entity-filter/ad-entity-filter.component';
+import {AdRowComponent} from './ad-row/ad-row.component';
 
 @NgModule({
   imports: [
@@ -51,7 +53,9 @@ import {ProfileFilterComponent} from './profile-filter/profile-filter.component'
     VehiclesFilterComponent,
     CustomerFilterComponent,
     DictionaryUpdateButtonComponent,
-    ProfileFilterComponent
+    ProfileFilterComponent,
+    AdEntityFilterComponent,
+    AdRowComponent
   ],
   exports: [
     FooterComponent,
@@ -70,7 +74,9 @@ import {ProfileFilterComponent} from './profile-filter/profile-filter.component'
     VehiclesFilterComponent,
     CustomerFilterComponent,
     DictionaryUpdateButtonComponent,
-    ProfileFilterComponent
+    ProfileFilterComponent,
+    AdEntityFilterComponent,
+    AdRowComponent
   ]
 })
 export class ComponentsModule { }

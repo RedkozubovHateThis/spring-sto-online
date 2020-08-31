@@ -43,4 +43,10 @@ export class DocumentsComponent extends Pagination {
     this.router.navigate(['/documents', documentResponse.id]);
   }
 
+  get adRow(): number {
+    if ( this.documentController.all != null )
+      return Math.ceil(this.documentController.all.data.length / 2);
+    return -1;
+  }
+
 }

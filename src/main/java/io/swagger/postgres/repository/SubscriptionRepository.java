@@ -12,14 +12,6 @@ import java.util.List;
 @Repository
 public interface SubscriptionRepository extends JpaRepository<Subscription, Long> {
 
-    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT DISTINCT s.id FROM subscription AS s " +
-            "WHERE s.type = 'FREE' AND s.user_id = :userId )")
-    Boolean isFreeIsFormed(@Param("userId") Long userId);
-
-    @Query(nativeQuery = true, value = "SELECT EXISTS( SELECT DISTINCT s.id FROM subscription AS s " +
-            "WHERE s.user_id = :userId )")
-    Boolean isAnyIsFormed(@Param("userId") Long userId);
-
     @Query(nativeQuery = true, value = "SELECT s.* FROM subscription AS s " +
             "WHERE s.user_id = :userId " +
             "ORDER BY s.start_date")
@@ -57,4 +49,8 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
 
     @Query(nativeQuery = true, value = "SELECT s.* FROM subscription AS s WHERE end_date < now()")
     List<Subscription> findExpiredSubscriptions();
+
+    @Query(nativeQuery = true, value = "SELECT s.* FROM subscription AS s WHERE s.id = :subscriptionId AND s.user_id = :userId")
+    Subscription findSubscriptionByIdAndUserId(@Param("subscriptionId") Long subscriptionId,
+                                               @Param("userId") Long userId);
 }

@@ -1,8 +1,10 @@
 package io.swagger.controller;
 
+import io.swagger.postgres.model.AdEntity;
 import io.swagger.postgres.model.EventMessage;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.UserRepository;
+import io.swagger.postgres.resourceProcessor.AdEntityResourceProcessor;
 import io.swagger.response.EventMessageResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +23,8 @@ public class WebSocketController {
     private SimpMessagingTemplate template;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private AdEntityResourceProcessor adEntityResourceProcessor;
 
     public void sendCounterRefreshMessage(User user) {
 
@@ -60,6 +64,17 @@ public class WebSocketController {
         }
         catch ( IllegalArgumentException iae ) {
             logger.error( "Counter refresh message sending error: {}", iae.getMessage() );
+        }
+
+    }
+
+    public void sendAdEntity(AdEntity adEntity) {
+
+        try {
+            template.convertAndSend(  "/topic/ad", adEntityResourceProcessor.toResource( adEntity, null ) );
+        }
+        catch ( Exception e ) {
+            logger.error( "Ad sending error: {}", e.getMessage() );
         }
 
     }

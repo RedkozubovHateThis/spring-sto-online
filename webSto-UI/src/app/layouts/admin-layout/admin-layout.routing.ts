@@ -19,6 +19,7 @@ import {VehicleDictionariesComponent} from '../../pages/vehicles-dictionaries/ve
 import {CustomersComponent} from '../../pages/customers/customers.component';
 import {ReportsComponent} from '../../pages/reports/reports.component';
 import {ProfilesComponent} from '../../pages/profiles/profiles.component';
+import {AdEntitiesComponent} from '../../pages/ad-entities/ad-entities.component';
 
 export const AdminLayoutRoutes: Routes = [
   { path: 'user-profile',   component: UserProfileComponent },
@@ -38,6 +39,7 @@ export const AdminLayoutRoutes: Routes = [
   { path: 'reports',        component: ReportsComponent },
   { path: 'profiles',        component: ProfilesComponent },
   // { path: 'event-messages', component: EventMessagesComponent },
-  // { path: 'balance',        component: BalanceComponent },
-  // { path: 'subscription',   component: SubscriptionComponent }
+  { path: 'balance',        component: BalanceComponent },
+  { path: 'subscription',   component: SubscriptionComponent },
+  { path: 'adEntities',   component: AdEntitiesComponent }
 ];

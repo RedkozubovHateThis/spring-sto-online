@@ -16,8 +16,6 @@ import io.swagger.response.api.ApiResponse;
 import io.swagger.response.exception.PaymentException;
 import io.swagger.response.payment.PaymentResponse;
 import io.swagger.response.payment.PromisedAvailableResponse;
-import io.swagger.response.payment.SubscriptionResponse;
-import io.swagger.response.payment.SubscriptionTypeResponse;
 import io.swagger.service.PaymentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -172,22 +170,12 @@ public class PaymentController {
             return ResponseEntity.status(404).build();
 
         List<SubscriptionType> subscriptionTypes = subscriptionTypeRepository.findAllAndOrderBySortPosition();
-        List<SubscriptionType> filteredSubscriptionTypes = new ArrayList<>();
-
-        for ( SubscriptionType type : subscriptionTypes ) {
-            if ( type.getIsFree() ) {
-                Boolean isAnyFormed = subscriptionRepository.isAnyIsFormed( currentUser.getId() );
-                if ( isAnyFormed ) continue;
-            }
-
-            filteredSubscriptionTypes.add( type );
-        }
 
         return ResponseEntity.ok(
                 subscriptionTypeResourceProcessor.toResourceList(
-                        filteredSubscriptionTypes,
+                        subscriptionTypes,
                         new ArrayList<>(),
-                        ( (Integer) filteredSubscriptionTypes.size() ).longValue(),
+                        ( (Integer) subscriptionTypes.size() ).longValue(),
                         null
                 )
         );
@@ -224,9 +212,9 @@ public class PaymentController {
         try {
             Subscription subscription = paymentService.buySubscription( subscriptionTypeId, currentUser );
 
-            return ResponseEntity.ok( new SubscriptionResponse(
-                    subscription, countDocumentsRemains( currentUser, subscription)
-            ) );
+            return ResponseEntity.ok(
+                    subscriptionResourceProcessor.toResource(subscription, null)
+            );
         }
         catch ( PaymentException pe ) {
             return ResponseEntity.status(500).body( new ApiResponse( pe.getMessage() ) );
@@ -238,49 +226,15 @@ public class PaymentController {
 
     }
 
-    @PutMapping("/subscriptions/gift")
-    public ResponseEntity giftSubscription(@RequestParam("serviceLeaderId") Long serviceLeaderId) {
-
-        User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.isAdmin( currentUser ) )
-            return ResponseEntity.status(404).body( new ApiResponse("У вас отсутсвуют необходимые права для выдачи тарифа!") );
-
-        User serviceLeader = userRepository.findById( serviceLeaderId ).orElse( null );
-
-        if ( serviceLeader == null || !UserHelper.isServiceLeaderOrFreelancer( serviceLeader ) )
-            return ResponseEntity.status(404).body( new ApiResponse("Нельзя выдать тариф этому пользователю!") );
-
-        SubscriptionType subscriptionType = subscriptionTypeRepository.findFreeSubscription();
-        if ( subscriptionType == null )
-            return ResponseEntity.status(404).body( new ApiResponse("Тариф не найден!") );
-
-        try {
-            Subscription subscription = paymentService.buySubscription( subscriptionType.getId(), serviceLeader );
-
-            return ResponseEntity.ok( new SubscriptionResponse(
-                    subscription, countDocumentsRemains( currentUser, subscription)
-            ) );
-        }
-        catch ( PaymentException pe ) {
-            return ResponseEntity.status(500).body( new ApiResponse( pe.getMessage() ) );
-        }
-        catch ( Exception e ) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body( new ApiResponse("Ошибка оформления тарифа! Попробуйте повторить покупку позже.") );
-        }
-
-    }
-
-    @PutMapping("/subscriptions/addon/buy")
-    public ResponseEntity buySubscriptionAddon(@RequestParam("subscriptionId") Long subscriptionId,
-                                               @RequestParam("documentsCount") Integer documentsCount) {
+    @PutMapping("/subscriptions/unsubscribe")
+    public ResponseEntity updateRenewalSubscription(@RequestParam("subscriptionId") Long subscriptionId) {
 
         User currentUser = userRepository.findCurrentUser();
         if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) )
             return ResponseEntity.status(404).build();
 
         try {
-            paymentService.buySubscriptionAddon( subscriptionId, documentsCount, currentUser );
+            paymentService.unsubscribe( subscriptionId, currentUser );
 
             return ResponseEntity.ok().build();
         }
@@ -289,86 +243,8 @@ public class PaymentController {
         }
         catch ( Exception e ) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body( new ApiResponse("Ошибка дополнения тарифа! Попробуйте повторить покупку позже.") );
+            return ResponseEntity.status(500).body( new ApiResponse("Ошибка отписки от тарифа! Попробуйте повторить позже!") );
         }
 
-    }
-
-    @PutMapping("/subscriptions/updateRenewal")
-    public ResponseEntity updateRenewalSubscription(@RequestParam("subscriptionTypeId") Long subscriptionTypeId) {
-
-        User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) )
-            return ResponseEntity.status(404).build();
-
-        try {
-            paymentService.updateRenewalSubscription( subscriptionTypeId, currentUser );
-
-            return ResponseEntity.ok().build();
-        }
-        catch ( PaymentException pe ) {
-            return ResponseEntity.status(500).body( new ApiResponse( pe.getMessage() ) );
-        }
-        catch ( Exception e ) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body( new ApiResponse("Ошибка установки тарифа по умолчанию! Попробуйте повторить позже.") );
-        }
-
-    }
-
-    @PostMapping("/subscriptions/types/update")
-    public ResponseEntity updateSubscriptionType(@RequestBody SubscriptionTypeResponse subscriptionTypeResponse) {
-
-        User currentUser = userRepository.findCurrentUser();
-        if ( !UserHelper.isAdmin( currentUser ) )
-            return ResponseEntity.status(403).build();
-
-        if ( subscriptionTypeResponse == null )
-            return ResponseEntity.status(404).body( new ApiResponse( "Тариф не найден!" ) );
-
-        SubscriptionType subscriptionType = subscriptionTypeRepository.findById( subscriptionTypeResponse.getId() ).orElse( null );
-        if ( subscriptionType == null )
-            return ResponseEntity.status(404).body( new ApiResponse( "Тариф не найден!" ) );
-
-        if ( subscriptionTypeResponse.getDocumentsCount() == null || subscriptionTypeResponse.getDocumentsCount() <= 0 )
-            return ResponseEntity.status(404).body( new ApiResponse( "Наверно указано количество документов!" ) );
-
-        if ( subscriptionTypeResponse.getDurationDays() == null || subscriptionTypeResponse.getDurationDays() <= 0 )
-            return ResponseEntity.status(404).body( new ApiResponse( "Наверно указано количество дней!" ) );
-
-        if ( !subscriptionType.getIsFree() ) {
-
-            if ( subscriptionTypeResponse.getCost() == null || subscriptionTypeResponse.getCost() <= 0 )
-                return ResponseEntity.status(404).body( new ApiResponse( "Наверно указана стоимость тарифа!" ) );
-
-            if ( subscriptionTypeResponse.getDocumentCost() == null || subscriptionTypeResponse.getDocumentCost() <= 0 )
-                return ResponseEntity.status(404).body( new ApiResponse( "Наверно указана стоимость документов!" ) );
-
-            subscriptionType.setCost( subscriptionTypeResponse.getCost() );
-            subscriptionType.setDocumentCost( subscriptionTypeResponse.getDocumentCost() );
-        }
-
-        subscriptionType.setDocumentsCount( subscriptionTypeResponse.getDocumentsCount() );
-        subscriptionType.setDurationDays( subscriptionTypeResponse.getDurationDays() );
-
-        subscriptionTypeRepository.save( subscriptionType );
-
-        return ResponseEntity.ok().build();
-    }
-
-    private Integer countDocumentsRemains(User user, Subscription subscription) {
-        if ( !UserHelper.isServiceLeaderOrFreelancer( user ) || subscription == null ) return null;
-
-        Integer count = 0;
-//        Integer count = null;
-//
-//        if ( UserHelper.isServiceLeader( user ) )
-//            count = documentsRepository.countDocumentsByOrganizationIdAndDates(
-//                    user.getOrganizationId(),
-//                    subscription.getStartDate(),
-//                    subscription.getEndDate()
-//            );
-
-        return Math.max( subscription.getDocumentsCount() - count, 0 );
     }
 }
