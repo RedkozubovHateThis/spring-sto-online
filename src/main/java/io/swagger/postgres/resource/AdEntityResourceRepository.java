@@ -11,6 +11,7 @@ import io.swagger.postgres.model.AdEntity;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.AdEntityRepository;
 import io.swagger.postgres.repository.UserRepository;
+import io.swagger.service.SchedulerService;
 import io.swagger.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,6 +28,8 @@ public class AdEntityResourceRepository implements ResourceRepository<AdEntity, 
     private UserService userService;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private SchedulerService schedulerService;
 
     @Override
     public Class<AdEntity> getResourceClass() {
@@ -59,7 +62,25 @@ public class AdEntityResourceRepository implements ResourceRepository<AdEntity, 
         if ( s.getDescription() == null || s.getDescription().isEmpty() )
             throw new BadRequestException("Описание не может быть пустым!");
 
-        return adEntityRepository.save( s );
+        if ( s.getId() != null ) {
+            AdEntity origAdEntity = adEntityRepository.findById(s.getId()).orElse(null);
+
+            if ( origAdEntity == null )
+                throw new ResourceNotFoundException("Рекламная запись не найдена!");
+
+            s.setCurrent( origAdEntity.getCurrent() );
+            s.setCreateDate( origAdEntity.getCreateDate() );
+            s.setSideOffer( origAdEntity.getSideOffer() );
+        }
+
+        adEntityRepository.save( s );
+
+        if ( !s.getActive() )
+            schedulerService.removeCurrentAdEntity(s);
+        else
+            schedulerService.updateCurrentAdEntity(s);
+
+        return s;
     }
 
     @Override
@@ -88,5 +109,7 @@ public class AdEntityResourceRepository implements ResourceRepository<AdEntity, 
 
         adEntity.setDeleted( true );
         adEntityRepository.save( adEntity );
+
+        schedulerService.removeCurrentAdEntity(adEntity);
     }
 }

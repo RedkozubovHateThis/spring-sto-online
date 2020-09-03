@@ -1,12 +1,12 @@
-<td colspan="9" *ngIf="currentAd">
+<td colspan="9" *ngIf="currentAd != null" class="ad-row">
   <div>
     <h3>
       {{currentAd.attributes.name}}
       <ng-container *ngIf="currentAd.attributes.phone">
-        &nbsp;Телефон: {{currentAd.attributes.phone}}
+        &nbsp;Телефон: <a [href]="'tel: ' + currentAd.attributes.phone">{{formatPhone(currentAd.attributes.phone)}}</a>
       </ng-container>
       <ng-container *ngIf="currentAd.attributes.email">
-        &nbsp;Email: {{currentAd.attributes.email}}
+        &nbsp;Email: <a [href]="'mailto: ' + currentAd.attributes.email">{{currentAd.attributes.email}}</a>
       </ng-container>
     </h3>
   </div>

@@ -39,17 +39,9 @@ export class AdEntityService implements RestService<AdEntityResource> {
   }
 
   getCurrent(): Observable<AdEntityResource> {
-    return new Observable<AdEntityResource>( (subscriber) => {
-      this.adEntityResourceService.get('current', {
+      return this.adEntityResourceService.get('current', {
         beforepath: `${environment.getBeforeUrl()}/external`
-      }).subscribe( (current) => {
-        subscriber.next(current);
-        subscriber.complete();
-      }, ( error ) => {
-        subscriber.error( error );
-        subscriber.complete();
-      } );
-    } );
+      });
   }
 
   save(model: AdEntityResource): Observable<AdEntityResource> {

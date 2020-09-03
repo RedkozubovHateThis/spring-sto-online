@@ -28,8 +28,6 @@ export class UserEditComponent extends ModelTransfer<UserResource, string> imple
   private password = '';
   private rePassword = '';
 
-  private saveAdEntity = false;
-
   private subscriptionTypes: DocumentCollection<SubscriptionTypeResource>;
   private isTypesLoading = false;
 
@@ -56,8 +54,8 @@ export class UserEditComponent extends ModelTransfer<UserResource, string> imple
   checkRelations() {
     if ( !this.model.relationships.profile.data )
       this.model.addRelationship( this.profileResourceService.new(), 'profile' );
-    if ( this.model.relationships.adEntity.data )
-      this.saveAdEntity = true;
+    if ( !this.model.relationships.adEntity.data )
+      this.newAdEntity();
   }
 
   requestAllSubscriptionTypes() {
@@ -83,12 +81,6 @@ export class UserEditComponent extends ModelTransfer<UserResource, string> imple
       this.userService.saveUser( this.model, 'Пользователь успешно сохранен!', this.saveAdEntity );
   }
 
-  createAdEntity() {
-    const adEntity: AdEntityResource = this.model.relationships.adEntity.data;
-    if ( this.saveAdEntity && ( !adEntity || !adEntity.type || !Object.keys( adEntity.attributes ).length ) )
-      this.newAdEntity();
-  }
-
   newAdEntity() {
     const adEntity: AdEntityResource = this.adEntityResourceService.new();
     adEntity.attributes.sideOffer = false;
@@ -99,11 +91,7 @@ export class UserEditComponent extends ModelTransfer<UserResource, string> imple
     if ( this.saveAdEntity ) {
       const adEntity: AdEntityResource = this.model.relationships.adEntity.data;
 
-      if ( !adEntity || !adEntity.type || !Object.keys( adEntity.attributes ).length ) {
-        this.toastrService.error('Не указаны данные рекламы!', 'Внимание!');
-        return false;
-      }
-      else if ( !adEntity.attributes.phone || adEntity.attributes.phone.length === 0 ) {
+      if ( !adEntity.attributes.phone || adEntity.attributes.phone.length === 0 ) {
         this.toastrService.error('Не указан телефон рекламного объявления!', 'Внимание!');
         return false;
       }
@@ -114,6 +102,12 @@ export class UserEditComponent extends ModelTransfer<UserResource, string> imple
     }
 
     return true;
+  }
+
+  get saveAdEntity(): boolean {
+    const adEntity: AdEntityResource = this.model.relationships.adEntity.data;
+    return this.model.isServiceLeaderOrFreelancer() && this.model.isAdSubscriptionActive()
+      && adEntity && adEntity.type && Object.keys(adEntity.attributes).length > 0;
   }
 
 }

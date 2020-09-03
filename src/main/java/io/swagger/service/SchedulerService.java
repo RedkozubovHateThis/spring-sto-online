@@ -2,6 +2,7 @@ package io.swagger.service;
 
 import io.swagger.controller.WebSocketController;
 import io.swagger.postgres.model.AdEntity;
+import io.swagger.postgres.model.enums.SubscriptionOption;
 import io.swagger.postgres.model.payment.Subscription;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.*;
@@ -88,10 +89,24 @@ public class SchedulerService {
             logger.info( " [ SUBSCRIPTION SCHEDULER ] Successfully bought new subscription \"{}\" for user \"{}\"...",
                     subscription.getName(), serviceLeader.getFio() );
         }
-        catch ( PaymentException ignored ) {}
+        catch ( PaymentException ignored ) {
+            if ( currentSubscription.getType() != null && currentSubscription.getType().getSubscriptionOption().equals(SubscriptionOption.AD) )
+                disabledSubscriptions(serviceLeader);
+        }
         catch ( Exception e ) {
             logger.error( "Got exception for user \"{}\" [ {} ] during buying: {}", serviceLeader.getFio(), serviceLeader.getId(), e.getMessage() );
             e.printStackTrace();
+            if ( currentSubscription.getType() != null && currentSubscription.getType().getSubscriptionOption().equals(SubscriptionOption.AD) )
+                disabledSubscriptions(serviceLeader);
+        }
+    }
+
+    private void disabledSubscriptions(User serviceLeader) {
+        AdEntity adEntity = serviceLeader.getAdEntity();
+        if ( adEntity != null ) {
+            adEntity.setActive( false );
+            adEntityRepository.save( adEntity );
+            removeCurrentAdEntity(adEntity);
         }
     }
 
@@ -100,6 +115,7 @@ public class SchedulerService {
             webSocketController.sendAdEntity( getAdEntity() );
         } catch (DataNotFoundException e) {
             e.printStackTrace();
+            webSocketController.sendAdEntity(null);
         }
     }
 
@@ -129,6 +145,24 @@ public class SchedulerService {
             return getAdEntity();
 
         return currentAdEntity;
+    }
+
+    public void updateCurrentAdEntity(AdEntity adEntity) {
+        if ( currentAdEntity != null && currentAdEntity.getId().equals(adEntity.getId()) ) {
+            currentAdEntity = adEntity;
+            webSocketController.sendAdEntity(currentAdEntity);
+        }
+        else if ( currentAdEntity == null ) {
+            updateAd();
+        }
+    }
+
+    public void removeCurrentAdEntity(AdEntity adEntity) {
+        if ( currentAdEntity != null && currentAdEntity.getId().equals( adEntity.getId() ) ) {
+            currentAdEntity = null;
+            webSocketController.sendAdEntity(null);
+            updateAd();
+        }
     }
 
 }

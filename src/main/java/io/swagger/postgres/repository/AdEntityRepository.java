@@ -22,7 +22,7 @@ public interface AdEntityRepository extends JpaRepository<AdEntity, Long>, JpaSp
 
     @Query(nativeQuery = true, value =
             "WITH min_date AS (\n" +
-            "    SELECT min(ae.create_date) AS first_date FROM ad_entity AS ae\n" +
+            "    SELECT min(ae.create_date) AS first_date FROM ad_entity AS ae WHERE ae.active = TRUE AND ae.deleted = FALSE\n" +
             ")\n" +
             "SELECT ae.* FROM ad_entity AS ae\n" +
             "WHERE ae.create_date = (SELECT first_date FROM min_date)\n" +

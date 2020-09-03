@@ -24,7 +24,8 @@ export class AdRowComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.adEntityService.getCurrent().subscribe( (current) => {
-      this.currentAd = current;
+      if ( current && !current.is_new )
+        this.currentAd = current;
     } );
 
     this.onConnect = this.webSocketService.clientIsConnected.subscribe( client => {
@@ -45,14 +46,16 @@ export class AdRowComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const me = this;
-
     this.subscription = this.webSocketService.client.subscribe('/topic/ad', message => {
       const data: IDocumentResource = JSON.parse( message.body );
       const adEntity: AdEntityResource = this.adEntityResourceService.new();
       adEntity.fill(data);
 
       this.currentAd = adEntity;
+    });
+
+    this.subscription = this.webSocketService.client.subscribe('/topic/ad/clear', message => {
+      this.currentAd = null;
     });
 
   }
@@ -64,5 +67,16 @@ export class AdRowComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.unsubscribe();
+  }
+
+  formatPhone(phone): string {
+    if ( !phone ) return '';
+
+    const match: RegExpMatchArray = phone.match(/^8(\d{3})(\d{3})(\d{2})(\d{2})$/);
+
+    if (match)
+      return '+7 (' + match[1] + ') ' + match[2] + '-' + match[3] + '-' + match[4];
+
+    return phone;
   }
 }

@@ -71,7 +71,10 @@ public class WebSocketController {
     public void sendAdEntity(AdEntity adEntity) {
 
         try {
-            template.convertAndSend(  "/topic/ad", adEntityResourceProcessor.toResource( adEntity, null ) );
+            if ( adEntity != null )
+                template.convertAndSend(  "/topic/ad", adEntityResourceProcessor.toResource( adEntity, null ) );
+            else
+                template.convertAndSend("/topic/ad/clear", new Object());
         }
         catch ( Exception e ) {
             logger.error( "Ad sending error: {}", e.getMessage() );

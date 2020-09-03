@@ -201,6 +201,10 @@ public class PaymentServiceImpl implements PaymentService {
             RegisterResponse registerResponse = response.getBody();
 
             if ( registerResponse != null ) {
+
+                if ( registerResponse.getErrorCode() != null )
+                    throw new PaymentException(registerResponse.getErrorMessage());
+
                 logger.info( "Got orderId: {}, formUrl: {}", registerResponse.getOrderId(), registerResponse.getFormUrl() );
                 return registerResponse;
             }
@@ -466,19 +470,19 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     private String generateDepositOrderNumber(User user) {
-        return String.format("D: %s.%s",
+        return String.format("DEPOSIT: %s.%s",
                 user.getId(),
                 paymentRecordRepository.countByUserIdAndPaymentType( user.getId(), PaymentType.DEPOSIT.toString() ) + 1);
     }
 
     private String generatePromisedOrderNumber(User user) {
-        return String.format("DP: %s.%s",
+        return String.format("PROMISED: %s.%s",
                 user.getId(),
                 paymentRecordRepository.countByUserIdAndPaymentType( user.getId(), PaymentType.PROMISED.toString() ) + 1);
     }
 
     private String generatePurchaseOrderNumber(User user) {
-        return String.format("P: %s.%s",
+        return String.format("PURCHASE: %s.%s",
                 user.getId(),
                 paymentRecordRepository.countByUserIdAndPaymentType( user.getId(), PaymentType.PURCHASE.toString() ) + 1);
     }

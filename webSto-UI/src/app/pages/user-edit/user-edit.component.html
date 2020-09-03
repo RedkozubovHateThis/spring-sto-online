@@ -177,32 +177,33 @@
             </div>
           </ng-container>
           <!-- AD -->
-          <ng-container *ngIf="model != null && !model.is_new && model.isServiceLeaderOrFreelancer()">
+          <ng-container *ngIf="model != null && !model.is_new && model.isServiceLeaderOrFreelancer() && model.isAdSubscriptionActive()">
             <h6 class="heading-small text-muted mb-4">Реклама</h6>
-            <div class="row">
-              <div class="col">
-                <div class="form-group">
-                  <div class="form-check">
-                    <input id="client-is-customer-check" type="checkbox" class="form-check-input" [(ngModel)]="saveAdEntity" (ngModelChange)="createAdEntity()" [disabled]="!userService.isSameUser(model)">
-                    <label class="form-control-label" for="client-is-customer-check">Включить показ рекламы</label>
+            <ng-container *ngIf="model.relationships.adEntity.data as adEntity">
+              <div class="row">
+                <div class="col">
+                  <div class="form-group">
+                    <div class="form-check">
+                      <input id="client-is-customer-check" type="checkbox" class="form-check-input"
+                             [(ngModel)]="adEntity.attributes.active">
+                      <label class="form-control-label" for="client-is-customer-check">Включить показ рекламы</label>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <ng-container *ngIf="saveAdEntity && model.relationships.adEntity.data as adEntity">
               <div class="row">
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label"><span [ngbTooltip]="'ФИО физического лица или название Организации/ИП'" class="title-helper">Полное наименование</span></label>
                     <input type="text" class="form-control form-control-alternative form-control-sm" placeholder="ФИО физ. лица или назв. Организации/ИП"
-                           [(ngModel)]="adEntity.attributes.name" name="adName" [disabled]="!model.isAdSubscriptionActive() || !userService.isSameUser(model)">
+                           [(ngModel)]="adEntity.attributes.name" name="adName" [disabled]="!userService.isSameUser(model)">
                   </div>
                 </div>
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label">Адрес сайта</label>
                     <input type="text" class="form-control form-control-alternative form-control-sm" placeholder="Адрес сайта (необязательно к заполнению)"
-                           [(ngModel)]="adEntity.attributes.url" name="adUrl" [disabled]="!model.isAdSubscriptionActive() || !userService.isSameUser(model)">
+                           [(ngModel)]="adEntity.attributes.url" name="adUrl" [disabled]="!userService.isSameUser(model)">
                   </div>
                 </div>
               </div>
@@ -211,14 +212,14 @@
                   <div class="form-group">
                     <label class="form-control-label">Телефон</label>
                     <input type="text" class="form-control form-control-alternative form-control-sm" placeholder="Телефон"
-                           [(ngModel)]="adEntity.attributes.phone" name="adPhone" [disabled]="!model.isAdSubscriptionActive() || !userService.isSameUser(model)">
+                           [(ngModel)]="adEntity.attributes.phone" name="adPhone" [disabled]="!userService.isSameUser(model)">
                   </div>
                 </div>
                 <div class="col-lg-6">
                   <div class="form-group">
                     <label class="form-control-label">Email</label>
                     <input type="text" class="form-control form-control-alternative form-control-sm" placeholder="Email (необязательно к заполнению)"
-                           [(ngModel)]="adEntity.attributes.email" name="adEmail" [disabled]="!model.isAdSubscriptionActive() || !userService.isSameUser(model)">
+                           [(ngModel)]="adEntity.attributes.email" name="adEmail" [disabled]="!userService.isSameUser(model)">
                   </div>
                 </div>
               </div>
@@ -227,7 +228,7 @@
                   <div class="form-group">
                     <label class="form-control-label">Описание</label>
                     <textarea type="text" class="form-control form-control-alternative form-control-sm" placeholder="Краткое описание"
-                              [(ngModel)]="adEntity.attributes.description" name="adDescription" [disabled]="!model.isAdSubscriptionActive() || !userService.isSameUser(model)">
+                              [(ngModel)]="adEntity.attributes.description" name="adDescription" [disabled]="!userService.isSameUser(model)">
                   </textarea>
                   </div>
                 </div>

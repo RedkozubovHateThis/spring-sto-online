@@ -44,8 +44,12 @@ export class DocumentsComponent extends Pagination {
   }
 
   get adRow(): number {
-    if ( this.documentController.all != null )
-      return Math.ceil(this.documentController.all.data.length / 2);
+    if ( this.documentController.all != null ) {
+      if ( this.documentController.all.data.length === 1 )
+        return 0;
+
+      return Math.ceil(this.documentController.all.data.length / 2) - 1;
+    }
     return -1;
   }
 
