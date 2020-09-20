@@ -54,4 +54,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long>, JpaSp
             "INNER JOIN customer AS c ON sd.customer_id = c.id AND c.deleted = FALSE\n" +
             "WHERE sd.executor_id = :executorId AND sd.deleted = FALSE")
     List<Customer> findCustomersByExecutorId(@Param("executorId") Long executorId);
+
+    Customer findOneByIntegrationId(String integrationId);
+    Customer findOneByInn(String inn);
 }

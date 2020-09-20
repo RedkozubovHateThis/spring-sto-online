@@ -1,5 +1,6 @@
 package io.swagger.postgres.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import lombok.Data;
@@ -19,6 +20,9 @@ import java.util.Map;
 @Where(clause = "deleted=false")
 @Entity
 public class ServiceAddon extends BaseEntity {
+
+    @JsonIgnore
+    private String integrationId;
 
     private Integer count;
     private Double cost;

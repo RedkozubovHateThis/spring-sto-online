@@ -28,6 +28,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
                 .authorizeRequests()
                 .antMatchers(
                         "/oauth/register/**",
+                        "/integration/**",
                         "/oauth/restore",
                         "/oauth/restore/password",
                         "/oauth/demo/register",

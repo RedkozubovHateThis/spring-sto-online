@@ -21,7 +21,11 @@ public interface UserService {
 
     void generateUser(Profile profile, String roleName) throws Exception;
 
+    void generateUser(Profile profile, String roleName, User currentUser) throws Exception;
+
     void updateUser(Profile profile) throws Exception;
+
+    void updateUser(Profile profile, User currentUser) throws Exception;
 
     Boolean isInnCorrect(String inn) throws DataNotFoundException;
 }

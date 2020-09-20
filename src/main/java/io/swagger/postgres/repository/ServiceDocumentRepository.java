@@ -93,4 +93,12 @@ public interface ServiceDocumentRepository extends JpaRepository<ServiceDocument
                                                                                  @Param("endDate") Date endDate,
                                                                                  @Param("executorId") Long executorId,
                                                                                  @Param("vinNumber") String vinNumber);
+
+    ServiceDocument findByIntegrationId(String integrationId);
+
+    @Query(nativeQuery = true, value = "SELECT EXISTS(SELECT sd.id FROM service_document AS sd " +
+            "WHERE sd.integration_id is NULL " +
+            "AND upper(sd.number) = upper(:number) " +
+            "AND sd.deleted = FALSE)")
+    Boolean isExistsByNumberNotSelf(@Param("number") String number);
 }

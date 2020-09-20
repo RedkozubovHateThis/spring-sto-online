@@ -1,5 +1,6 @@
 package io.swagger.postgres.model.security;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
@@ -22,6 +23,9 @@ import java.io.Serializable;
 @JsonApiResource(type = "profile", resourcePath = "profiles")
 @Where(clause = "deleted=false")
 public class Profile extends BaseEntity implements Serializable {
+
+    @JsonIgnore
+    private String integrationId;
 
     private String name;
     private String address;

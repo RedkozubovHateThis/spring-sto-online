@@ -152,6 +152,12 @@ public class UserServiceImpl implements UserService {
     public void generateUser(Profile profile, String roleName) throws Exception {
 
         User currentUser = userRepository.findCurrentUser();
+        generateUser(profile, roleName, currentUser);
+
+    }
+
+    @Override
+    public void generateUser(Profile profile, String roleName, User currentUser) throws Exception {
 
         if ( !UserHelper.isAdmin(currentUser) && !UserHelper.isServiceLeaderOrFreelancer(currentUser) )
             throw new Exception();
@@ -202,13 +208,19 @@ public class UserServiceImpl implements UserService {
     public void updateUser(Profile profile) throws Exception {
 
         User currentUser = userRepository.findCurrentUser();
+        updateUser( profile, currentUser );
+
+    }
+
+    @Override
+    public void updateUser(Profile profile, User currentUser) throws Exception {
 
         if ( !UserHelper.isAdmin(currentUser) && !UserHelper.isServiceLeaderOrFreelancer(currentUser) )
             throw new Exception();
 
         User user = profile.getUser();
         if ( user == null ) {
-            generateUser(profile, "CLIENT");
+            generateUser(profile, "CLIENT", currentUser);
             return;
         }
 

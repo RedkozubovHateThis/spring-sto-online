@@ -82,4 +82,8 @@ public interface ProfileRepository extends JpaRepository<Profile, Long>, JpaSpec
             "AND p.created_by_id = :createById " +
             "ORDER BY p.name")
     List<Profile> findClientsByCreatedBy(@Param("createById") Long createdById);
+
+    Profile findOneByIntegrationId(String integrationId);
+    Profile findOneByInn(String inn);
+    Profile findOneByPhone(String phone);
 }

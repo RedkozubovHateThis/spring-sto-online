@@ -1,5 +1,6 @@
 package io.swagger.postgres.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
@@ -26,6 +27,9 @@ import java.util.Set;
 @Where(clause = "deleted=false")
 @Entity
 public class ServiceDocument extends BaseEntity {
+
+    @JsonIgnore
+    private String integrationId;
 
     private String number;
     private Date startDate;

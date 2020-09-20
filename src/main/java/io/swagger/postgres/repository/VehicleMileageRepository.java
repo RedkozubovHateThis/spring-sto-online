@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface VehicleMileageRepository extends JpaRepository<VehicleMileage, Long> {
+    VehicleMileage findOneByDocumentId(Long documentId);
 }

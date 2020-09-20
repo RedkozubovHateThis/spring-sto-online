@@ -32,4 +32,8 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long>, JpaSpec
     Boolean isVehicleExistsVinNotSelf(@Param("vinNumber") String vinNumber,
                                       @Param("id") Long id);
 
+    @Query(nativeQuery = true, value = "SELECT v.* FROM vehicle AS v " +
+            "WHERE upper(v.vin_number) = upper(:vinNumber) AND v.deleted = false")
+    Vehicle findOneByVinNumber(@Param("vinNumber") String vinNumber);
+
 }
