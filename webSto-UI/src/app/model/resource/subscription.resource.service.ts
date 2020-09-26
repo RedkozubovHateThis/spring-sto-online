@@ -9,6 +9,8 @@ export interface ISubscriptionAttributes extends IAttributes {
   startDate: string;
   endDate: string;
   isRenewable: boolean;
+  remains: number;
+  documentsCount: number;
 }
 
 export interface ISubscriptionRelationships extends IRelationships {
@@ -21,7 +23,9 @@ export class SubscriptionResource extends Resource {
     name: null,
     startDate: null,
     endDate: null,
-    isRenewable: null
+    isRenewable: null,
+    remains: null,
+    documentsCount: null
   };
 
   public relationships: ISubscriptionRelationships = {
@@ -37,6 +41,17 @@ export class SubscriptionResource extends Resource {
       return false;
 
     return this.attributes.endDate && new Date(this.attributes.endDate).getTime() > new Date().getTime();
+  }
+
+  public get documentsCount(): number {
+    if ( this.attributes.documentsCount == null ) {
+      if ( !this.relationships.type.data )
+        return 0;
+      else
+        return this.relationships.type.data.attributes.durationDays;
+    }
+    else
+      return this.attributes.documentsCount;
   }
 }
 

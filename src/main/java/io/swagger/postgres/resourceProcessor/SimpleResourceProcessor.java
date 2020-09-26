@@ -23,7 +23,9 @@ public abstract class SimpleResourceProcessor<E extends BaseEntity> {
 
         JsonApiEntity resource = new JsonApiEntity();
         List<Method> methods = collectAllMethods(entity);
-        resource.setData( buildAttributes(entity, methods, includes, resource.getIncluded(), false) );
+        JsonApiData jsonApiData = buildAttributes(entity, methods, includes, resource.getIncluded(), false);
+        resource.setData( jsonApiData );
+        customAttributes( jsonApiData.getAttributes(), entity );
 
         return resource;
     }
@@ -40,7 +42,9 @@ public abstract class SimpleResourceProcessor<E extends BaseEntity> {
                 throw new Exception("Not the entity resource class!");
 
             List<Method> methods = collectAllMethods(entity);
-            resourceList.addData( buildAttributes(entity, methods, includes, resourceList.getIncluded(), false) );
+            JsonApiData jsonApiData = buildAttributes(entity, methods, includes, resourceList.getIncluded(), false);
+            resourceList.addData( jsonApiData );
+            customAttributes( jsonApiData.getAttributes(), entity );
         }
 
         return resourceList;

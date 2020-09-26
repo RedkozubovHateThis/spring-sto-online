@@ -11,6 +11,7 @@ import io.swagger.postgres.repository.SubscriptionTypeRepository;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.response.info.ClientInfo;
 import io.swagger.response.info.ServiceLeaderInfo;
+import io.swagger.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,8 @@ public class InfoBarController {
     private ProfileRepository profileRepository;
     @Autowired
     private ServiceDocumentRepository serviceDocumentRepository;
+    @Autowired
+    private PaymentService paymentService;
 
     @Autowired
     private SubscriptionTypeRepository subscriptionTypeRepository;
@@ -94,7 +97,7 @@ public class InfoBarController {
         Double totalBalance = 0.0;
         Date adSubscriptionEndDate = null;
         Boolean adSubscriptionAvailable = null;
-        Date operatorSubscriptionEndDate = null;
+        Long operatorSubscriptionEndDate = null;
         Boolean operatorSubscriptionAvailable = null;
         Integer averageAdView = 0;
         Integer adEfficiency = 0;
@@ -113,7 +116,10 @@ public class InfoBarController {
                     adSubscriptionAvailable = false;
             }
             if ( operatorSubscription != null ) {
-                operatorSubscriptionEndDate = operatorSubscription.getEndDate();
+
+                if ( currentUser.getProfile() != null && operatorSubscription.getType() != null )
+                    operatorSubscriptionEndDate = paymentService.getRemainsDocuments( currentUser.getProfile(), operatorSubscription, operatorSubscription.getType() );
+
                 if ( operatorSubscription.getType() != null && operatorSubscription.getIsRenewable() ) {
                     if ( adSubscription != null && adSubscription.getType() != null && adSubscription.getIsRenewable() )
                         operatorSubscriptionAvailable = ( currentUser.getBalance() - adSubscription.getType().getCost() - operatorSubscription.getType().getCost() ) > 0;
@@ -142,7 +148,11 @@ public class InfoBarController {
                             adSubscriptionAvailable = false;
                     }
                     if ( operatorSubscription != null ) {
-                        operatorSubscriptionEndDate = operatorSubscription.getEndDate();
+
+                        if ( operatorSubscription.getType() != null ) {
+                            paymentService.getRemainsDocuments( profile, operatorSubscription, operatorSubscription.getType() );
+                        }
+
                         if ( operatorSubscription.getType() != null && operatorSubscription.getIsRenewable() ) {
                             if ( adSubscription != null && adSubscription.getType() != null && adSubscription.getIsRenewable() )
                                 operatorSubscriptionAvailable = ( serviceLeader.getBalance() - adSubscription.getType().getCost() - operatorSubscription.getType().getCost() ) > 0;

@@ -20,11 +20,6 @@ export class UserResource extends Resource {
     serviceWorkPrice: null,
     serviceGoodsCost: null,
     balance: null,
-    isCurrentAdSubscriptionExpired: null,
-    isCurrentAdSubscriptionEmpty: null,
-    isCurrentOperatorSubscriptionExpired: null,
-    isCurrentOperatorSubscriptionEmpty: null,
-    isBalanceInvalid: null,
 
     bankBic: null,
     bankName: null,

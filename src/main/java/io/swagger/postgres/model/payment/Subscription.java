@@ -6,6 +6,7 @@ import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiResource;
 import io.crnk.core.resource.annotations.SerializeType;
 import io.swagger.postgres.model.BaseEntity;
+import io.swagger.postgres.model.enums.SubscriptionOption;
 import io.swagger.postgres.model.security.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -35,8 +36,9 @@ public class Subscription extends BaseEntity implements Serializable {
 
     @Column(nullable = false)
     private Date startDate;
-    @Column(nullable = false)
     private Date endDate;
+
+    private Integer documentsCount;
 
     @Column(nullable = false)
     private Boolean isRenewable;
@@ -61,5 +63,8 @@ public class Subscription extends BaseEntity implements Serializable {
         this.name = subscriptionType.getName();
         this.type = subscriptionType;
         this.isRenewable = true;
+
+        if ( subscriptionType.getSubscriptionOption().equals( SubscriptionOption.OPERATOR ) )
+            this.documentsCount = subscriptionType.getDurationDays();
     }
 }

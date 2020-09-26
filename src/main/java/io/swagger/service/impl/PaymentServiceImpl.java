@@ -3,10 +3,12 @@ package io.swagger.service.impl;
 import io.swagger.controller.WebSocketController;
 import io.swagger.postgres.model.enums.PaymentState;
 import io.swagger.postgres.model.enums.PaymentType;
+import io.swagger.postgres.model.enums.SubscriptionOption;
 import io.swagger.postgres.model.payment.PaymentRecord;
 import io.swagger.postgres.model.payment.Subscription;
 import io.swagger.postgres.model.payment.SubscriptionAddon;
 import io.swagger.postgres.model.payment.SubscriptionType;
+import io.swagger.postgres.model.security.Profile;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.*;
 import io.swagger.response.exception.PaymentException;
@@ -51,6 +53,8 @@ public class PaymentServiceImpl implements PaymentService {
     private SubscriptionTypeRepository subscriptionTypeRepository;
     @Autowired
     private SubscriptionAddonRepository subscriptionAddonRepository;
+    @Autowired
+    private ServiceDocumentRepository serviceDocumentRepository;
 
     @Value("${sb.api.username}")
     private String sbUsername;
@@ -269,36 +273,69 @@ public class PaymentServiceImpl implements PaymentService {
 
         Subscription subscription = new Subscription( subscriptionType );
         boolean isSubscriptionChanged = false;
+        boolean isCurrentSubscriptionChanged = false;
 
         Subscription currentSubscription;
 
-        switch( subscriptionType.getSubscriptionOption() ) {
-            case AD: currentSubscription = user.getCurrentAdSubscription(); break;
-            case OPERATOR: currentSubscription = user.getCurrentOperatorSubscription(); break;
-            default: throw new PaymentException("Указанный тариф не подерживается!");
-        }
+        if ( subscriptionType.getSubscriptionOption().equals( SubscriptionOption.AD ) ) {
+            currentSubscription = user.getCurrentAdSubscription();
 
-        if ( currentSubscription != null ) {
-            if ( currentSubscription.getEndDate().after( now ) ) {
-                throw new PaymentException("Текущий тариф еще не истек!");
+            if ( currentSubscription != null ) {
+                if ( currentSubscription.getEndDate().after( now ) ) {
+                    throw new PaymentException("Текущий тариф еще не истек!");
+                }
+                else if ( currentSubscription.getEndDate().before( now ) ) {
+                    subscription.setStartDate(
+                            generateStartDate( now, false )
+                    );
+                    subscription.setEndDate(
+                            generateEndDate( now, subscriptionType.getDurationDays(), false )
+                    );
+                    isSubscriptionChanged = true;
+                }
+
             }
-            else if ( currentSubscription.getEndDate().before( now ) ) {
-                subscription.setStartDate(
-                        generateStartDate( now, false )
-                );
-                subscription.setEndDate(
-                        generateEndDate( now, subscriptionType.getDurationDays(), false )
-                );
+            else {
+                subscription.setStartDate( generateStartDate( now, false ) );
+                subscription.setEndDate( generateEndDate( now, subscriptionType.getDurationDays(), false ) );
                 isSubscriptionChanged = true;
             }
-
         }
-        else {
-            subscription.setStartDate( generateStartDate( now, false ) );
-            subscription.setEndDate( generateEndDate( now, subscriptionType.getDurationDays(), false ) );
-            isSubscriptionChanged = true;
-        }
+        else if ( subscriptionType.getSubscriptionOption().equals( SubscriptionOption.OPERATOR ) ) {
+            currentSubscription = user.getCurrentOperatorSubscription();
 
+            if ( currentSubscription != null ) {
+                if ( user.getProfile() == null )
+                    throw new PaymentException("Не найден профиль пользователя!");
+
+                SubscriptionType currentSubscriptionType = currentSubscription.getType();
+                if ( currentSubscriptionType == null )
+                    currentSubscriptionType = subscriptionType;
+
+                Profile profile = user.getProfile();
+
+                long remains = getRemainsDocuments( profile, currentSubscription, currentSubscriptionType );
+                if ( remains > 0 )
+                    throw new PaymentException("Текущий тариф еще не истек!");
+                else {
+                    currentSubscription.setEndDate( generateEndDate( now, -1, false ) );
+                    isCurrentSubscriptionChanged = true;
+
+                    subscription.setStartDate( generateStartDate( now, false ) );
+                    isSubscriptionChanged = true;
+                }
+            }
+            else {
+                subscription.setStartDate( generateStartDate( now, false ) );
+                isSubscriptionChanged = true;
+            }
+        }
+        else
+            throw new PaymentException("Указанный тариф не подерживается!");
+
+        if ( isCurrentSubscriptionChanged ) {
+            subscriptionRepository.save( currentSubscription );
+        }
         if ( isSubscriptionChanged ) {
             subscription.setUser( user );
 
@@ -329,6 +366,24 @@ public class PaymentServiceImpl implements PaymentService {
 
         webSocketController.sendCounterRefreshMessage( user );
         webSocketController.sendCounterRefreshMessageToAdmins();
+    }
+
+    @Override
+    public Long getRemainsDocuments(Profile profile, Subscription subscription, SubscriptionType subscriptionType) {
+        Long documentsCount;
+
+        if ( subscription.getEndDate() != null )
+            documentsCount = serviceDocumentRepository.countDocumentsByExecutorAndBetweenDates(
+                    profile.getId(), subscription.getStartDate(), subscription.getEndDate()
+            );
+        else
+            documentsCount = serviceDocumentRepository.countDocumentsByExecutorAndStartDate(
+                    profile.getId(), subscription.getStartDate()
+            );
+
+        Integer totalDocuments = subscription.getDocumentsCount() != null
+                ? subscription.getDocumentsCount() : subscriptionType.getDurationDays();
+        return Math.max( totalDocuments.longValue() - documentsCount, 0 );
     }
 
     private void generatePaymentRecord(User user, Subscription subscription, PaymentRecord expiringRecord, Date now) throws PaymentException {

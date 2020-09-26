@@ -4,14 +4,18 @@ import io.swagger.helper.DateHelper;
 import io.swagger.helper.UserHelper;
 import io.swagger.helper.UserSpecificationBuilder;
 import io.swagger.postgres.model.payment.Subscription;
+import io.swagger.postgres.model.payment.SubscriptionType;
+import io.swagger.postgres.model.security.Profile;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.model.security.UserRole;
+import io.swagger.postgres.repository.ServiceDocumentRepository;
 import io.swagger.postgres.repository.SubscriptionRepository;
 import io.swagger.postgres.repository.UserRepository;
 import io.swagger.postgres.repository.UserRoleRepository;
 import io.swagger.postgres.resourceProcessor.UserResourceProcessor;
 import io.swagger.response.api.ApiResponse;
 import io.swagger.response.api.JsonApiParamsBase;
+import io.swagger.service.PaymentService;
 import io.swagger.service.UserService;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +55,9 @@ public class UserController {
 
     @Autowired
     private UserResourceProcessor userResourceProcessor;
+
+    @Autowired
+    private PaymentService paymentService;
 
     @GetMapping("/currentUser")
     public ResponseEntity getCurrentUser(@RequestParam(value = "include", required = false) List<String> includes) throws Exception {
@@ -286,14 +293,22 @@ public class UserController {
                 usersWithExpiredSubscriptions.add( expired );
             }
 
-            if ( currentOperatorSubscription != null && currentOperatorSubscription.getEndDate().before( now ) ) {
-                Map<String, String> expired = new HashMap<>();
+            if ( currentOperatorSubscription != null && currentOperatorSubscription.getType() != null && user.getProfile() != null ) {
 
-                expired.put( "fio", user.getFio() );
-                expired.put( "date", DateHelper.formatDate( currentOperatorSubscription.getEndDate() ) );
-                expired.put( "subscription", currentOperatorSubscription.getName() );
+                Profile profile = user.getProfile();
+                SubscriptionType subscriptionType = currentOperatorSubscription.getType();
 
-                usersWithExpiredSubscriptions.add( expired );
+                long remains = paymentService.getRemainsDocuments( profile, currentOperatorSubscription, subscriptionType );
+
+                if ( remains == 0 ) {
+                    Map<String, String> expired = new HashMap<>();
+
+                    expired.put( "fio", user.getFio() );
+                    expired.put( "subscription", currentOperatorSubscription.getName() );
+
+                    usersWithExpiredSubscriptions.add( expired );
+                }
+
             }
         });
 

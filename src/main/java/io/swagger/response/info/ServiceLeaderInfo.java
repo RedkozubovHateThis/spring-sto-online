@@ -19,7 +19,7 @@ public class ServiceLeaderInfo {
     private Double totalBalance;
     private Date adSubscriptionEndDate;
     private Boolean adSubscriptionAvailable;
-    private Date operatorSubscriptionEndDate;
+    private Long operatorSubscriptionEndDate;
     private Boolean operatorSubscriptionAvailable;
 
     private Integer averageAdView;

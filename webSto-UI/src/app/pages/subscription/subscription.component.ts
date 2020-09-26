@@ -64,7 +64,7 @@ export class SubscriptionComponent implements OnInit {
     this.paymentService.buySubscription( subscriptionTypeId ).subscribe( subscription => {
       this.paymentService.isSubscriptionLoading = false;
 
-      this.toastrService.success(`Тариф "${subscription.name}" успешно оформлен!`);
+      this.toastrService.success(`Тариф "${subscription.attributes.name}" успешно оформлен!`);
       this.requestAllSubscriptionTypes();
       this.requestAllSubscriptions();
       this.userService.getCurrentUser();

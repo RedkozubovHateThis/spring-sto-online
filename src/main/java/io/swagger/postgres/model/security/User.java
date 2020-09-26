@@ -195,22 +195,4 @@ public class User extends BaseEntity implements UserDetails, Serializable {
         if ( balance == null ) return 0.0;
         return balance;
     }
-
-    public Boolean isCurrentAdSubscriptionEmpty() {
-        return currentAdSubscription == null;
-    }
-    public Boolean isBalanceInvalid() {
-        return balance != null && balance < 0;
-    }
-
-    public Boolean isCurrentAdSubscriptionExpired() {
-        return currentAdSubscription != null && currentAdSubscription.getEndDate().before( new Date() );
-    }
-
-    public Boolean isCurrentOperatorSubscriptionEmpty() {
-        return currentOperatorSubscription == null;
-    }
-    public Boolean isCurrentOperatorSubscriptionExpired() {
-        return currentOperatorSubscription != null && currentOperatorSubscription.getEndDate().before( new Date() );
-    }
 }

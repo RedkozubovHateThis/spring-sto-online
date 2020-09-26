@@ -101,4 +101,19 @@ public interface ServiceDocumentRepository extends JpaRepository<ServiceDocument
             "AND upper(sd.number) = upper(:number) " +
             "AND sd.deleted = FALSE)")
     Boolean isExistsByNumberNotSelf(@Param("number") String number);
+
+    @Query(nativeQuery = true, value = "SELECT COUNT(sd.id) FROM service_document AS sd " +
+            "WHERE sd.executor_id = :executorId " +
+            "AND sd.start_date >= :startDate " +
+            "AND sd.deleted = FALSE")
+    Long countDocumentsByExecutorAndStartDate(@Param("executorId") Long executorId,
+                                              @Param("startDate") Date startDate);
+
+    @Query(nativeQuery = true, value = "SELECT COUNT(sd.id) FROM service_document AS sd " +
+            "WHERE sd.executor_id = :executorId " +
+            "AND sd.start_date BETWEEN :startDate AND :endDate " +
+            "AND sd.deleted = FALSE")
+    Long countDocumentsByExecutorAndBetweenDates(@Param("executorId") Long executorId,
+                                                 @Param("startDate") Date startDate,
+                                                 @Param("endDate") Date endDate);
 }

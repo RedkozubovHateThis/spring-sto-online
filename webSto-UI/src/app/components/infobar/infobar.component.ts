@@ -106,6 +106,14 @@ export class InfobarComponent implements OnInit {
     } );
   }
 
+  private isLessThen3DocumentsRemains(documentsRemains: any): boolean {
+    return documentsRemains < 3;
+  }
+
+  private isDocumentsExpired(documentsRemains: any): boolean {
+    return documentsRemains === 0;
+  }
+
   private isLessThen3DaysRemains(endDate: any): boolean {
     const now: number = new Date().getTime();
     return endDate != null && endDate > now && endDate - now <= this.daysRemainsWarn;

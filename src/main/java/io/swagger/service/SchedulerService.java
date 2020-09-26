@@ -4,6 +4,8 @@ import io.swagger.controller.WebSocketController;
 import io.swagger.postgres.model.AdEntity;
 import io.swagger.postgres.model.enums.SubscriptionOption;
 import io.swagger.postgres.model.payment.Subscription;
+import io.swagger.postgres.model.payment.SubscriptionType;
+import io.swagger.postgres.model.security.Profile;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.*;
 import io.swagger.response.exception.DataNotFoundException;
@@ -32,6 +34,8 @@ public class SchedulerService {
     private AdEntityRepository adEntityRepository;
     @Autowired
     private WebSocketController webSocketController;
+    @Autowired
+    private ServiceDocumentRepository serviceDocumentRepository;
 
     @Value("${scheduler.disabled}")
     private Boolean isSchedulerDisabled;
@@ -69,7 +73,20 @@ public class SchedulerService {
     }
 
     private void processSubscription(Subscription currentSubscription, User serviceLeader, Date now) {
-        if ( currentSubscription == null || currentSubscription.getEndDate().after( now ) ) return;
+        if ( currentSubscription == null || currentSubscription.getType() == null ) return;
+
+        SubscriptionType subscriptionType = currentSubscription.getType();
+
+        if ( subscriptionType.getSubscriptionOption().equals( SubscriptionOption.AD ) && currentSubscription.getEndDate().after( now ) ) return;
+
+        if ( subscriptionType.getSubscriptionOption().equals( SubscriptionOption.OPERATOR ) ) {
+            if ( serviceLeader.getProfile() == null ) return;
+
+            Profile profile = serviceLeader.getProfile();
+            long remains = paymentService.getRemainsDocuments( profile, currentSubscription, subscriptionType );
+
+            if ( remains > 0 ) return;
+        }
 
         logger.info(" [ SUBSCRIPTION SCHEDULER ] ------------------ ");
         logger.info(" [ SUBSCRIPTION SCHEDULER ] Processing user \"{}\" and subscription type \"{}\"...", serviceLeader.getFio(), currentSubscription.getName() );

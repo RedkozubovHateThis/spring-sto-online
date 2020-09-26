@@ -153,10 +153,10 @@
                 <div class="col-auto" *ngIf="serviceLeaderInfo != null">
                   <span class="h4 font-weight-bold mb-0"
                         [ngClass]="{
-                        'text-warning': isLessThen3DaysRemains( serviceLeaderInfo.operatorSubscriptionEndDate ),
-                        'text-danger': isExpired( serviceLeaderInfo.operatorSubscriptionEndDate )
+                        'text-warning': isLessThen3DocumentsRemains( serviceLeaderInfo.operatorSubscriptionEndDate ),
+                        'text-danger': isDocumentsExpired( serviceLeaderInfo.operatorSubscriptionEndDate )
                         }">
-                    {{serviceLeaderInfo.operatorSubscriptionEndDate | date : 'dd.MM.yyyy'}}
+                    {{serviceLeaderInfo.operatorSubscriptionEndDate}}
                   </span>
                 </div>
               </div>

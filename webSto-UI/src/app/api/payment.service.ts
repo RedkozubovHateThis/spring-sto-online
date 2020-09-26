@@ -10,6 +10,7 @@ import {SubscriptionTypeResource, SubscriptionTypeResourceService} from '../mode
 import {SubscriptionResource, SubscriptionResourceService} from '../model/resource/subscription.resource.service';
 import {DocumentCollection} from 'ngx-jsonapi';
 import {environment} from '../../environments/environment';
+import {IDocumentResource} from 'ngx-jsonapi/interfaces/data-object';
 
 @Injectable()
 export class PaymentService {
@@ -62,14 +63,25 @@ export class PaymentService {
     });
   }
 
-  buySubscription(subscriptionTypeId: string): Observable<SubscriptionResponse> {
+  buySubscription(subscriptionTypeId: string): Observable<SubscriptionResource> {
     const params = {
       subscriptionTypeId: subscriptionTypeId != null ? subscriptionTypeId.toString() : ''
     };
 
-    return this.http.put<SubscriptionResponse>(
-      `${environment.getApiUrl()}payment/subscriptions/buy`, {}, {params}
-    );
+    return new Observable<SubscriptionResource>( (subscriber) => {
+      this.http.put<IDocumentResource>(
+        `${environment.getApiUrl()}payment/subscriptions/buy`, {}, {params}
+      )
+        .subscribe( (raw: IDocumentResource) => {
+          const subscription: SubscriptionResource = this.subscriptionResourceService.new();
+          subscription.fill(raw);
+          subscriber.next( subscription );
+          subscriber.complete();
+        }, (error) => {
+          subscriber.error( error );
+          subscriber.complete();
+        } );
+    } );
   }
 
   unsubscribeSubscription(subscriptionId: string): Observable<void> {

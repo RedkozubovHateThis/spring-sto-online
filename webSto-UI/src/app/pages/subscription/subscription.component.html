@@ -56,12 +56,42 @@
               </div>
             </div>
 
-            <div class="row form-group">
+            <div class="row form-group" *ngIf="selectedSubscription.attributes.endDate != null">
               <div class="col">
                 Дата завершения
               </div>
               <div class="col-auto h3 mb-0">
                 {{selectedSubscription.attributes.endDate | date : 'dd.MM.yy'}}
+              </div>
+            </div>
+
+            <ng-container *ngIf="selectedSubscription.relationships.type.data as subscriptionType">
+              <ng-container *ngIf="subscriptionType.attributes.subscriptionOption === 'OPERATOR'">
+                <div class="row form-group">
+                  <div class="col">
+                    Всего заказ-нарядов
+                  </div>
+                  <div class="col-auto h3 mb-0">
+                    {{selectedSubscription.documentsCount}}
+                  </div>
+                </div>
+              </ng-container>
+            </ng-container>
+
+            <div class="row form-group">
+              <div class="col">
+                <ng-container *ngIf="selectedSubscription.relationships.type.data as subscriptionType">
+                  <ng-container *ngIf="subscriptionType.attributes.subscriptionOption === 'OPERATOR'">
+                    Остаток заказ-нарядов, шт.
+                  </ng-container>
+                </ng-container>
+              </div>
+              <div class="col-auto h3 mb-0">
+                <ng-container *ngIf="selectedSubscription.relationships.type.data as subscriptionType">
+                  <ng-container *ngIf="subscriptionType.attributes.subscriptionOption === 'OPERATOR'">
+                    {{selectedSubscription.attributes.remains}}
+                  </ng-container>
+                </ng-container>
               </div>
             </div>
 
@@ -132,7 +162,12 @@
 
                   <div class="row form-group">
                     <div class="col">
-                      Длительность, дней
+                      <ng-container *ngIf="subscriptionType.attributes.subscriptionOption === 'OPERATOR'; else days">
+                        Количество заказ-нарядов, шт.
+                      </ng-container>
+                      <ng-template #days>
+                        Длительность, дней
+                      </ng-template>
                     </div>
                     <div class="col-auto h3 mb-0">
                       {{subscriptionType.attributes.durationDays}}
@@ -200,7 +235,12 @@
 
                   <div class="row form-group">
                     <div class="col">
-                      Длительность, дней
+                      <ng-container *ngIf="subscriptionType.attributes.subscriptionOption === 'OPERATOR'; else days">
+                        Количество заказ-нарядов, шт.
+                      </ng-container>
+                      <ng-template #days>
+                        Длительность, дней
+                      </ng-template>
                     </div>
                     <div class="col-auto h3 mb-0">
                       <input class="form-control form-control-sm form-control-alternative" type="number" min="0"
