@@ -2,10 +2,11 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {PaymentService} from '../../api/payment.service';
 import {ToastrService} from 'ngx-toastr';
-import {PaymentResponse} from '../../model/payment/paymentResponse';
 import * as moment from 'moment';
 import {UserService} from '../../api/user.service';
 import {PromisedAvailableResponse} from '../../model/payment/promisedAvailableResponse';
+import {DocumentCollection} from 'ngx-jsonapi';
+import {PaymentRecordResource} from '../../model/resource/payment-record.resource.service';
 
 @Component({
   selector: 'app-balance',
@@ -20,7 +21,7 @@ export class BalanceComponent implements OnInit {
   private amount: number = null;
   private promisedAmount: number = null;
   private paymentStatus: string = 'REGISTER';
-  private paymentResponses: PaymentResponse[] = [];
+  private paymentRecords: DocumentCollection<PaymentRecordResource> = new DocumentCollection<PaymentRecordResource>();
   private promisedStatus: PromisedAvailableResponse;
 
   private datePickerConfig = {
@@ -32,21 +33,6 @@ export class BalanceComponent implements OnInit {
   };
   private fromDate: string = moment().startOf('month').format('DD.MM.YYYY');
   private toDate: string = moment().endOf('month').format('DD.MM.YYYY');
-
-  private states = [
-    {id: 'CREATED', value: 'Создан'},
-    {id: 'APPROVED', value: 'Подтвержден'},
-    {id: 'DEPOSITED', value: 'Завершен'},
-    {id: 'DECLINED', value: 'Отклонен'},
-    {id: 'REVERSED', value: 'Отменен'},
-    {id: 'REFUNDED', value: 'Возвращен'}
-  ];
-
-  private types = [
-    {id: 'DEPOSIT', value: 'Внесение'},
-    {id: 'PURCHASE', value: 'Списание'},
-    {id: 'PROMISED', value: 'Обещанный платеж'}
-  ];
 
   constructor(private paymentService: PaymentService, private activatedRoute: ActivatedRoute, private toastrService: ToastrService,
               private userService: UserService) { }
@@ -67,7 +53,7 @@ export class BalanceComponent implements OnInit {
     this.isLoading = true;
     this.paymentService.getAll(this.fromDate, this.toDate)
       .subscribe( paymentResponses => {
-        this.paymentResponses = paymentResponses;
+        this.paymentRecords = paymentResponses;
         this.isLoading = false;
       } );
   }
@@ -154,28 +140,6 @@ export class BalanceComponent implements OnInit {
       this.isProcessing = false;
       this.requestData();
     } );
-  }
-
-  getStateRus(paymentState: string) {
-    if ( !paymentState ) return '';
-
-    const filtered = this.states.find( state => state.id === paymentState );
-
-    if ( filtered )
-      return filtered.value;
-
-    return paymentState;
-  }
-
-  getTypeRus(paymentType: string) {
-    if ( !paymentType ) return '';
-
-    const filtered = this.types.find( type => type.id === paymentType );
-
-    if ( filtered )
-      return filtered.value;
-
-    return paymentType;
   }
 
   togglePromised() {

@@ -241,6 +241,26 @@ public class UserController {
         );
     }
 
+    @GetMapping("/serviceLeaders")
+    public ResponseEntity findServiceLeaders() throws Exception {
+
+        User currentUser = userRepository.findCurrentUser();
+
+        if ( !UserHelper.isAdmin( currentUser ) )
+            return ResponseEntity.status(403).build();
+
+        List<User> serviceLeaders = userRepository.findUsersByRoleNames( Arrays.asList( "SERVICE_LEADER", "FREELANCER" ) );
+
+        return ResponseEntity.ok(
+                userResourceProcessor.toResourceList(
+                        serviceLeaders,
+                        null,
+                        (long) serviceLeaders.size(),
+                        null
+                )
+        );
+    }
+
     @GetMapping("/eventMessages/fromUsers")
     public ResponseEntity findEventMessagesFromUsers() {
 

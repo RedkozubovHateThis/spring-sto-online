@@ -1,7 +1,10 @@
 package io.swagger.controller;
 
 import io.swagger.helper.DateHelper;
+import io.swagger.helper.PaymentRecordSpecificationBuilder;
 import io.swagger.helper.UserHelper;
+import io.swagger.postgres.model.enums.PaymentState;
+import io.swagger.postgres.model.enums.PaymentType;
 import io.swagger.postgres.model.payment.PaymentRecord;
 import io.swagger.postgres.model.payment.Subscription;
 import io.swagger.postgres.model.payment.SubscriptionType;
@@ -10,6 +13,7 @@ import io.swagger.postgres.repository.PaymentRecordRepository;
 import io.swagger.postgres.repository.SubscriptionRepository;
 import io.swagger.postgres.repository.SubscriptionTypeRepository;
 import io.swagger.postgres.repository.UserRepository;
+import io.swagger.postgres.resourceProcessor.PaymentRecordResourceProcessor;
 import io.swagger.postgres.resourceProcessor.SubscriptionResourceProcessor;
 import io.swagger.postgres.resourceProcessor.SubscriptionTypeResourceProcessor;
 import io.swagger.response.api.ApiResponse;
@@ -17,9 +21,13 @@ import io.swagger.response.exception.PaymentException;
 import io.swagger.response.payment.PaymentResponse;
 import io.swagger.response.payment.PromisedAvailableResponse;
 import io.swagger.service.PaymentService;
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -49,6 +57,8 @@ public class PaymentController {
     private SubscriptionResourceProcessor subscriptionResourceProcessor;
     @Autowired
     private SubscriptionTypeResourceProcessor subscriptionTypeResourceProcessor;
+    @Autowired
+    private PaymentRecordResourceProcessor paymentRecordResourceProcessor;
 
     @PutMapping("/registerRequest")
     public ResponseEntity registerRequest(@RequestParam("amount") Integer amount) {
@@ -133,32 +143,45 @@ public class PaymentController {
 
     }
 
-    @GetMapping("/findAll")
+    @GetMapping("/paymentRecords")
     public ResponseEntity findAll(@RequestParam("fromDate") @DateTimeFormat(pattern = "dd.MM.yyyy") Date fromDate,
-                                  @RequestParam("toDate") @DateTimeFormat(pattern = "dd.MM.yyyy") Date toDate) {
+                                  @RequestParam("toDate") @DateTimeFormat(pattern = "dd.MM.yyyy") Date toDate) throws Exception {
 
         User currentUser = userRepository.findCurrentUser();
         if ( !UserHelper.isServiceLeaderOrFreelancer( currentUser ) )
             return ResponseEntity.status(404).build();
 
         List<PaymentRecord> paymentRecords = paymentRecordRepository.findAllByUserId( currentUser.getId(), fromDate, toDate );
+        return ResponseEntity.ok(
+                paymentRecordResourceProcessor.toResourceList(
+                        paymentRecords,
+                        null,
+                        (long) paymentRecords.size(),
+                        null
+                )
+        );
 
-        List<PaymentResponse> paymentResponses = paymentRecords.stream().map( paymentRecord -> {
+    }
 
-            if ( paymentRecord.isNeedsProcessing() ) {
-                try {
-                    return paymentService.updateRequestExtended( paymentRecord );
-                }
-                catch ( PaymentException pe ) {
-                    return new PaymentResponse( paymentRecord );
-                }
-            }
-            else
-                return new PaymentResponse( paymentRecord );
+    @GetMapping("/paymentRecords/search/filter")
+    public ResponseEntity filter(PaymentRecordsPayload payload, Pageable pageable) throws Exception {
 
-        } ).collect( Collectors.toList() );
+        User currentUser = userRepository.findCurrentUser();
+        if ( !UserHelper.isAdmin( currentUser ) )
+            return ResponseEntity.status(403).build();
 
-        return ResponseEntity.ok( paymentResponses );
+        Specification<PaymentRecord> specification =
+                PaymentRecordSpecificationBuilder.buildSpecification( payload );
+
+        Page<PaymentRecord> paymentRecords = paymentRecordRepository.findAll(specification, pageable);
+        return ResponseEntity.ok(
+                paymentRecordResourceProcessor.toResourcePage(
+                        paymentRecords,
+                        null,
+                        paymentRecordRepository.count( specification ),
+                        pageable
+                )
+        );
 
     }
 
@@ -246,5 +269,16 @@ public class PaymentController {
             return ResponseEntity.status(500).body( new ApiResponse("Ошибка отписки от тарифа! Попробуйте повторить позже!") );
         }
 
+    }
+
+    @Data
+    public static class PaymentRecordsPayload {
+        @DateTimeFormat(pattern = "dd.MM.yyyy")
+        private Date fromDate;
+        @DateTimeFormat(pattern = "dd.MM.yyyy")
+        private Date toDate;
+        private Long userId;
+        private PaymentType paymentType;
+        private PaymentState paymentState;
     }
 }

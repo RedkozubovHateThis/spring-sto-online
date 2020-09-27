@@ -147,6 +147,10 @@
            *ngIf="userService.isAdmin()">
             <i class="fas fa-list text-buro-blue"></i> Реклама
         </a>
+        <a routerLinkActive="active" [routerLink]="['/payment-records']" class="nav-link"
+           *ngIf="userService.isAdmin()">
+            <i class="fas fa-list text-buro-blue"></i> Платежи
+        </a>
 <!--        <a routerLinkActive="active" [routerLink]="['/event-messages']" class="nav-link">-->
 <!--          <i class="fas fa-bell text-buro-blue"></i> Уведомления-->
 <!--        </a>-->

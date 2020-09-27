@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.crnk.core.resource.annotations.JsonApiId;
 import io.crnk.core.resource.annotations.JsonApiRelation;
 import io.crnk.core.resource.annotations.JsonApiResource;
+import io.crnk.core.resource.annotations.SerializeType;
 import io.swagger.postgres.model.BaseEntity;
 import io.swagger.postgres.model.enums.PaymentState;
 import io.swagger.postgres.model.enums.PaymentType;
@@ -64,12 +65,13 @@ public class PaymentRecord extends BaseEntity implements Serializable {
     private String maskedPan;
 
     @ManyToOne
-    @JsonApiRelation
+    @NotFound(action = NotFoundAction.IGNORE)
+    @JsonApiRelation(serialize = SerializeType.EAGER)
     private User user;
 
     @OneToOne
     @NotFound(action = NotFoundAction.IGNORE)
-    @JsonIgnore
+    @JsonApiRelation(serialize = SerializeType.EAGER)
     private Subscription subscription;
 
     @OneToOne

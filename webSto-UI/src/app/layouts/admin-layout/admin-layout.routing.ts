@@ -20,6 +20,7 @@ import {CustomersComponent} from '../../pages/customers/customers.component';
 import {ReportsComponent} from '../../pages/reports/reports.component';
 import {ProfilesComponent} from '../../pages/profiles/profiles.component';
 import {AdEntitiesComponent} from '../../pages/ad-entities/ad-entities.component';
+import {PaymentRecordsComponent} from '../../pages/payment-records/payment-records.component';
 
 export const AdminLayoutRoutes: Routes = [
   { path: 'user-profile',   component: UserProfileComponent },
@@ -41,5 +42,6 @@ export const AdminLayoutRoutes: Routes = [
   // { path: 'event-messages', component: EventMessagesComponent },
   { path: 'balance',        component: BalanceComponent },
   { path: 'subscription',   component: SubscriptionComponent },
-  { path: 'adEntities',   component: AdEntitiesComponent }
+  { path: 'adEntities',   component: AdEntitiesComponent },
+  { path: 'payment-records',   component: PaymentRecordsComponent }
 ];

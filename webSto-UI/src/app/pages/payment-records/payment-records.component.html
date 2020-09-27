@@ -1,0 +1,97 @@
+<!-- Page content -->
+<div class="container-fluid mt--7">
+  <!-- Table -->
+  <div class="row">
+    <div class="col-xl-9 mb-5 mb-xl-0">
+      <div class="card shadow">
+        <div class="card-header border-0">
+          <app-loading-bar [isLoading]="isLoading"></app-loading-bar>
+          <div class="row">
+
+            <div class="col-sm mb-3">
+              <h3 class="mb-0">
+                Платежи
+              </h3>
+            </div>
+            <div class="col-auto">
+
+              <button class="btn btn-sm btn-buro-blue" (click)="requestData()"
+                      [disabled]="isLoading">
+                Обновить
+              </button>
+            </div>
+
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush table-hover table-sm">
+            <thead class="thead-light">
+            <tr>
+              <th scope="col">Номер запроса</th>
+              <th scope="col">Тип запроса</th>
+              <th scope="col">Сумма</th>
+              <th scope="col">Дата создания</th>
+              <th scope="col">Статус</th>
+              <th scope="col">Пользователь</th>
+              <th scope="col">Тариф</th>
+              <th scope="col">Ошибка</th>
+            </tr>
+            </thead>
+            <tbody *ngIf="paymentRecordController.all != null">
+            <ng-container *ngFor="let paymentRecord of paymentRecordController.all.data, let i = index" [attr.data-index]="i">
+              <tr>
+                <th>
+                  {{paymentRecord.attributes.orderNumber}}
+                </th>
+                <th>
+                  {{paymentRecord.typeRus}}
+                </th>
+                <th>
+                  {{paymentRecord.amount | number : '.2' : 'ru'}} р.
+                </th>
+                <th>
+                  {{paymentRecord.attributes.createDate | date : 'dd.MM.yyyy HH:mm:ss'}}
+                </th>
+                <th>
+                  {{paymentRecord.stateRus}}
+                </th>
+                <th>
+                  <ng-container *ngIf="paymentRecord.relationships.user.data as user">
+                    <a href="#" [routerLink]="['/users', user.id]">
+                      {{user.getTitle()}}
+                    </a>
+                  </ng-container>
+                </th>
+                <th>
+                  <ng-container *ngIf="paymentRecord.relationships.subscription.data as subscription">
+                    {{subscription.attributes.name}}
+                  </ng-container>
+                </th>
+                <th class="wrap-column">
+                  {{paymentRecord.attributes.actionCodeDescription}}
+                </th>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <div class="card-footer py-4 table-responsive">
+          <app-loading-bar [isLoading]="isLoading" [atTop]="true"></app-loading-bar>
+          <app-pagination *ngIf="paymentRecordController.all != null"
+                          [totalRecords]="paymentRecordController.all.page.total_resources"
+                          [page]="paymentRecordController.filter.page"
+                          [size]="paymentRecordController.filter.size"
+                          [disabled]="isLoading"
+                          (onSizeChange)="setSize($event)"
+                          (onPageChange)="goToPage($event)"></app-pagination>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3">
+      <app-payment-record-filter
+        (onChange)="applyFilter()"
+        [filter]="paymentRecordController.filter"
+      ></app-payment-record-filter>
+    </div>
+  </div>
+</div>

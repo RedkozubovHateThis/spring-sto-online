@@ -15,6 +15,8 @@ import {DocumentCollection} from 'ngx-jsonapi';
 import {ProfileResourceService} from '../model/resource/profile.resource.service';
 import {RegisterModel} from '../model/postgres/registerModel';
 import {AdEntityResourceService} from '../model/resource/ad-entity.resource.service';
+import {PaymentRecordResource} from '../model/resource/payment-record.resource.service';
+import {IDataCollection} from 'ngx-jsonapi/interfaces/data-collection';
 
 @Injectable()
 export class UserService implements TransferService<UserResource>, RestService<UserResource> {
@@ -238,6 +240,23 @@ export class UserService implements TransferService<UserResource>, RestService<U
       page: {number: filter.page, size: filter.size},
       remotefilter: params
     });
+  }
+
+  getAllServiceLeadersAndFreelancers(): Observable<DocumentCollection<UserResource>> {
+    return new Observable<DocumentCollection<UserResource>>( (subscriber) => {
+      this.http.get<IDataCollection>(
+        `${environment.getApiUrl()}external/users/serviceLeaders`
+      )
+        .subscribe( (raw: IDataCollection) => {
+          const collection: DocumentCollection<UserResource> = this.userResourceService.newCollection();
+          collection.fill(raw);
+          subscriber.next( collection );
+          subscriber.complete();
+        }, (error) => {
+          subscriber.error( error );
+          subscriber.complete();
+        } );
+    } );
   }
 
   getOne(id: string): Observable<UserResource> {

@@ -25,6 +25,7 @@ import {FileUploadModule} from 'ng2-file-upload';
 import {ProfileFilterComponent} from './profile-filter/profile-filter.component';
 import {AdEntityFilterComponent} from './ad-entity-filter/ad-entity-filter.component';
 import {AdRowComponent} from './ad-row/ad-row.component';
+import {PaymentRecordFilterComponent} from './payment-record-filter/payment-record-filter.component';
 
 @NgModule({
   imports: [
@@ -55,7 +56,8 @@ import {AdRowComponent} from './ad-row/ad-row.component';
     DictionaryUpdateButtonComponent,
     ProfileFilterComponent,
     AdEntityFilterComponent,
-    AdRowComponent
+    AdRowComponent,
+    PaymentRecordFilterComponent
   ],
   exports: [
     FooterComponent,
@@ -76,7 +78,8 @@ import {AdRowComponent} from './ad-row/ad-row.component';
     DictionaryUpdateButtonComponent,
     ProfileFilterComponent,
     AdEntityFilterComponent,
-    AdRowComponent
+    AdRowComponent,
+    PaymentRecordFilterComponent
   ]
 })
 export class ComponentsModule { }

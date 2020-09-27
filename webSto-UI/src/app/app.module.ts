@@ -65,6 +65,7 @@ import {ProfileController} from './controller/profile.controller';
 import {AdEntityResourceService} from './model/resource/ad-entity.resource.service';
 import {AdEntityService} from './api/ad-entity.service';
 import {AdEntityController} from './controller/ad-entity.controller';
+import {PaymentRecordController} from './controller/payment-record.controller';
 
 registerLocaleData(localeRu, 'ru');
 
@@ -141,6 +142,7 @@ registerLocaleData(localeRu, 'ru');
     AdEntityResourceService,
     AdEntityService,
     AdEntityController,
+    PaymentRecordController,
     {
       provide: HTTP_INTERCEPTORS,
       useFactory(userService: UserService, router: Router) {

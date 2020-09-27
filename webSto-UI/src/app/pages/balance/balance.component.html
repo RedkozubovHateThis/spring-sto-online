@@ -192,28 +192,28 @@
                 <th scope="col">Ошибка</th>
               </tr>
               </thead>
-              <tbody *ngIf="paymentResponses != null">
-              <tr *ngFor="let paymentResponse of paymentResponses">
+              <tbody *ngIf="paymentRecords != null">
+              <tr *ngFor="let paymentRecord of paymentRecords.data">
                 <th>
-                  {{paymentResponse.orderNumber}}
+                  {{paymentRecord.attributes.orderNumber}}
                 </th>
                 <th>
-                  {{getTypeRus(paymentResponse.paymentType)}}
+                  {{paymentRecord.typeRus}}
                 </th>
                 <th>
-                  {{paymentResponse.amount | number : '.2' : 'ru'}} р.
+                  {{paymentRecord.amount | number : '.2' : 'ru'}} р.
                 </th>
                 <th>
-                  {{paymentResponse.createDate | date : 'dd.MM.yyyy HH:mm:ss'}}
+                  {{paymentRecord.attributes.createDate | date : 'dd.MM.yyyy HH:mm:ss'}}
                 </th>
                 <th>
-                  {{paymentResponse.registerDate | date : 'dd.MM.yyyy HH:mm:ss'}}
+                  {{paymentRecord.attributes.registerDate | date : 'dd.MM.yyyy HH:mm:ss'}}
                 </th>
                 <th>
-                  {{getStateRus(paymentResponse.paymentState)}}
+                  {{paymentRecord.stateRus}}
                 </th>
                 <th>
-                  {{paymentResponse.actionCodeDescription}}
+                  {{paymentRecord.attributes.actionCodeDescription}}
                 </th>
               </tr>
               </tbody>

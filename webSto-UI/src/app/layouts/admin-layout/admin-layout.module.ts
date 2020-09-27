@@ -32,6 +32,7 @@ import {CustomersComponent} from '../../pages/customers/customers.component';
 import {ReportsComponent} from '../../pages/reports/reports.component';
 import {ProfilesComponent} from '../../pages/profiles/profiles.component';
 import {AdEntitiesComponent} from '../../pages/ad-entities/ad-entities.component';
+import {PaymentRecordsComponent} from '../../pages/payment-records/payment-records.component';
 
 @NgModule({
   imports: [
@@ -67,7 +68,8 @@ import {AdEntitiesComponent} from '../../pages/ad-entities/ad-entities.component
     VehiclesComponent,
     CustomersComponent,
     ProfilesComponent,
-    AdEntitiesComponent
+    AdEntitiesComponent,
+    PaymentRecordsComponent
   ]
 })
 

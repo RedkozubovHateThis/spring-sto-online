@@ -15,8 +15,8 @@ public interface PaymentService {
     void registerPromisedPayment(Integer amount, User user) throws PaymentException;
     PromisedAvailableResponse isPromisedAvailable(User user);
     void processPromisedPayments();
-    PaymentResponse updateRequestExtended(String orderId) throws PaymentException;
-    PaymentResponse updateRequestExtended(PaymentRecord paymentRecord) throws PaymentException;
+    PaymentRecord updateRequestExtended(String orderId) throws PaymentException;
+    PaymentRecord updateRequestExtended(PaymentRecord paymentRecord) throws PaymentException;
     Subscription buySubscription(Long subscriptionTypeId, User user) throws PaymentException;
     void unsubscribe(Long subscriptionId, User user) throws PaymentException;
 

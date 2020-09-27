@@ -232,7 +232,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public PaymentResponse updateRequestExtended(String orderId) throws PaymentException {
+    public PaymentRecord updateRequestExtended(String orderId) throws PaymentException {
 
         PaymentRecord paymentRecord = paymentRecordRepository.findByOrderId( orderId );
 
@@ -246,7 +246,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public PaymentResponse updateRequestExtended(PaymentRecord paymentRecord) throws PaymentException {
+    public PaymentRecord updateRequestExtended(PaymentRecord paymentRecord) throws PaymentException {
         ExtendedResponse extendedResponse = sendOrderStatusExtendedRequest( paymentRecord.getOrderId() );
 
         paymentRecord.updateRecord( extendedResponse );
@@ -256,7 +256,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         paymentRecordRepository.save( paymentRecord );
 
-        return new PaymentResponse( paymentRecord );
+        return paymentRecord;
     }
 
     @Override
