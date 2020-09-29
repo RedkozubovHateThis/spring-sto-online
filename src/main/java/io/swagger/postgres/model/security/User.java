@@ -111,6 +111,11 @@ public class User extends BaseEntity implements UserDetails, Serializable {
     @JsonApiRelation(serialize = SerializeType.EAGER)
     private AdEntity adEntity;
 
+    @OneToMany(mappedBy = "sideOfferServiceLeader")
+    @NotFound(action = NotFoundAction.IGNORE)
+    @JsonApiRelation
+    private Set<AdEntity> adEntities = new HashSet<>();
+
     @Override
     public boolean isAccountNonExpired() {
         return true;

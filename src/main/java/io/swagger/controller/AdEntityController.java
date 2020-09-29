@@ -90,6 +90,7 @@ public class AdEntityController {
         private String email;
         private Boolean active;
         private Boolean sideOffer;
+        private Long userId;
     }
 
     @Data
@@ -110,6 +111,8 @@ public class AdEntityController {
                 filterPayload.setActive( Boolean.valueOf( getFilter().get("active").get(0) ) );
             if ( getFilter().containsKey("sideOffer") && getFilter().get("sideOffer").size() > 0 )
                 filterPayload.setSideOffer( Boolean.valueOf( getFilter().get("sideOffer").get(0) ) );
+            if ( getFilter().containsKey("userId") && getFilter().get("userId").size() > 0 )
+                filterPayload.setUserId( Long.parseLong( getFilter().get("userId").get(0), 10 ) );
 
             return filterPayload;
         }

@@ -132,6 +132,29 @@
                [(ngModel)]="model.attributes.email" placeholder="Email (необязательно к заполнению)">
       </div>
     </div>
+    <div class="row form-group" *ngIf="model.attributes.sideOffer; else addedBy">
+        <div class="col">
+          <label class="form-control-label">Присвоить пользователю</label>
+          <select class="form-control form-control-sm form-control-alternative" [(ngModel)]="model.relationships.sideOfferServiceLeader.data">
+            <option [selected]="null === model.relationships.sideOfferServiceLeader.data" [ngValue]="null">
+              Без пользователя
+            </option>
+            <option [selected]="user === model.relationships.sideOfferServiceLeader.data" *ngFor="let user of users.data" [ngValue]="user">
+              {{ user.getTitle() }}
+            </option>
+          </select>
+        </div>
+    </div>
+    <ng-template #addedBy>
+      <div class="row form-group">
+        <div class="col">
+          <label class="form-control-label">Добавлено пользователем</label>
+          <div>
+            <a (click)="closeModal()" [routerLink]="['/users', model.attributes.addedById]">{{model.attributes.addedBy}}</a>
+          </div>
+        </div>
+      </div>
+    </ng-template>
     <div class="row form-group">
       <div class="col">
         <label class="form-control-label">Описание</label>

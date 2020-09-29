@@ -14,6 +14,7 @@ import {AdEntityResource, AdEntityResourceService} from '../../model/resource/ad
 import {CustomerResource} from '../../model/resource/customer.resource.service';
 import {VehicleResource} from '../../model/resource/vehicle.resource.service';
 import {VehicleMileageResource} from '../../model/resource/vehicle-mileage.resource.service';
+import {AdEntityService} from '../../api/ad-entity.service';
 
 @Component({
   selector: 'app-user-edit',
@@ -31,10 +32,12 @@ export class UserEditComponent extends ModelTransfer<UserResource, string> imple
   private subscriptionTypes: DocumentCollection<SubscriptionTypeResource>;
   private isTypesLoading = false;
 
+  private adEntities: DocumentCollection<AdEntityResource> = new DocumentCollection<AdEntityResource>();
+
   constructor(private userService: UserService, protected route: ActivatedRoute, private location: Location,
               private router: Router, private toastrService: ToastrService, private userRoleResourceService: UserRoleResourceService,
               private paymentService: PaymentService, private profileResourceService: ProfileResourceService,
-              private adEntityResourceService: AdEntityResourceService) {
+              private adEntityResourceService: AdEntityResourceService, private adEntityService: AdEntityService) {
     super(userService, route);
   }
 
@@ -44,6 +47,7 @@ export class UserEditComponent extends ModelTransfer<UserResource, string> imple
       this.model = data;
       this.isLoading = false;
       this.checkRelations();
+      this.requestSideOffers();
     }, error => {
       this.isLoading = false;
     } );
@@ -69,6 +73,12 @@ export class UserEditComponent extends ModelTransfer<UserResource, string> imple
     } );
   }
 
+  requestSideOffers() {
+    this.adEntityService.getAllByUser(this.model.id).subscribe( (adEntities) => {
+      this.adEntities = adEntities;
+    } );
+  }
+
   onTransferComplete() {
     this.checkRelations();
     this.requestAllSubscriptionTypes();
@@ -79,6 +89,11 @@ export class UserEditComponent extends ModelTransfer<UserResource, string> imple
   save() {
     if ( this.checkData() )
       this.userService.saveUser( this.model, 'Пользователь успешно сохранен!', this.saveAdEntity );
+
+    if ( this.adEntities.data.length > 0 )
+      this.adEntities.data.forEach( (adEntity) => {
+        this.adEntityService.save(adEntity).subscribe( (saved) => { } );
+      } );
   }
 
   newAdEntity() {

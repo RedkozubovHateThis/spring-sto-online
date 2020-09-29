@@ -28,13 +28,20 @@ export class AdEntityService implements RestService<AdEntityResource> {
       phone: filter.phone != null ? filter.phone : '',
       email: filter.email != null ? filter.email : '',
       active: filter.active != null ? filter.active : '',
-      sideOffer: filter.sideOffer != null ? filter.sideOffer : ''
+      sideOffer: filter.sideOffer != null ? filter.sideOffer : '',
+      userId: filter.userId != null ? filter.userId : ''
     };
     return this.adEntityResourceService.all({
       beforepath: `${environment.getBeforeUrl()}/external`,
       sort: [`${filter.direction === 'desc' ? '-' : ''}${filter.sort}`],
       page: { number: filter.page, size: filter.size },
       remotefilter: params
+    });
+  }
+
+  getAllByUser(userId: string): Observable<DocumentCollection<AdEntityResource>> {
+    return this.adEntityResourceService.all({
+      beforepath: `${environment.getBeforeUrl()}/users/${userId}`
     });
   }
 

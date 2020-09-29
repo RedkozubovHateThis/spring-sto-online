@@ -1,17 +1,13 @@
 package io.swagger.helper;
 
 import io.swagger.controller.AdEntityController;
-import io.swagger.controller.VehicleDictionaryController;
 import io.swagger.postgres.model.AdEntity;
 import io.swagger.postgres.model.AdEntity_;
-import io.swagger.postgres.model.VehicleDictionary;
-import io.swagger.postgres.model.VehicleDictionary_;
+import io.swagger.postgres.model.security.User;
+import io.swagger.postgres.model.security.User_;
 import org.springframework.data.jpa.domain.Specification;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +20,17 @@ public class AdEntitySpecificationBuilder {
             public Predicate toPredicate(Root<AdEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 
                 List<Predicate> predicates = new ArrayList<>();
-                
+
+                if ( filterPayload.getUserId() != null ) {
+                    Join<AdEntity, User> userJoin = root.join( AdEntity_.sideOfferServiceLeader );
+
+                    predicates.add(
+                            cb.equal(
+                                    userJoin.get( User_.id ), filterPayload.getUserId()
+                            )
+                    );
+                }
+
                 if ( filterPayload.getName() != null && filterPayload.getName().length() > 0 ) {
                     predicates.add(
                             cb.like(

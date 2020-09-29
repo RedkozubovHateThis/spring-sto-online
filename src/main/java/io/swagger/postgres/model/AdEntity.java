@@ -41,4 +41,9 @@ public class AdEntity extends BaseEntity implements Serializable {
     @NotFound(action = NotFoundAction.IGNORE)
     @JsonApiRelation
     private User serviceLeader;
+
+    @ManyToOne
+    @NotFound(action = NotFoundAction.IGNORE)
+    @JsonApiRelation(serialize = SerializeType.EAGER)
+    private User sideOfferServiceLeader;
 }

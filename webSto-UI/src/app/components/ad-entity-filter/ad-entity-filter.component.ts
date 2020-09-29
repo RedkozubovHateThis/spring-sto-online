@@ -3,6 +3,8 @@ import {UserService} from '../../api/user.service';
 import {UsersFilter} from '../../model/usersFilter';
 import {ProfilesFilter} from '../../model/profilesFilter';
 import {AdEntitiesFilter} from '../../model/adEntitiesFilter';
+import {DocumentCollection} from 'ngx-jsonapi';
+import {UserResource} from '../../model/resource/user.resource.service';
 
 @Component({
   selector: 'app-ad-entity-filter',
@@ -17,8 +19,13 @@ export class AdEntityFilterComponent implements OnInit {
   private filter: AdEntitiesFilter;
   @Output()
   private onChange: EventEmitter<any> = new EventEmitter();
+  private users: DocumentCollection<UserResource> = new DocumentCollection<UserResource>();
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.userService.getAllServiceLeadersAndFreelancers().subscribe( (response) => {
+      this.users = response;
+    } );
+  }
 
   emitChange() {
     this.onChange.emit();
@@ -30,6 +37,7 @@ export class AdEntityFilterComponent implements OnInit {
     this.filter.email = null;
     this.filter.sideOffer = null;
     this.filter.active = null;
+    this.filter.userId = null;
     this.emitChange();
   }
 

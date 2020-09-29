@@ -9,7 +9,7 @@
       </div>
       <div class="col-auto mb-3">
         <button class="btn btn-sm btn-buro-blue" (click)="resetFilters()" *ngIf="filter.name ||
-        filter.phone || filter.email || filter.active != null || filter.sideOffer != null">
+        filter.phone || filter.email || filter.active != null || filter.sideOffer != null || filter.userId != null">
           Сбросить
         </button>
       </div>
@@ -82,6 +82,18 @@
           </button>
         </div>
       </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label">Пользователь</label>
+      <select class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.userId" (change)="emitChange()">
+        <option [selected]="null === filter.userId" [ngValue]="null">
+          Без фильтра
+        </option>
+        <option [selected]="user.id === filter.userId" *ngFor="let user of users.data" [ngValue]="user.id">
+          {{ user.getTitle() }}
+        </option>
+      </select>
     </div>
 
     <div class="row">

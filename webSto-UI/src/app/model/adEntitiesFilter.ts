@@ -8,6 +8,7 @@ export class AdEntitiesFilter extends PageFilter {
   email: string;
   sideOffer: boolean;
   active: boolean;
+  userId: string;
   sort: string;
   direction: string;
 
@@ -17,6 +18,7 @@ export class AdEntitiesFilter extends PageFilter {
     this.phone = null;
     this.email = null;
     this.sideOffer = null;
+    this.userId = null;
     this.active = null;
     this.sort = 'name';
     this.direction = 'asc';
@@ -34,6 +36,9 @@ export class AdEntitiesFilter extends PageFilter {
 
     if ( queryParams.sideOffer ) this.sideOffer = queryParams.sideOffer === 'true';
     // else this.email = null;
+
+    if ( queryParams.userId ) this.userId = queryParams.userId;
+    // else this.userId = null;
 
     if ( queryParams.active ) this.active = queryParams.active === 'true';
     // else this.email = null;

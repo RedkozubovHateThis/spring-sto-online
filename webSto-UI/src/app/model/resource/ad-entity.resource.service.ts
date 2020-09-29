@@ -18,10 +18,13 @@ export interface IAdEntityAttributes extends IAttributes {
   sideOffer: boolean;
   active: boolean;
   deleted: boolean;
+  addedBy: string;
+  addedById: string;
 }
 
 export interface IAdEntityRelationships extends IRelationships {
   serviceLeader: DocumentResource<UserResource>;
+  sideOfferServiceLeader: DocumentResource<UserResource>;
 }
 
 export class AdEntityResource extends Resource {
@@ -35,7 +38,9 @@ export class AdEntityResource extends Resource {
     current: false,
     sideOffer: false,
     active: true,
-    deleted: false
+    deleted: false,
+    addedBy: null,
+    addedById: null
   };
 
   get activeStatus(): string {
@@ -56,7 +61,8 @@ export class AdEntityResource extends Resource {
   }
 
   public relationships: IAdEntityRelationships = {
-    serviceLeader: new DocumentResource<UserResource>()
+    serviceLeader: new DocumentResource<UserResource>(),
+    sideOfferServiceLeader: new DocumentResource<UserResource>()
   };
 }
 
