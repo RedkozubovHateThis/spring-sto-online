@@ -173,11 +173,14 @@ public class IntegrationServiceImpl implements IntegrationService {
 
         Profile executor = profileRepository.findOneByIntegrationId( integrationExecutor.getIntegrationId() );
 
-        if ( executor == null )
+        if ( executor == null && !isFieldEmpty( integrationExecutor.getInn() ) )
             executor = profileRepository.findOneByInn( integrationExecutor.getInn() );
 
+        if ( executor == null && !isFieldEmpty( integrationExecutor.getPhone() ) )
+            executor = profileRepository.findOneByPhone( integrationExecutor.getPhone() );
+
         if ( executor == null )
-            throw new IllegalArgumentException( String.format("Исполнитель с данным ИНН не найден: %s", integrationExecutor.getInn()) );
+            throw new IllegalArgumentException( String.format("Исполнитель с данным ИНН/телефоном не найден: %s/%s", integrationExecutor.getInn(), integrationExecutor.getPhone()) );
 
 //        executor.setInn( integrationExecutor.getInn() );
         executor.setName( integrationExecutor.getName() );
@@ -443,8 +446,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 
             if ( isFieldEmpty( executor.getIntegrationId() ) )
                 throw new IllegalArgumentException("Не указан идентификатор исполнителя");
-            if ( isFieldEmpty( executor.getInn() ) )
-                throw new IllegalArgumentException("Не указан ИНН исполнителя");
+            if ( isFieldEmpty( executor.getInn() ) && isFieldEmpty( executor.getPhone() ) )
+                throw new IllegalArgumentException("Не указан ИНН или телефон исполнителя");
 
             if ( !isFieldEmpty( executor.getPhone() ) ) {
                 String oldPhone = executor.getPhone();

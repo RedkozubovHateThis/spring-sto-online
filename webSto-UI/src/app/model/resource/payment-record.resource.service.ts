@@ -4,12 +4,12 @@ import {UserResource} from './user.resource.service';
 import {SubscriptionResource} from './subscription.resource.service';
 
 export const states = [
-  {id: 'CREATED', value: 'Создан'},
-  {id: 'APPROVED', value: 'Подтвержден'},
-  {id: 'DEPOSITED', value: 'Завершен'},
-  {id: 'DECLINED', value: 'Отклонен'},
-  {id: 'REVERSED', value: 'Отменен'},
-  {id: 'REFUNDED', value: 'Возвращен'}
+  {id: 'CREATED', value: 'Добавлен'},
+  {id: 'APPROVED', value: 'В обработке'},
+  {id: 'DEPOSITED', value: 'Выполнен'},
+  {id: 'DECLINED', value: 'Отклонен банком'},
+  {id: 'REVERSED', value: 'Отменен клиентом'},
+  {id: 'REFUNDED', value: 'Средства возвращены'}
 ];
 
 export const types = [

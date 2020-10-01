@@ -130,10 +130,11 @@ public class oAuthController {
             user.getRoles().add(role);
 
         if ( roleName.equals("SERVICE_LEADER") || roleName.equals("FREELANCER") ) {
-            if ( registerModel.getInn() == null || registerModel.getInn().isEmpty() )
+            if ( roleName.equals("SERVICE_LEADER") && ( registerModel.getInn() == null || registerModel.getInn().isEmpty() ) )
                 return ResponseEntity.status(400).body("ИНН не может быть пустым!");
 
-            if ( profileRepository.isProfileExistsInn( registerModel.getInn() ) )
+            if ( registerModel.getInn() != null && !registerModel.getInn().isEmpty()
+                    && profileRepository.isProfileExistsInn( registerModel.getInn() ) )
                 return ResponseEntity.status(400).body("Пользователь с таким ИНН уже существует!");
 
             try {

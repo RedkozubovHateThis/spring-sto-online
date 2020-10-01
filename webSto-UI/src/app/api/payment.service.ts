@@ -14,6 +14,7 @@ import {IDocumentResource} from 'ngx-jsonapi/interfaces/data-object';
 import {PaymentRecordResource, PaymentRecordResourceService} from '../model/resource/payment-record.resource.service';
 import {IDataCollection} from 'ngx-jsonapi/interfaces/data-collection';
 import {PaymentRecordsFilter} from '../model/paymentRecordsFilter';
+import {IDocumentData} from 'ngx-jsonapi/interfaces/document';
 
 @Injectable()
 export class PaymentService {
@@ -44,9 +45,20 @@ export class PaymentService {
       `${environment.getApiUrl()}payment/registerRequest/promised/isAvailable`);
   }
 
-  sendUpdateRequestExtended(orderId: string): Observable<PaymentResponse> {
-    return this.http.put<PaymentResponse>(`${environment.getApiUrl()}payment/updateRequest/extended?orderId=${orderId}`,
-      {});
+  sendUpdateRequestExtended(orderId: string): Observable<PaymentRecordResource> {
+    return new Observable<PaymentRecordResource>( (subscriber) => {
+      this.http.put<IDocumentResource>(`${environment.getApiUrl()}payment/updateRequest/extended?orderId=${orderId}`,
+        {})
+        .subscribe( (raw: IDocumentResource) => {
+          const paymentRecord: PaymentRecordResource = this.paymentRecordResourceService.new();
+          paymentRecord.fill(raw);
+          subscriber.next( paymentRecord );
+          subscriber.complete();
+        }, (error) => {
+          subscriber.error( error );
+          subscriber.complete();
+        } );
+    } );
   }
 
   getAll(fromDate: string, toDate: string): Observable<DocumentCollection<PaymentRecordResource>> {

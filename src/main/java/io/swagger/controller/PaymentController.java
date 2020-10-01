@@ -132,7 +132,7 @@ public class PaymentController {
             return ResponseEntity.status(403).body( new ApiResponse("Пополнение баланса доступно только для Автосервиса!") );
 
         try {
-            return ResponseEntity.ok( paymentService.updateRequestExtended(orderId) );
+            return ResponseEntity.ok( paymentRecordResourceProcessor.toResource( paymentService.updateRequestExtended(orderId), null ) );
         }
         catch ( PaymentException pe ) {
             return ResponseEntity.status(500).body( new ApiResponse( pe.getMessage() ) );

@@ -40,7 +40,7 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text"><i class="fas fa-list"></i></span>
                   </div>
-                  <input type="text" formControlName="inn" placeholder="ИНН" name="inn" class="form-control" id="inn">
+                  <input type="text" formControlName="inn" [placeholder]="'ИНН' + (selectedRole === 'FREELANCER' ? ' (необязательно к заполнению)' : '')" name="inn" class="form-control" id="inn">
                 </div>
               </div>
             </ng-container>
