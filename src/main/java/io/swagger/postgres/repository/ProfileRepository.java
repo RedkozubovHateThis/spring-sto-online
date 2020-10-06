@@ -86,4 +86,5 @@ public interface ProfileRepository extends JpaRepository<Profile, Long>, JpaSpec
     Profile findOneByIntegrationId(String integrationId);
     Profile findOneByInn(String inn);
     Profile findOneByPhone(String phone);
+    Profile findOneByEmail(String email);
 }

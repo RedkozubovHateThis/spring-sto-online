@@ -150,7 +150,7 @@ public class InfoBarController {
                     if ( operatorSubscription != null ) {
 
                         if ( operatorSubscription.getType() != null ) {
-                            paymentService.getRemainsDocuments( profile, operatorSubscription, operatorSubscription.getType() );
+                            operatorSubscriptionEndDate = paymentService.getRemainsDocuments( profile, operatorSubscription, operatorSubscription.getType() );
                         }
 
                         if ( operatorSubscription.getType() != null && operatorSubscription.getIsRenewable() ) {

@@ -5,6 +5,6 @@ import io.swagger.response.integration.IntegrationDocument;
 
 import java.util.List;
 
-public interface IntegrationService {
+public interface DocumentIntegrationService {
     void processIntegrationDocument(IntegrationDocument document, User user) throws IllegalArgumentException;
 }

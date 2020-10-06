@@ -8,7 +8,7 @@ import io.swagger.postgres.model.security.Profile;
 import io.swagger.postgres.model.security.User;
 import io.swagger.postgres.repository.*;
 import io.swagger.response.integration.*;
-import io.swagger.service.IntegrationService;
+import io.swagger.service.DocumentIntegrationService;
 import io.swagger.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +23,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class IntegrationServiceImpl implements IntegrationService {
+public class DocumentDocumentIntegrationServiceImpl implements DocumentIntegrationService {
 
-    private final static Logger logger = LoggerFactory.getLogger( IntegrationService.class );
+    private final static Logger logger = LoggerFactory.getLogger( DocumentIntegrationService.class );
 
     @Autowired
     private UserService userService;
@@ -86,7 +86,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     private void prepareDocument(IntegrationDocument integrationDocument, User user, ServiceDocumentStatus status,
                                  ServiceDocumentPaidStatus paidStatus, Date startDate, Date endDate) {
-        logger.info(" [ INTEGRATION SERVICE ] Preparing document... ");
+        logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Preparing document... ");
 
         IntegrationProfile integrationExecutor = integrationDocument.getExecutor();
         IntegrationClient integrationClient = integrationDocument.getClient();
@@ -101,7 +101,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         List<ServiceWork> serviceWorks = getServiceWorks(document, integrationDocument.getWorks());
         List<ServiceAddon> serviceAddons = getServiceAddons(document, integrationDocument.getAddons());
 
-        logger.info(" [ INTEGRATION SERVICE ] Filling document... ");
+        logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Filling document... ");
 
         document.setStatus( status );
         document.setPaidStatus( paidStatus );
@@ -117,21 +117,21 @@ public class IntegrationServiceImpl implements IntegrationService {
         document.setVehicle( vehicle );
         document.setVehicleMileage( vehicleMileage );
 
-        logger.info(" [ INTEGRATION SERVICE ] Saving document... ");
+        logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Saving document... ");
 
         serviceDocumentRepository.save( document );
         if ( serviceWorks != null && serviceWorks.size() > 0 ) {
-            logger.info(" [ INTEGRATION SERVICE ] Saving service works... ");
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Saving service works... ");
             serviceWorkRepository.saveAll( serviceWorks );
         }
         if ( serviceAddons != null && serviceAddons.size() > 0 ) {
-            logger.info(" [ INTEGRATION SERVICE ] Saving service addons... ");
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Saving service addons... ");
             serviceAddonRepository.saveAll( serviceAddons );
         }
 
         if ( client != null ) {
             try {
-                logger.info(" [ INTEGRATION SERVICE ] Updating client... ");
+                logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Updating client... ");
                 if ( client.getUser() == null )
                     client.setByFio(true);
                 userService.updateUser( client, user );
@@ -146,7 +146,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         ServiceDocument document = serviceDocumentRepository.findByIntegrationId( integrationDocument.getIntegrationId() );
 
         if ( document == null ) {
-            logger.info(" [ INTEGRATION SERVICE ] Document not found, creating new one... ");
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Document not found, creating new one... ");
             document = new ServiceDocument();
             document.setDeleted( false );
             document.setIntegrationId( integrationDocument.getIntegrationId() );
@@ -155,7 +155,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         if ( serviceDocumentRepository.isExistsByNumberNotSelf(
                 integrationDocument.getNumber()
         ) ) {
-            logger.info(" [ INTEGRATION SERVICE ] Document with this number exists: {}, replacing number...", integrationDocument.getNumber());
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Document with this number exists: {}, replacing number...", integrationDocument.getNumber());
             document.setNumber( integrationDocument.getNumber() + "И" );
         }
         else
@@ -169,7 +169,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     private Profile getExecutor(IntegrationProfile integrationExecutor) throws IllegalArgumentException {
         if ( integrationExecutor == null ) return null;
-        logger.info(" [ INTEGRATION SERVICE ] Searching for executor... ");
+        logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Searching for executor... ");
 
         Profile executor = profileRepository.findOneByIntegrationId( integrationExecutor.getIntegrationId() );
 
@@ -196,7 +196,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     private Profile getClient(IntegrationClient integrationClient, User user) throws IllegalArgumentException {
         if ( integrationClient == null ) return null;
-        logger.info(" [ INTEGRATION SERVICE ] Searching for client... ");
+        logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Searching for client... ");
 
         Profile client = profileRepository.findOneByIntegrationId( integrationClient.getIntegrationId() );
 
@@ -204,7 +204,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             client = profileRepository.findOneByPhone( integrationClient.getPhone() );
 
         if ( client == null ) {
-            logger.info(" [ INTEGRATION SERVICE ] Client not found, creating new one... ");
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Client not found, creating new one... ");
             client = new Profile();
             client.setDeleted( false );
             client.setAutoRegister( true );
@@ -236,7 +236,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     private Customer getCustomer(IntegrationProfile integrationCustomer, User user) throws IllegalArgumentException {
         if ( integrationCustomer == null ) return null;
-        logger.info(" [ INTEGRATION SERVICE ] Searching for customer... ");
+        logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Searching for customer... ");
 
         Customer customer = customerRepository.findOneByIntegrationId( integrationCustomer.getIntegrationId() );
 
@@ -244,7 +244,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             customer = customerRepository.findOneByInn( integrationCustomer.getInn() );
 
         if ( customer == null ) {
-            logger.info(" [ INTEGRATION SERVICE ] Customer not found, creating new one... ");
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Customer not found, creating new one... ");
             customer = new Customer();
             customer.setDeleted( false );
 
@@ -267,12 +267,12 @@ public class IntegrationServiceImpl implements IntegrationService {
     private Vehicle getVehicle(IntegrationDocument integrationDocument, User user) {
         if ( isFieldEmpty( integrationDocument.getVinNumber() ) )
             return null;
-        logger.info(" [ INTEGRATION SERVICE ] Searching for vehicle... ");
+        logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Searching for vehicle... ");
 
         Vehicle vehicle = vehicleRepository.findOneByVinNumber( integrationDocument.getVinNumber() );
 
         if ( vehicle == null ) {
-            logger.info(" [ INTEGRATION SERVICE ] Vehicle not found, creating new one... ");
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Vehicle not found, creating new one... ");
             vehicle = new Vehicle();
             vehicle.setDeleted( false );
 
@@ -294,7 +294,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                                              Vehicle vehicle) {
         if ( integrationDocument.getMileage() == null || vehicle == null )
             return null;
-        logger.info(" [ INTEGRATION SERVICE ] Searching for vehicle mileage... ");
+        logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Searching for vehicle mileage... ");
 
         if ( document.getId() == null )
             return buildVehicleMileage(integrationDocument, new VehicleMileage(), vehicle);
@@ -309,7 +309,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     private List<ServiceWork> getServiceWorks(ServiceDocument serviceDocument, List<IntegrationWork> integrationWorks) {
         if ( integrationWorks == null || integrationWorks.size() == 0 ) return null;
-        logger.info(" [ INTEGRATION SERVICE ] Searching for service works... ");
+        logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Searching for service works... ");
 
         List<ServiceWork> serviceWorks;
 
@@ -364,7 +364,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     private List<ServiceAddon> getServiceAddons(ServiceDocument serviceDocument, List<IntegrationAddon> integrationAddons) {
         if ( integrationAddons == null || integrationAddons.size() == 0 ) return null;
-        logger.info(" [ INTEGRATION SERVICE ] Searching for service addons... ");
+        logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Searching for service addons... ");
 
         List<ServiceAddon> serviceAddons;
 
@@ -428,7 +428,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     private void checkAndSetFields(IntegrationDocument document) throws IllegalArgumentException {
-        logger.info(" [ INTEGRATION SERVICE ] Checking and settings fields... ");
+        logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Checking and settings fields... ");
 
         if ( isFieldEmpty( document.getIntegrationId() ) )
             throw new IllegalArgumentException("Не указан идентификатор заказ-наряда");
