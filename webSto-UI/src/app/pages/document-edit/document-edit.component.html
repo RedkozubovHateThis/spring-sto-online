@@ -1,0 +1,1066 @@
+<div class="container-fluid mt--7" *ngIf="userService.isAdmin() || userService.isServiceLeaderOrFreelancer()">
+  <div class="row">
+    <div class="col">
+      <div class="card shadow">
+        <div class="card-header">
+          <app-loading-bar [isLoading]="isLoading || isSaving"></app-loading-bar>
+          <div class="row align-items-center">
+            <div class="col-md mb-3">
+              <h3 class="mb-0">
+                Данные заказ-наряда: {{model && model.is_new ? 'добавление' : 'редактирование'}}
+              </h3>
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-sm btn-buro-blue" (click)="location.back()">
+                Назад
+              </button>
+              <button class="btn btn-sm btn-buro-blue" (click)="save()" [disabled]="isSaving">
+                Сохранить
+              </button>
+<!--              <app-report-button *ngIf="userService.currentUser != null" [disabled]="model != null"-->
+<!--                                 [model]="model" [withPrint]="false"></app-report-button>-->
+<!--              <app-report-button *ngIf="userService.currentUser != null" [printDisabled]="model != null"-->
+<!--                                 [model]="model"></app-report-button>-->
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+
+          <div class="row form-group">
+
+            <div class="col-md-3 mb-3">
+
+              <h6 class="heading-small text-muted">Заказ-наряд</h6>
+
+              <div class="row form-group">
+                <div class="col-lg-12">
+                  <label class="form-control-label" for="number-input">Номер</label>
+                  <input class="form-control form-control-sm form-control-alternative" id="number-input" disabled
+                         [(ngModel)]="model.attributes.number" placeholder="Номер заказ-наряда (заполняется автоматически)">
+                </div>
+              </div>
+              <div class="row form-group">
+                <div class="col-lg-12">
+                  <label class="form-control-label" for="status-select">Состояние</label>
+                  <select id="status-select" class="form-control form-control-sm form-control-alternative"
+                          [(ngModel)]="model.attributes.status">
+                    <option *ngFor="let status of model.allStatuses" [selected]="model.attributes.status === status.id" [ngValue]="status.id">
+                      {{status.name}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="row form-group">
+                <div class="col-lg-12">
+                  <label class="form-control-label" for="paid-status-select">Статус оплаты</label>
+                  <select id="paid-status-select" class="form-control form-control-sm form-control-alternative"
+                          [(ngModel)]="model.attributes.paidStatus">
+                    <option *ngFor="let status of model.allPaidStatuses" [selected]="model.attributes.paidStatus === status.id" [ngValue]="status.id">
+                      {{status.name}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="row form-group">
+                <div class="col-lg-12">
+                  <label class="form-control-label" for="start-date-picker">Дата начала ремонта</label>
+                  <div style="max-height: 29px;">
+                    <input class="form-control form-control-alternative form-control-sm" id="start-date-picker" [mode]="'daytime'"
+                           placeholder="Дата начала ремонта"
+                           (ngModelChange)="setStartDate($event)" [(ngModel)]="startDate" [dpDayPicker]="datePickerConfig" theme="dp-material" />
+                  </div>
+                </div>
+              </div>
+              <div class="row form-group">
+                <div class="col-lg-12">
+                  <label class="form-control-label" for="end-date-picker">Дата окончания ремонта</label>
+                  <div style="max-height: 29px;">
+                    <input class="form-control form-control-alternative form-control-sm" id="end-date-picker" [mode]="'daytime'"
+                           placeholder="Дата окончания ремонта"
+                           (ngModelChange)="setEndDate($event)" [(ngModel)]="endDate" [dpDayPicker]="datePickerConfig" theme="dp-material" />
+                  </div>
+                </div>
+              </div>
+              <div class="row form-group">
+                <div class="col-lg-12">
+                  <label class="form-control-label" for="mater-fio-input">ФИО мастера</label>
+                  <input class="form-control form-control-sm form-control-alternative" id="mater-fio-input"
+                         [(ngModel)]="model.attributes.masterFio" placeholder="ФИО мастера">
+                </div>
+              </div>
+
+            </div>
+
+            <div class="col-md-3 mb-3">
+
+              <div class="row">
+                <div class="col-md">
+                  <h6 class="heading-small text-muted">Автомобиль</h6>
+                </div>
+                <div class="col-md-auto">
+                  <div class="btn-group btn-group-sm">
+                    <button
+                      class="btn btn-sn btn-buro-blue"
+                      [ngbTooltip]="'Добавить новый'"
+                      (click)="newVehicle()"
+                      [disabled]="model.relationships.vehicle.data && model.relationships.vehicle.data.is_new"
+                    >
+                      <i class="fas fa-file"></i>
+                    </button>
+                    <button
+                      class="btn btn-sn btn-buro-blue"
+                      [ngbTooltip]="'Найти ранее добавленный'"
+                      (click)="openVehiclesModal()"
+                    >
+                      <i class="fas fa-search"></i>
+                    </button>
+                    <button
+                      class="btn btn-sn btn-buro-blue"
+                      [class.active]="vehicleEdit"
+                      [ngbTooltip]="'Редактировать текущий'"
+                      (click)="vehicleEdit = !vehicleEdit"
+                      [disabled]="!model.relationships.vehicle.data || model.relationships.vehicle.data.is_new
+                      || !model.isVehicleCreatedByUser( userService.currentUser )"
+                    >
+                      <i class="fas fa-edit"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <ng-container *ngIf="model.relationships.vehicle.data as vehicle">
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="model-input">Марка/модель</label>
+                    <div class="input-group input-group-alternative input-group-sm">
+                      <input class="form-control form-control-sm form-control-alternative" id="model-input"
+                             [disabled]="!vehicleEdit && !model.relationships.vehicle.data.is_new"
+                             [(ngModel)]="vehicle.attributes.modelName" placeholder="Марка/модель">
+                      <div class="input-group-append">
+                        <button class="btn btn-buro-blue" type="button" (click)="openVehicleDictionariesModal()"
+                                [ngbTooltip]="'Найти в справочнике'"
+                                [disabled]="!vehicleEdit && !vehicle.is_new">
+                          <i class="fas fa-search"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="reg-number-input">Регистрационный номер</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="reg-number-input"
+                           [disabled]="!vehicleEdit && !model.relationships.vehicle.data.is_new"
+                           [(ngModel)]="vehicle.attributes.regNumber" placeholder="Регистрационный номер">
+                  </div>
+                </div>
+
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="vin-number-input">VIN-номер</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="vin-number-input"
+                           [disabled]="!vehicleEdit && !model.relationships.vehicle.data.is_new"
+                           [(ngModel)]="vehicle.attributes.vinNumber" placeholder="VIN-номер">
+                  </div>
+                </div>
+
+                <div class="row form-group">
+                  <div class="col-lg-6">
+                    <label class="form-control-label" for="year-input">Год выпуска</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="year-input" type="number"
+                           [disabled]="!vehicleEdit && !model.relationships.vehicle.data.is_new"
+                           [(ngModel)]="vehicle.attributes.year" placeholder="Год выпуска">
+                  </div>
+                  <div class="col-lg-6">
+                    <label class="form-control-label" for="mileage-number-input">Пробег</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="mileage-number-input" type="number"
+                           [(ngModel)]="model.relationships.vehicleMileage.data.attributes.mileage" placeholder="Пробег">
+                  </div>
+                </div>
+
+                <ng-container *ngIf="!vehicle.is_new && !vehicle.isCreatedByUser( userService.currentUser )">
+                  <div class="alert alert-warning alert-sm">
+                    Внимание! Данный автомобиль добавлен другим пользователем, и его редактирование запрещено!
+                  </div>
+                </ng-container>
+              </ng-container>
+
+              <ng-container *ngIf="vehicleEdit">
+                <div class="alert alert-warning alert-sm">
+                  Внимание! Все изменения, внесенные в информацию об автомобиле, отразятся на всех заказ-нарядах, где указан данный автомобиль!
+                </div>
+              </ng-container>
+
+            </div>
+
+            <div class="col-md-3 mb-3">
+
+              <div class="row">
+                <div class="col-md">
+                  <h6 class="heading-small text-muted">Клиент</h6>
+                </div>
+                <div class="col-md-auto">
+                  <div class="btn-group btn-group-sm">
+                    <button
+                      class="btn btn-sn btn-buro-blue"
+                      [ngbTooltip]="'Добавить нового'"
+                      (click)="newClient()"
+                      [disabled]="model.relationships.client.data && model.relationships.client.data.is_new"
+                    >
+                      <i class="fas fa-file"></i>
+                    </button>
+                    <button
+                      class="btn btn-sn btn-buro-blue"
+                      [ngbTooltip]="'Найти ранее добавленного'"
+                      (click)="openClientsModal()"
+                    >
+                      <i class="fas fa-search"></i>
+                    </button>
+                    <button
+                      class="btn btn-sn btn-buro-blue"
+                      [class.active]="clientEdit"
+                      (click)="clientEdit = !clientEdit"
+                      [ngbTooltip]="'Редактировать текущего'"
+                      [disabled]="!model.relationships.client.data || model.relationships.client.data.is_new
+                      || !model.isClientCreatedByUser( userService.currentUser )"
+                    >
+                      <i class="fas fa-edit"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <ng-container *ngIf="model.relationships.client.data as client">
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="name-input"><span [ngbTooltip]="'ФИО физического лица или название Организации/ИП'" class="title-helper">Полное наименование</span></label>
+                    <input class="form-control form-control-sm form-control-alternative" id="name-input"
+                           [disabled]="!clientEdit && !model.relationships.client.data.is_new"
+                           [(ngModel)]="client.attributes.name" placeholder="ФИО физ. лица или назв. Организации/ИП">
+                  </div>
+                </div>
+                <ng-container *ngIf="client.attributes.byFio && (clientEdit || client.is_new)">
+                  <div class="row form-group">
+                    <div class="col-lg-12">
+                      <label class="form-control-label" for="last-name-input">Фамилия</label>
+                      <input class="form-control form-control-sm form-control-alternative" id="last-name-input"
+                             [(ngModel)]="client.attributes.lastName" placeholder="Фамилия">
+                    </div>
+                  </div>
+                  <div class="row form-group">
+                    <div class="col-lg-12">
+                      <label class="form-control-label" for="first-name-input">Имя</label>
+                      <input class="form-control form-control-sm form-control-alternative" id="first-name-input"
+                             [(ngModel)]="client.attributes.firstName" placeholder="Имя">
+                    </div>
+                  </div>
+                  <div class="row form-group">
+                    <div class="col-lg-12">
+                      <label class="form-control-label" for="middle-name-input">Отчество</label>
+                      <input class="form-control form-control-sm form-control-alternative" id="middle-name-input"
+                             [(ngModel)]="client.attributes.middleName" placeholder="Отчество">
+                    </div>
+                  </div>
+                </ng-container>
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="inn-input">ИНН</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="inn-input"
+                           [disabled]="!clientEdit && !client.is_new"
+                           [(ngModel)]="client.attributes.inn" placeholder="ИНН (не обязательно к заполнению)">
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="phone-input">Телефон</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="phone-input"
+                           [disabled]="!clientEdit && !client.is_new"
+                           [(ngModel)]="client.attributes.phone" placeholder="Телефон">
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="email-input">Email</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="email-input"
+                           [disabled]="!clientEdit && !client.is_new"
+                           [(ngModel)]="client.attributes.email" placeholder="Email (не обязательно к заполнению)">
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="address-input">Адрес</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="address-input"
+                           [disabled]="!clientEdit && !client.is_new"
+                           [(ngModel)]="client.attributes.address" placeholder="Адрес (не обязательно к заполнению)">
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col">
+                    <div class="form-check">
+                      <input id="client-is-customer-check" type="checkbox" class="form-check-input" [(ngModel)]="model.attributes.clientIsCustomer" (ngModelChange)="createCustomer()">
+                      <label class="form-control-label" for="client-is-customer-check">Клиент является заказчиком</label>
+                    </div>
+                    <div class="form-check" *ngIf="client.is_new || clientEdit">
+                      <input id="by-fio-check" type="checkbox" class="form-check-input" [(ngModel)]="client.attributes.byFio">
+                      <label class="form-control-label" for="by-fio-check">Указать ФИО</label>
+                    </div>
+                  </div>
+                </div>
+
+                <ng-container *ngIf="!client.is_new && !client.isCreatedByUser( userService.currentUser )">
+                  <div class="alert alert-warning alert-sm">
+                    Внимание! Данный клиент добавлен другим пользователем, и его редактирование запрещено!
+                  </div>
+                </ng-container>
+              </ng-container>
+
+              <ng-container *ngIf="clientEdit">
+                <div class="alert alert-warning alert-sm">
+                  Внимание! Все изменения, внесенные в информацию о клиенте, отразятся на всех заказ-нарядах, где указан данный клиент!
+                </div>
+              </ng-container>
+
+            </div>
+
+            <div class="col-md-3 mb-3" *ngIf="showExecutor || ( model != null && model.attributes.clientIsCustomer )">
+
+              <div class="row">
+                <div class="col-md">
+                  <h6 class="heading-small text-muted">Исполнитель</h6>
+                </div>
+                <div class="col-md-auto" *ngIf="userService.isAdmin()">
+                  <div class="btn-group btn-group-sm">
+                    <button
+                      class="btn btn-sn btn-buro-blue"
+                      [ngbTooltip]="'Выбрать'"
+                      (click)="openExecutorsModal()"
+                    >
+                      <i class="fas fa-list"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <ng-container *ngIf="model.relationships.executor.data as executor">
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="executor-name-input"><span [ngbTooltip]="'ФИО физического лица или название Организации/ИП'" class="title-helper">Полное наименование</span></label>
+                    <input class="form-control form-control-sm form-control-alternative" id="executor-name-input"
+                           disabled
+                           [(ngModel)]="executor.attributes.name" placeholder="ФИО физ. лица или назв. Организации/ИП">
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="executor-inn-input">ИНН</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="executor-inn-input"
+                           disabled
+                           [(ngModel)]="executor.attributes.inn" placeholder="ИНН">
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="executor-phone-input">Телефон</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="executor-phone-input"
+                           disabled
+                           [(ngModel)]="executor.attributes.phone" placeholder="Телефон">
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="executor-email-input">Email</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="executor-email-input"
+                           disabled
+                           [(ngModel)]="executor.attributes.email" placeholder="Email (не обязательно к заполнению)">
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="executor-address-input">Адрес</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="executor-address-input"
+                           disabled
+                           [(ngModel)]="executor.attributes.address" placeholder="Адрес">
+                  </div>
+                </div>
+                <div class="row form-group" *ngIf="!model.attributes.clientIsCustomer">
+                  <div class="col">
+                    <button class="btn btn-sm btn-buro-blue btn-block" (click)="showExecutor = false">Показать заказчика</button>
+                  </div>
+                </div>
+              </ng-container>
+
+            </div>
+
+            <div class="col-md-3 mb-3" *ngIf="!showExecutor && model != null && !model.attributes.clientIsCustomer">
+
+              <div class="row">
+                <div class="col-md">
+                  <h6 class="heading-small text-muted">Заказчик</h6>
+                </div>
+                <div class="col-md-auto">
+                  <div class="btn-group btn-group-sm">
+                    <button
+                      class="btn btn-sn btn-buro-blue"
+                      [ngbTooltip]="'Добавить нового'"
+                      (click)="newCustomer()"
+                      [disabled]="model.relationships.customer.data && model.relationships.customer.data.is_new"
+                    >
+                      <i class="fas fa-file"></i>
+                    </button>
+                    <button
+                      class="btn btn-sn btn-buro-blue"
+                      [ngbTooltip]="'Найти ранее добавленного'"
+                      (click)="openCustomersModal()"
+                    >
+                      <i class="fas fa-search"></i>
+                    </button>
+                    <button
+                      class="btn btn-sn btn-buro-blue"
+                      [class.active]="customerEdit"
+                      (click)="customerEdit = !customerEdit"
+                      [ngbTooltip]="'Редактировать текущего'"
+                      [disabled]="!model.relationships.customer.data || model.relationships.customer.data.is_new
+                      || !model.isCustomerCreatedByUser( userService.currentUser )"
+                    >
+                      <i class="fas fa-edit"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <ng-container *ngIf="model.relationships.customer.data as customer">
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="customer-name-input"><span [ngbTooltip]="'ФИО физического лица или название Организации/ИП'" class="title-helper">Полное наименование</span></label>
+                    <input class="form-control form-control-sm form-control-alternative" id="customer-name-input"
+                           [disabled]="!customerEdit && !customer.is_new"
+                           [(ngModel)]="customer.attributes.name" placeholder="ФИО физ. лица или назв. Организации/ИП">
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="customer-inn-input">ИНН</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="customer-inn-input"
+                           [disabled]="!customerEdit && !customer.is_new"
+                           [(ngModel)]="customer.attributes.inn" placeholder="ИНН">
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="customer-phone-input">Телефон</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="customer-phone-input"
+                           [disabled]="!customerEdit && !customer.is_new"
+                           [(ngModel)]="customer.attributes.phone" placeholder="Телефон (не обязательно к заполнению)">
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="customer-email-input">Email</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="customer-email-input"
+                           [disabled]="!customerEdit && !customer.is_new"
+                           [(ngModel)]="customer.attributes.email" placeholder="Email (не обязательно к заполнению)">
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-lg-12">
+                    <label class="form-control-label" for="customer-address-input">Адрес</label>
+                    <input class="form-control form-control-sm form-control-alternative" id="customer-address-input"
+                           [disabled]="!customerEdit && !customer.is_new"
+                           [(ngModel)]="customer.attributes.address" placeholder="Адрес (не обязательно к заполнению)">
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col">
+                    <button class="btn btn-sm btn-buro-blue btn-block" (click)="showExecutor = true">Показать исполнителя</button>
+                  </div>
+                </div>
+
+                <ng-container *ngIf="!customer.is_new && !customer.isCreatedByUser( userService.currentUser )">
+                  <div class="alert alert-warning alert-sm">
+                    Внимание! Данный заказчик добавлен другим пользователем, и его редактирование запрещено!
+                  </div>
+                </ng-container>
+              </ng-container>
+
+              <ng-container *ngIf="customerEdit">
+                <div class="alert alert-warning alert-sm">
+                  Внимание! Все изменения, внесенные в информацию о заказчике, отразятся на всех заказ-нарядах, где указан данный заказчик!
+                </div>
+              </ng-container>
+
+            </div>
+
+          </div>
+
+          <div class="row form-group">
+            <div class="col-lg-12">
+
+              <label class="form-control-label" for="reason-input">Услуга</label>
+              <textarea class="form-control form-control-sm form-control-alternative" id="reason-input" [(ngModel)]="model.attributes.reason"></textarea>
+
+            </div>
+          </div>
+
+          <div class="row form-group">
+            <div class="col-lg-12">
+
+              <div class="row form-group">
+                <div class="col mb-3">
+
+                  <h6 class="heading-small text-muted mb-0">Работы</h6>
+
+                </div>
+                <div class="col-auto">
+                  <div class="btn-group btn-group-sm">
+                    <button class="btn btn-sm btn-buro-blue" (click)="newServiceWork()">Добавить</button>
+                    <button class="btn btn-sm btn-buro-blue" (click)="openServiceWorkDictionariesModal()">Из справочника</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="table-responsive">
+                <table class="table table-flush table-hover table-sm">
+                  <thead class="thead-light">
+                  <tr>
+                    <th scope="col" style="width: 125px;">Код работ</th>
+                    <th scope="col">Наименование работ</th>
+                    <th scope="col" style="width: 95px;">Фикс. цена</th>
+                    <th scope="col" style="width: 175px;">
+                      Норма времени, чел./час.
+                    </th>
+                    <th scope="col" style="width: 175px;">
+                      Стоимость нормы времени, руб. /
+                      <div>
+                        Фиксированная цена, руб.
+                      </div>
+                    </th>
+                    <th scope="col" style="width: 175px;">
+                      Кратность
+                    </th>
+                    <th style="width: 43px;">
+                      &nbsp;
+                    </th>
+                  </tr>
+                  </thead>
+                  <tbody *ngIf="model != null">
+                  <tr *ngFor="let serviceWork of serviceWorks">
+                    <th>
+                      <input class="form-control form-control-sm form-control-alternative" placeholder="Код работ"
+                             [(ngModel)]="serviceWork.attributes.number">
+                    </th>
+                    <th class="wrap-column">
+                      <input class="form-control form-control-sm form-control-alternative" placeholder="Наименование работ"
+                             [(ngModel)]="serviceWork.attributes.name">
+                    </th>
+                    <th>
+                      <input type="checkbox" class="form-control form-control-sm" [(ngModel)]="serviceWork.attributes.byPrice">
+                    </th>
+                    <th>
+                      <input class="form-control form-control-sm form-control-alternative" placeholder="Норма времени, чел./час." type="number"
+                             [(ngModel)]="serviceWork.attributes.timeValue" [disabled]="serviceWork.attributes.byPrice">
+                    </th>
+                    <th>
+                      <ng-container *ngIf="serviceWork.attributes.byPrice; else byPriceNorm">
+                        <input class="form-control form-control-sm form-control-alternative" placeholder="Фиксированная цена, руб."
+                               [(ngModel)]="serviceWork.attributes.price" type="number">
+                      </ng-container>
+                      <ng-template #byPriceNorm>
+                        <input class="form-control form-control-sm form-control-alternative" placeholder="Стоимость нормы времени, руб."
+                               [(ngModel)]="serviceWork.attributes.priceNorm" type="number">
+                      </ng-template>
+                    </th>
+                    <th>
+                      <input class="form-control form-control-sm form-control-alternative" placeholder="Кратность"
+                             [(ngModel)]="serviceWork.attributes.count" type="number">
+                    </th>
+                    <th>
+                      <app-delete-button
+                        [model]="serviceWork"
+                        [isIcon]="true"
+                        [modalTitle]="serviceWork.attributes.name"
+                        [parentList]="serviceWorks"
+                        [restService]="serviceWorkService"
+                      ></app-delete-button>
+                    </th>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="row form-group">
+            <div class="col-lg-12">
+
+              <div class="row form-group">
+                <div class="col mb-3">
+
+                  <h6 class="heading-small text-muted mb-0">Товары</h6>
+
+                </div>
+                <div class="col-auto">
+                  <div class="btn-group btn-group-sm">
+                    <button class="btn btn-sm btn-buro-blue" (click)="newServiceAddon()">Добавить</button>
+                    <button class="btn btn-sm btn-buro-blue" (click)="openServiceAddonDictionariesModal()">Из справочника</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="table-responsive">
+                <table class="table table-flush table-hover table-sm">
+                  <thead class="thead-light">
+                  <tr>
+                    <th scope="col" style="width: 125px;">Код товара</th>
+                    <th scope="col">Наименование товара</th>
+                    <th scope="col" style="width: 175px;">
+                      Цена, руб.
+                    </th>
+                    <th scope="col" style="width: 175px;">
+                      Количество
+                    </th>
+                    <th style="width: 43px;">
+                      &nbsp;
+                    </th>
+                  </tr>
+                  </thead>
+                  <tbody *ngIf="model != null">
+                  <tr *ngFor="let addon of serviceAddons">
+                    <th>
+                      <input class="form-control form-control-sm form-control-alternative" placeholder="Код товара"
+                             [(ngModel)]="addon.attributes.number">
+                    </th>
+                    <th class="wrap-column">
+                      <input class="form-control form-control-sm form-control-alternative" placeholder="Наименование товара"
+                             [(ngModel)]="addon.attributes.name">
+                    </th>
+                    <th scope="col">
+                      <input class="form-control form-control-sm form-control-alternative" placeholder="Цена, руб."
+                             [(ngModel)]="addon.attributes.cost" type="number">
+                    </th>
+                    <th style="text-align: right;">
+                      <input class="form-control form-control-sm form-control-alternative" placeholder="Количество"
+                             [(ngModel)]="addon.attributes.count" type="number">
+                    </th>
+                    <th>
+                      <app-delete-button
+                        [model]="addon"
+                        [isIcon]="true"
+                        [modalTitle]="addon.attributes.name"
+                        [parentList]="serviceAddons"
+                        [restService]="serviceAddonService"
+                      ></app-delete-button>
+                    </th>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #clientModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">Поиск клиентов</h3>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row form-group">
+      <div class="col">
+        <div class="input-group input-group-alternative input-group-sm">
+          <input id="client-select-ahead" type="text" placeholder="Введите ФИО, ИНН, телефон или email (мин. 3 символа)"
+                 class="form-control form-control-sm" [(ngModel)]="phoneOrEmailSearch" (keyup.enter)="searchClients()"/>
+          <div class="input-group-append">
+            <button class="btn btn-buro-blue" type="button" (click)="searchClients()" [disabled]="!phoneOrEmailSearch || phoneOrEmailSearch.length < 3">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush table-hover table-sm">
+            <thead class="thead-light">
+            <tr>
+              <th scope="col">Полное наименование</th>
+              <th scope="col">ИНН</th>
+              <th scope="col">Телефон</th>
+              <th scope="col">Почта</th>
+              <th scope="col">Адрес</th>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-container *ngFor="let client of clients.data">
+              <tr style="cursor: pointer;" (click)="setClient(client)">
+                <td>
+                  {{client.attributes.name}}
+                </td>
+                <td>
+                  {{client.attributes.inn}}
+                </td>
+                <td>
+                  {{client.attributes.phone}}
+                </td>
+                <td>
+                  {{client.attributes.email}}
+                </td>
+                <td>
+                  {{client.attributes.address}}
+                </td>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-buro-blue" (click)="modal.dismiss()">Закрыть</button>
+  </div>
+</ng-template>
+
+<ng-template #customerModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">Поиск клиентов</h3>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row form-group">
+      <div class="col">
+        <div class="input-group input-group-alternative input-group-sm">
+          <input id="customer-select-ahead" type="text" placeholder="Введите ФИО, ИНН, телефон или email (мин. 3 символа)"
+                 class="form-control form-control-sm" [(ngModel)]="customerSearch" (keyup.enter)="searchCustomers()"/>
+          <div class="input-group-append">
+            <button class="btn btn-buro-blue" type="button" (click)="searchCustomers()" [disabled]="!customerSearch || customerSearch.length < 3">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush table-hover table-sm">
+            <thead class="thead-light">
+            <tr>
+              <th scope="col">Полное наименование</th>
+              <th scope="col">ИНН</th>
+              <th scope="col">Телефон</th>
+              <th scope="col">Почта</th>
+              <th scope="col">Адрес</th>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-container *ngFor="let customer of customers.data">
+              <tr style="cursor: pointer;" (click)="setCustomer(customer)">
+                <td>
+                  {{customer.attributes.name}}
+                </td>
+                <td>
+                  {{customer.attributes.inn}}
+                </td>
+                <td>
+                  {{customer.attributes.phone}}
+                </td>
+                <td>
+                  {{customer.attributes.email}}
+                </td>
+                <td>
+                  {{customer.attributes.address}}
+                </td>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-buro-blue" (click)="modal.dismiss()">Закрыть</button>
+  </div>
+</ng-template>
+
+<ng-template #executorModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">Выбор исполнителя</h3>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col">
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush table-hover table-sm">
+            <thead class="thead-light">
+            <tr>
+              <th scope="col">Полное наименование</th>
+              <th scope="col">ИНН</th>
+              <th scope="col">Телефон</th>
+              <th scope="col">Почта</th>
+              <th scope="col">Адрес</th>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-container *ngFor="let executor of executors.data">
+              <tr style="cursor: pointer;" (click)="setExecutor(executor)">
+                <td>
+                  {{executor.attributes.name}}
+                </td>
+                <td>
+                  {{executor.attributes.inn}}
+                </td>
+                <td>
+                  {{executor.attributes.phone}}
+                </td>
+                <td>
+                  {{executor.attributes.email}}
+                </td>
+                <td>
+                  {{executor.attributes.address}}
+                </td>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-buro-blue" (click)="modal.dismiss()">Закрыть</button>
+  </div>
+</ng-template>
+
+<ng-template #vehicleModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">Поиск автомобилей</h3>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row form-group">
+      <div class="col">
+        <div class="input-group input-group-alternative input-group-sm">
+          <input id="vehicle-select-ahead" type="text" placeholder="Введите марку, модель, регистрационный или VIN-номер (мин. 3 символа)"
+                 class="form-control form-control-sm" [(ngModel)]="vinSearch" (keyup.enter)="searchVehicles()"/>
+          <div class="input-group-append">
+            <button class="btn btn-buro-blue" type="button" (click)="searchVehicles()" [disabled]="!vinSearch || vinSearch.length < 3">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush table-hover table-sm">
+            <thead class="thead-light">
+            <tr>
+              <th scope="col">Марка/модель</th>
+              <th scope="col">Рег. номер</th>
+              <th scope="col">VIN-номер</th>
+              <th scope="col">Год выпуска</th>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-container *ngFor="let vehicle of vehicles.data">
+              <tr style="cursor: pointer;" (click)="setVehicle(vehicle)">
+                <td>
+                  {{vehicle.attributes.modelName}}
+                </td>
+                <td>
+                  {{vehicle.attributes.regNumber}}
+                </td>
+                <td>
+                  {{vehicle.attributes.vinNumber}}
+                </td>
+                <td>
+                  {{vehicle.attributes.year}}
+                </td>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-buro-blue" (click)="modal.dismiss()">Закрыть</button>
+  </div>
+</ng-template>
+
+<ng-template #vehicleDictionaryModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">Поиск в справочнике автомобилей</h3>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row form-group">
+      <div class="col">
+        <div class="input-group input-group-alternative input-group-sm">
+          <input id="vehicle-dictionary-select-ahead" type="text" placeholder="Введите марку или модель (мин. 3 символа)"
+                 class="form-control form-control-sm" [(ngModel)]="vehicleDictionaryNameSearch" (keyup.enter)="searchVehicleDictionaries()"/>
+          <div class="input-group-append">
+            <button class="btn btn-buro-blue" type="button" (click)="searchVehicleDictionaries()"
+                    [disabled]="!vehicleDictionaryNameSearch || vehicleDictionaryNameSearch.length < 3">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush table-hover table-sm">
+            <thead class="thead-light">
+            <tr>
+              <th scope="col">Марка/модель</th>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-container *ngFor="let vehicleDictionary of vehicleDictionaries.data">
+              <tr style="cursor: pointer;" (click)="updateVehicle(vehicleDictionary)">
+                <td>
+                  {{vehicleDictionary.attributes.name}}
+                </td>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-buro-blue" (click)="modal.dismiss()">Закрыть</button>
+  </div>
+</ng-template>
+
+<ng-template #serviceWorkDictionaryModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">Поиск в справочнике работ</h3>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row form-group">
+      <div class="col">
+        <div class="input-group input-group-alternative input-group-sm">
+          <input id="service-work-dictionary-select-ahead" type="text" placeholder="Введите наименование (мин. 3 символа)"
+                 class="form-control form-control-sm" [(ngModel)]="serviceWorkDictionaryNameSearch" (keyup.enter)="searchServiceWorkDictionaries()"/>
+          <div class="input-group-append">
+            <button class="btn btn-buro-blue" type="button" (click)="searchServiceWorkDictionaries()"
+                    [disabled]="!serviceWorkDictionaryNameSearch || serviceWorkDictionaryNameSearch.length < 3">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush table-hover table-sm">
+            <thead class="thead-light">
+            <tr>
+              <th scope="col">Наименование</th>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-container *ngFor="let serviceWorkDictionary of serviceWorkDictionaries.data">
+              <tr style="cursor: pointer;" (click)="newServiceWorkFromDictionary(serviceWorkDictionary)">
+                <td>
+                  {{serviceWorkDictionary.attributes.name}}
+                </td>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-buro-blue" (click)="modal.dismiss()">Закрыть</button>
+  </div>
+</ng-template>
+
+<ng-template #serviceAddonDictionaryModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">Поиск в справочнике товаров</h3>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row form-group">
+      <div class="col">
+        <div class="input-group input-group-alternative input-group-sm">
+          <input id="service-addon-dictionary-select-ahead" type="text" placeholder="Введите наименование (мин. 3 символа)"
+                 class="form-control form-control-sm" [(ngModel)]="serviceAddonDictionaryNameSearch" (keyup.enter)="searchServiceAddonDictionaries()"/>
+          <div class="input-group-append">
+            <button class="btn btn-buro-blue" type="button" (click)="searchServiceAddonDictionaries()"
+                    [disabled]="!serviceAddonDictionaryNameSearch || serviceAddonDictionaryNameSearch.length < 3">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush table-hover table-sm">
+            <thead class="thead-light">
+            <tr>
+              <th scope="col">Наименование</th>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-container *ngFor="let serviceAddonDictionary of serviceAddonDictionaries.data">
+              <tr style="cursor: pointer;" (click)="newServiceAddonFromDictionary(serviceAddonDictionary)">
+                <td>
+                  {{serviceAddonDictionary.attributes.name}}
+                </td>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-buro-blue" (click)="modal.dismiss()">Закрыть</button>
+  </div>
+</ng-template>

@@ -1,58 +1,78 @@
-<nav class="navbar navbar-top navbar-expand-md navbar-dark" id="navbar-main">
+<nav class="navbar navbar-top navbar-expand-md navbar-dark" id="navbar-main" style="z-index: 999;">
   <div class="container-fluid">
     <!-- Brand -->
-    <a class="h4 mb-0 text-white text-uppercase d-none d-lg-inline-block" routerLinkActive="active" [routerLink]="['/dashboard']">{{getTitle()}}</a>
-    <!-- Form -->
-    <form class="navbar-search navbar-search-dark form-inline mr-3 d-none d-md-flex ml-lg-auto">
-      <div class="form-group mb-0" [ngClass]="{ 'focused': focus === true }">
-        <div class="input-group input-group-alternative">
-          <div class="input-group-prepend">
-            <span class="input-group-text"><i class="fas fa-search"></i></span>
-          </div>
-          <input class="form-control" placeholder="Search" type="text" (focus)="focus = true"
-          (blur)="focus = false">
-        </div>
-      </div>
-    </form>
+    <a class="h4 mb-0 text-white text-uppercase d-none d-lg-inline-block" routerLinkActive="active" [routerLink]="['/documents']">
+<!--      {{getTitle()}}-->
+    </a>
     <!-- User -->
     <ul class="navbar-nav align-items-center d-none d-md-flex">
+<!--      <li class="nav-item" ngbDropdown placement="bottom-right" *ngIf="userService.currentUser != null">-->
+<!--        <a class="nav-link pr-0" style="cursor: pointer;" role="button" ngbDropdownToggle>-->
+<!--          <div class="media align-items-center">-->
+<!--            <span class="avatar avatar-sm rounded-circle">-->
+<!--              <i class="fas fa-bell"></i>-->
+<!--            </span>-->
+<!--          </div>-->
+<!--        </a>-->
+<!--        <div class="dropdown-menu-arrow dropdown-menu-right event-list" ngbDropdownMenu>-->
+<!--          <ng-container *ngIf="eventMessageResponseService.messages.length === 0">-->
+<!--            <div class="dropdown-item-text small text-muted">-->
+<!--              Уведомления не найдены...-->
+<!--            </div>-->
+<!--          </ng-container>-->
+<!--          <ng-container *ngIf="eventMessageResponseService.messages.length > 0">-->
+<!--            <div class="dropdown-item-text small" *ngFor="let message of eventMessageResponseService.messages">-->
+<!--              {{message.messageDate | date : 'dd.MM.yyyy HH:mm'}}-->
+<!--              <div *ngIf="message.messageType === 'DOCUMENT_CHANGE'">-->
+<!--                Пользователь <a [routerLink]="['/users', message.fromId]">{{message.fromFio}}</a> изменил документ <a [routerLink]="['/documents', message.documentId]">{{message.documentName}}</a>:-->
+<!--                <div class="text-muted">-->
+<!--                  {{message.additionalInformation}}-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div *ngIf="message.messageType === 'MODERATOR_REPLACEMENT'">-->
+<!--                Модератор {{message.fromFio}} назначил вас своим замещающим-->
+<!--              </div>-->
+<!--              <div *ngIf="message.messageType === 'USER_REGISTER'">-->
+<!--                Пользователь {{message.fromFio}} зарегистрировался на сайте-->
+<!--              </div>-->
+<!--              <div *ngIf="message.messageType === 'USER_AUTODEALER'">-->
+<!--                Пользователь {{message.fromFio}} совершил привязку к системе АвтоДилер-->
+<!--              </div>-->
+<!--              <div *ngIf="message.messageType === 'USER_APPROVE'">-->
+<!--                Модератор {{message.fromFio}} подтвердил привязку к системе АвтоДилер-->
+<!--              </div>-->
+<!--              <div *ngIf="message.messageType === 'USER_REJECT'">-->
+<!--                Модератор {{message.fromFio}} отменил привязку к системе АвтоДилер-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </ng-container>-->
+<!--        </div>-->
+<!--      </li>-->
       <li class="nav-item" ngbDropdown placement="bottom-right">
-        <a class="nav-link pr-0" role="button" ngbDropdownToggle>
+        <a class="nav-link pr-0" style="cursor: pointer;" role="button" ngbDropdownToggle>
           <div class="media align-items-center">
             <span class="avatar avatar-sm rounded-circle">
-              <img alt="Image placeholder" src="assets/img/theme/team-4-800x800.jpg">
+              <i class="fas fa-user-tie"></i>
             </span>
             <div class="media-body ml-2 d-none d-lg-block">
-              <span class="mb-0 text-sm  font-weight-bold">
-                {{getUsername()}}
+              <span class="mb-0 text-sm font-weight-bold">
+                <span [innerHTML]="getUsername()"></span>
               </span>
             </div>
           </div>
         </a>
         <div class="dropdown-menu-arrow dropdown-menu-right" ngbDropdownMenu>
           <div class=" dropdown-header noti-title">
-            <h6 class="text-overflow m-0">Welcome!</h6>
+            <h6 class="text-overflow m-0">Добро пожаловать</h6>
           </div>
           <a routerLinkActive="active" [routerLink]="['/user-profile']" class="dropdown-item">
-            <i class="ni ni-single-02"></i>
-            <span>My profile</span>
-          </a>
-          <a routerLinkActive="active" [routerLink]="['/user-profile']" class="dropdown-item">
-            <i class="ni ni-settings-gear-65"></i>
-            <span>Settings</span>
-          </a>
-          <a routerLinkActive="active" [routerLink]="['/user-profile']" class="dropdown-item">
-            <i class="ni ni-calendar-grid-58"></i>
-            <span>Activity</span>
-          </a>
-          <a routerLinkActive="active" [routerLink]="['/user-profile']" class="dropdown-item">
-            <i class="ni ni-support-16"></i>
-            <span>Support</span>
+            <i class="fas fa-user text-buro-blue"></i>
+            <span>Профиль</span>
           </a>
           <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item" (click)="logout()">
-            <i class="ni ni-user-run"></i>
-            <span>Logout</span>
+          <a class="dropdown-item" [routerLink]="['/login']" (click)="logout()">
+            <i class="fa fa-sign-out-alt text-buro-blue"></i>
+            <span>Выход</span>
           </a>
         </div>
       </li>

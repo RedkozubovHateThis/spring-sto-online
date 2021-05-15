@@ -1,0 +1,185 @@
+<!-- Page content -->
+<div class="container-fluid mt--7" *ngIf="userService.isAdmin()">
+  <!-- Table -->
+  <div class="row">
+    <div class="col-xl-9 mb-5 mb-xl-0">
+      <div class="card shadow">
+        <div class="card-header border-0">
+          <app-loading-bar [isLoading]="isLoading"></app-loading-bar>
+          <div class="row">
+
+            <div class="col-sm mb-3">
+              <h3 class="mb-0">
+                Справочник профилей
+              </h3>
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-sm btn-buro-blue" (click)="requestData()"
+                      [disabled]="isLoading">
+                Обновить
+              </button>
+            </div>
+
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush table-hover table-sm">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">Полное наименование</th>
+                <th scope="col">Телефон</th>
+                <th scope="col">Email</th>
+                <th scope="col">ИНН</th>
+                <th scope="col">Адрес</th>
+                <th scope="col" style="width: 28px;">&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="profileController.all != null">
+            <ng-container *ngFor="let profile of profileController.all.data, let i = index" [attr.data-index]="i">
+              <tr>
+                <th scope="row" style="cursor: pointer;" (click)="navigate(profile)">
+                  {{profile.attributes.name}}
+                </th>
+                <th scope="row" style="cursor: pointer;" (click)="navigate(profile)">
+                  {{profile.attributes.phone}}
+                </th>
+                <th scope="row" style="cursor: pointer;" (click)="navigate(profile)">
+                  {{profile.attributes.email}}
+                </th>
+                <th scope="row" style="cursor: pointer;" (click)="navigate(profile)">
+                  {{profile.attributes.inn}}
+                </th>
+                <th scope="row" style="cursor: pointer;" (click)="navigate(profile)">
+                  {{profile.attributes.address}}
+                </th>
+                <th>
+                  <app-delete-button
+                    [restService]="profileService"
+                    [model]="profile"
+                    [modalTitle]="profile.attributes.name"
+                    [isIcon]="true"
+                    (onDelete)="requestData()"
+                  ></app-delete-button>
+                </th>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <div class="card-footer py-4 table-responsive">
+          <app-loading-bar [isLoading]="isLoading" [atTop]="true"></app-loading-bar>
+          <app-pagination *ngIf="profileController.all != null"
+                          [totalRecords]="profileController.all.page.total_resources"
+                          [page]="profileController.filter.page"
+                          [size]="profileController.filter.size"
+                          [disabled]="isLoading"
+                          (onSizeChange)="setSize($event)"
+                          (onPageChange)="goToPage($event)"></app-pagination>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3">
+      <app-profile-filter
+        (onChange)="applyFilter()"
+        [filter]="profileController.filter"
+      ></app-profile-filter>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<ng-template #editModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">Данные профиля: {{profileController.selectedModel.is_new ? 'добавление' : 'редактирование'}}</h3>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" *ngIf="profileController.selectedModel as model">
+    <div class="row form-group">
+      <div class="col-lg-12">
+        <label class="form-control-label"><span [ngbTooltip]="'ФИО физического лица или название Организации/ИП'" class="title-helper">Полное наименование</span></label>
+        <input class="form-control form-control-sm form-control-alternative"
+               [(ngModel)]="model.attributes.name" placeholder="Полное наименование">
+      </div>
+    </div>
+    <div class="row form-group">
+      <div class="col-lg-6">
+        <label class="form-control-label">Телефон</label>
+        <input class="form-control form-control-sm form-control-alternative"
+               [(ngModel)]="model.attributes.phone" placeholder="Телефон">
+      </div>
+      <div class="col-lg-6">
+        <label class="form-control-label">Email</label>
+        <input class="form-control form-control-sm form-control-alternative"
+               [(ngModel)]="model.attributes.email" placeholder="Email">
+      </div>
+    </div>
+    <div class="row form-group">
+      <div class="col-lg-6">
+        <label class="form-control-label">ИНН</label>
+        <input class="form-control form-control-sm form-control-alternative"
+               [(ngModel)]="model.attributes.inn" placeholder="ИНН">
+      </div>
+      <div class="col-lg-6">
+        <label class="form-control-label">Адрес</label>
+        <input class="form-control form-control-sm form-control-alternative"
+               [(ngModel)]="model.attributes.address" placeholder="Адрес">
+      </div>
+    </div>
+    <div class="row form-group">
+      <div class="col">
+        <label class="form-control-label">Добавлен профилем</label>
+        <div class="row">
+          <div class="col">
+            <ng-container *ngIf="createdByChanging; else staticShow">
+              <select id="organization-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="model.relationships.createdBy.data">
+                <option [selected]="model.relationships.createdBy.data && executor.id === model.relationships.createdBy.data.id" *ngFor="let executor of executors.data" [ngValue]="executor">
+                  {{ executor.attributes.name }}
+                </option>
+              </select>
+            </ng-container>
+            <ng-template #staticShow>
+              <ng-container *ngIf="model.relationships.createdBy.data as createdBy; else notSpecified">
+                <span class="form-control form-control-sm form-control-alternative">
+                  {{createdBy.attributes.name}}
+                </span>
+              </ng-container>
+              <ng-template #notSpecified>
+                <span class="form-control form-control-sm form-control-alternative">
+                  Не указан
+                </span>
+              </ng-template>
+            </ng-template>
+          </div>
+          <div class="col-auto">
+            <button type="button" class="btn btn-sm btn-buro-blue" [disabled]="createdByChanging" (click)="createdByChanging = !createdByChanging">
+              Изменить
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="btn-group btn-group-sm">
+      <button type="button" class="btn btn-sm btn-buro-blue" (click)="save(profileController.selectedModel)" [disabled]="isSaving">
+        Сохранить
+        <span *ngIf="isSaving">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+      </button>
+      <button type="button" class="btn btn-sm btn-buro-blue" (click)="saveAs(profileController.selectedModel, 'CLIENT')" [disabled]="isSaving">
+        Как автовладельца
+        <span *ngIf="isSaving">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+      </button>
+      <button type="button" class="btn btn-sm btn-buro-blue" (click)="saveAs(profileController.selectedModel, 'FREELANCER')" [disabled]="isSaving">
+        Как самозанятый
+        <span *ngIf="isSaving">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+      </button>
+      <button type="button" class="btn btn-sm btn-buro-blue" (click)="saveAs(profileController.selectedModel, 'SERVICE_LEADER')" [disabled]="isSaving">
+        Как автосервис
+        <span *ngIf="isSaving">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+      </button>
+    </div>
+    <button type="button" class="btn btn-sm btn-buro-blue" (click)="modal.dismiss()">Закрыть</button>
+  </div>
+</ng-template>

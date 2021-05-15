@@ -1,0 +1,8 @@
+#to-date-picker,
+#from-date-picker {
+  font-size: 12px !important;
+}
+::ng-deep .dropdown-item.active,
+::ng-deep .dropdown-item:active {
+  background-color: #5A6FF9;
+}

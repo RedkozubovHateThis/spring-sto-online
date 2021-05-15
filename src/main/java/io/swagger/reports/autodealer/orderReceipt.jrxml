@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.10.0.final using JasperReports Library version 6.10.0-unknown  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="orderReceipt" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a0cdc4d2-7a1f-4f79-9c7a-1ca0740db867">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<parameter name="organizationName" class="java.lang.String"/>
+	<parameter name="organizationAddress" class="java.lang.String"/>
+	<parameter name="orderNum" class="java.lang.String"/>
+	<parameter name="customerName" class="java.lang.String"/>
+	<parameter name="vehicleName" class="java.lang.String"/>
+	<parameter name="vehicleYear" class="java.lang.String"/>
+	<parameter name="vehicleRegNum" class="java.lang.String"/>
+	<parameter name="vehicleVinNum" class="java.lang.String"/>
+	<parameter name="vehicleEngNum" class="java.lang.String"/>
+	<parameter name="vehicleChassisNum" class="java.lang.String"/>
+	<parameter name="vehicleColor" class="java.lang.String"/>
+	<parameter name="vehicleType" class="java.lang.String"/>
+	<parameter name="vehicleSTSSeries" class="java.lang.String"/>
+	<parameter name="vehicleSTSNumber" class="java.lang.String"/>
+	<parameter name="vehicleSTSDate" class="java.lang.String"/>
+	<parameter name="receiptDate" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="802" splitType="Stretch">
+			<frame>
+				<reportElement x="80" y="0" width="475" height="34" uuid="1d996fff-ed51-406b-be39-6b0815782101"/>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="0" y="0" width="475" height="18" uuid="ec336d95-a296-4e91-b7d4-0b4490d9d762">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="9.8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{organizationName}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement positionType="Float" x="0" y="18" width="475" height="16" uuid="53dad6b9-1ced-492d-8780-dc26503f8197">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{organizationAddress}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement positionType="Float" x="20" y="40" width="535" height="530" uuid="c0438794-151a-4fdd-88ae-cff6aa30f27b"/>
+				<line>
+					<reportElement x="60" y="0" width="475" height="1" uuid="4f751aa1-a3bc-4ae5-b621-dcf180217fa3">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+				</line>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="60" y="1" width="475" height="33" uuid="d0abc2f4-c41a-427a-b520-87526ab9e3db">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="8.8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["РАСПИСКА\n К ЗАКАЗ-НАРЯДУ №  " + $P{orderNum}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="60" y="33" width="475" height="1" uuid="575024d5-4a60-4a71-952f-772bec766683">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+				</line>
+				<staticText>
+					<reportElement x="20" y="80" width="80" height="12" uuid="84b3c561-f8ed-49fd-957e-59f2d66ac487">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="false" isItalic="true"/>
+					</textElement>
+					<text><![CDATA[Собственник а/м :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="40" y="230" width="60" height="12" uuid="4483fcae-276c-4a43-81ef-cd89afba4e85">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Год выпуска :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="40" y="250" width="60" height="12" uuid="548d4635-8464-41eb-a1bc-4ac6523baa3c">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Гос. номер :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="40" y="130" width="60" height="12" uuid="9c7cf6e4-5edc-4797-b22c-dde5568edad3">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="false"/>
+					</textElement>
+					<text><![CDATA[VIN-номер :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="40" y="150" width="60" height="12" uuid="43179e2d-4f81-420b-b632-a99907e09706">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Двигатель № :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="40" y="190" width="60" height="12" uuid="e25f382f-5975-4e6f-84fc-91b437c67e7e">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Кузов № :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="40" y="210" width="60" height="12" uuid="52d20039-606e-4187-a996-026995c8cf7b">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Цвет :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="40" y="170" width="60" height="12" uuid="679c5938-9beb-4da4-9073-0d468899b26f">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Тип двигателя :]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="120" y="80" width="415" height="12" uuid="7cd5d73c-9ddb-4bee-8003-ec9d138b4b55">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<box leftPadding="3"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" size="9.8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{customerName}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="120" y="110" width="414" height="12" uuid="78f673d1-985c-4f73-91ac-87b0bd36aec1">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<box leftPadding="3"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" size="9.8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{vehicleName}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="120" y="230" width="414" height="12" uuid="87182342-bc5e-4f30-9a3f-65bf2faee9db">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<box leftPadding="3"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{vehicleYear}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="120" y="250" width="414" height="12" uuid="fa394557-7404-4595-9487-364c0b396ac6">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<box leftPadding="3"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{vehicleRegNum}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="120" y="130" width="414" height="12" uuid="e10fc795-5556-4206-a465-297a020e4b60">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<box leftPadding="3"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{vehicleVinNum}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="120" y="150" width="414" height="12" uuid="5c225979-61f8-4f38-acba-36f2baa3f802">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<box leftPadding="3"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{vehicleEngNum}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="120" y="190" width="414" height="12" uuid="d63d35dc-eafc-455c-8cf2-54affc8d9dac">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<box leftPadding="3"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{vehicleChassisNum}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="120" y="210" width="414" height="12" uuid="e6ac4aae-05ae-4297-835c-ebb59b02ec87">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<box leftPadding="3"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{vehicleColor}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="120" y="170" width="414" height="12" uuid="93f3a7c5-63a1-4b22-928c-ac952c03e65f">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<box leftPadding="3"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{vehicleType}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="60" width="250" height="12" uuid="5ba6d30f-dd00-40c3-aaf9-8a6a354aaa13">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="true" isItalic="true"/>
+					</textElement>
+					<text><![CDATA[Выдана заказчику ( собственнику а/м / доверенному лицу )]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="110" width="110" height="12" uuid="eb65a48c-766e-4e65-a21e-84a9acea0d76">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="true" isItalic="true"/>
+					</textElement>
+					<text><![CDATA[в том, что автомобиль]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="40" y="270" width="120" height="12" uuid="087ee6d7-6f30-4e45-8e0f-97adbaa52a44">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Свидетельство о регистрации ТС :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="180" y="270" width="30" height="12" uuid="435983ee-e015-4717-bbc1-91ecd9f3a7ae">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Серия :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="180" y="282" width="30" height="12" uuid="804d6a19-3d5e-4946-84f6-6e485e67ce99">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Номер :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="180" y="294" width="54" height="12" uuid="61ca6fbb-6413-4ca2-9ad8-8787fd577f2f">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Дата выдачи :]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="210" y="270" width="324" height="12" uuid="15960496-913b-4fd9-bf9d-8151947b6d58">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<box leftPadding="3"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{vehicleSTSSeries}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="210" y="282" width="324" height="12" uuid="ce0ff4f8-28d2-4af0-be4c-43f81b4b5eb9">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<box leftPadding="3"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{vehicleSTSNumber}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="234" y="294" width="300" height="12" uuid="fc86de60-3a5f-44e8-8170-bbea2305a379">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<box leftPadding="3"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{vehicleSTSDate}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="340" width="210" height="12" uuid="dc132946-5984-421b-9621-ada4e1a05989">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="true" isItalic="true"/>
+					</textElement>
+					<text><![CDATA[принят для выполнения работ (оказания услуг).]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="30" y="370" width="459" height="30" uuid="4745a904-199f-456c-986e-d67731ffa2e5">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="false" isItalic="false"/>
+					</textElement>
+					<text><![CDATA[Автомобиль подлежит возврату при предъявлении заказчиком настоящей расписки, документа удостоверяющего личность, а также документов, удостоверяющих право собственности на автомобиль (свидетельство о регистрации ТС)]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement x="0" y="430" width="470" height="100" uuid="850cbdb9-6a3b-4960-959d-5bd4a9666077"/>
+				</rectangle>
+				<staticText>
+					<reportElement x="10" y="440" width="360" height="12" uuid="978ba605-ec2c-4084-a23d-802026c2c1e8">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="false" isItalic="true"/>
+					</textElement>
+					<text><![CDATA[Мастер-приёмщик автомобиль принял: _____________________________________________]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="10" y="475" width="360" height="12" uuid="0c7996e6-8d2c-4b8d-ba29-3a1e4b4d0ec9">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="false" isItalic="true"/>
+					</textElement>
+					<text><![CDATA[Заказчик автомобиль сдал:                      _____________________________________________ ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="10" y="510" width="450" height="12" uuid="c7dfae4e-e460-4ca3-8159-efcc7d1e16d5">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font fontName="Arial" size="7.9" isBold="false" isItalic="true"/>
+					</textElement>
+					<text><![CDATA[Заказчик автомобиль принял:                 ___________________________       "_____" _______________________ 201__ г.]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="370" y="440" width="60" height="12" uuid="f8ff0e81-3556-4b99-87b2-63ba4ee984a4">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<box leftPadding="3"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{receiptDate}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="370" y="475" width="60" height="12" uuid="262f63ff-65a5-4042-9674-620328e7df44">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<box leftPadding="3"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial" size="7.9" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{receiptDate}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="0" y="500" width="471" height="1" uuid="54b66ff7-322e-4a98-8b2a-e99ab6bc5505">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+				</line>
+				<staticText>
+					<reportElement x="160" y="450" width="200" height="10" uuid="5807e8d2-4e2b-4f48-afed-b7650dde159d">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font fontName="Arial" size="6.9" isBold="false" isItalic="true"/>
+					</textElement>
+					<text><![CDATA[/ подпись мастера-приёмщика /]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="160" y="485" width="200" height="10" uuid="b7df3c46-8f6a-4afc-86c7-71bb4162588d">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Top">
+						<font fontName="Arial" size="6.9" isBold="false" isItalic="true"/>
+					</textElement>
+					<text><![CDATA[/ подпись заказчика /]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</title>
+</jasperReport>

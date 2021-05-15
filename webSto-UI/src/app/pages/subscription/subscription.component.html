@@ -1,0 +1,269 @@
+<div class="container-fluid mt--7">
+  <div class="row" *ngIf="userService.isServiceLeaderOrFreelancer()">
+    <div class="col-xl-3 mb-5 mb-xl-0">
+      <div class="card shadow">
+        <div class="card-header">
+          <app-loading-bar [isLoading]="paymentService.isSubscriptionLoading || isLoading"></app-loading-bar>
+          <div class="row">
+
+            <div class="col">
+              <h3 class="mb-0">
+                Тариф
+              </h3>
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-sm btn-buro-blue" (click)="requestAllSubscriptions()" [disabled]="isLoading">
+                Обновить
+              </button>
+            </div>
+
+          </div>
+        </div>
+        <div class="card-body">
+
+          <div class="form-group">
+            <select class="form-control form-control-sm form-control-alternative" [(ngModel)]="selectedSubscription"
+                    [disabled]="isLoading || subscriptions.data.length === 0">
+              <option [selected]="selectedSubscription != null && subscription.id === selectedSubscription.id"
+                      *ngFor="let subscription of subscriptions.data" [ngValue]="subscription">
+                {{subscription.attributes.name}}:&nbsp;
+                {{ subscription.attributes.startDate | date : 'dd.MM.yyyy' }} - {{ subscription.attributes.endDate | date : 'dd.MM.yyyy' }}
+                <ng-container *ngIf="userService.currentUser != null && ( userService.currentUser.relationships.currentAdSubscription.data.id === subscription.id
+                || userService.currentUser.relationships.currentOperatorSubscription.data.id === subscription.id )">
+                  &nbsp;(текущий)
+                </ng-container>
+              </option>
+            </select>
+          </div>
+
+          <ng-container *ngIf="selectedSubscription != null && userService.isServiceLeaderOrFreelancer()">
+
+            <div class="row form-group">
+              <div class="col">
+                Наименование
+              </div>
+              <div class="col-auto h3 mb-0">
+                {{selectedSubscription.attributes.name}}
+              </div>
+            </div>
+
+            <div class="row form-group">
+              <div class="col">
+                Дата оформления
+              </div>
+              <div class="col-auto h3 mb-0">
+                {{selectedSubscription.attributes.startDate | date : 'dd.MM.yy'}}
+              </div>
+            </div>
+
+            <div class="row form-group" *ngIf="selectedSubscription.attributes.endDate != null">
+              <div class="col">
+                Дата завершения
+              </div>
+              <div class="col-auto h3 mb-0">
+                {{selectedSubscription.attributes.endDate | date : 'dd.MM.yy'}}
+              </div>
+            </div>
+
+            <ng-container *ngIf="selectedSubscription.relationships.type.data as subscriptionType">
+              <ng-container *ngIf="subscriptionType.attributes.subscriptionOption === 'OPERATOR'">
+                <div class="row form-group">
+                  <div class="col">
+                    Всего заказ-нарядов
+                  </div>
+                  <div class="col-auto h3 mb-0">
+                    {{selectedSubscription.documentsCount}}
+                  </div>
+                </div>
+              </ng-container>
+            </ng-container>
+
+            <div class="row form-group">
+              <div class="col">
+                <ng-container *ngIf="selectedSubscription.relationships.type.data as subscriptionType">
+                  <ng-container *ngIf="subscriptionType.attributes.subscriptionOption === 'OPERATOR'">
+                    Остаток заказ-нарядов, шт.
+                  </ng-container>
+                </ng-container>
+              </div>
+              <div class="col-auto h3 mb-0">
+                <ng-container *ngIf="selectedSubscription.relationships.type.data as subscriptionType">
+                  <ng-container *ngIf="subscriptionType.attributes.subscriptionOption === 'OPERATOR'">
+                    {{selectedSubscription.attributes.remains}}
+                  </ng-container>
+                </ng-container>
+              </div>
+            </div>
+
+            <div class="row form-group">
+              <div class="col">
+                Стоимость продления, руб.
+              </div>
+              <div class="col-auto h3 mb-0">
+                {{selectedSubscription.relationships.type.data.attributes.cost | number : '.2' : 'ru'}}
+              </div>
+            </div>
+
+            <ng-container *ngIf="userService.currentUser != null && ( userService.currentUser.relationships.currentAdSubscription.data.id === selectedSubscription.id
+                || userService.currentUser.relationships.currentOperatorSubscription.data.id === selectedSubscription.id )">
+              <ng-container *ngIf="selectedSubscription.attributes.isRenewable; else unsubscribed">
+                <button class="btn btn-buro-blue btn-block" (click)="unsubscribe(selectedSubscription)">
+                  Отписаться
+                </button>
+              </ng-container>
+              <ng-template #unsubscribed>
+                <div class="col text-muted text-center">
+                  Продление отменено.
+                </div>
+              </ng-template>
+            </ng-container>
+
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-9">
+      <div class="card shadow">
+        <div class="card-header">
+          <app-loading-bar [isLoading]="isTypesLoading"></app-loading-bar>
+
+          <h3 class="mb-0">
+            Доступные тарифы
+          </h3>
+
+        </div>
+        <div class="card-body">
+
+          <div class="form-group text-center">
+            <div class="mb-1">Выберите доступный тариф для покупки.</div>
+            <div>Для успешного продления, баланс на вашем счету должен полностью покрывать стоимость тарифа.</div>
+            <div>Тариф "Реклама" настраивается в профиле.</div>
+          </div>
+
+          <div class="row" *ngIf="userService.isServiceLeaderOrFreelancer()">
+            <div class="col" *ngFor="let subscriptionType of subscriptionTypes.data">
+              <div class="card mb-2" style="min-width: 230px;">
+                <div class="card-header">
+                  <h3 class="mb-0">
+                    {{subscriptionType.attributes.name}}
+                  </h3>
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row form-group">
+                    <div class="col">
+                      Стоимость, руб.
+                    </div>
+                    <div class="col-auto h3 mb-0">
+                      {{subscriptionType.attributes.cost | number : '.2' : 'ru'}}
+                    </div>
+                  </div>
+
+                  <div class="row form-group">
+                    <div class="col">
+                      <ng-container *ngIf="subscriptionType.attributes.subscriptionOption === 'OPERATOR'; else days">
+                        Количество заказ-нарядов, шт.
+                      </ng-container>
+                      <ng-template #days>
+                        Длительность, дней
+                      </ng-template>
+                    </div>
+                    <div class="col-auto h3 mb-0">
+                      {{subscriptionType.attributes.durationDays}}
+                    </div>
+                  </div>
+
+                  <button class="btn btn-buro-blue btn-block" (click)="buySubscription(subscriptionType.id)"
+                          [disabled]="userService.currentUser.attributes.balance < subscriptionType.attributes.cost">
+                    Купить
+                  </button>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+  <div class="row" *ngIf="userService.isAdmin()">
+    <div class="col-xl-12">
+      <div class="card shadow">
+        <div class="card-header">
+          <app-loading-bar [isLoading]="isTypesLoading"></app-loading-bar>
+
+          <div class="row">
+            <div class="col">
+              <h3 class="mb-0">
+                Изменение тарифов
+              </h3>
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-sm btn-buro-blue" (click)="requestAllSubscriptionTypes()" [disabled]="isTypesLoading">
+                Обновить
+              </button>
+            </div>
+          </div>
+
+        </div>
+        <div class="card-body">
+
+          <div class="row">
+            <div class="col" *ngFor="let subscriptionType of subscriptionTypes.data">
+              <div class="card mb-2" style="min-width: 230px;">
+                <div class="card-header">
+                  <h3 class="mb-0">
+                    {{subscriptionType.attributes.name}}
+                  </h3>
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row form-group">
+                    <div class="col">
+                      Стоимость, руб.
+                    </div>
+                    <div class="col-auto h3 mb-0">
+                      <input class="form-control form-control-sm form-control-alternative" type="number" min="0"
+                             style="width: 100px;" [(ngModel)]="subscriptionType.attributes.cost">
+                    </div>
+                  </div>
+
+                  <div class="row form-group">
+                    <div class="col">
+                      <ng-container *ngIf="subscriptionType.attributes.subscriptionOption === 'OPERATOR'; else days">
+                        Количество заказ-нарядов, шт.
+                      </ng-container>
+                      <ng-template #days>
+                        Длительность, дней
+                      </ng-template>
+                    </div>
+                    <div class="col-auto h3 mb-0">
+                      <input class="form-control form-control-sm form-control-alternative" type="number" min="0"
+                             style="width: 100px;" [(ngModel)]="subscriptionType.attributes.durationDays">
+                    </div>
+                  </div>
+
+                  <button class="btn btn-buro-blue btn-block"
+                          [disabled]="isTypesLoading || isNotValid(subscriptionType)"
+                          (click)="updateSubscription(subscriptionType)">
+                    Применить
+                  </button>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>

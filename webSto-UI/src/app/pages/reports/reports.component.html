@@ -1,0 +1,214 @@
+<div class="container-fluid mt--7">
+  <div class="row">
+    <div class="col-xl-9 mb-5 mb-xl-0">
+      <div class="card shadow">
+        <div class="card-header border-0">
+          <app-loading-bar [isLoading]="isLoading || isDownloading"></app-loading-bar>
+          <div class="row">
+            <div class="col">
+              <h3 class="mb-0">
+                Отчеты
+              </h3>
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-sm btn-buro-blue" (click)="requestReportData()"
+                      [disabled]="isLoading">
+                Обновить
+              </button>
+              <button type="button" class="btn btn-sm btn-buro-blue" [ngbTooltip]="'Развернуть все'"
+                      (click)="toggleData(true)"
+                      [disabled]="reportData == null || reportData.length === 0">
+                <i class="fas fa-plus-square"></i>
+              </button>
+              <button type="button" class="btn btn-sm btn-buro-blue" [ngbTooltip]="'Свернуть все'"
+                      (click)="toggleData(false)"
+                      [disabled]="reportData == null || reportData.length === 0">
+                <i class="fas fa-minus-square"></i>
+              </button>
+              <button class="btn btn-sm btn-buro-blue" (click)="requestReportPDF()"
+                      [disabled]="isDownloading">
+                Выгрузить в PDF
+              </button>
+            </div>
+          </div>
+
+        </div>
+        <div class="table-responsive">
+
+          <ng-container *ngIf="reportType === 'clients'">
+            <table class="table table-flush table-hover table-sm">
+              <thead class="thead-light">
+              <tr>
+                <th>Контрагент / Заказ-наряд</th>
+                <th class="text-center">Сумма / Итого</th>
+              </tr>
+              </thead>
+              <tbody>
+              <ng-container *ngFor="let data of reportData">
+                <tr class="font-weight-bold">
+                  <td>
+                    <span (click)="data.isVisible = !data.isVisible" style="cursor: pointer;">
+                      <i class="far" [ngClass]="{'fa-plus-square': !data.isVisible, 'fa-minus-square': data.isVisible}"></i>
+                    </span>
+                    {{data.fullName}}
+                  </td>
+                  <td class="text-center">{{data.total | number:'.2':'ru'}}</td>
+                </tr>
+                <ng-container *ngIf="data.isVisible">
+                  <tr *ngFor="let documents of data.clientDocumentResponses, let i = index" [attr.data-index]="i">
+                    <td>&ensp;№ {{documents.documentNumber}} от {{documents.documentDate | date : 'dd.MM.yy'}}</td>
+                    <td class="text-center">{{documents.total | number:'.2':'ru'}}</td>
+                  </tr>
+                </ng-container>
+              </ng-container>
+              <tr class="font-weight-bold">
+                <td>ИТОГ</td>
+                <td class="text-center">{{clientsTotalRow.total | number:'.2':'ru'}}</td>
+              </tr>
+              </tbody>
+            </table>
+          </ng-container>
+
+          <ng-container *ngIf="reportType === 'vehicles'">
+            <table class="table table-flush table-hover table-sm">
+              <thead class="thead-light">
+              <tr>
+                <th>Контрагент / Заказ-наряд</th>
+                <th class="text-center">Сумма / Итого</th>
+              </tr>
+              </thead>
+              <tbody>
+              <ng-container *ngFor="let data of reportData">
+                <tr class="font-weight-bold">
+                  <td>
+                    <span (click)="data.isVisible = !data.isVisible" style="cursor: pointer;">
+                      <i class="far" [ngClass]="{'fa-plus-square': !data.isVisible, 'fa-minus-square': data.isVisible}"></i>
+                    </span>
+                    {{data.fullName}}
+                  </td>
+                  <td class="text-center">{{data.total | number:'.2':'ru'}}</td>
+                </tr>
+                <ng-container *ngIf="data.isVisible">
+                  <tr *ngFor="let documents of data.clientDocumentResponses, let i = index" [attr.data-index]="i">
+                    <td>&ensp;№ {{documents.documentNumber}} от {{documents.documentDate | date : 'dd.MM.yy'}}</td>
+                    <td class="text-center">{{documents.total | number:'.2':'ru'}}</td>
+                  </tr>
+                </ng-container>
+              </ng-container>
+              <tr class="font-weight-bold">
+                <td>ИТОГ</td>
+                <td class="text-center">{{vehiclesTotalRow.total | number:'.2':'ru'}}</td>
+              </tr>
+              </tbody>
+            </table>
+          </ng-container>
+
+          <ng-container *ngIf="reportType === 'registered'">
+            <table class="table table-flush table-hover table-sm">
+              <thead class="thead-light">
+              <tr>
+                <th>Зарегистрировавший / ФИО клиента (полное наименование ИП/организации)</th>
+              </tr>
+              </thead>
+              <tbody>
+              <ng-container *ngFor="let data of reportData">
+                <tr class="font-weight-bold">
+                  <td>
+                    <span (click)="data.isVisible = !data.isVisible" style="cursor: pointer;">
+                      <i class="far" [ngClass]="{'fa-plus-square': !data.isVisible, 'fa-minus-square': data.isVisible}"></i>
+                    </span>
+                    {{data.registeredBy}}
+                  </td>
+                </tr>
+                <ng-container *ngIf="data.isVisible">
+                  <tr *ngFor="let client of data.clientRegisteredResponses, let i = index" [attr.data-index]="i">
+                    <td>&ensp;{{client.name}}</td>
+                  </tr>
+                </ng-container>
+              </ng-container>
+              </tbody>
+            </table>
+          </ng-container>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3">
+      <div class="card shadow">
+        <div class="card-body">
+          <h3 class="text-muted">Настройки отчетов</h3>
+
+          <div class="form-group">
+            <label class="form-control-label" for="state-select">Тип отчета</label>
+            <select id="state-select" class="form-control form-control-sm form-control-alternative"
+                    [(ngModel)]="reportType" (change)="requestReportData()">
+              <option [selected]="reportType === 'clients'" [ngValue]="'clients'">
+                Отчет о реализации
+              </option>
+              <option [selected]="reportType === 'registered'" [ngValue]="'registered'">
+                Отчет о зарегистрированных клиентах
+              </option>
+              <option [selected]="reportType === 'vehicles'" [ngValue]="'vehicles'">
+                Отчет о ремонтах автомобиля
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group" *ngIf="!userService.isServiceLeaderOrFreelancer()">
+            <label class="form-control-label" for="organization-select">Предприятие</label>
+            <select id="organization-select" class="form-control form-control-sm form-control-alternative"
+                    [(ngModel)]="organizationId" (change)="requestReportData()">
+              <option [selected]="reportType === 'registered' ? organizationId == null : true" [disabled]="reportType !== 'registered'" [ngValue]="null">
+                {{reportType === 'registered' ? 'По всем предприятиям' : 'Выберите предприятие'}}
+              </option>
+              <option [selected]="organization.id === organizationId" *ngFor="let organization of organizations.data" [ngValue]="organization.id">
+                {{ organization.attributes.name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group" *ngIf="reportType === 'vehicles'">
+            <label class="form-control-label">VIN-номер</label>
+            <div class="input-group input-group-alternative input-group-sm">
+              <input class="form-control form-control-sm form-control-alternative" [(ngModel)]="vinNumber">
+              <div class="input-group-append">
+                <button class="btn btn-buro-blue" type="button" (click)="requestReportData()">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-check form-group" *ngIf="reportType !== 'registered'">
+            <input type="checkbox" class="form-check-input" [(ngModel)]="byDate" (ngModelChange)="requestReportData()">
+            <label class="form-check-label">Поиск по дате</label>
+          </div>
+
+          <div class="form-group" *ngIf="reportType !== 'registered'">
+            <label class="form-control-label" for="month-select">Месяц</label>
+            <select id="month-select" class="form-control form-control-sm form-control-alternative"
+                    (change)="requestReportData()" [(ngModel)]="selectedMonth" [disabled]="!byDate">
+              <option [selected]="month.id === selectedMonth" *ngFor="let month of months" [ngValue]="month.id">
+                {{month.name}}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group" *ngIf="reportType !== 'registered'">
+            <label class="form-control-label" for="input-year">Год</label>
+            <div class="input-group input-group-alternative input-group-sm">
+              <input type="number" id="input-year" class="form-control" placeholder="Введите год..."
+                     [(ngModel)]="selectedYear" (keyup.enter)="requestReportData()" [disabled]="!byDate">
+              <div class="input-group-append">
+                <button class="btn btn-buro-blue" type="button" (click)="requestReportData()" [disabled]="!byDate">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

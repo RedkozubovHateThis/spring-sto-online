@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import {Router} from "@angular/router";
-import {ApiService} from "../../api/api.service";
+import {AfterViewChecked, AfterViewInit, Component, OnInit} from '@angular/core';
+import {NavigationEnd, Router} from '@angular/router';
+import {UserService} from '../../api/user.service';
+import {WebSocketService} from '../../api/webSocket.service';
+import {PaymentService} from '../../api/payment.service';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-admin-layout',
@@ -9,24 +12,67 @@ import {ApiService} from "../../api/api.service";
 })
 export class AdminLayoutComponent implements OnInit {
 
-  constructor(router:Router, apiService:ApiService) {
-    // within our constructor we can define our subscription
-    // and then decide what to do when this event is triggered.
-    // in this case I simply update my route string.
-    router.events.subscribe(val => {
-      if (location.hash != "") {
-        if ( !apiService.isAuthenticated &&
-          !location.hash.includes( 'login' ) &&
-          !location.hash.includes( 'register' ) ) {
+  constructor(private router: Router, private userService: UserService, private webSocketService: WebSocketService,
+              private paymentService: PaymentService, private http: HttpClient) {
 
-          router.navigate(['login']);
+    // if ( navigator.geolocation ) {
+    //   const geolocation: Geolocation = navigator.geolocation;
+    //   geolocation.getCurrentPosition( (position) => {
+    //     console.log(position);
+    //     http.get(`https://nominatim.openstreetmap.org/reverse?lat=${position.coords.latitude}&lon=${position.coords.longitude}&format=json`)
+    //       .subscribe( (result: any) => {
+    //         console.log(result);
+    //
+    //         const city = 'Белоярское';
+    //         http.get(`https://nominatim.openstreetmap.org/search?q=${city}&format=json&countrycodes=ru&addressdetails=1`)
+    //           .subscribe( (result2: any) => {
+    //             console.log(result2);
+    //           } );
+    //       } );
+    //   } );
+    // }
+
+    const splashScreen = document.getElementById("loading-splash");
+    if ( splashScreen )
+      splashScreen.remove();
+
+    // this.requestCurrentUser();
+
+    // paymentService.subscribeToUserLoaded();
+
+    router.events.subscribe(val => {
+
+      if ( val instanceof NavigationEnd ) {
+
+        if ( !location.pathname.includes( '/login' ) &&
+          !location.pathname.includes( '/register' ) &&
+          !location.pathname.includes( '/restore' ) ) {
+
+          if ( !userService.isAuthenticated() ) {
+
+            if ( userService.isTokenExists() )
+              this.requestCurrentUser();
+            else {
+              localStorage.setItem('redirectUrl', val.url);
+              router.navigate(['login']);
+            }
+
+          }
+          else if ( userService.isAuthenticated() )
+            this.requestCurrentUser();
 
         }
+
       }
     });
   }
 
   ngOnInit() {
+    this.webSocketService.connect();
+  }
+
+  requestCurrentUser() {
+    this.userService.getCurrentUser();
   }
 
 }

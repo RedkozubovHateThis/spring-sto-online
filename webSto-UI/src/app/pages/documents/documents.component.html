@@ -1,0 +1,112 @@
+<!-- Page content -->
+<div class="container-fluid mt--7">
+  <!-- Table -->
+  <div class="row">
+    <div class="col-xl-9 mb-5 mb-xl-0">
+      <div class="card shadow">
+        <div class="card-header border-0">
+          <app-loading-bar [isLoading]="isLoading"></app-loading-bar>
+          <div class="row">
+
+            <div class="col-sm mb-3">
+              <h3 class="mb-0">
+                Заказ-наряды
+              </h3>
+            </div>
+            <div class="col-auto">
+              <a href="#" class="btn btn-sm btn-buro-blue" [routerLink]="['/documents/add']"
+                 *ngIf="userService.isAdmin() || userService.isServiceLeaderOrFreelancer()">
+                Добавить
+              </a>
+              <button class="btn btn-sm btn-buro-blue" (click)="requestData()"
+                      [disabled]="isLoading">
+                Обновить
+              </button>
+            </div>
+
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush table-hover table-sm">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">Номер</th>
+                <th scope="col">Дата начала</th>
+                <th scope="col">Состояние</th>
+                <th scope="col">Статус оплаты</th>
+                <th scope="col" *ngIf="userService.isAdmin() || userService.isServiceLeaderOrFreelancer()">Клиент</th>
+                <th scope="col" *ngIf="userService.isAdmin() || userService.isClient()">Автосервис</th>
+                <th scope="col">Автомобиль</th>
+                <th scope="col">Гос. номер</th>
+                <th scope="col">Сумма, руб.</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="documentController.all != null">
+            <ng-container *ngFor="let serviceDocument of documentController.all.data, let i = index" [attr.data-index]="i">
+              <tr>
+                <th scope="row" style="cursor: pointer;" (click)="select(serviceDocument)">
+                  {{serviceDocument.attributes.number}}
+                  &nbsp;
+                  <i class="far fa-check-circle" *ngIf="selected === serviceDocument"></i>
+                  <i class="far fa-circle" *ngIf="selected !== serviceDocument"></i>
+                </th>
+                <th style="cursor: pointer;" (click)="navigate(serviceDocument)">{{serviceDocument.attributes.startDate | date : 'dd.MM.yyyy HH:mm'}}</th>
+                <th style="cursor: pointer;" (click)="navigate(serviceDocument)">
+                  <span class="badge badge-dot">
+                    <i class="bg-{{serviceDocument.statusStyle}}"></i>{{serviceDocument.statusRus}}
+                  </span>
+                </th>
+                <th style="cursor: pointer;" (click)="navigate(serviceDocument)">
+                  <span class="badge badge-dot">
+                    <i class="bg-{{serviceDocument.paidStatusStyle}}"></i>{{serviceDocument.paidStatusRus}}
+                  </span>
+                </th>
+                <th style="cursor: pointer;" class="wrap-column" (click)="navigate(serviceDocument)" *ngIf="userService.isAdmin() || userService.isServiceLeaderOrFreelancer()">
+                  <ng-container *ngIf="serviceDocument.relationships.client.data">
+                    {{serviceDocument.relationships.client.data.attributes.name}}
+                  </ng-container>
+                </th>
+                <th style="cursor: pointer;" class="wrap-column" (click)="navigate(serviceDocument)" *ngIf="userService.isAdmin() || userService.isClient()">
+                  <ng-container *ngIf="serviceDocument.relationships.executor.data">
+                    {{serviceDocument.relationships.executor.data.attributes.name}}
+                  </ng-container>
+                </th>
+                <th style="cursor: pointer;" (click)="navigate(serviceDocument)">
+                  <ng-container *ngIf="serviceDocument.relationships.vehicle.data">
+                    {{serviceDocument.relationships.vehicle.data.attributes.modelName}}
+                  </ng-container>
+                </th>
+                <th style="cursor: pointer;" (click)="navigate(serviceDocument)">
+                  <ng-container *ngIf="serviceDocument.relationships.vehicle.data">
+                    {{serviceDocument.relationships.vehicle.data.attributes.regNumber}}
+                  </ng-container>
+                </th>
+                <th style="cursor: pointer;" (click)="navigate(serviceDocument)">{{serviceDocument.attributes.cost | number:'.2':'ru'}}</th>
+              </tr>
+              <tr app-ad-row *ngIf="userService.isClient() && adRow === i"></tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <div class="card-footer py-4 table-responsive">
+          <app-loading-bar [isLoading]="isLoading" [atTop]="true"></app-loading-bar>
+          <app-pagination *ngIf="documentController.all != null"
+                          [totalRecords]="documentController.all.page.total_resources"
+                          [page]="documentController.filter.page"
+                          [size]="documentController.filter.size"
+                          [disabled]="isLoading"
+                          (onSizeChange)="setSize($event)"
+                          (onPageChange)="goToPage($event)"></app-pagination>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3">
+      <app-document-filter
+        (onChange)="applyFilter()"
+        [filter]="documentController.filter"
+        [document]="selected"
+        (onOrganizationChange)="documentController.emitOrganizationChange()"
+      ></app-document-filter>
+    </div>
+  </div>
+</div>

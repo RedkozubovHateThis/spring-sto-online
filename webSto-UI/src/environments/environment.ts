@@ -3,7 +3,35 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  baseUrl: 'https://local.buromotors.ru:8080/',
+  apiBeforeUrl: 'api',
+  demoBeforeUrl: 'demo',
+  apiUrl: 'https://local.buromotors.ru:8080/api/',
+  demoUrl: 'https://local.buromotors.ru:8080/demo/',
+  wsUrl: 'https://local.buromotors.ru:8080/ws/',
+  wsdUrl: 'https://local.buromotors.ru:8080/wsd/',
+  getBeforeUrl: (): string => {
+    if ( localStorage.getItem('demoDomain') != null && localStorage.getItem('demoDomain') !== null ) {
+      return environment.demoBeforeUrl;
+    }
+    else
+      return environment.apiBeforeUrl;
+  },
+  getApiUrl: (): string => {
+    if ( localStorage.getItem('demoDomain') != null && localStorage.getItem('demoDomain') !== null ) {
+      return environment.demoUrl;
+    }
+    else
+      return environment.apiUrl;
+  },
+  getWsUrl: (): string => {
+    if ( localStorage.getItem('demoDomain') != null && localStorage.getItem('demoDomain') !== null ) {
+      return environment.wsdUrl;
+    }
+    else
+      return environment.wsUrl;
+  }
 };
 
 /*

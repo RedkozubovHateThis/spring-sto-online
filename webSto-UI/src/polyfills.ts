@@ -61,3 +61,5 @@ import 'core-js/es7/reflect';
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
+
+(window as any).global = window;

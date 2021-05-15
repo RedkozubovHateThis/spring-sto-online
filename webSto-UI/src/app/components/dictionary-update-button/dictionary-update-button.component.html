@@ -1,0 +1,72 @@
+<button class="btn btn-sm btn-buro-blue" (click)="open(content)" [disabled]="isUpdating">
+  Загрузить
+</button>
+
+<!-- Modal -->
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">Загрузка: {{modalTitle}}</h3>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <label class="form-control-label">Тип загрузки</label>
+      <select class="form-control form-control-sm form-control-alternative" [(ngModel)]="importType">
+        <option [selected]="type.id === importType" *ngFor="let type of importTypes" [ngValue]="type.id">
+          {{ type.title }}
+        </option>
+      </select>
+    </div>
+    <div class="row form-group">
+      <div class="col-4">
+        <label class="form-control-label">Лист</label>
+        <input type="number" min="1" class="form-control form-control-sm form-control-alternative" placeholder="Номер листа" [(ngModel)]="sheetNumber">
+      </div>
+      <div class="col-4">
+        <label class="form-control-label">Столбец</label>
+        <input type="number" min="1" class="form-control form-control-sm form-control-alternative" placeholder="Номер столбца" [(ngModel)]="colNumber">
+      </div>
+      <div class="col-4">
+        <label class="form-control-label">Строка</label>
+        <input type="number" min="1" class="form-control form-control-sm form-control-alternative" placeholder="Номер строки" [(ngModel)]="startRow">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-control-label">Файл</label>
+      <ul class="list-group" *ngFor="let file of uploader.queue">
+        <li class="list-group-item list-group-item-action" style="cursor: pointer;" [ngbTooltip]="'Удалить'" (click)="removeFile(file)">
+          {{file.file.name}}
+          <span class="float-right">
+            <i class="fas fa-times"></i>
+          </span>
+        </li>
+      </ul>
+    </div>
+    <div class="form-group">
+      <p><strong>Тип загрузки:</strong></p>
+      <ul>
+        <li><strong>Добавить новые</strong> - добавляются только те записи, которые отсутствуют в базе. Проверка производится по полному совпадению наименования.</li>
+        <li><strong>Очистить и добавить все</strong> - удаляются все предыдущие записи из базы, и сохраняются все записи из файла.</li>
+      </ul>
+      <p><strong>Параметры загрузки:</strong></p>
+      <ul>
+        <li><strong>Лист</strong> - номер листа, на котором находится список справочников.</li>
+        <li><strong>Столбец</strong> - номер столбца, в котором находится список справочников.</li>
+        <li><strong>Строка</strong> - номер строки, с которой начинается список справочников.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-buro-blue" (click)="showUpload()" [disabled]="isUpdating">
+      Выбрать файл
+    </button>
+    <button type="button" class="btn btn-sm btn-buro-blue" (click)="promptUpdate()" [disabled]="isUpdating || !uploader.queue.length">
+      Загрузить
+      <span *ngIf="isUpdating">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+    </button>
+    <button type="button" class="btn btn-sm btn-buro-blue" (click)="modal.dismiss()">Закрыть</button>
+  </div>
+</ng-template>
+<input style="display: none;" id="upload" type="file" accept=".xlsx" ng2FileSelect [uploader]="uploader" />

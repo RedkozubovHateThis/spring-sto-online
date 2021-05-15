@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import {HttpParams} from "@angular/common/http";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ApiService} from "../../api/api.service";
-import {Router} from "@angular/router";
+import {Component, OnInit} from '@angular/core';
+import {HttpParams} from '@angular/common/http';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {UserService} from '../../api/user.service';
+import {Router} from '@angular/router';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -11,38 +12,43 @@ import {Router} from "@angular/router";
 })
 export class LoginComponent implements OnInit {
 
-  loginForm: FormGroup;
-  invalidLogin: boolean = false;
-  constructor(private formBuilder: FormBuilder, private router: Router, private apiService: ApiService) { }
+  private loginForm: FormGroup;
+  private isLoggingIn: boolean = false;
+  constructor(private formBuilder: FormBuilder, private router: Router, private userService: UserService, private toastrService: ToastrService) { }
 
   onSubmit() {
-    this.invalidLogin = false;
+    localStorage.removeItem('demoDomain');
 
-    if (this.loginForm.invalid) {
-      return;
-    }
+    if (this.loginForm.invalid) return;
+
+    this.isLoggingIn = true;
+
     const body = new HttpParams()
       .set('username', this.loginForm.controls.username.value)
       .set('password', this.loginForm.controls.password.value)
       .set('grant_type', 'password');
 
-    this.apiService.login(body.toString()).subscribe(data => {
-      window.sessionStorage.setItem('token', JSON.stringify(data));
-      console.log(window.sessionStorage.getItem('token'));
+    this.userService.login(body.toString())
+      .subscribe(data => {
+      localStorage.setItem('token', JSON.stringify(data));
+      this.isLoggingIn = false;
 
-      this.apiService.getCurrentUser();
+      this.userService.authenticate();
     }, error => {
-      this.invalidLogin = true;
-      alert(error.error.error_description)
+      this.isLoggingIn = false;
+      this.showError('Неправильные телефон/почта или пароль!');
     });
   }
 
   ngOnInit() {
-    window.sessionStorage.removeItem('token');
     this.loginForm = this.formBuilder.group({
       username: ['', Validators.compose([Validators.required])],
       password: ['', Validators.required]
     });
+  }
+
+  showError(messageText) {
+    this.toastrService.error(messageText, 'Внимание!');
   }
 
 }

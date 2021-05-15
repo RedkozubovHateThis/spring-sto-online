@@ -1,0 +1,2 @@
+ALTER TABLE users DROP COLUMN inn;
+ALTER TABLE users DROP COLUMN manager_id;

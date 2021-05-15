@@ -1,0 +1,47 @@
+<div ngbDropdown class="d-inline-block" placement="auto">
+  <button class="btn btn-sm btn-buro-blue" id="reports-dropdown" [disabled]="isDownloading || model == null || disabled" ngbDropdownToggle
+          [ngStyle]="{ marginRight: withPrint ? 0 : '0.5rem' }"
+          [ngbTooltip]="withPrint ? 'Выгрузить и распечатать...' : 'Выгрузить...'">
+    <span *ngIf="withPrint">
+      <i class="fas fa-print"></i>
+    </span>
+    <span *ngIf="!withPrint">
+      <i class="fas fa-download"></i>
+    </span>
+    <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+  </button>
+  <div ngbDropdownMenu aria-labelledby="reports-dropdown">
+    <button class="dropdown-item" (click)="downloadReport('ORDER', 'Заказ-наряд')" [disabled]="isDownloading">
+      Заказ-наряд
+      <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+    </button>
+    <button class="dropdown-item" (click)="downloadReport('ORDER_ACT', 'Акт об оказании услуг')" [disabled]="isDownloading">
+      Акт об оказании услуг
+      <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+    </button>
+    <button class="dropdown-item" (click)="downloadReport('ORDER_PAYMENT', 'Счет на оплату')" [disabled]="isDownloading">
+      Счет на оплату
+      <span *ngIf="isDownloading">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+    </button>
+  </div>
+</div>
+
+<!-- Modal -->
+<ng-template #content let-modal *ngIf="withPrint">
+  <div class="modal-header">
+    <h3 class="modal-title">{{modalTitle}}</h3>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <pdf-viewer [src]="pdfSrc"
+                [render-text]="true"
+    ></pdf-viewer>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-buro-blue" [disabled]="printDisabled" (click)="save()">Сохранить как...</button>
+    <button type="button" class="btn btn-sm btn-buro-blue" [disabled]="printDisabled" (click)="print()">Распечатать</button>
+    <button type="button" class="btn btn-sm btn-buro-blue" (click)="modal.dismiss()">Закрыть</button>
+  </div>
+</ng-template>

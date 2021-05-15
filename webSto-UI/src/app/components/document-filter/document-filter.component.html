@@ -1,0 +1,190 @@
+<div class="card shadow">
+  <div class="card-body">
+
+    <div class="row">
+      <div class="col-sm mb-3">
+        <h3 class="text-muted mb-0">
+          Фильтры
+        </h3>
+      </div>
+      <div class="col-auto mb-3">
+        <app-report-button [model]="document" [withPrint]="false" [disabled]="document != null && document.attributes.status == 'IN_WORK'"
+                           *ngIf="userService.currentUser != null">
+        </app-report-button>
+        <app-report-button [model]="document" [disabled]="document != null && document.attributes.status == 'IN_WORK'"
+                           *ngIf="userService.currentUser != null">
+        </app-report-button>
+        <button class="btn btn-sm btn-buro-blue" style="margin-left: 0.5rem;" (click)="resetFilters()" *ngIf="filter.state || filter.paidState || filter.organization ||
+        filter.vehicle || filter.vinNumber || filter.client || filter.fromDate || filter.toDate || filter.customer">
+          Сбросить
+        </button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="state-select">Статус</label>
+      <select id="state-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.state" (change)="emitChange()">
+        <option [selected]="null === filter.state" [ngValue]="null">
+          Без фильтра
+        </option>
+        <option [selected]="state.id === filter.state" *ngFor="let state of states" [ngValue]="state.id">
+          {{ state.name }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="paid-state-select">Статус оплаты</label>
+      <select id="paid-state-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.paidState" (change)="emitChange()">
+        <option [selected]="null === filter.paidState" [ngValue]="null">
+          Без фильтра
+        </option>
+        <option [selected]="state.id === filter.paidState" *ngFor="let state of paidStates" [ngValue]="state.id">
+          {{ state.name }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group" *ngIf="!userService.isServiceLeaderOrFreelancer()">
+      <label class="form-control-label" for="organization-select">Исполнитель</label>
+      <select id="organization-select" class="form-control form-control-sm form-control-alternative" [(ngModel)]="filter.organization" (change)="organizationChange()">
+        <option [selected]="null === filter.organization" [ngValue]="null">
+          Без фильтра
+        </option>
+        <option [selected]="organization.id === filter.organization" *ngFor="let organization of executors.data" [ngValue]="organization.id">
+          {{ organization.attributes.name }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group" *ngIf="userService.isNotClient()">
+      <label class="form-control-label" for="customer-select">Заказчик</label>
+      <select id="customer-select" class="form-control form-control-sm form-control-alternative"
+              [disabled]="disabled" [(ngModel)]="filter.customer" (change)="emitChange()">
+        <option [selected]="null === filter.customer" [ngValue]="null">
+          Без фильтра
+        </option>
+        <option [selected]="customer.id === filter.customer" *ngFor="let customer of customers.data" [ngValue]="customer.id">
+          {{ customer.attributes.name }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group" *ngIf="userService.isNotClient()">
+      <label class="form-control-label" for="client-select">Клиент</label>
+      <select id="client-select" class="form-control form-control-sm form-control-alternative"
+              [disabled]="disabled" [(ngModel)]="filter.client" (change)="emitChange()">
+        <option [selected]="null === filter.client" [ngValue]="null">
+          Без фильтра
+        </option>
+        <option [selected]="client.id === filter.client" *ngFor="let client of clients.data" [ngValue]="client.id">
+          {{ client.attributes.name }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group" *ngIf="userService.isNotClient()">
+      <label class="form-control-label" for="client-select-ahead">Клиент (поиск)</label>
+      <div class="input-group input-group-alternative input-group-sm">
+        <input id="client-select-ahead" type="text" class="form-control form-control-sm" [disabled]="disabled"
+               (selectItem)="setClient($event)" [(ngModel)]="selectedClient" [ngbTypeahead]="search"
+               [resultTemplate]="rt" [inputFormatter]="formatter"/>
+        <div class="input-group-append">
+          <button class="btn btn-buro-blue" type="button" (click)="setClient(null)" [disabled]="disabled">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+      <ng-template #rt let-r="result" let-t="term">
+        <ngb-highlight [result]="r.attributes.name" [term]="t"></ngb-highlight>
+      </ng-template>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="vin-number-input">VIN-номер</label>
+      <div class="input-group input-group-alternative input-group-sm">
+        <input id="vin-number-input" class="form-control" placeholder="VIN-номер"
+               [disabled]="disabled" [(ngModel)]="filter.vinNumber" (keyup.enter)="emitChange()">
+        <div class="input-group-append">
+          <button class="btn btn-buro-blue" type="button" (click)="emitChange()" [disabled]="disabled">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="reg-number-input">Рег. номер</label>
+      <div class="input-group input-group-alternative input-group-sm">
+        <input id="reg-number-input" class="form-control" placeholder="Рег. номер"
+               [disabled]="disabled" [(ngModel)]="filter.vehicle" (keyup.enter)="emitChange()">
+        <div class="input-group-append">
+          <button class="btn btn-buro-blue" type="button" (click)="emitChange()" [disabled]="disabled">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="row">
+        <div class="col-xl-12 col-lg-6 col-sm col-xs-12">
+          <label class="form-control-label" for="from-date-picker-filter">Дата начала ремонта - от</label>
+          <div>
+            <input class="form-control form-control-alternative form-control-sm" id="from-date-picker-filter" [mode]="'day'"
+                   placeholder="выберите дату - от" [disabled]="disabled"
+                   (ngModelChange)="setFromDate($event)" [(ngModel)]="fromDate" [dpDayPicker]="datePickerConfig" theme="dp-material" />
+          </div>
+        </div>
+        <div class="col-xl-12 col-lg-6 col-sm col-xs-12">
+          <label class="form-control-label" for="to-date-picker-filter">Дата начала ремонта - до</label>
+          <div>
+            <input class="form-control form-control-alternative form-control-sm" id="to-date-picker-filter" [mode]="'day'"
+                   placeholder="выберите дату - до" [disabled]="disabled"
+                   (ngModelChange)="setToDate($event)" [(ngModel)]="toDate" [dpDayPicker]="datePickerConfig" theme="dp-material" />
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <h3 class="text-muted">
+          Сортировка
+        </h3>
+      </div>
+      <div *ngIf="filter.sort !== 'dateStart' || filter.direction !== 'desc'" class="col-auto text-muted">
+        <button class="btn btn-sm btn-buro-blue" (click)="resetSort()">
+          Сбросить
+        </button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="sort-select">Сортировать по:</label>
+      <select id="sort-select" class="form-control form-control-sm form-control-alternative"
+              [disabled]="disabled" [(ngModel)]="filter.sort" (change)="emitChange()">
+        <option [selected]="'startDate' === filter.sort" [ngValue]="'startDate'">
+          Дата начала
+        </option>
+        <option [selected]="'endDate' === filter.sort" [ngValue]="'endDate'">
+          Дата окончания
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="direction-select">Порядок сортировки:</label>
+      <select id="direction-select" class="form-control form-control-sm form-control-alternative"
+              [disabled]="disabled" [(ngModel)]="filter.direction" (change)="emitChange()">
+        <option [selected]="'asc' === filter.direction" [ngValue]="'asc'">
+          По возрастанию
+        </option>
+        <option [selected]="'desc' === filter.direction" [ngValue]="'desc'">
+          По убыванию
+        </option>
+      </select>
+    </div>
+  </div>
+</div>

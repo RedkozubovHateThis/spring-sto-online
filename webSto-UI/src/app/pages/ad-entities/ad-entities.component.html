@@ -1,0 +1,182 @@
+<!-- Page content -->
+<div class="container-fluid mt--7" *ngIf="userService.isAdmin()">
+  <!-- Table -->
+  <div class="row">
+    <div class="col-xl-9 mb-5 mb-xl-0">
+      <div class="card shadow">
+        <div class="card-header border-0">
+          <app-loading-bar [isLoading]="isLoading"></app-loading-bar>
+          <div class="row">
+
+            <div class="col-sm mb-3">
+              <h3 class="mb-0">
+                Справочник рекламных объявлений
+              </h3>
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-sm btn-buro-blue" (click)="addNew()"
+                 *ngIf="userService.isAdmin()">
+                Добавить
+              </button>
+              <button class="btn btn-sm btn-buro-blue" (click)="requestData()"
+                      [disabled]="isLoading">
+                Обновить
+              </button>
+            </div>
+
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush table-hover table-sm">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">Наименование</th>
+                <th scope="col">Телефон</th>
+                <th scope="col">Email</th>
+                <th scope="col">Ссылка на сайт</th>
+                <th scope="col">Активно</th>
+                <th scope="col">Стороннее предложение</th>
+                <th scope="col">Описание</th>
+                <th scope="col" style="width: 28px;">&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="adEntityController.all != null">
+            <ng-container *ngFor="let adEntity of adEntityController.all.data, let i = index" [attr.data-index]="i">
+              <tr>
+                <th scope="row" style="cursor: pointer;" (click)="navigate(adEntity)" class="wrap-column">
+                  {{adEntity.attributes.name}}
+                </th>
+                <th scope="row" style="cursor: pointer;" (click)="navigate(adEntity)">
+                  {{adEntity.attributes.phone}}
+                </th>
+                <th scope="row" style="cursor: pointer;" (click)="navigate(adEntity)">
+                  {{adEntity.attributes.email}}
+                </th>
+                <th scope="row" style="cursor: pointer;" (click)="navigate(adEntity)">
+                  {{adEntity.attributes.url}}
+                </th>
+                <th scope="row" style="cursor: pointer;" (click)="navigate(adEntity)">
+                  {{adEntity.activeStatus}}
+                </th>
+                <th scope="row" style="cursor: pointer;" (click)="navigate(adEntity)">
+                  {{adEntity.sideOfferStatus}}
+                </th>
+                <th scope="row" style="cursor: pointer;" (click)="navigate(adEntity)" class="wrap-column">
+                  {{adEntity.attributes.description}}
+                </th>
+                <th>
+                  <app-delete-button *ngIf="adEntity.attributes.sideOffer"
+                    [restService]="edEntityService"
+                    [model]="adEntity"
+                    [modalTitle]="adEntity.attributes.name"
+                    [isIcon]="true"
+                    (onDelete)="requestData()"
+                  ></app-delete-button>
+                </th>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <div class="card-footer py-4 table-responsive">
+          <app-loading-bar [isLoading]="isLoading" [atTop]="true"></app-loading-bar>
+          <app-pagination *ngIf="adEntityController.all != null"
+                          [totalRecords]="adEntityController.all.page.total_resources"
+                          [page]="adEntityController.filter.page"
+                          [size]="adEntityController.filter.size"
+                          [disabled]="isLoading"
+                          (onSizeChange)="setSize($event)"
+                          (onPageChange)="goToPage($event)"></app-pagination>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3">
+      <app-ad-entity-filter
+        (onChange)="applyFilter()"
+        [filter]="adEntityController.filter"
+      ></app-ad-entity-filter>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<ng-template #editModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">Данные рекламного объявления: {{adEntityController.selectedModel.is_new ? 'добавление' : 'редактирование'}}</h3>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" *ngIf="adEntityController.selectedModel as model">
+    <div class="row form-group">
+      <div class="col-lg-6">
+        <label class="form-control-label">Наименование</label>
+        <input class="form-control form-control-sm form-control-alternative"
+               [(ngModel)]="model.attributes.name" placeholder="Наименование">
+      </div>
+      <div class="col-lg-6">
+        <label class="form-control-label">Ссылка на сайт</label>
+        <input class="form-control form-control-sm form-control-alternative"
+               [(ngModel)]="model.attributes.url" placeholder="Ссылка на сайт (необязательно к заполнению)">
+      </div>
+    </div>
+    <div class="row form-group">
+      <div class="col-lg-6">
+        <label class="form-control-label">Телефон</label>
+        <input class="form-control form-control-sm form-control-alternative"
+               [(ngModel)]="model.attributes.phone" placeholder="Телефон">
+      </div>
+      <div class="col-lg-6">
+        <label class="form-control-label">Email</label>
+        <input class="form-control form-control-sm form-control-alternative"
+               [(ngModel)]="model.attributes.email" placeholder="Email (необязательно к заполнению)">
+      </div>
+    </div>
+    <div class="row form-group" *ngIf="model.attributes.sideOffer; else addedBy">
+        <div class="col">
+          <label class="form-control-label">Присвоить пользователю</label>
+          <select class="form-control form-control-sm form-control-alternative" [(ngModel)]="model.relationships.sideOfferServiceLeader.data">
+            <option [selected]="null === model.relationships.sideOfferServiceLeader.data" [ngValue]="null">
+              Без пользователя
+            </option>
+            <option [selected]="user === model.relationships.sideOfferServiceLeader.data" *ngFor="let user of users.data" [ngValue]="user">
+              {{ user.getTitle() }}
+            </option>
+          </select>
+        </div>
+    </div>
+    <ng-template #addedBy>
+      <div class="row form-group">
+        <div class="col">
+          <label class="form-control-label">Добавлено пользователем</label>
+          <div>
+            <a (click)="closeModal()" [routerLink]="['/users', model.attributes.addedById]">{{model.attributes.addedBy}}</a>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+    <div class="row form-group">
+      <div class="col">
+        <label class="form-control-label">Описание</label>
+        <textarea class="form-control form-control-sm form-control-alternative"
+               [(ngModel)]="model.attributes.description" placeholder="Красткое описание">
+        </textarea>
+      </div>
+    </div>
+    <div class="row form-group">
+      <div class="col">
+        <div class="form-check">
+          <input id="client-is-customer-check" type="checkbox" class="form-check-input" [(ngModel)]="model.attributes.active">
+          <label class="form-control-label" for="client-is-customer-check">Рекламное объявление активно</label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-buro-blue" (click)="save(adEntityController.selectedModel)" [disabled]="isSaving">
+      Сохранить
+      <span *ngIf="isSaving">&nbsp;<i class="fas fa-spin fa-spinner"></i></span>
+    </button>
+    <button type="button" class="btn btn-sm btn-buro-blue" (click)="modal.dismiss()">Закрыть</button>
+  </div>
+</ng-template>

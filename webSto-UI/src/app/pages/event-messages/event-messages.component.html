@@ -1,0 +1,60 @@
+<!-- Page content -->
+<div class="container-fluid mt--7">
+  <!-- Table -->
+  <div class="row">
+    <div class="col-xl-9 mb-5 mb-xl-0">
+      <div class="card shadow">
+        <div class="card-header border-0">
+          <app-loading-bar [isLoading]="isLoading"></app-loading-bar>
+          <div class="row">
+
+            <div class="col-sm mb-3">
+              <h3 class="mb-0">
+                Уведомления
+              </h3>
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-sm btn-buro-blue" (click)="requestData()" [disabled]="isLoading">
+                Обновить
+              </button>
+            </div>
+
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush table-hover table-sm">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">Дата уведомления</th>
+                <th scope="col">Тип уведомления</th>
+                <th scope="col">Инициатор</th>
+                <th scope="col">Получатель</th>
+                <th scope="col">Документ</th>
+                <th scope="col">Доп. информация</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="eventMessageController.all != null">
+            <tr *ngFor="let eventMessage of eventMessageController.all.data">
+              <th>{{eventMessage.attributes.messageDate | date : 'dd.MM.yyyy HH:mm'}}</th>
+              <th>{{getMessageType(eventMessage.attributes.messageType)}}</th>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card-footer py-4table-responsive">
+          <app-loading-bar [isLoading]="isLoading" [atTop]="true"></app-loading-bar>
+          <app-pagination *ngIf="eventMessageController.all != null"
+                          [totalRecords]="eventMessageController.all.page.total_resources"
+                          [page]="eventMessageController.filter.page"
+                          [size]="eventMessageController.filter.size"
+                          [disabled]="isLoading"
+                          (onSizeChange)="setSize($event)"
+                          (onPageChange)="goToPage($event)"></app-pagination>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3">
+<!--      <app-event-message-filter (onChange)="applyFilter()" [filter]="eventMessageController.filter"></app-event-message-filter>-->
+    </div>
+  </div>
+</div>

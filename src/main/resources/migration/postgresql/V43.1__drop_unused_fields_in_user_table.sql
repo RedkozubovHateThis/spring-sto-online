@@ -1,0 +1,4 @@
+ALTER TABLE users DROP COLUMN email;
+ALTER TABLE users DROP COLUMN phone;
+ALTER TABLE users DROP COLUMN vin;
+ALTER TABLE users DROP COLUMN vin_numbers;

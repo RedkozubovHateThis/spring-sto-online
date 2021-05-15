@@ -1,0 +1,272 @@
+<div class="container-fluid mt--7">
+  <div class="row">
+    <div class="col-xl-12 mb-5 mb-xl-0">
+      <div class="card shadow">
+        <div class="card-header bg-white border-0">
+          <app-loading-bar [isLoading]="isLoading"></app-loading-bar>
+          <div class="row align-items-center">
+            <div class="col-md mb-3">
+              <h3 class="mb-0">{{title}}</h3>
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-sm btn-buro-blue" (click)="location.back()" *ngIf="showBack">
+                Назад
+              </button>
+              <button class="btn btn-sm btn-buro-blue" (click)="navigate( model )"
+                      *ngIf="userService.currentUser != null && model != null && ( userService.currentUser.id == model.id || userService.currentUser.isAdmin() )">
+                Редактировать
+              </button>
+              <app-delete-button *ngIf="userService.isAdmin() && !userService.isSameUser(model)"
+                                 [model]="model"
+                                 [restService]="userService"
+                                 [modalTitle]="model.getTitle()"
+                                 (onDelete)="location.back()"
+                                 style="margin-right: .5rem"
+              ></app-delete-button>
+              <app-password-change-button [model]="model" [currentUser]="userService.currentUser"
+                                          *ngIf="model != null && userService.currentUser != null
+                                        && ( userService.currentUser.isAdmin() || userService.currentUser.id === model.id )"></app-password-change-button>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <form>
+            <h6 class="heading-small text-muted mb-4">Личные данные</h6>
+            <div *ngIf="model != null">
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="username">Логин</label>
+                    <span id="username" class="form-control form-control-alternative form-control-sm">{{model.attributes.username}}</span>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="first-name">Имя</label>
+                    <span id="first-name" class="form-control form-control-alternative form-control-sm">{{model.attributes.firstName}}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="last-name">Фамилия</label>
+                    <span id="last-name" class="form-control form-control-alternative form-control-sm">{{model.attributes.lastName}}</span>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="middle-name">Отчество</label>
+                    <span id="middle-name" class="form-control form-control-alternative form-control-sm">{{model.attributes.middleName}}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="row" *ngIf="model.isServiceLeaderOrFreelancer()">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="service-work-price">Стоимость работа по н/ч</label>
+                    <span id="service-work-price" class="form-control form-control-alternative form-control-sm">{{model.attributes.serviceWorkPrice}}</span>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="service-goods-cost">Наценка на з/ч</label>
+                    <span id="service-goods-cost" class="form-control form-control-alternative form-control-sm">
+                      {{model.attributes.serviceGoodsCost}}<ng-container *ngIf="model.attributes.serviceGoodsCost != null">%</ng-container>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Address -->
+            <h6 class="heading-small text-muted mb-4">Контактная информация</h6>
+            <div *ngIf="model != null">
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="name"><span [ngbTooltip]="'ФИО физического лица или название Организации/ИП'" class="title-helper">Полное наименование</span></label>
+                    <span id="name" class="form-control form-control-alternative form-control-sm">
+                      <ng-container *ngIf="model.relationships.profile.data">
+                        {{model.relationships.profile.data.attributes.name}}
+                      </ng-container>
+                    </span>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="address">Адрес</label>
+                    <span id="address" class="form-control form-control-alternative form-control-sm">
+                      <ng-container *ngIf="model.relationships.profile.data">
+                        {{model.relationships.profile.data.attributes.address}}
+                      </ng-container>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-4">
+                  <div class="form-group">
+                    <label class="form-control-label" for="email">Email</label>
+                    <span id="email" class="form-control form-control-alternative form-control-sm">
+                      <ng-container *ngIf="model.relationships.profile.data">
+                        {{model.relationships.profile.data.attributes.email}}
+                      </ng-container>
+                    </span>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="form-group">
+                    <label class="form-control-label" for="phone">Телефон</label>
+                    <span id="phone" class="form-control form-control-alternative form-control-sm">
+                      <ng-container *ngIf="model.relationships.profile.data">
+                        {{model.relationships.profile.data.attributes.phone}}
+                      </ng-container>
+                    </span>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="form-group">
+                    <label class="form-control-label" for="inn">ИНН</label>
+                    <span id="inn" class="form-control form-control-alternative form-control-sm">
+                      <ng-container *ngIf="model.relationships.profile.data">
+                        {{model.relationships.profile.data.attributes.inn}}
+                      </ng-container>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Bank -->
+            <ng-container *ngIf="model != null && model.isServiceLeaderOrFreelancer()">
+              <h6 class="heading-small text-muted mb-4">Банковская информация</h6>
+              <div *ngIf="model != null">
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                      <label class="form-control-label" for="bank-bic">БИК</label>
+                      <span id="bank-bic" class="form-control form-control-alternative form-control-sm">
+                        {{model.attributes.bankBic}}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                      <label class="form-control-label" for="bank-name">Наименование банка</label>
+                      <span id="bank-name" class="form-control form-control-alternative form-control-sm">
+                        {{model.attributes.bankName}}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="model != null">
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                      <label class="form-control-label" for="checking-account">Расчетный счет</label>
+                      <span id="checking-account" class="form-control form-control-alternative form-control-sm">
+                        {{model.attributes.checkingAccount}}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                      <label class="form-control-label" for="corr-account">Корсчет</label>
+                      <span id="corr-account" class="form-control form-control-alternative form-control-sm">
+                        {{model.attributes.corrAccount}}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+            <!-- Roles -->
+            <h6 class="heading-small text-muted mb-4">Роли</h6>
+            <div *ngIf="model != null">
+              <div class="row">
+                <div class="col-lg-6">
+                  <label class="form-control-label">Роль</label>
+                  <span class="form-control form-control-alternative form-control-sm" *ngFor="let role of model.relationships.roles.data">
+                    {{role.attributes.nameRus}}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <!-- Balance -->
+            <ng-container *ngIf="model != null && model.isServiceLeaderOrFreelancer()">
+              <hr class="my-4" />
+              <h6 class="heading-small text-muted mb-4">Баланс</h6>
+              <div>
+                <div class="row">
+                  <div class="col-lg-6">
+                    <label class="form-control-label">Текущий баланс</label>
+                    <span class="form-control form-control-alternative form-control-sm">
+                    {{model.attributes.balance | number : '.2' : 'ru'}} руб.
+                  </span>
+                  </div>
+<!--                  <div class="col-lg-6" *ngIf="userService.isAdmin()">-->
+<!--                    <label class="form-control-label">Тариф</label>-->
+<!--                    <button class="btn btn-buro-blue btn-block" (click)="giftSubscription()">-->
+<!--                      Выдать бесплатный тариф-->
+<!--                    </button>-->
+<!--                  </div>-->
+                </div>
+              </div>
+            </ng-container>
+            <!-- Garage -->
+<!--            <ng-container *ngIf="model != null && model.isClient()">-->
+<!--              <hr class="my-4" />-->
+<!--              <h6 class="heading-small text-muted mb-4">Автомобили</h6>-->
+<!--              <div>-->
+<!--                <div class="row">-->
+<!--                  <ng-container *ngFor="let vinNumber of model.attributes.vinNumbers">-->
+<!--                    <div class="col-lg-6 col-sm-12 mb-2">-->
+<!--                      <div class="card">-->
+<!--                        <div class="card-header">-->
+<!--                          <h2 class="mb-0">{{vinNumber}}</h2>-->
+<!--                        </div>-->
+<!--                        <ng-container *ngIf="getVehicle(vinNumber) as vehicle">-->
+<!--                          <div class="card-body">-->
+<!--                            <div class="row mb-1">-->
+<!--                              <div class="col">-->
+<!--                                Наименование: {{vehicle.name}}-->
+<!--                              </div>-->
+<!--                            </div>-->
+<!--                            <div class="row">-->
+<!--                              <div class="col">-->
+<!--                                Рег. номер: {{vehicle.regNumber}}-->
+<!--                              </div>-->
+<!--                            </div>-->
+<!--                          </div>-->
+<!--                        </ng-container>-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                  </ng-container>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </ng-container>-->
+<!--            <ng-container *ngIf="model != null && model.userServiceLeaderOrFreelancer">-->
+<!--              <hr class="my-4" />-->
+<!--              &lt;!&ndash; Shops &ndash;&gt;-->
+<!--              <h6 class="heading-small text-muted mb-4">Магазины</h6>-->
+<!--              <div>-->
+<!--                <div class="row">-->
+<!--                  <ng-container *ngFor="let shop of shops">-->
+<!--                    <div class="col-auto" *ngIf="containsShop(model, shop.id)">-->
+<!--                      <div class="img-container">-->
+<!--                        <img src="assets/img/shops/{{shop.imgName}}" class="shop-image" alt="{{shop.name}}"/>-->
+<!--                      </div>-->
+<!--                      <div class="text-center shop-name">-->
+<!--                        {{shop.name}}-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                  </ng-container>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </ng-container>-->
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -6,54 +6,73 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <!-- Brand -->
-    <a class="navbar-brand pt-0" routerLinkActive="active" [routerLink]="['/dashboard']">
-      <img src="./assets/img/brand/red.png" class="navbar-brand-img" alt="...">
+    <a class="navbar-brand pt-0" routerLinkActive="active" [routerLink]="['/documents']">
+      <img src="./assets/img/brand/buromotors.png" class="navbar-brand-img" alt="...">
     </a>
     <!-- User -->
     <ul class="nav align-items-center d-md-none">
-      <li class="nav-item" ngbDropdown placement="bottom-right">
-        <a class="nav-link nav-link-icon" role="button" ngbDropdownToggle>
-          <i class="ni ni-bell-55"></i>
-        </a>
-        <div class="dropdown-menu-arrow dropdown-menu-right" ngbDropdownMenu>
-          <a class="dropdown-item" href="javascript:void(0)">Action</a>
-          <a class="dropdown-item" href="javascript:void(0)">Another action</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="javascript:void(0)">Something else here</a>
-        </div>
-      </li>
-      <li class="nav-item" ngbDropdown placement="bottom-right">
+<!--      <li class="nav-item" ngbDropdown placement="auto" *ngIf="userService.currentUser != null">-->
+<!--        <a class="nav-link pr-0" style="cursor: pointer;" role="button" ngbDropdownToggle>-->
+<!--          <div class="media align-items-center">-->
+<!--            <span class="avatar avatar-sm rounded-circle">-->
+<!--              <i class="fas fa-bell"></i>-->
+<!--            </span>-->
+<!--          </div>-->
+<!--        </a>-->
+<!--        <div class="dropdown-menu-arrow dropdown-menu-right event-list" ngbDropdownMenu>-->
+<!--          <ng-container *ngIf="eventMessageResponseService.messages.length === 0">-->
+<!--            <div class="dropdown-item-text small text-muted">-->
+<!--              Уведомления не найдены...-->
+<!--            </div>-->
+<!--          </ng-container>-->
+<!--          <ng-container *ngIf="eventMessageResponseService.messages.length > 0">-->
+<!--            <div class="dropdown-item-text small" *ngFor="let message of eventMessageResponseService.messages">-->
+<!--              {{message.messageDate | date : 'dd.MM.yyyy HH:mm'}}-->
+<!--              <div *ngIf="message.messageType === 'DOCUMENT_CHANGE'">-->
+<!--                Пользователь <a [routerLink]="['/users', message.fromId]">{{message.fromFio}}</a> изменил документ <a [routerLink]="['/documents', message.documentId]">{{message.documentName}}</a>:-->
+<!--                <div class="text-muted">-->
+<!--                  {{message.additionalInformation}}-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div *ngIf="message.messageType === 'MODERATOR_REPLACEMENT'">-->
+<!--                Модератор {{message.fromFio}} назначил вас своим замещающим-->
+<!--              </div>-->
+<!--              <div *ngIf="message.messageType === 'USER_REGISTER'">-->
+<!--                Пользователь {{message.fromFio}} зарегистрировался на сайте-->
+<!--              </div>-->
+<!--              <div *ngIf="message.messageType === 'USER_AUTODEALER'">-->
+<!--                Пользователь {{message.fromFio}} совершил привязку к системе АвтоДилер-->
+<!--              </div>-->
+<!--              <div *ngIf="message.messageType === 'USER_APPROVE'">-->
+<!--                Модератор {{message.fromFio}} подтвердил привязку к системе АвтоДилер-->
+<!--              </div>-->
+<!--              <div *ngIf="message.messageType === 'USER_REJECT'">-->
+<!--                Модератор {{message.fromFio}} отменил привязку к системе АвтоДилер-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </ng-container>-->
+<!--        </div>-->
+<!--      </li>-->
+      <li class="nav-item" ngbDropdown placement="auto">
         <a class="nav-link" role="button" ngbDropdownToggle>
           <div class="media align-items-center">
             <span class="avatar avatar-sm rounded-circle">
-              <img alt="Image placeholder" src="./assets/img/theme/team-1-800x800.jpg">
+              <i class="fa fa-user-tie"></i>
             </span>
           </div>
         </a>
         <div class="dropdown-menu-arrow dropdown-menu-right" ngbDropdownMenu>
           <div class=" dropdown-header noti-title">
-            <h6 class="text-overflow m-0">Welcome!</h6>
+            <h6 class="text-overflow m-0">Добро пожаловать</h6>
           </div>
           <a routerLinkActive="active" [routerLink]="['/user-profile']" class="dropdown-item">
-            <i class="ni ni-single-02"></i>
-            <span>My profile</span>
-          </a>
-          <a routerLinkActive="active" [routerLink]="['/user-profile']" class="dropdown-item">
-            <i class="ni ni-settings-gear-65"></i>
-            <span>Settings</span>
-          </a>
-          <a routerLinkActive="active" [routerLink]="['/user-profile']" class="dropdown-item">
-            <i class="ni ni-calendar-grid-58"></i>
-            <span>Activity</span>
-          </a>
-          <a routerLinkActive="active" [routerLink]="['/user-profile']" class="dropdown-item">
-            <i class="ni ni-support-16"></i>
-            <span>Support</span>
+            <i class="fas fa-user text-buro-blue"></i>
+            <span>Профиль</span>
           </a>
           <div class="dropdown-divider"></div>
-          <a href="#!" class="dropdown-item">
-            <i class="ni ni-user-run"></i>
-            <span>Logout</span>
+          <a class="dropdown-item" [routerLink]="['/login']" (click)="logout()">
+            <i class="fa fa-sign-out-alt text-buro-blue"></i>
+            <span>Выйти</span>
           </a>
         </div>
       </li>
@@ -64,8 +83,8 @@
       <div class="navbar-collapse-header d-md-none">
         <div class="row">
           <div class="col-6 collapse-brand">
-            <a  routerLinkActive="active" [routerLink]="['/dashboard']">
-              <img src="./assets/img/brand/blue.png">
+            <a  routerLinkActive="active" [routerLink]="['/documents']">
+              <img src="./assets/img/brand/buromotors.png">
             </a>
           </div>
           <div class="col-6 collapse-close">
@@ -76,48 +95,71 @@
           </div>
         </div>
       </div>
-      <!-- Form -->
-      <form class="mt-4 mb-3 d-md-none">
-        <div class="input-group input-group-rounded input-group-merge">
-          <input type="search" class="form-control form-control-rounded form-control-prepended" placeholder="Search" aria-label="Search">
-          <div class="input-group-prepend">
-            <div class="input-group-text">
-              <span class="fa fa-search"></span>
-            </div>
-          </div>
-        </div>
-      </form>
       <!-- Navigation -->
       <ul class="navbar-nav">
-          <li *ngFor="let menuItem of menuItems" class="{{menuItem.class}} nav-item">
-              <a routerLinkActive="active" [routerLink]="[menuItem.path]" class="nav-link">
-                  <i class="ni {{menuItem.icon}}"></i>
-                  {{menuItem.title}}
-              </a>
-          </li>
+        <a routerLinkActive="active" [routerLink]="['/documents']" class="nav-link">
+            <i class="fas fa-list text-buro-blue"></i> Заказ-наряды
+        </a>
+        <a routerLinkActive="active" [routerLink]="['/user-profile']" class="nav-link">
+            <i class="fas fa-user text-buro-blue"></i> Профиль
+        </a>
+        <a routerLinkActive="active" [routerLink]="['/users']" class="nav-link"
+           *ngIf="userService.isAdmin()">
+            <i class="fas fa-users text-buro-blue"></i> Пользователи
+        </a>
+        <a routerLinkActive="active" [routerLink]="['/reports']" class="nav-link"
+           *ngIf="userService.isNotClient()">
+          <i class="fas fa-copy text-buro-blue"></i> Отчеты
+        </a>
+        <a routerLinkActive="active" [routerLink]="['/balance']" class="nav-link"
+           *ngIf="userService.isServiceLeaderOrFreelancer()">
+          <i class="fas fa-ruble-sign text-buro-blue"></i> Баланс
+        </a>
+        <a routerLinkActive="active" [routerLink]="['/subscription']" class="nav-link"
+           *ngIf="userService.isServiceLeaderOrFreelancer() || userService.isAdmin()">
+          <i class="fas fa-book text-buro-blue"></i> Тарифы
+        </a>
+        <a routerLinkActive="active" [routerLink]="['/serviceWorks']" class="nav-link"
+           *ngIf="userService.isAdmin()">
+            <i class="fas fa-list text-buro-blue"></i> Работы
+        </a>
+        <a routerLinkActive="active" [routerLink]="['/serviceAddons']" class="nav-link"
+           *ngIf="userService.isAdmin()">
+            <i class="fas fa-list text-buro-blue"></i> Товары
+        </a>
+        <a routerLinkActive="active" [routerLink]="['/vehicles']" class="nav-link"
+           *ngIf="userService.isAdmin()">
+            <i class="fas fa-list text-buro-blue"></i> Марки-модели
+        </a>
+        <a routerLinkActive="active" [routerLink]="['/vehiclesAdded']" class="nav-link"
+           *ngIf="userService.isAdmin()">
+            <i class="fas fa-list text-buro-blue"></i> Автомобили
+        </a>
+        <a routerLinkActive="active" [routerLink]="['/customers']" class="nav-link"
+           *ngIf="userService.isAdmin()">
+            <i class="fas fa-list text-buro-blue"></i> Заказчики
+        </a>
+        <a routerLinkActive="active" [routerLink]="['/profiles']" class="nav-link"
+           *ngIf="userService.isAdmin()">
+            <i class="fas fa-list text-buro-blue"></i> Профили
+        </a>
+        <a routerLinkActive="active" [routerLink]="['/adEntities']" class="nav-link"
+           *ngIf="userService.isAdmin()">
+            <i class="fas fa-list text-buro-blue"></i> Реклама
+        </a>
+        <a routerLinkActive="active" [routerLink]="['/payment-records']" class="nav-link"
+           *ngIf="userService.isAdmin()">
+            <i class="fas fa-list text-buro-blue"></i> Платежи
+        </a>
+<!--        <a routerLinkActive="active" [routerLink]="['/event-messages']" class="nav-link">-->
+<!--          <i class="fas fa-bell text-buro-blue"></i> Уведомления-->
+<!--        </a>-->
       </ul>
-      <!-- Divider -->
-      <hr class="my-3">
-      <!-- Heading -->
-      <h6 class="navbar-heading text-muted">Documentation</h6>
-      <!-- Navigation -->
-      <ul class="navbar-nav mb-md-3">
-        <li class="nav-item">
-          <a class="nav-link" href="https://demos.creative-tim.com/argon-dashboard-angular/documentation/tutorial">
-            <i class="ni ni-spaceship"></i> Getting started
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="https://demos.creative-tim.com/argon-dashboard-angular/documentation/colors">
-            <i class="ni ni-palette"></i> Foundation
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="https://demos.creative-tim.com/argon-dashboard-angular/documentation/alerts">
-            <i class="ni ni-ui-04"></i> Components
-          </a>
-        </li>
-      </ul>
+      <script type="text/javascript"></script>
+      <div #adScript id="ad-script" style="display: none;">
+      </div>
+      <div id="carcam-ad-row" class="admitad-ad-row">
+      </div>
     </div>
   </div>
 </nav>

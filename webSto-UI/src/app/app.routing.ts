@@ -1,20 +1,18 @@
-import { NgModule } from '@angular/core';
-import { CommonModule, } from '@angular/common';
-import { BrowserModule  } from '@angular/platform-browser';
-import { Routes, RouterModule } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {CommonModule,} from '@angular/common';
+import {BrowserModule} from '@angular/platform-browser';
+import {RouterModule, Routes} from '@angular/router';
 
-import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
-import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
-import {LoginComponent} from "./pages/login/login.component";
-import {RegisterComponent} from "./pages/register/register.component";
+import {AdminLayoutComponent} from './layouts/admin-layout/admin-layout.component';
+import {AuthLayoutComponent} from './layouts/auth-layout/auth-layout.component';
 
-const routes: Routes =[
-  //{ path: 'login', component: LoginComponent },
-  //{ path: 'register', component: RegisterComponent },
+const routes: Routes = [
+  // { path: 'login', component: LoginComponent },
+  // { path: 'register', component: RegisterComponent },
   // { path : '', component : LoginComponent},
   {
     path: '',
-    redirectTo: 'login',
+    redirectTo: 'documents',
     pathMatch: 'full',
   }, {
     path: '',
@@ -34,9 +32,10 @@ const routes: Routes =[
         loadChildren: './layouts/auth-layout/auth-layout.module#AuthLayoutModule'
       }
     ]
-  }, {
-    path: '**',
-    redirectTo: 'dashboard'
+  },
+  {
+    path: "**",
+    redirectTo: "documents"
   }
 ];
 
@@ -44,9 +43,7 @@ const routes: Routes =[
   imports: [
     CommonModule,
     BrowserModule,
-    RouterModule.forRoot(routes,{
-      useHash: true
-    })
+    RouterModule.forRoot(routes)
   ],
   exports: [
   ],

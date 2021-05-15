@@ -1,38 +1,47 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-
-declare interface RouteInfo {
-    path: string;
-    title: string;
-    icon: string;
-    class: string;
-}
-export const ROUTES: RouteInfo[] = [
-    { path: '/dashboard', title: 'Dashboard',  icon: 'ni-tv-2 text-primary', class: '' },
-    { path: '/icons', title: 'Icons',  icon:'ni-planet text-blue', class: '' },
-    { path: '/maps', title: 'Maps',  icon:'ni-pin-3 text-orange', class: '' },
-    { path: '/user-profile', title: 'User profile',  icon:'ni-single-02 text-yellow', class: '' },
-    { path: '/tables', title: 'Tables',  icon:'ni-bullet-list-67 text-red', class: '' },
-    { path: '/login', title: 'Login',  icon:'ni-key-25 text-info', class: '' },
-    { path: '/register', title: 'Register',  icon:'ni-circle-08 text-pink', class: '' }
-];
+import {AfterViewChecked, AfterViewInit, Component, ElementRef, Inject, OnInit, Renderer2, ViewChild} from '@angular/core';
+import {Router} from '@angular/router';
+import {UserService} from '../../api/user.service';
+import {EventMessageService} from '../../api/event-message.service';
+import {DOCUMENT} from '@angular/common';
 
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss']
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent implements OnInit, AfterViewInit {
 
-  public menuItems: any[];
   public isCollapsed = true;
 
-  constructor(private router: Router) { }
+  @ViewChild('adScript', {static: true}) script: ElementRef;
+
+  constructor(private router: Router, private userService: UserService,
+              private eventMessageResponseService: EventMessageService,
+              @Inject(DOCUMENT) private document: Document,
+              private renderer2: Renderer2) { }
 
   ngOnInit() {
-    this.menuItems = ROUTES.filter(menuItem => menuItem);
     this.router.events.subscribe((event) => {
       this.isCollapsed = true;
    });
+  }
+  logout() {
+    this.userService.logout(false);
+  }
+  ngAfterViewInit(): void {
+    setTimeout( () => {
+      let subID = "carcam-ad-banner";  // - local banner key;
+      let injectTo = "carcam-ad-row";  // - #id of html element (ex., "top-banner").
+      let subid_block = "";  // - #id of html element (ex., "top-banner").
+
+      if(injectTo=="")injectTo="admitad_shuffle"+subID+Math.round(Math.random()*100000000);
+      if(subID=='')subid_block=''; else subid_block='subid/'+subID+'/';
+      // document.write('<div id="'+injectTo+'"></div>');
+      var s = document.createElement('script');
+      s.type = 'text/javascript'; s.async = true;
+      s.src = 'https://ad.admitad.com/shuffle/211ca76b43/'+subid_block+'?inject_to='+injectTo;
+      var x = document.getElementsByTagName('script')[0];
+      x.parentNode.insertBefore(s, x);
+    }, 2000 );
   }
 }

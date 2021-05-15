@@ -1,0 +1,481 @@
+<div class="container-fluid mt--7">
+  <div class="row">
+    <div class="col-xl-12 mb-5 mb-xl-0">
+      <div class="card shadow">
+        <div class="card-header bg-white border-0">
+          <app-loading-bar [isLoading]="isLoading || userService.isSaving"></app-loading-bar>
+          <div class="row align-items-center">
+            <div class="col-md mb-3">
+              <h3 class="mb-0">Данные пользователя: {{model != null && model.is_new ? 'добавление' : 'редактирование'}}</h3>
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-sm btn-buro-blue" [disabled]="userService.isSaving" (click)="location.back()">
+                Назад
+              </button>
+              <button class="btn btn-sm btn-buro-blue" [disabled]="userService.isSaving"
+                      *ngIf="userService.isAdmin() || userService.isSameUser( model )"
+                      (click)="save()">
+                Сохранить
+              </button>
+              <ng-container *ngIf="model != null && !model.is_new">
+                <app-role-change-button [model]="model" [currentUser]="userService.currentUser"
+                                        (onRoleChange)="requestData()"
+                                        *ngIf="userService.isAdmin()"></app-role-change-button>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <h6 class="heading-small text-muted mb-4">Личные данные</h6>
+          <div *ngIf="model != null">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label class="form-control-label" for="input-username">Логин</label>
+                  <input type="text" id="input-username" class="form-control form-control-alternative form-control-sm" placeholder="Логин (заполняется автоматически)"
+                         disabled [(ngModel)]="model.attributes.username" name="username">
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label class="form-control-label" for="input-first-name">Имя</label>
+                  <input type="email" id="input-first-name" class="form-control form-control-alternative form-control-sm" placeholder="Имя"
+                         [(ngModel)]="model.attributes.firstName" name="firstName">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label class="form-control-label" for="input-last-name">Фамилия</label>
+                  <input type="text" id="input-last-name" class="form-control form-control-alternative form-control-sm" placeholder="Фамилия"
+                         [(ngModel)]="model.attributes.lastName" name="lastName">
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label class="form-control-label" for="input-middle-name">Отчество</label>
+                  <input type="text" id="input-middle-name" class="form-control form-control-alternative form-control-sm" placeholder="Отчество"
+                         [(ngModel)]="model.attributes.middleName" name="middleName">
+                </div>
+              </div>
+            </div>
+            <div class="row" *ngIf="model.isServiceLeaderOrFreelancer()">
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label class="form-control-label" for="input-service-work-price">Стоимость работа по н/ч</label>
+                  <input type="number" step="100" min="0" id="input-service-work-price" class="form-control form-control-alternative form-control-sm" placeholder="Стоимость работа по Н/Ч"
+                         [(ngModel)]="model.attributes.serviceWorkPrice" name="serviceWorkPrice">
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label class="form-control-label" for="input-service-goods-cost">Наценка на з/ч, %</label>
+                  <input type="number" step="0.1" min="0" id="input-service-goods-cost" class="form-control form-control-alternative form-control-sm" placeholder="Наценка на з/ч, %"
+                         [(ngModel)]="model.attributes.serviceGoodsCost" name="serviceGoodsCost">
+                </div>
+              </div>
+            </div>
+            <div class="row" *ngIf="model.is_new">
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label class="form-control-label" for="input-password">Пароль</label>
+                  <input type="password" id="input-password" class="form-control form-control-alternative form-control-sm" placeholder="Пароль"
+                         [(ngModel)]="password" name="password">
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label class="form-control-label" for="input-re-password">Подтверждение пароля</label>
+                  <input type="password" id="input-re-password" class="form-control form-control-alternative form-control-sm" placeholder="Подтверждение пароля"
+                         [(ngModel)]="rePassword" name="rePassword">
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Address -->
+          <h6 class="heading-small text-muted mb-4">Контактная информация</h6>
+          <div *ngIf="model != null && model.relationships.profile.data">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label class="form-control-label" for="input-name"><span [ngbTooltip]="'ФИО физического лица или название Организации/ИП'" class="title-helper">Полное наименование</span></label>
+                  <input type="text" id="input-name" class="form-control form-control-alternative form-control-sm" placeholder="ФИО физ. лица или назв. Организации/ИП"
+                         [(ngModel)]="model.relationships.profile.data.attributes.name" name="name">
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label class="form-control-label" for="input-address">Адрес</label>
+                  <input type="text" id="input-address" class="form-control form-control-alternative form-control-sm" placeholder="Адрес"
+                         [(ngModel)]="model.relationships.profile.data.attributes.address" name="address">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label class="form-control-label" for="input-email">Email</label>
+                  <input type="text" id="input-email" class="form-control form-control-alternative form-control-sm" placeholder="Email (не обязательно к заполнению)"
+                         [(ngModel)]="model.relationships.profile.data.attributes.email" name="email">
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label class="form-control-label" for="input-phone">Телефон</label>
+                  <input type="text" id="input-phone" class="form-control form-control-alternative form-control-sm" placeholder="Телефон"
+                         [(ngModel)]="model.relationships.profile.data.attributes.phone" name="phone">
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <label class="form-control-label" for="input-inn">ИНН</label>
+                  <input type="text" id="input-inn" class="form-control form-control-alternative form-control-sm" placeholder="ИНН"
+                         [(ngModel)]="model.relationships.profile.data.attributes.inn" name="inn">
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Bank -->
+          <ng-container *ngIf="model != null && model.isServiceLeaderOrFreelancer()">
+            <h6 class="heading-small text-muted mb-4">Банковская информация</h6>
+            <div *ngIf="model != null">
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-bank-bic">БИК</label>
+                    <input type="text" id="input-bank-bic" class="form-control form-control-alternative form-control-sm" placeholder="БИК"
+                           [(ngModel)]="model.attributes.bankBic" name="bankBic">
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-bank-name">Наименование банка</label>
+                    <input type="text" id="input-bank-name" class="form-control form-control-alternative form-control-sm" placeholder="Наименование банка"
+                           [(ngModel)]="model.attributes.bankName" name="bankBic">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="model != null">
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-checking-account">Расчетный счет</label>
+                    <input type="text" id="input-checking-account" class="form-control form-control-alternative form-control-sm" placeholder="Расчетный счет"
+                           [(ngModel)]="model.attributes.checkingAccount" name="checkingAccount">
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-corr-account">Корсчет</label>
+                    <input type="text" id="input-corr-account" class="form-control form-control-alternative form-control-sm" placeholder="Корсчет"
+                           [(ngModel)]="model.attributes.corrAccount" name="corrAccount">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <!-- AD -->
+          <ng-container *ngIf="model != null && !model.is_new && model.isServiceLeaderOrFreelancer() && !model.isAdSubscriptionActive()">
+            <h6 class="heading-small text-muted mb-4">Реклама</h6>
+            <div class="row">
+              <div class="col">
+                <div class="form-group">
+                  Для настройки рекламы необходимо оформить тариф "Реклама" в разделе "<a href="#" [routerLink]="['/subscription']">Тарифы</a>".
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="model != null && !model.is_new && model.isServiceLeaderOrFreelancer() && model.isAdSubscriptionActive()">
+            <h6 class="heading-small text-muted mb-4">Реклама</h6>
+            <ng-container *ngIf="model.relationships.adEntity.data as adEntity">
+              <div class="row">
+                <div class="col">
+                  <div class="form-group">
+                    <div class="form-check">
+                      <input id="ad-entity-active" type="checkbox" class="form-check-input"
+                             [(ngModel)]="adEntity.attributes.active">
+                      <label class="form-control-label" for="ad-entity-active">Включить показ рекламы</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label"><span [ngbTooltip]="'ФИО физического лица или название Организации/ИП'" class="title-helper">Полное наименование</span></label>
+                    <input type="text" class="form-control form-control-alternative form-control-sm" placeholder="ФИО физ. лица или назв. Организации/ИП"
+                           [(ngModel)]="adEntity.attributes.name" name="adName" [disabled]="!userService.isSameUser(model)">
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label">Адрес сайта</label>
+                    <input type="text" class="form-control form-control-alternative form-control-sm" placeholder="Адрес сайта (необязательно к заполнению)"
+                           [(ngModel)]="adEntity.attributes.url" name="adUrl" [disabled]="!userService.isSameUser(model)">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label">Телефон</label>
+                    <input type="text" class="form-control form-control-alternative form-control-sm" placeholder="Телефон"
+                           [(ngModel)]="adEntity.attributes.phone" name="adPhone" [disabled]="!userService.isSameUser(model)">
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label">Email</label>
+                    <input type="text" class="form-control form-control-alternative form-control-sm" placeholder="Email (необязательно к заполнению)"
+                           [(ngModel)]="adEntity.attributes.email" name="adEmail" [disabled]="!userService.isSameUser(model)">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="form-group">
+                    <label class="form-control-label">Описание</label>
+                    <textarea type="text" class="form-control form-control-alternative form-control-sm" placeholder="Краткое описание"
+                              [(ngModel)]="adEntity.attributes.description" name="adDescription" [disabled]="!userService.isSameUser(model)">
+                  </textarea>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
+          <ng-container *ngIf="model != null && !model.is_new && model.isServiceLeaderOrFreelancer() && adEntities.data.length > 0">
+            <h6 class="heading-small text-muted mb-4">Сторонние предложения по рекламе</h6>
+            <hr class="my-4">
+            <ng-container *ngFor="let adEntity of adEntities.data">
+              <div class="row">
+                <div class="col">
+                  <div class="form-group">
+                    <div class="form-check">
+                      <input type="checkbox" class="form-check-input" [id]="'side_offer_' + adEntity.id"
+                             [(ngModel)]="adEntity.attributes.active">
+                      <label class="form-control-label" [for]="'side_offer_' + adEntity.id">Включить показ рекламы</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label"><span [ngbTooltip]="'ФИО физического лица или название Организации/ИП'" class="title-helper">Полное наименование</span></label>
+                    <input type="text" class="form-control form-control-alternative form-control-sm" placeholder="ФИО физ. лица или назв. Организации/ИП"
+                           [(ngModel)]="adEntity.attributes.name" name="adName" [disabled]="!userService.isSameUser(model)">
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label">Адрес сайта</label>
+                    <input type="text" class="form-control form-control-alternative form-control-sm" placeholder="Адрес сайта (необязательно к заполнению)"
+                           [(ngModel)]="adEntity.attributes.url" name="adUrl" [disabled]="!userService.isSameUser(model)">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label">Телефон</label>
+                    <input type="text" class="form-control form-control-alternative form-control-sm" placeholder="Телефон"
+                           [(ngModel)]="adEntity.attributes.phone" name="adPhone" [disabled]="!userService.isSameUser(model)">
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label">Email</label>
+                    <input type="text" class="form-control form-control-alternative form-control-sm" placeholder="Email (необязательно к заполнению)"
+                           [(ngModel)]="adEntity.attributes.email" name="adEmail" [disabled]="!userService.isSameUser(model)">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="form-group">
+                    <label class="form-control-label">Описание</label>
+                    <textarea type="text" class="form-control form-control-alternative form-control-sm" placeholder="Краткое описание"
+                              [(ngModel)]="adEntity.attributes.description" name="adDescription" [disabled]="!userService.isSameUser(model)">
+                  </textarea>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
+          <!-- Roles -->
+          <h6 class="heading-small text-muted mb-4">Роли</h6>
+          <div *ngIf="model != null">
+            <ng-container *ngIf="model.is_new; else roleName">
+              <div class="row">
+                <div class="col-lg-6">
+                  <select id="role-select" class="form-control form-control-alternative form-control-sm" [ngModelOptions]="{standalone: true}"
+                          [(ngModel)]="selectedRole" (ngModelChange)="setRole()">
+                    <option *ngFor="let role of roles.data" [selected]="selectedRole != null && selectedRole.id === role.id" [ngValue]="role">
+                      {{role.attributes.nameRus}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </ng-container>
+            <ng-template #roleName>
+              <div class="row">
+                <div class="col-lg-6">
+                  <label class="form-control-label">Роль</label>
+                  <span class="form-control form-control-alternative form-control-sm" *ngFor="let role of model.relationships.roles.data">
+                  {{role.attributes.nameRus}}
+                </span>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+<!--            <ng-container *ngIf="userService.isSameUser( model ) && model.isServiceLeader()">-->
+<!--              <hr class="my-4" />-->
+<!--              &lt;!&ndash; Subscriptions &ndash;&gt;-->
+<!--              <h6 class="heading-small text-muted mb-4">Тариф по умолчанию</h6>-->
+<!--              <div>-->
+<!--                <div class="row">-->
+<!--                  <ng-container *ngFor="let subscriptionType of subscriptionTypes">-->
+<!--                    <div class="col" *ngIf="!subscriptionType.isFree && !subscriptionType.isInactive">-->
+<!--                      <div class="card mb-2" style="min-width: 230px;">-->
+<!--                        <div class="card-header">-->
+<!--                          <h3 class="mb-0">-->
+<!--                            {{subscriptionType.name}}-->
+<!--                          </h3>-->
+<!--                        </div>-->
+
+<!--                        <div class="card-body">-->
+
+<!--                          <div class="row form-group">-->
+<!--                            <div class="col">-->
+<!--                              Стоимость, руб.-->
+<!--                            </div>-->
+<!--                            <div class="col-auto h3 mb-0">-->
+<!--                              {{subscriptionType.cost | number : '.2' : 'ru'}}-->
+<!--                            </div>-->
+<!--                          </div>-->
+
+<!--                          <div class="row form-group">-->
+<!--                            <div class="col">-->
+<!--                              Количество доступных заказ-нарядов-->
+<!--                            </div>-->
+<!--                            <div class="col-auto h3 mb-0">-->
+<!--                              {{subscriptionType.documentsCount}}-->
+<!--                            </div>-->
+<!--                          </div>-->
+
+<!--                          <div class="row form-group">-->
+<!--                            <div class="col">-->
+<!--                              Стоимость заказ-наряда, руб.-->
+<!--                            </div>-->
+<!--                            <div class="col-auto h3 mb-0">-->
+<!--                              {{subscriptionType.documentCost}}-->
+<!--                            </div>-->
+<!--                          </div>-->
+
+<!--                          <div class="row form-group">-->
+<!--                            <div class="col">-->
+<!--                              Длительность, дней-->
+<!--                            </div>-->
+<!--                            <div class="col-auto h3 mb-0">-->
+<!--                              {{subscriptionType.durationDays}}-->
+<!--                            </div>-->
+<!--                          </div>-->
+
+<!--                          <button class="btn btn-buro-blue btn-block" (click)="model.attributes.subscriptionTypeId = subscriptionType.id"-->
+<!--                                  [disabled]="model.attributes.subscriptionTypeId === subscriptionType.id">-->
+<!--                            <span *ngIf="model.attributes.subscriptionTypeId === subscriptionType.id">Выбран</span>-->
+<!--                            <span *ngIf="model.attributes.subscriptionTypeId !== subscriptionType.id">Выбрать</span>-->
+<!--                          </button>-->
+
+<!--                        </div>-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                  </ng-container>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </ng-container>-->
+          <!-- Garage -->
+<!--            <ng-container *ngIf="model != null && model.isClient() && ( userService.isSameUser(model) || userService.isAdmin() )">-->
+<!--              <hr class="my-4" />-->
+<!--              <h6 class="heading-small text-muted mb-4">Автомобили</h6>-->
+<!--              <div>-->
+<!--                <div class="row">-->
+<!--                  <div class="col">-->
+<!--                    <label class="form-control-label" for="vin-number-search">Поиск автомобиля по VIN-номеру</label>-->
+<!--                    <div class="input-group input-group-alternative mb-3">-->
+<!--                      <input type="text" id="vin-number-search" class="form-control" placeholder="VIN-номер"-->
+<!--                             [(ngModel)]="vinNumber" name="vinNumber">-->
+<!--                      <div class="input-group-append">-->
+<!--                        <button class="btn btn-buro-blue" type="button" (click)="findVehicle()"-->
+<!--                                [disabled]="vinNumber == null || vinNumber.length === 0 || isLoading">-->
+<!--                          Найти-->
+<!--                        </button>-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <div class="row">-->
+<!--                  <ng-container *ngFor="let vinNumber of model.vinNumbers">-->
+<!--                    <div class="col-lg-6 col-sm-12 mb-2">-->
+<!--                      <div class="card">-->
+<!--                        <div class="card-header">-->
+<!--                          <div class="row">-->
+<!--                            <div class="col">-->
+<!--                              <h2 class="mb-0">{{vinNumber}}</h2>-->
+<!--                            </div>-->
+<!--                            <div class="col-auto">-->
+<!--                              <span style="cursor: pointer" (click)="removeVehicle(vinNumber)">-->
+<!--                                <i class="fa fa-times"></i>-->
+<!--                              </span>-->
+<!--                            </div>-->
+<!--                          </div>-->
+<!--                        </div>-->
+<!--                        <ng-container *ngIf="getVehicle(vinNumber) as vehicle">-->
+<!--                          <div class="card-body">-->
+<!--                            <div class="row mb-1">-->
+<!--                              <div class="col">-->
+<!--                                Наименование: {{vehicle.name}}-->
+<!--                              </div>-->
+<!--                            </div>-->
+<!--                            <div class="row">-->
+<!--                              <div class="col">-->
+<!--                                Рег. номер: {{vehicle.regNumber}}-->
+<!--                              </div>-->
+<!--                            </div>-->
+<!--                          </div>-->
+<!--                        </ng-container>-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                  </ng-container>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </ng-container>-->
+<!--            <ng-container *ngIf="userService.isSameUser( model ) && model.userServiceLeaderOrFreelancer">-->
+<!--              <hr class="my-4" />-->
+<!--              &lt;!&ndash; Shops &ndash;&gt;-->
+<!--              <h6 class="heading-small text-muted mb-4">Магазины</h6>-->
+<!--              <div>-->
+<!--                <div class="row">-->
+<!--                  <ng-container *ngFor="let shop of shops">-->
+<!--                    <div class="col-auto">-->
+<!--                      <div class="img-container" (click)="manageShop(model, shop.id)" [ngClass]="{ active: containsShop(model, shop.id) }">-->
+<!--                        <img src="assets/img/shops/{{shop.imgName}}" class="shop-image" alt="{{shop.name}}"/>-->
+<!--                        <div class="selected-overlay">-->
+<!--                          <i class="fas fa-check"></i>-->
+<!--                        </div>-->
+<!--                      </div>-->
+<!--                      <div class="text-center shop-name">-->
+<!--                        {{shop.name}}-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                  </ng-container>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </ng-container>-->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
