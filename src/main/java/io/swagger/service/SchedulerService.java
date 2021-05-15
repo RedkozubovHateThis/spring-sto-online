@@ -129,14 +129,14 @@ public class SchedulerService {
 
     private void updateAd() {
         try {
-            webSocketController.sendAdEntity( getAdEntity() );
+            webSocketController.sendAdEntity( getAdEntity( currentAdEntity, false ) );
         } catch (DataNotFoundException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             webSocketController.sendAdEntity(null);
         }
     }
 
-    private AdEntity getAdEntity() throws DataNotFoundException {
+    private AdEntity getAdEntity(AdEntity currentAdEntity, Boolean throwError) throws DataNotFoundException {
         AdEntity adEntity;
 
         if ( currentAdEntity != null ) {
@@ -152,14 +152,49 @@ public class SchedulerService {
         if ( adEntity == null )
             throw new DataNotFoundException();
 
-        currentAdEntity = adEntity;
+        if ( adEntity.getServiceLeader() != null ) {
+            User user = adEntity.getServiceLeader();
+
+            Subscription currentAdSubscription = user.getCurrentAdSubscription();
+            if ( currentAdSubscription == null )
+                return checkSubscription( adEntity, throwError );
+
+            if ( currentAdSubscription.getEndDate() == null )
+                return checkSubscription( adEntity, throwError );
+
+            if ( currentAdSubscription.getEndDate().before( new Date() ) )
+                return checkSubscription( adEntity, throwError );
+        }
+
+        if ( adEntity.getSideOfferServiceLeader() != null ) {
+            User user = adEntity.getSideOfferServiceLeader();
+
+            Subscription currentAdSubscription = user.getCurrentAdSubscription();
+            if ( currentAdSubscription == null )
+                return checkSubscription( adEntity, throwError );
+
+            if ( currentAdSubscription.getEndDate() == null )
+                return checkSubscription( adEntity, throwError );
+
+            if ( currentAdSubscription.getEndDate().before( new Date() ) )
+                return checkSubscription( adEntity, throwError );
+        }
+
+        this.currentAdEntity = adEntity;
 
         return adEntity;
     }
 
+    private AdEntity checkSubscription(AdEntity adEntity, Boolean throwError) throws DataNotFoundException {
+        if ( throwError )
+            throw new DataNotFoundException();
+
+        return getAdEntity( adEntity, true );
+    }
+
     public AdEntity getCurrentAdEntity() throws DataNotFoundException {
         if ( currentAdEntity == null )
-            return getAdEntity();
+            return getAdEntity( currentAdEntity, false );
 
         return currentAdEntity;
     }

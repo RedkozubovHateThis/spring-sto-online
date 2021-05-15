@@ -41,7 +41,6 @@ export class SidebarComponent implements OnInit, AfterViewInit {
       s.type = 'text/javascript'; s.async = true;
       s.src = 'https://ad.admitad.com/shuffle/211ca76b43/'+subid_block+'?inject_to='+injectTo;
       var x = document.getElementsByTagName('script')[0];
-      console.log(x);
       x.parentNode.insertBefore(s, x);
     }, 2000 );
   }

@@ -105,7 +105,7 @@ public class AuthServerOAuth2Config extends AuthorizationServerConfigurerAdapter
         tokenServices.setSupportRefreshToken(true);
         tokenServices.setClientDetailsService(endpoints.getClientDetailsService());
         tokenServices.setTokenEnhancer(endpoints.getTokenEnhancer());
-        tokenServices.setAccessTokenValiditySeconds(28800);
+        tokenServices.setAccessTokenValiditySeconds(0);
 
         endpoints.tokenServices( tokenServices );
     }

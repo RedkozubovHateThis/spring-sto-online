@@ -23,6 +23,7 @@ public class IntegrationDocument extends BaseIntegrationEntity {
     private String modelName;
     private String regNumber;
     private String vinNumber;
+    private String vehicleIntegrationId;
     private Integer year;
     private Integer mileage;
     private String reason;

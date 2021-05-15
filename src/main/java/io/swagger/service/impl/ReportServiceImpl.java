@@ -95,7 +95,7 @@ public class ReportServiceImpl implements ReportService {
         if ( vehicle == null ) throw new DataNotFoundException();
 
         VehicleMileage vehicleMileage = document.getVehicleMileage();
-        if ( vehicleMileage == null ) throw new DataNotFoundException();
+//        if ( vehicleMileage == null ) throw new DataNotFoundException();
 
         Profile executioner = document.getExecutor();
         if ( executioner == null ) throw new DataNotFoundException();
@@ -176,7 +176,8 @@ public class ReportServiceImpl implements ReportService {
         parameters.put( "vehicleRegNum", getFieldText(vehicle.getRegNumber(), "не указан") );
         parameters.put( "vehicleVinNum", getFieldText(vehicle.getVinNumber(), "не указан") );
         parameters.put( "vehicleYear", vehicle.getYear() );
-        parameters.put( "vehicleMileage", vehicleMileage.getMileage() );
+        if ( vehicleMileage != null )
+            parameters.put( "vehicleMileage", vehicleMileage.getMileage() );
     }
 
     private void fillRepairParameters(Map<String, Object> parameters, ServiceDocument document) throws DataNotFoundException {

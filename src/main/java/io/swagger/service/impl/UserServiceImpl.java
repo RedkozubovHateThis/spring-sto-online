@@ -193,9 +193,11 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         if ( !demoDomain ) {
-            String smsText = String.format("Вы были зарегистрированы в сервисе BUROMOTORS. " +
-                    "Логин для входа в систему: ваш телефон, пароль: %s. " +
-                    "Сервис BUROMOTORS: %s/login", rawPassword, domainUrl);
+//            String smsText = String.format("Регистрация %s. Логин: тел. Пароль: %s", domainUrl, rawPassword );
+            String smsText = String.format("Приложение %s/get-app Логин: %s Пароль: %s", domainUrl, profile.getPhone(), rawPassword );
+//            String smsText = String.format("Вы были зарегистрированы в сервисе BUROMOTORS. " +
+//                    "Логин для входа в систему: ваш телефон, пароль: %s. " +
+//                    "Сервис BUROMOTORS: %s/login", rawPassword, domainUrl);
             logger.info(" [ SCHEDULER ] Prepared sms text: \"{}\"", smsText );
 
             if ( smsEnabled )

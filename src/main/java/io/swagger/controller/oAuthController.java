@@ -66,44 +66,44 @@ public class oAuthController {
                                    @PathVariable("roleName") String roleName) {
 
         if ( registerModel == null )
-            return ResponseEntity.status(400).body("Тело запроса не может быть пустым!");
+            return ResponseEntity.status(400).body( new ApiResponse( "Тело запроса не может быть пустым!" ) );
 
         if ( roleName == null )
-            return ResponseEntity.status(400).body("Роль не может быть пустой!");
+            return ResponseEntity.status(400).body( new ApiResponse( "Роль не может быть пустой!" ) );
 
         if ( !roleName.equals("SERVICE_LEADER") && !roleName.equals("CLIENT") && !roleName.equals("FREELANCER") )
-            return ResponseEntity.status(400).body("Неправильная роль!");
+            return ResponseEntity.status(400).body( new ApiResponse( "Неправильная роль!" ) );
 
         if ( registerModel.getPassword() == null || registerModel.getPassword().isEmpty() )
-            return ResponseEntity.status(400).body("Пароль не может быть пустым!");
+            return ResponseEntity.status(400).body( new ApiResponse( "Пароль не может быть пустым!" ) );
 
         if ( registerModel.getPassword().length() < 6 )
-            return ResponseEntity.status(400).body("Пароль не может содержать менее 6 символов!");
+            return ResponseEntity.status(400).body( new ApiResponse( "Пароль не может содержать менее 6 символов!" ) );
 
         if ( !registerModel.getPassword().equals( registerModel.getRePassword() ) )
-            return ResponseEntity.status(400).body("Пароли не совпадают!");
+            return ResponseEntity.status(400).body( new ApiResponse( "Пароли не совпадают!" ) );
 
         if ( registerModel.getEmail() != null && registerModel.getEmail().length() == 0 )
             registerModel.setEmail(null);
 
         if ( registerModel.getEmail() != null && registerModel.getEmail().length() > 0 &&
                 !userService.isEmailValid( registerModel.getEmail() ) )
-            return ResponseEntity.status(400).body("Неверный формат почты!");
+            return ResponseEntity.status(400).body( new ApiResponse( "Неверный формат почты!" ) );
 
         if ( registerModel.getPhone() == null || registerModel.getPhone().isEmpty() )
-            return ResponseEntity.status(400).body("Телефон не может быть пустым!");
+            return ResponseEntity.status(400).body( new ApiResponse( "Телефон не может быть пустым!" ) );
 
         if ( !userService.isPhoneValid( registerModel.getPhone() ) )
-            return ResponseEntity.status(400).body("Неверный номер телефона!");
+            return ResponseEntity.status(400).body( new ApiResponse( "Неверный номер телефона!" ) );
 
         String phone = userService.processPhone( registerModel.getPhone() );
 
         if ( profileRepository.isProfileExistsPhone( phone ) )
-            return ResponseEntity.status(400).body("Пользователь с таким телефоном уже существует!");
+            return ResponseEntity.status(400).body( new ApiResponse( "Пользователь с таким телефоном уже существует!" ) );
 
         if ( registerModel.getEmail() != null && registerModel.getEmail().length() > 0 &&
                 profileRepository.isProfileExistsEmail( registerModel.getEmail() ) )
-            return ResponseEntity.status(400).body("Пользователь с такой почтой уже существует!");
+            return ResponseEntity.status(400).body( new ApiResponse( "Пользователь с такой почтой уже существует!" ) );
 
         User user = new User();
         Profile profile = new Profile();
@@ -131,11 +131,11 @@ public class oAuthController {
 
         if ( roleName.equals("SERVICE_LEADER") || roleName.equals("FREELANCER") ) {
             if ( roleName.equals("SERVICE_LEADER") && ( registerModel.getInn() == null || registerModel.getInn().isEmpty() ) )
-                return ResponseEntity.status(400).body("ИНН не может быть пустым!");
+                return ResponseEntity.status(400).body( new ApiResponse( "ИНН не может быть пустым!" ) );
 
             if ( registerModel.getInn() != null && !registerModel.getInn().isEmpty()
                     && profileRepository.isProfileExistsInn( registerModel.getInn() ) )
-                return ResponseEntity.status(400).body("Пользователь с таким ИНН уже существует!");
+                return ResponseEntity.status(400).body( new ApiResponse( "Пользователь с таким ИНН уже существует!" ) );
 
             try {
                 if ( roleName.equals("SERVICE_LEADER") )
@@ -148,7 +148,7 @@ public class oAuthController {
         profileRepository.save(profile);
         userRepository.save(user);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok( new ApiResponse( "Регистрация успешно завершена!" ) );
 
     }
 

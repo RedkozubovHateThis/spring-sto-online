@@ -105,6 +105,22 @@ export class ServiceDocumentResource extends Resource {
     return 'warn';
   }
 
+  get vehicle(): VehicleResource | null {
+    try {
+      return this.relationships.vehicle.data;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  get vehicleMileage(): VehicleMileageResource | null {
+    try {
+      return this.relationships.vehicleMileage.data;
+    } catch (e) {
+      return null;
+    }
+  }
+
   get allStatuses(): IStatus[] {
     return statuses;
   }

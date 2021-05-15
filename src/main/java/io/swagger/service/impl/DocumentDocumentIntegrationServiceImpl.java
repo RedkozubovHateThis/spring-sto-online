@@ -119,13 +119,63 @@ public class DocumentDocumentIntegrationServiceImpl implements DocumentIntegrati
 
         logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Saving document... ");
 
+        logger.info(" [ DOCUMENT INTEGRATION SERVICE ] ");
+        logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Document details:");
+        logger.info(" [ DOCUMENT INTEGRATION SERVICE ] ");
+        logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Document number: {}", document.getNumber());
+        logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Document integration id: {}", document.getIntegrationId());
+        logger.info(" [ DOCUMENT INTEGRATION SERVICE ] ");
+
+        if ( document.getExecutor() != null ) {
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Executor: {}", document.getExecutor().getName());
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Executor inn: {}", document.getExecutor().getInn());
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Executor integration id: {}", document.getExecutor().getIntegrationId());
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] ");
+        }
+
+        if ( document.getClient() != null ) {
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Client: {}", document.getClient().getName());
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Client inn: {}", document.getClient().getInn());
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Client integration id: {}", document.getClient().getIntegrationId());
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] ");
+        }
+
+        if ( document.getVehicle() != null ) {
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Vehicle: {}", document.getVehicle().getModelName());
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Vehicle VIN-number: {}", document.getVehicle().getVinNumber());
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Vehicle integration id: {}", document.getVehicle().getIntegrationId());
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] ");
+        }
+
         serviceDocumentRepository.save( document );
         if ( serviceWorks != null && serviceWorks.size() > 0 ) {
             logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Saving service works... ");
+
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] ");
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Service works details:");
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] ");
+
+            for (ServiceWork serviceWork : serviceWorks) {
+                logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Service work: {}", serviceWork.getName());
+                logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Service work integration id: {}", serviceWork.getIntegrationId());
+                logger.info(" [ DOCUMENT INTEGRATION SERVICE ] ");
+            }
+
             serviceWorkRepository.saveAll( serviceWorks );
         }
         if ( serviceAddons != null && serviceAddons.size() > 0 ) {
             logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Saving service addons... ");
+
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] ");
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Service addons details:");
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] ");
+
+            for (ServiceAddon serviceAddon : serviceAddons) {
+                logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Service addon: {}", serviceAddon.getName());
+                logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Service addon integration id: {}", serviceAddon.getIntegrationId());
+                logger.info(" [ DOCUMENT INTEGRATION SERVICE ] ");
+            }
+
             serviceAddonRepository.saveAll( serviceAddons );
         }
 
@@ -265,11 +315,16 @@ public class DocumentDocumentIntegrationServiceImpl implements DocumentIntegrati
     }
 
     private Vehicle getVehicle(IntegrationDocument integrationDocument, User user) {
-        if ( isFieldEmpty( integrationDocument.getVinNumber() ) )
+        if ( isFieldEmpty( integrationDocument.getVinNumber() ) && isFieldEmpty( integrationDocument.getVehicleIntegrationId() ) )
             return null;
         logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Searching for vehicle... ");
 
-        Vehicle vehicle = vehicleRepository.findOneByVinNumber( integrationDocument.getVinNumber() );
+        Vehicle vehicle = null;
+
+        if ( !isFieldEmpty( integrationDocument.getVehicleIntegrationId() ) )
+            vehicle = vehicleRepository.findOneByIntegrationId( integrationDocument.getVehicleIntegrationId() );
+        if ( vehicle == null && !isFieldEmpty( integrationDocument.getVinNumber() ) )
+            vehicle = vehicleRepository.findOneByVinNumber( integrationDocument.getVinNumber() );
 
         if ( vehicle == null ) {
             logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Vehicle not found, creating new one... ");
@@ -280,6 +335,7 @@ public class DocumentDocumentIntegrationServiceImpl implements DocumentIntegrati
                 vehicle.setCreatedBy( user.getProfile() );
         }
 
+        vehicle.setIntegrationId( integrationDocument.getVehicleIntegrationId() );
         vehicle.setModelName( integrationDocument.getModelName() );
         vehicle.setVinNumber( prepareVinNumber( integrationDocument.getVinNumber() ) );
         vehicle.setRegNumber( prepareRegNumber( integrationDocument.getRegNumber() ) );
@@ -474,6 +530,8 @@ public class DocumentDocumentIntegrationServiceImpl implements DocumentIntegrati
                 throw new IllegalArgumentException("Не указан признак того, является ли клиент заказчиком");
             if ( !isFieldEmpty( client.getEmail() ) && !userService.isEmailValid( client.getEmail() ) )
                 throw new IllegalArgumentException( String.format("Неверный формат email клиента: %s", client.getEmail()) );
+            if ( client.getClientIsCustomer() != null && !client.getClientIsCustomer() && document.getCustomer() == null )
+                throw new IllegalArgumentException("Не указан заказчик");
         }
         if ( document.getCustomer() != null ) {
             IntegrationProfile customer = document.getCustomer();
@@ -494,10 +552,12 @@ public class DocumentDocumentIntegrationServiceImpl implements DocumentIntegrati
         }
         if ( document.getWorks() != null ) {
             for (IntegrationWork work : document.getWorks()) {
-                if ( isFieldEmpty(work.getIntegrationId()) )
+                if ( isFieldEmpty( work.getIntegrationId() ) )
                     throw new IllegalArgumentException( String.format("Не указан идентификатор работы: %s", document.getWorks().indexOf( work ) + 1 ) );
                 if ( work.getByPrice() == null )
-                    throw new IllegalArgumentException( String.format("Не указан признак фиксированной цены: %s", work.getIntegrationId() ) );
+                    throw new IllegalArgumentException( String.format("Не указан признак фиксированной цены работы: %s", work.getIntegrationId() ) );
+                if ( !work.getByPrice() && !isFieldEmpty( work.getPrice() ) && isFieldEmpty( work.getPriceNorm() ) && isFieldEmpty( work.getTimeValue() ) )
+                    throw new IllegalArgumentException( String.format("Не указан признак фиксированной цены при наличии фиксированной цены работы: %s", work.getIntegrationId() ) );
                 if ( work.getCount() == null || work.getCount() == 0 )
                     work.setCount(1);
             }
@@ -514,6 +574,10 @@ public class DocumentDocumentIntegrationServiceImpl implements DocumentIntegrati
 
     private Boolean isFieldEmpty(String field) {
         return field == null || field.length() == 0;
+    }
+
+    private Boolean isFieldEmpty(Double field) {
+        return field == null;
     }
 
     // TODO: вынести в хэлпер или сервис

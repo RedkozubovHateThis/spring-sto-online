@@ -29,21 +29,23 @@ public class BalanceIntegrationServiceImpl implements BalanceIntegrationService 
     private PaymentService paymentService;
 
     @Override
-    public IntegrationBalanceResponse processIntegrationBalance(IntegrationBalanceRequest integrationBalanceRequest, User user) throws IllegalArgumentException {
-        checkAndSetFields(integrationBalanceRequest);
+    public IntegrationBalanceResponse processIntegrationBalance(User serviceLeader) throws IllegalArgumentException {
+//        checkAndSetFields(integrationBalanceRequest);
 
-        Profile profile = getProfile(integrationBalanceRequest);
+//        Profile profile = getProfile(integrationBalanceRequest);
 
-        if ( profile.getUser() == null )
-            throw new IllegalArgumentException("Профиль не найден");
+//        if ( profile.getUser() == null )
+//            throw new IllegalArgumentException("Профиль не найден");
 
-        User serviceLeader = profile.getUser();
+//        User serviceLeader = profile.getUser();
 
         if ( !UserHelper.isServiceLeaderOrFreelancer( serviceLeader ) )
             throw new IllegalArgumentException("Данный профиль не может вносить денежные средства и оформлять тарифы");
 
-        if ( UserHelper.isServiceLeaderOrFreelancer( user ) && !user.getId().equals( serviceLeader.getId() ) )
-            throw new IllegalArgumentException("Указаныый пользователь не может получать данные о балансе других профилей");
+        Profile profile = serviceLeader.getProfile();
+
+//        if ( UserHelper.isServiceLeaderOrFreelancer( user ) && !user.getId().equals( serviceLeader.getId() ) )
+//            throw new IllegalArgumentException("Указаныый пользователь не может получать данные о балансе других профилей");
 
         IntegrationBalanceResponse integrationBalanceResponse = new IntegrationBalanceResponse();
         integrationBalanceResponse.setBalance( serviceLeader.getBalance() );

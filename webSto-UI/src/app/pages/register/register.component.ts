@@ -63,7 +63,10 @@ export class RegisterComponent implements OnInit {
       }, error => {
         this.isRegistering = false;
         if ( error.status === 400 ) {
-          this.showError(error.error);
+          if (error.error.responseText)
+            this.showError(error.error.responseText);
+          else
+            this.showError('Ошибка регистрации пользователя!');
         }
         else {
           this.showError('Ошибка регистрации пользователя!');

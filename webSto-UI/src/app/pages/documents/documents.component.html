@@ -71,12 +71,12 @@
                     {{serviceDocument.relationships.executor.data.attributes.name}}
                   </ng-container>
                 </th>
-                <th style="cursor: pointer;" (click)="navigate(serviceDocument)" *ngIf="serviceDocument.relationships.vehicle.data">
+                <th style="cursor: pointer;" (click)="navigate(serviceDocument)">
                   <ng-container *ngIf="serviceDocument.relationships.vehicle.data">
                     {{serviceDocument.relationships.vehicle.data.attributes.modelName}}
                   </ng-container>
                 </th>
-                <th style="cursor: pointer;" (click)="navigate(serviceDocument)" *ngIf="serviceDocument.relationships.vehicle.data">
+                <th style="cursor: pointer;" (click)="navigate(serviceDocument)">
                   <ng-container *ngIf="serviceDocument.relationships.vehicle.data">
                     {{serviceDocument.relationships.vehicle.data.attributes.regNumber}}
                   </ng-container>

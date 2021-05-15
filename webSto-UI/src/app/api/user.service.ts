@@ -81,6 +81,11 @@ export class UserService implements TransferService<UserResource>, RestService<U
     localStorage.setItem( 'token', null );
     localStorage.removeItem( 'demoDomain' );
     this.currentUserIsLoggedOut.next();
+    try {
+      window.indexedDB.deleteDatabase('dexie_data_provider');
+    } catch (e) {
+      console.error(e);
+    }
     if ( redirect )
       this.router.navigate(['/login']);
   }

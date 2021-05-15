@@ -35,5 +35,6 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long>, JpaSpec
     @Query(nativeQuery = true, value = "SELECT v.* FROM vehicle AS v " +
             "WHERE upper(v.vin_number) = upper(:vinNumber) AND v.deleted = false")
     Vehicle findOneByVinNumber(@Param("vinNumber") String vinNumber);
+    Vehicle findOneByIntegrationId(String integrationId);
 
 }

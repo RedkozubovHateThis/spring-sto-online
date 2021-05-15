@@ -95,8 +95,7 @@ public class IntegrationController {
 
     @PostMapping(value = "/balance", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getBalance(@RequestHeader(value = "username", required = false) String username,
-                                     @RequestHeader(value = "password", required = false) String password,
-                                     @RequestBody IntegrationBalanceRequest integrationBalanceRequest) throws Exception {
+                                     @RequestHeader(value = "password", required = false) String password) throws Exception {
 
         User user;
 
@@ -111,7 +110,7 @@ public class IntegrationController {
         }
 
         try {
-            IntegrationBalanceResponse response = balanceIntegrationService.processIntegrationBalance(integrationBalanceRequest, user);
+            IntegrationBalanceResponse response = balanceIntegrationService.processIntegrationBalance(user);
             return ResponseEntity.ok(response);
         }
         catch(IllegalArgumentException iae) {

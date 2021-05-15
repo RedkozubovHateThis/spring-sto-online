@@ -11,6 +11,7 @@ import {DemoComponent} from '../../pages/demo/demo.component';
 import {RestoreComponent} from '../../pages/restore/restore.component';
 import {ReportOpenComponent} from '../../pages/report-open/report-open.component';
 import {PdfViewerModule} from 'ng2-pdf-viewer';
+import {GetAppComponent} from '../../pages/get-app/get-app.component';
 
 @NgModule({
   imports: [
@@ -26,7 +27,8 @@ import {PdfViewerModule} from 'ng2-pdf-viewer';
     RegisterComponent,
     DemoComponent,
     RestoreComponent,
-    ReportOpenComponent
+    ReportOpenComponent,
+    GetAppComponent
   ]
 })
 export class AuthLayoutModule { }

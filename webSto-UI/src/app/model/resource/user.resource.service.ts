@@ -71,7 +71,11 @@ export class UserResource extends Resource {
       if ( !this.relationships.currentAdSubscription.data )
         return false;
 
-      return this.relationships.currentAdSubscription.data.isAdValid();
+      try {
+        return this.relationships.currentAdSubscription.data.isAdValid();
+      } catch (e) {
+        return false;
+      }
   }
 
   public relationships = {

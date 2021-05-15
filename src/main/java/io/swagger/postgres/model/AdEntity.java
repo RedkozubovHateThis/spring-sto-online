@@ -36,6 +36,10 @@ public class AdEntity extends BaseEntity implements Serializable {
     private Boolean sideOffer;
     private Boolean active;
     private Boolean deleted;
+    @Transient
+    private String addedBy;
+    @Transient
+    private Long addedById;
 
     @OneToOne(mappedBy = "adEntity")
     @NotFound(action = NotFoundAction.IGNORE)

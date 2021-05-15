@@ -20,9 +20,9 @@ public class ServiceDocumentSpecificationBuilder {
             public Predicate toPredicate(Root<ServiceDocument> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 
                 List<Predicate> predicates = new ArrayList<>();
-                Join<ServiceDocument, Vehicle> vehicleJoin = root.join( ServiceDocument_.vehicle );
-                Join<ServiceDocument, Profile> clientJoin = root.join( ServiceDocument_.client );
-                Join<ServiceDocument, Profile> executorJoin = root.join( ServiceDocument_.executor );
+                Join<ServiceDocument, Vehicle> vehicleJoin = root.join( ServiceDocument_.vehicle, JoinType.LEFT );
+                Join<ServiceDocument, Profile> clientJoin = root.join( ServiceDocument_.client, JoinType.LEFT );
+                Join<ServiceDocument, Profile> executorJoin = root.join( ServiceDocument_.executor, JoinType.LEFT );
 
                 if ( UserHelper.isClient( currentUser ) ) {
                     predicates.add( cb.equal(

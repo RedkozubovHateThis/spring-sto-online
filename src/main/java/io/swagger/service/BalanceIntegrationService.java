@@ -6,5 +6,5 @@ import io.swagger.response.integration.IntegrationBalanceResponse;
 import io.swagger.response.integration.IntegrationUser;
 
 public interface BalanceIntegrationService {
-    IntegrationBalanceResponse processIntegrationBalance(IntegrationBalanceRequest integrationBalanceRequest, User user) throws IllegalArgumentException;
+    IntegrationBalanceResponse processIntegrationBalance(User user) throws IllegalArgumentException;
 }
