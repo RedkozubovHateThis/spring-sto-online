@@ -122,30 +122,28 @@ public class DocumentDocumentIntegrationServiceImpl implements DocumentIntegrati
         logger.info(" [ DOCUMENT INTEGRATION SERVICE ] ");
         logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Document details:");
         logger.info(" [ DOCUMENT INTEGRATION SERVICE ] ");
-        logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Document number: {}", document.getNumber());
-        logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Document integration id: {}", document.getIntegrationId());
+        logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Document number: {}", integrationDocument.getNumber());
+        logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Document integration id: {}", integrationDocument.getIntegrationId());
         logger.info(" [ DOCUMENT INTEGRATION SERVICE ] ");
 
-        if ( document.getExecutor() != null ) {
-            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Executor: {}", document.getExecutor().getName());
-            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Executor inn: {}", document.getExecutor().getInn());
-            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Executor integration id: {}", document.getExecutor().getIntegrationId());
+        if ( integrationDocument.getExecutor() != null ) {
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Executor: {}", integrationDocument.getExecutor().getName());
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Executor inn: {}", integrationDocument.getExecutor().getInn());
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Executor integration id: {}", integrationDocument.getExecutor().getIntegrationId());
             logger.info(" [ DOCUMENT INTEGRATION SERVICE ] ");
         }
 
-        if ( document.getClient() != null ) {
-            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Client: {}", document.getClient().getName());
-            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Client inn: {}", document.getClient().getInn());
-            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Client integration id: {}", document.getClient().getIntegrationId());
+        if ( integrationDocument.getClient() != null ) {
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Client: {}", integrationDocument.getClient().getName());
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Client inn: {}", integrationDocument.getClient().getInn());
+            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Client integration id: {}", integrationDocument.getClient().getIntegrationId());
             logger.info(" [ DOCUMENT INTEGRATION SERVICE ] ");
         }
 
-        if ( document.getVehicle() != null ) {
-            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Vehicle: {}", document.getVehicle().getModelName());
-            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Vehicle VIN-number: {}", document.getVehicle().getVinNumber());
-            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Vehicle integration id: {}", document.getVehicle().getIntegrationId());
-            logger.info(" [ DOCUMENT INTEGRATION SERVICE ] ");
-        }
+        logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Vehicle: {}", integrationDocument.getModelName());
+        logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Vehicle VIN-number: {}", integrationDocument.getVinNumber());
+        logger.info(" [ DOCUMENT INTEGRATION SERVICE ] Vehicle integration id: {}", integrationDocument.getIntegrationId());
+        logger.info(" [ DOCUMENT INTEGRATION SERVICE ] ");
 
         serviceDocumentRepository.save( document );
         if ( serviceWorks != null && serviceWorks.size() > 0 ) {
