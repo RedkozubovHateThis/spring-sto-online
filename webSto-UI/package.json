@@ -27,7 +27,7 @@
     "chart.js": "2.7.3",
     "clipboard": "2.0.4",
     "core-js": "^2.6.9",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "ng-file-upload": "^12.2.13",
     "ng2-date-picker": "^2.12.0",
     "ng2-file-upload": "^1.3.0",
